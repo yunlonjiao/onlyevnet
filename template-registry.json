@@ -95,18 +95,19 @@
       "id": "05",
       "name": "欧美Live活动",
       "structureProfile": "lineup",
-      "artDirection": "live-poster",
+      "artDirection": "concert-venue-lineup",
       "motionProfile": "energetic",
       "heroRenderer": "poster",
       "guestRenderer": "horizontal",
       "boothRenderer": "cards",
-      "programRenderer": "stage-board",
+      "programRenderer": "lineup-summary",
       "newsRenderer": "ticker",
       "sponsorRenderer": "marquee",
       "recommendedFor": [
         "Live",
         "音乐活动",
-        "演出"
+        "演唱会",
+        "场馆演出"
       ],
       "notRecommendedFor": [
         "社团目录"
@@ -178,16 +179,17 @@
       "id": "09",
       "name": "国内综合漫展",
       "structureProfile": "portal",
-      "artDirection": "chinese-event-editorial",
-      "motionProfile": "energetic",
-      "heroRenderer": "portal",
+      "artDirection": "chinese-information-portal",
+      "motionProfile": "calm",
+      "heroRenderer": "editorial-masthead",
       "guestRenderer": "grid",
       "boothRenderer": "cards",
       "programRenderer": "feature-cards",
-      "newsRenderer": "list",
+      "newsRenderer": "editorial-list",
       "sponsorRenderer": "logo-wall",
       "recommendedFor": [
         "国内综合漫展",
+        "信息密集型漫展",
         "大型二次元活动"
       ],
       "notRecommendedFor": [
