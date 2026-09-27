@@ -49,6 +49,14 @@
 - [ ] 手机 Banner 使用 mobileImage / mobile focal point
 - [ ] sidebar 在移动端转 drawer / accordion
 
+## Animation sourcing
+- [ ] 实现复杂动画前已搜索是否存在成熟现成库 / 组件 / Demo
+- [ ] 已记录候选资源、许可证、维护状态和移动端支持
+- [ ] 优先复用许可证清晰且维护中的资源，不重复造轮子
+- [ ] 生产环境锁定具体版本；禁止依赖 `latest`
+- [ ] 第三方动画失效时，核心内容和导航仍可使用
+- [ ] 已实现 prefers-reduced-motion 降级
+
 ## Interaction
 - [ ] nav
 - [ ] CTA
