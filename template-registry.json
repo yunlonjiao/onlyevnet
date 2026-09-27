@@ -1,0 +1,262 @@
+{
+  "version": 2,
+  "rule": "content-data-shared_visual-rendering-independent",
+  "breakpoints": {
+    "mobileMax": 767,
+    "tabletMin": 768,
+    "tabletMax": 1023,
+    "desktopMin": 1024
+  },
+  "templates": [
+    {
+      "id": "01",
+      "name": "欧美综合漫展",
+      "structureProfile": "portal",
+      "artDirection": "international-festival",
+      "motionProfile": "energetic",
+      "heroRenderer": "portal",
+      "guestRenderer": "grid",
+      "boothRenderer": "cards",
+      "programRenderer": "feature-cards",
+      "newsRenderer": "list",
+      "sponsorRenderer": "logo-wall",
+      "recommendedFor": [
+        "大型综合漫展",
+        "多模块活动"
+      ],
+      "notRecommendedFor": [
+        "极简ONLY"
+      ]
+    },
+    {
+      "id": "02",
+      "name": "游戏风主题活动",
+      "structureProfile": "immersive",
+      "artDirection": "experimental-game",
+      "motionProfile": "immersive",
+      "heroRenderer": "immersive",
+      "guestRenderer": "fullscreen",
+      "boothRenderer": "cards",
+      "programRenderer": "chapter",
+      "newsRenderer": "ticker",
+      "sponsorRenderer": "footer-strip",
+      "recommendedFor": [
+        "主题企划",
+        "游戏活动",
+        "强主视觉活动"
+      ],
+      "notRecommendedFor": [
+        "高密度展商检索"
+      ]
+    },
+    {
+      "id": "03",
+      "name": "日系ONLY展",
+      "structureProfile": "catalogue",
+      "artDirection": "minimal-japanese-print",
+      "motionProfile": "calm",
+      "heroRenderer": "catalogue",
+      "guestRenderer": "editorial-index",
+      "boothRenderer": "directory",
+      "programRenderer": "compact-list",
+      "newsRenderer": "list",
+      "sponsorRenderer": "footer-strip",
+      "recommendedFor": [
+        "ONLY展",
+        "同人展",
+        "社团目录"
+      ],
+      "notRecommendedFor": [
+        "大型舞台活动"
+      ]
+    },
+    {
+      "id": "04",
+      "name": "杂志风同人展",
+      "structureProfile": "editorial",
+      "artDirection": "art-school-editorial",
+      "motionProfile": "editorial",
+      "heroRenderer": "poster",
+      "guestRenderer": "editorial-index",
+      "boothRenderer": "magazine-index",
+      "programRenderer": "feature-cards",
+      "newsRenderer": "editorial",
+      "sponsorRenderer": "marquee",
+      "recommendedFor": [
+        "创作者市集",
+        "同人展",
+        "艺术活动"
+      ],
+      "notRecommendedFor": [
+        "商务展商检索"
+      ]
+    },
+    {
+      "id": "05",
+      "name": "欧美Live活动",
+      "structureProfile": "lineup",
+      "artDirection": "live-poster",
+      "motionProfile": "energetic",
+      "heroRenderer": "poster",
+      "guestRenderer": "horizontal",
+      "boothRenderer": "cards",
+      "programRenderer": "stage-board",
+      "newsRenderer": "ticker",
+      "sponsorRenderer": "marquee",
+      "recommendedFor": [
+        "Live",
+        "音乐活动",
+        "演出"
+      ],
+      "notRecommendedFor": [
+        "社团目录"
+      ]
+    },
+    {
+      "id": "06",
+      "name": "Live舞台活动",
+      "structureProfile": "timetable",
+      "artDirection": "timetable-modernist",
+      "motionProfile": "calm",
+      "heroRenderer": "timetable",
+      "guestRenderer": "list",
+      "boothRenderer": "cards",
+      "programRenderer": "timeline",
+      "newsRenderer": "list",
+      "sponsorRenderer": "footer-strip",
+      "recommendedFor": [
+        "多舞台",
+        "多日程",
+        "舞台型活动"
+      ],
+      "notRecommendedFor": [
+        "无舞台活动"
+      ]
+    },
+    {
+      "id": "07",
+      "name": "海报风主题活动",
+      "structureProfile": "poster",
+      "artDirection": "poster-special-site",
+      "motionProfile": "editorial",
+      "heroRenderer": "poster",
+      "guestRenderer": "horizontal",
+      "boothRenderer": "cards",
+      "programRenderer": "feature-cards",
+      "newsRenderer": "list",
+      "sponsorRenderer": "footer-strip",
+      "recommendedFor": [
+        "小型主题活动",
+        "强海报活动"
+      ],
+      "notRecommendedFor": [
+        "大量展商"
+      ]
+    },
+    {
+      "id": "08",
+      "name": "欧美主题活动",
+      "structureProfile": "split",
+      "artDirection": "creative-festival",
+      "motionProfile": "energetic",
+      "heroRenderer": "split",
+      "guestRenderer": "editorial-index",
+      "boothRenderer": "cards",
+      "programRenderer": "feature-cards",
+      "newsRenderer": "editorial",
+      "sponsorRenderer": "marquee",
+      "recommendedFor": [
+        "创意节",
+        "设计活动",
+        "主题展"
+      ],
+      "notRecommendedFor": [
+        "纯检索型活动"
+      ]
+    },
+    {
+      "id": "09",
+      "name": "国内综合漫展",
+      "structureProfile": "portal",
+      "artDirection": "chinese-event-editorial",
+      "motionProfile": "energetic",
+      "heroRenderer": "portal",
+      "guestRenderer": "grid",
+      "boothRenderer": "cards",
+      "programRenderer": "feature-cards",
+      "newsRenderer": "list",
+      "sponsorRenderer": "logo-wall",
+      "recommendedFor": [
+        "国内综合漫展",
+        "大型二次元活动"
+      ],
+      "notRecommendedFor": [
+        "极简活动"
+      ]
+    },
+    {
+      "id": "10",
+      "name": "国内大型活动",
+      "structureProfile": "search",
+      "artDirection": "b2b-exhibition",
+      "motionProfile": "calm",
+      "heroRenderer": "search",
+      "guestRenderer": "list",
+      "boothRenderer": "search-results",
+      "programRenderer": "compact-list",
+      "newsRenderer": "list",
+      "sponsorRenderer": "tiered",
+      "recommendedFor": [
+        "大型展会",
+        "大量展商",
+        "商务活动"
+      ],
+      "notRecommendedFor": [
+        "小型ONLY",
+        "纯视觉活动"
+      ]
+    },
+    {
+      "id": "11",
+      "name": "游戏风综合漫展",
+      "structureProfile": "pickup",
+      "artDirection": "game-show-special",
+      "motionProfile": "immersive",
+      "heroRenderer": "pickup",
+      "guestRenderer": "horizontal",
+      "boothRenderer": "map-linked",
+      "programRenderer": "stage-board",
+      "newsRenderer": "ticker",
+      "sponsorRenderer": "logo-wall",
+      "recommendedFor": [
+        "游戏展",
+        "大型专题活动",
+        "联动活动"
+      ],
+      "notRecommendedFor": [
+        "极简目录"
+      ]
+    },
+    {
+      "id": "12",
+      "name": "国内二次元活动",
+      "structureProfile": "character-led",
+      "artDirection": "soft-romantic-acg",
+      "motionProfile": "editorial",
+      "heroRenderer": "character",
+      "guestRenderer": "cutout",
+      "boothRenderer": "cards",
+      "programRenderer": "feature-cards",
+      "newsRenderer": "cards",
+      "sponsorRenderer": "footer-strip",
+      "recommendedFor": [
+        "二次元主题活动",
+        "角色/IP活动",
+        "社群型活动"
+      ],
+      "notRecommendedFor": [
+        "商务展会"
+      ]
+    }
+  ]
+}
