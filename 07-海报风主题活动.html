@@ -5,6 +5,13 @@ html[lang="zh-CN"] h2,
 html[lang="zh-CN"] .hero-title{
   line-height:1.02;
 }
+</style><style id="onlyevent-motion-layer">
+body{opacity:0;transition:opacity .45s ease}body.oe-ready{opacity:1}
+.oe-reveal{opacity:0;transform:translateY(24px);transition:opacity .68s cubic-bezier(.2,.8,.2,1),transform .68s cubic-bezier(.2,.8,.2,1)}
+.oe-reveal.oe-in{opacity:1;transform:none}
+.hero,.hero-visual,.hero-media{animation:oeHeroIn .82s cubic-bezier(.2,.8,.2,1) both}
+@keyframes oeHeroIn{from{opacity:.35;transform:scale(1.015)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){body{opacity:1}.oe-reveal{opacity:1;transform:none;transition:none}.hero,.hero-visual,.hero-media{animation:none}}
 </style></head><body>
 <div class="loader" id="loader"><div class="loader-mark">W</div></div>
 <header class="header"><div class="wrap"><div class="logo">奇想造物祭</div><nav><a href="#contents">活动内容</a><a href="#guide">指南</a><a href="#about">关于</a><a href="#sns">SNS</a></nav><a class="ticket">票务</a></div></header>
@@ -16,4 +23,4 @@ html[lang="zh-CN"] .hero-title{
 <section class="section" id="guide"><div class="wrap"><div class="content-grid"><article class="content-card"><b>会场地图</b><span>会场地图</span></article><article class="content-card"><b>入场指南</b><span>入场指南</span></article><article class="content-card"><b>常见问题</b><span>常见问题</span></article><article class="content-card"><b>主办寄语</b><span>主办寄语</span></article></div></div></section>
 <section class="section" id="about"><div class="wrap"><h2>活动概要 · 交通</h2><div class="info-table"><div class="info-row"><b>举办时间</b><span>2026.07.26 / 10:00—17:00</span></div><div class="info-row"><b>票价</b><span>预售 / 当日 / 优先入场</span></div><div class="info-row"><b>会场</b><span>大型会展中心 1—8 号馆</span></div><div class="info-row"><b>主办方</b><span>活动主办委员会</span></div></div></div></section>
 <footer class="footer"><div class="wrap">NEWS · DEALER · 票务 · GOODS · FOOD · COSPLAY · 常见问题</div></footer>
-<script>addEventListener('load',()=>setTimeout(()=>document.querySelector('#loader').classList.add('hide'),850));</script></body></html>
+<script>addEventListener('load',()=>setTimeout(()=>document.querySelector('#loader').classList.add('hide'),850));</script><script id="onlyevent-motion-layer-js">(()=>{document.body.classList.add('oe-ready');if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const els=[...document.querySelectorAll('section,article,.news-card,.explore-card,.form-card,.artist-row,.event,.content-card,.company,.expo,.product')].filter((x,i)=>i<100);els.forEach(x=>x.classList.add('oe-reveal'));const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('oe-in');io.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -5% 0px'});els.forEach(x=>io.observe(x));})();</script></body></html>
