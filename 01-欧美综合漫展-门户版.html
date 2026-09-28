@@ -5,6 +5,13 @@ html[lang="zh-CN"] h2,
 html[lang="zh-CN"] .hero-title{
   line-height:1.02;
 }
+</style><style id="onlyevent-motion-layer">
+body{opacity:0;transition:opacity .45s ease}body.oe-ready{opacity:1}
+.oe-reveal{opacity:0;transform:translateY(24px);transition:opacity .68s cubic-bezier(.2,.8,.2,1),transform .68s cubic-bezier(.2,.8,.2,1)}
+.oe-reveal.oe-in{opacity:1;transform:none}
+.hero,.hero-visual,.hero-media{animation:oeHeroIn .82s cubic-bezier(.2,.8,.2,1) both}
+@keyframes oeHeroIn{from{opacity:.35;transform:scale(1.015)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){body{opacity:1}.oe-reveal{opacity:1;transform:none;transition:none}.hero,.hero-visual,.hero-media{animation:none}}
 </style></head><body>
 <header class="top"><div class="wrap"><div class="logo">AX</div><nav><a>大型动漫节</a><a>特别票务</a><a>线上活动</a><a href="#news">资讯</a><a>帮助 / FAQ</a></nav><a class="register" href="#plan">敬请期待</a></div></header>
 <section class="hero"><div class="hero-media"></div><div class="wrap"><div class="hero-copy"><small>动画 · 漫画 · 游戏 · 社群</small><h1>动漫<br>嘉年华</h1><p>把粉丝、创作者、产业嘉宾与现场体验集中在同一个大型城市活动中。</p><div class="hero-meta"><span>2027.07.02—05</span><span>城市国际会展中心</span></div></div></div></section>
@@ -13,4 +20,4 @@ html[lang="zh-CN"] .hero-title{
 <section class="blog" id="plan"><div class="wrap"><div class="title-row"><h2>资讯</h2><a>全部文章 →</a></div><div class="blog-row"><span>JUL 10</span><b>活动回顾与新闻稿</b><span>查看 →</span></div><div class="blog-row"><span>JUN 30</span><b>完整活动内容与多会场信息</b><span>查看 →</span></div><div class="blog-row"><span>JUN 29</span><b>官方周边与现场服务</b><span>查看 →</span></div></div></section>
 <section class="signup"><div class="wrap"><h2>热爱<br>二次元？</h2><p>订阅活动最新消息。</p><input placeholder="邮箱地址"></div></section>
 <section class="sponsors"><div class="wrap"><div class="sponsor-grid"><div class="sponsor">合作品牌</div><div class="sponsor">合作品牌</div><div class="sponsor">合作品牌</div><div class="sponsor">合作品牌</div><div class="sponsor">合作品牌</div><div class="sponsor">合作品牌</div><div class="sponsor">合作品牌</div><div class="sponsor">合作品牌</div><div class="sponsor">合作品牌</div><div class="sponsor">合作品牌</div><div class="sponsor">合作品牌</div><div class="sponsor">合作品牌</div></div></div></section>
-</body></html>
+<script id="onlyevent-motion-layer-js">(()=>{document.body.classList.add('oe-ready');if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const els=[...document.querySelectorAll('section,article,.news-card,.explore-card,.form-card,.artist,.event,.content-card,.company,.expo')].filter((x,i)=>i<100);els.forEach(x=>x.classList.add('oe-reveal'));const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('oe-in');io.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -5% 0px'});els.forEach(x=>io.observe(x));})();</script></body></html>
