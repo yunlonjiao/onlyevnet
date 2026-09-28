@@ -5,6 +5,13 @@ html[lang="zh-CN"] h2,
 html[lang="zh-CN"] .hero-title{
   line-height:1.02;
 }
+</style><style id="onlyevent-motion-layer">
+body{opacity:0;transition:opacity .45s ease}body.oe-ready{opacity:1}
+.oe-reveal{opacity:0;transform:translateY(24px);transition:opacity .68s cubic-bezier(.2,.8,.2,1),transform .68s cubic-bezier(.2,.8,.2,1)}
+.oe-reveal.oe-in{opacity:1;transform:none}
+.hero,.hero-visual,.hero-media{animation:oeHeroIn .82s cubic-bezier(.2,.8,.2,1) both}
+@keyframes oeHeroIn{from{opacity:.35;transform:scale(1.015)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){body{opacity:1}.oe-reveal{opacity:1;transform:none;transition:none}.hero,.hero-visual,.hero-media{animation:none}}
 </style></head><body>
 <nav class="side-nav"><a href="#artists">ARTISTS</a><a href="#about">ABOUT</a><a href="#locations">LOCATIONS</a><a href="#news">资讯</a></nav><a class="ticket-float">GET TICKETS ↗</a><header class="top"><div class="wrap"><div class="brand">CREATIVE FESTIVAL</div><nav><a href="#artists">ARTISTS</a><a href="#about">ABOUT</a><a href="#locations">LOCATIONS</a><a href="#news">NEWS</a></nav><a class="ticket">TICKETS</a></div></header>
 <section class="hero"><div class="wrap" style="position:relative;z-index:2"><h1>创意设计中心<br>上海</h1><div class="hero-meta"><span>2027.05.06—08</span><span>立即开始 →</span></div></div></section>
@@ -14,4 +21,4 @@ html[lang="zh-CN"] .hero-title{
 <section class="studio"><div class="wrap"><small>CREATIVE PRODUCTION</small><h2>创意工作室</h2><p>策展 · 创意方向 · 活动视觉设计</p></div></section>
 <section class="news" id="news"><div class="wrap"><h2>NEWS</h2><div class="news-row"><span>01</span><b>新锐创作者计划</b><span>阅读 →</span></div><div class="news-row"><span>02</span><b>影像放映计划</b><span>阅读 →</span></div><div class="news-row"><span>03</span><b>设计市集</b><span>阅读 →</span></div></div></section>
 <section class="sponsors"><div class="wrap"><div class="sponsor-grid"><div class="sponsor">赞助商</div><div class="sponsor">赞助商</div><div class="sponsor">赞助商</div><div class="sponsor">赞助商</div><div class="sponsor">赞助商</div><div class="sponsor">赞助商</div><div class="sponsor">合作伙伴</div><div class="sponsor">合作伙伴</div><div class="sponsor">合作伙伴</div><div class="sponsor">合作伙伴</div><div class="sponsor">合作伙伴</div><div class="sponsor">合作伙伴</div><div class="sponsor">媒体伙伴</div><div class="sponsor">媒体伙伴</div><div class="sponsor">媒体伙伴</div><div class="sponsor">媒体伙伴</div><div class="sponsor">媒体伙伴</div><div class="sponsor">媒体伙伴</div></div></div></section>
-</body></html>
+<script id="onlyevent-motion-layer-js">(()=>{document.body.classList.add('oe-ready');if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const els=[...document.querySelectorAll('section,article,.news-card,.explore-card,.form-card,.artist-row,.event,.content-card,.company,.expo,.product')].filter((x,i)=>i<100);els.forEach(x=>x.classList.add('oe-reveal'));const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('oe-in');io.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -5% 0px'});els.forEach(x=>io.observe(x));})();</script></body></html>
