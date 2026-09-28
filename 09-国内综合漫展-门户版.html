@@ -5,6 +5,13 @@ html[lang="zh-CN"] h2,
 html[lang="zh-CN"] .hero-title{
   line-height:1.02;
 }
+</style><style id="onlyevent-motion-layer">
+body{opacity:0;transition:opacity .45s ease}body.oe-ready{opacity:1}
+.oe-reveal{opacity:0;transform:translateY(24px);transition:opacity .68s cubic-bezier(.2,.8,.2,1),transform .68s cubic-bezier(.2,.8,.2,1)}
+.oe-reveal.oe-in{opacity:1;transform:none}
+.hero,.hero-visual,.hero-media{animation:oeHeroIn .82s cubic-bezier(.2,.8,.2,1) both}
+@keyframes oeHeroIn{from{opacity:.35;transform:scale(1.015)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){body{opacity:1}.oe-reveal{opacity:1;transform:none;transition:none}.hero,.hero-visual,.hero-media{animation:none}}
 </style></head><body><div class="wechat-tab">微信小程序</div>
 <div class="utility"><div class="wrap"><span>参展服务</span><span>商务合作</span><span>媒体中心</span><span>EN</span></div></div>
 <header class="header"><div class="wrap nav"><div class="logo">ACG EXPO</div><nav><a href="#news">新闻资讯</a><a href="#zones">展会内容</a><a href="#guest">嘉宾活动</a><a href="#service">观展服务</a><a href="#partner">合作伙伴</a></nav><a class="buy">购票入口</a></div></header>
@@ -14,4 +21,4 @@ html[lang="zh-CN"] .hero-title{
 <section class="section" id="zones"><div class="wrap"><h2>展会内容</h2><div class="zones"><article class="zone"><small>ZONE</small><h3>动画/IP</h3><span>查看详情 →</span></article><article class="zone"><small>ZONE</small><h3>游戏世界</h3><span>查看详情 →</span></article><article class="zone"><small>ZONE</small><h3>虚拟内容</h3><span>查看详情 →</span></article><article class="zone"><small>ZONE</small><h3>创作者市场</h3><span>查看详情 →</span></article><article class="zone"><small>ZONE</small><h3>舞台活动</h3><span>查看详情 →</span></article><article class="zone"><small>ZONE</small><h3>Cosplay</h3><span>查看详情 →</span></article><article class="zone"><small>ZONE</small><h3>周边零售</h3><span>查看详情 →</span></article><article class="zone"><small>ZONE</small><h3>品牌互动</h3><span>查看详情 →</span></article></div></div></section>
 <section class="section service" id="service"><div class="wrap"><h2>观展服务</h2><div class="service-grid"><article class="service-card"><h3>现场指南</h3><p>场地图 / 入场 / 交通 / 失物</p></article><article class="service-card"><h3>参展服务</h3><p>展商 / 媒体 / 合作 / 联系</p></article><article class="service-card"><h3>社群入口</h3><p>QQ群 / 微信群 / 官方社媒</p></article></div></div></section>
 <section class="section" id="partner"><div class="wrap"><h2>合作伙伴</h2><div class="partners"><div class="partner">BRAND</div><div class="partner">BRAND</div><div class="partner">BRAND</div><div class="partner">BRAND</div><div class="partner">BRAND</div><div class="partner">BRAND</div><div class="partner">BRAND</div><div class="partner">BRAND</div><div class="partner">BRAND</div><div class="partner">BRAND</div><div class="partner">BRAND</div><div class="partner">BRAND</div></div></div></section>
-<footer class="footer"><div class="wrap">首页 · 新闻 · 展会内容 · 服务 · 合作 · 联系我们</div></footer></body></html>
+<footer class="footer"><div class="wrap">首页 · 新闻 · 展会内容 · 服务 · 合作 · 联系我们</div></footer><script id="onlyevent-motion-layer-js">(()=>{document.body.classList.add('oe-ready');if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const els=[...document.querySelectorAll('section,article,.news-card,.explore-card,.form-card,.artist-row,.event,.content-card,.company,.expo,.product')].filter((x,i)=>i<100);els.forEach(x=>x.classList.add('oe-reveal'));const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('oe-in');io.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -5% 0px'});els.forEach(x=>io.observe(x));})();</script></body></html>
