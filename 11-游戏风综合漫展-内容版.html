@@ -5,6 +5,13 @@ html[lang="zh-CN"] h2,
 html[lang="zh-CN"] .hero-title{
   line-height:1.02;
 }
+</style><style id="onlyevent-motion-layer">
+body{opacity:0;transition:opacity .45s ease}body.oe-ready{opacity:1}
+.oe-reveal{opacity:0;transform:translateY(24px);transition:opacity .68s cubic-bezier(.2,.8,.2,1),transform .68s cubic-bezier(.2,.8,.2,1)}
+.oe-reveal.oe-in{opacity:1;transform:none}
+.hero,.hero-visual,.hero-media{animation:oeHeroIn .82s cubic-bezier(.2,.8,.2,1) both}
+@keyframes oeHeroIn{from{opacity:.35;transform:scale(1.015)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){body{opacity:1}.oe-reveal{opacity:1;transform:none;transition:none}.hero,.hero-visual,.hero-media{animation:none}}
 </style></head><body>
 <div class="loader" id="loader"><div class="cassette"></div></div>
 <header class="top"><div class="wrap"><div class="brand">城市旅行计划</div><nav><a href="#news">资讯</a><a href="#intro">世界观</a><a href="#character">角色</a><a href="#system">玩法</a><a href="#music">音乐</a><a href="#event">活动</a></nav></div></header>
@@ -16,4 +23,4 @@ html[lang="zh-CN"] .hero-title{
 <section class="section" id="system"><div class="wrap"><h2>玩法 / 内容</h2><div class="systems"><article class="system-card"><h3>街区</h3><p>主题展区与地图</p></article><article class="system-card"><h3>舞台</h3><p>舞台与节目</p></article><article class="system-card"><h3>任务</h3><p>互动任务与现场企划</p></article></div></div></section>
 <section class="section" id="music"><div class="wrap"><h2>音乐 / 活动</h2><div class="systems"><article class="system-card"><h3>音乐</h3><p>现场音乐与主题曲</p></article><article class="system-card"><h3>周边</h3><p>活动制品</p></article><article class="system-card"><h3>特别活动</h3><p>特别企划与外部联动</p></article></div></div></section>
 <footer class="footer" id="event"><div class="wrap">微博 · B站 · 小红书 · 抖音 · 联系我们</div></footer>
-<script>addEventListener('load',()=>setTimeout(()=>document.querySelector('#loader').classList.add('hide'),1200));document.querySelectorAll('.character-tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.character-tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on')});</script></body></html>
+<script>addEventListener('load',()=>setTimeout(()=>document.querySelector('#loader').classList.add('hide'),1200));document.querySelectorAll('.character-tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.character-tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on')});</script><script id="onlyevent-motion-layer-js">(()=>{document.body.classList.add('oe-ready');if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const els=[...document.querySelectorAll('section,article,.news-card,.explore-card,.form-card,.artist-row,.event,.content-card,.company,.expo,.product')].filter((x,i)=>i<100);els.forEach(x=>x.classList.add('oe-reveal'));const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('oe-in');io.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -5% 0px'});els.forEach(x=>io.observe(x));})();</script></body></html>
