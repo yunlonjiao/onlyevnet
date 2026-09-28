@@ -5,6 +5,13 @@ html[lang="zh-CN"] h2,
 html[lang="zh-CN"] .hero-title{
   line-height:1.02;
 }
+</style><style id="onlyevent-motion-layer">
+body{opacity:0;transition:opacity .45s ease}body.oe-ready{opacity:1}
+.oe-reveal{opacity:0;transform:translateY(24px);transition:opacity .68s cubic-bezier(.2,.8,.2,1),transform .68s cubic-bezier(.2,.8,.2,1)}
+.oe-reveal.oe-in{opacity:1;transform:none}
+.hero,.hero-visual,.hero-media{animation:oeHeroIn .82s cubic-bezier(.2,.8,.2,1) both}
+@keyframes oeHeroIn{from{opacity:.35;transform:scale(1.015)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){body{opacity:1}.oe-reveal{opacity:1;transform:none;transition:none}.hero,.hero-visual,.hero-media{animation:none}}
 </style></head><body>
 <div class="loader" id="loader"><canvas id="silverCanvas"></canvas><h1>A MAZE<br>OF PLAY</h1><button class="enter" id="enter">ENTER / 2026</button></div>
 <header class="top"><div class="in"><b>PLAY LAB</b><nav><a>奖项</a><a>参与</a><a>活动</a><a>日程</a><a>须知</a><a>票务</a></nav><span class="clock">14:26</span></div></header>
@@ -15,4 +22,4 @@ html[lang="zh-CN"] .hero-title{
 <section class="media-wall"><article class="tile"><small>游戏 / 01</small><h3>互动项目</h3></article><article class="tile"><small>创作者 / 02</small><h3>世界构筑者</h3></article><article class="tile"><small>现场 / 03</small><h3>夜间文化</h3></article></section>
 <footer class="footer"><span>社群 / QQ / 小红书</span><span>信息 / 联系 / 媒体</span></footer>
 <script>(()=>{const l=document.querySelector('#loader'),b=document.querySelector('#enter'),c=document.querySelector('#silverCanvas'),x=c.getContext('2d');function close(){l.classList.add('hide');setTimeout(()=>l.remove(),700)}b.onclick=close;setTimeout(close,2600);function size(){c.width=innerWidth*devicePixelRatio;c.height=innerHeight*devicePixelRatio}size();addEventListener('resize',size);let t=0;function draw(){t+=.012;x.clearRect(0,0,c.width,c.height);for(let i=0;i<28;i++){let px=(Math.sin(t+i*.7)*.45+.5)*c.width,py=(Math.cos(t*1.2+i*.4)*.45+.5)*c.height,r=(50+i%5*22)*devicePixelRatio,g=x.createRadialGradient(px,py,0,px,py,r);g.addColorStop(0,i%2?'#ffffff77':'#11111133');g.addColorStop(1,'transparent');x.fillStyle=g;x.beginPath();x.arc(px,py,r,0,Math.PI*2);x.fill()}requestAnimationFrame(draw)}if(!matchMedia('(prefers-reduced-motion: reduce)').matches)draw()})();</script>
-</body></html>
+<script id="onlyevent-motion-layer-js">(()=>{document.body.classList.add('oe-ready');if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const els=[...document.querySelectorAll('section,article,.news-card,.explore-card,.form-card,.artist,.event,.content-card,.company,.expo')].filter((x,i)=>i<100);els.forEach(x=>x.classList.add('oe-reveal'));const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('oe-in');io.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -5% 0px'});els.forEach(x=>io.observe(x));})();</script></body></html>
