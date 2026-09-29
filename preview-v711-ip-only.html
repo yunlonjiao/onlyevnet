@@ -1,320 +1,36 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>IP ONLY / 作品主题展</title>
-<style>
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-:root{
-  --primary:#ff5f91;
-  --secondary:#59d4ff;
-  --accent:#ffe45c;
-  --ink:#17151b;
-  --paper:#fffaf7;
-  --panel:#ffffff;
-  --nav:#17151b;
-  --navText:#ffffff;
-  --radius:18px;
-  --section:88px;
-  --gap:18px;
-  --shadow:0 24px 70px rgba(42,26,54,.12);
-  --motion:.75s;
-}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,"Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;overflow-x:hidden}
-a{text-decoration:none;color:inherit}
-button{font:inherit}
-.wrap{width:min(1180px,calc(100% - 32px));margin:auto}
-.ey{font-size:11px;font-weight:950;letter-spacing:.16em;text-transform:uppercase}
-.pill{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--ink);border-radius:999px;padding:8px 12px;font-size:12px;font-weight:900;background:#fff}
-.loader{position:fixed;inset:0;z-index:999;background:var(--primary);display:grid;place-items:center;transition:opacity .55s ease,visibility .55s ease}
-.loader.hide{opacity:0;visibility:hidden}
-.loader-mark{position:relative;width:min(78vw,760px);aspect-ratio:1.55;border:4px solid var(--ink);border-radius:28px;background:var(--paper);display:grid;place-items:center;overflow:hidden;box-shadow:18px 18px 0 var(--ink)}
-.loader-mark:before,.loader-mark:after{content:"";position:absolute;border-radius:50%}
-.loader-mark:before{width:40%;aspect-ratio:1;background:var(--secondary);left:-9%;top:-12%}
-.loader-mark:after{width:33%;aspect-ratio:1;background:var(--accent);right:-7%;bottom:-14%}
-.loader-title{position:relative;z-index:2;text-align:center}
-.loader-title strong{display:block;font-size:clamp(48px,8vw,112px);line-height:.82;letter-spacing:-.06em}
-.loader-title span{display:block;margin-top:18px;font-size:13px;font-weight:900;letter-spacing:.18em}
-.skip{position:absolute;right:22px;bottom:20px;border:2px solid var(--ink);background:#fff;padding:10px 14px;font-weight:900;border-radius:999px;cursor:pointer}
-
-.topbar{height:34px;background:var(--nav);color:var(--navText);font-size:11px}
-.topbar .wrap{height:100%;display:flex;align-items:center;justify-content:space-between}
-.topbar .social{display:flex;gap:16px}
-.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid #eadfe7}
-.nav .wrap{height:80px;display:flex;align-items:center;gap:26px}
-.brand{display:flex;align-items:center;gap:12px;font-weight:950}
-.brand-badge{width:46px;height:46px;background:var(--primary);border:2px solid var(--ink);border-radius:14px;display:grid;place-items:center;transform:rotate(-4deg);box-shadow:4px 4px 0 var(--ink)}
-.brand-badge span{transform:rotate(4deg)}
-.links{display:flex;gap:20px;flex:1;justify-content:center;font-size:12px;font-weight:900}
-.cta{border:2px solid var(--ink);background:var(--accent);padding:11px 16px;border-radius:999px;font-weight:950;box-shadow:4px 4px 0 var(--ink);transition:transform .2s}
-.cta:hover{transform:translate(-2px,-2px)}
-
-.hero{position:relative;min-height:760px;display:flex;align-items:center;overflow:hidden}
-.hero:before{content:"";position:absolute;inset:0;background:
- radial-gradient(circle at 72% 28%,color-mix(in srgb,var(--secondary) 72%,transparent) 0 17%,transparent 18%),
- radial-gradient(circle at 85% 68%,color-mix(in srgb,var(--accent) 76%,transparent) 0 12%,transparent 13%),
- linear-gradient(135deg,var(--paper),#fff 60%)}
-.hero-grid{position:relative;display:grid;grid-template-columns:1fr 1.05fr;gap:28px;align-items:center}
-.hero-copy{padding:80px 0}
-.hero-copy h1{font-size:clamp(64px,8.6vw,128px);line-height:.82;letter-spacing:-.065em;margin:12px 0 22px}
-.hero-copy h1 em{font-style:normal;color:var(--primary);text-shadow:4px 4px 0 var(--ink)}
-.hero-copy p{max-width:560px;font-size:17px;line-height:1.65}
-.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
-.hero-art{position:relative;min-height:620px}
-.kv-frame{position:absolute;inset:30px 0 20px 54px;border:3px solid var(--ink);border-radius:32px;background:
- linear-gradient(180deg,transparent,rgba(0,0,0,.28)),
- url("https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=84&w=1600") center/cover;
- box-shadow:20px 20px 0 var(--ink);overflow:hidden}
-.kv-frame:after{content:"ONLY EVENT";position:absolute;left:18px;bottom:18px;background:#fff;color:#111;border:2px solid #111;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:950}
-.float-sticker{position:absolute;border:3px solid var(--ink);border-radius:18px;background:#fff;box-shadow:7px 7px 0 var(--ink);font-weight:950;z-index:4;animation:float 4.4s ease-in-out infinite}
-.st1{right:-12px;top:50px;padding:18px;background:var(--accent);transform:rotate(7deg)}
-.st2{left:8px;bottom:80px;padding:15px 18px;background:var(--secondary);transform:rotate(-7deg);animation-delay:-1.5s}
-.st3{right:18px;bottom:44px;padding:12px 16px;background:var(--primary);color:#fff;transform:rotate(4deg);animation-delay:-2.7s}
-@keyframes float{50%{translate:0 -10px;rotate:2deg}}
-
-.character-tabs{border-block:2px solid var(--ink);background:#fff;overflow:hidden}
-.tabs-track{display:flex;gap:10px;padding:12px max(16px,calc((100vw - 1180px)/2));overflow:auto;scrollbar-width:none}
-.char{flex:0 0 auto;border:2px solid var(--ink);border-radius:999px;background:var(--panel);padding:10px 14px;font-weight:900;cursor:pointer;transition:.22s}
-.char.active{background:var(--primary);color:#fff;transform:translateY(-2px);box-shadow:3px 3px 0 var(--ink)}
-
-.quick{padding:44px 0 10px}
-.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap)}
-.ticket{position:relative;min-height:156px;border:2px solid var(--ink);border-radius:var(--radius);background:#fff;padding:18px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:6px 6px 0 color-mix(in srgb,var(--ink) 18%,transparent);transition:.2s}
-.ticket:hover{transform:translateY(-6px) rotate(-.5deg)}
-.ticket:after{content:"";position:absolute;left:16px;right:16px;bottom:42px;border-top:2px dashed #c7bec5}
-.ticket b{font-size:22px}
-.ticket span:last-child{font-size:12px;font-weight:900}
-.t1{background:#fff2f6}.t2{background:#eefbff}.t3{background:#fffbe8}.t4{background:#f4f0ff}
-
-.section{padding:var(--section) 0}
-.section-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:26px}
-.section-head h2{font-size:clamp(44px,6vw,78px);line-height:.9;margin:0;letter-spacing:-.05em}
-.section-no{font-size:12px;font-weight:950;border:2px solid var(--ink);border-radius:999px;padding:8px 12px;background:#fff}
-
-.highlights{display:grid;grid-template-columns:1.05fr .95fr;gap:var(--gap)}
-.feature{position:relative;min-height:460px;border-radius:calc(var(--radius) + 6px);overflow:hidden;border:2px solid var(--ink);background:var(--im) center/cover}
-.feature:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(0,0,0,.78))}
-.feature-copy{position:absolute;left:22px;right:22px;bottom:22px;z-index:2;color:#fff}
-.feature-copy h3{font-size:38px;margin:4px 0 0}
-.feature.small{min-height:222px}
-.stack{display:grid;gap:var(--gap)}
-
-.booth-area{background:#fff;border-block:2px solid var(--ink)}
-.booth-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:30px}
-.map-card{min-height:440px;border:2px solid var(--ink);border-radius:var(--radius);background:
- linear-gradient(#0000,#0000),
- linear-gradient(90deg,#e9edf2 1px,transparent 1px),
- linear-gradient(#e9edf2 1px,transparent 1px);
- background-size:auto,38px 38px,38px 38px;position:relative;overflow:hidden}
-.map-card:before{content:"A01";position:absolute;left:20%;top:25%;background:var(--primary);color:#fff;border:2px solid var(--ink);border-radius:10px;padding:10px 12px;font-weight:950;box-shadow:4px 4px 0 var(--ink)}
-.map-card:after{content:"B12";position:absolute;right:22%;bottom:28%;background:var(--secondary);border:2px solid var(--ink);border-radius:10px;padding:10px 12px;font-weight:950;box-shadow:4px 4px 0 var(--ink)}
-.booth-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.booth{border:2px solid var(--ink);border-radius:14px;background:#fff;padding:16px}
-.booth small{color:#756b73}
-.booth b{display:block;font-size:18px;margin:6px 0}
-
-.timeline{display:grid;gap:10px}
-.event{display:grid;grid-template-columns:120px 1fr 160px auto;gap:18px;align-items:center;padding:18px 0;border-top:2px solid var(--ink)}
-.event:last-child{border-bottom:2px solid var(--ink)}
-.event b{font-size:20px}
-
-.news{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
-.news-card{border:2px solid var(--ink);border-radius:var(--radius);background:#fff;overflow:hidden}
-.news-img{height:210px;background:var(--im) center/cover}
-.news-body{padding:16px}
-.news-body h3{font-size:20px;margin:6px 0 0}
-
-.sponsor-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
-.sponsor-grid div{height:84px;border:1px solid #d9d0d6;border-radius:12px;background:#fff}
-
-.footer{margin-top:var(--section);padding:56px 0 34px;background:var(--nav);color:var(--navText)}
-.footer-grid{display:grid;grid-template-columns:1.3fr repeat(3,1fr);gap:30px}
-.footer h2{font-size:42px;margin:0 0 12px}
-.footer p,.footer a{color:#cfc7ce;font-size:12px;line-height:1.9}
-
-.reveal{opacity:0;transform:translateY(24px);transition:opacity var(--motion) cubic-bezier(.2,.8,.2,1),transform var(--motion) cubic-bezier(.2,.8,.2,1)}
-.reveal.in{opacity:1;transform:none}
-
-@media(max-width:920px){
-  .links{display:none}
-  .hero{min-height:700px}
-  .hero-grid{grid-template-columns:1fr}
-  .hero-copy{padding:58px 0 0}
-  .hero-art{min-height:500px}
-  .quick-grid{grid-template-columns:1fr 1fr}
-  .highlights,.booth-grid{grid-template-columns:1fr}
-  .sponsor-grid{grid-template-columns:repeat(3,1fr)}
-  .footer-grid{grid-template-columns:1fr 1fr}
-}
-@media(max-width:560px){
-  :root{--section:64px}
-  .hero-copy h1{font-size:58px}
-  .hero-art{min-height:430px}
-  .kv-frame{inset:20px 6px 20px 18px}
-  .quick-grid,.news,.booth-list{grid-template-columns:1fr}
-  .event{grid-template-columns:90px 1fr}
-  .event span:nth-child(3),.event span:last-child{display:none}
-  .sponsor-grid{grid-template-columns:1fr 1fr}
-  .footer-grid{grid-template-columns:1fr 1fr}
-}
-@media(prefers-reduced-motion:reduce){
-  *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-  .reveal{opacity:1;transform:none}
-}
-</style>
-</head>
-<body>
-<div class="loader" id="loader">
-  <div class="loader-mark">
-    <div class="loader-title"><strong>STAR BEAT<br>ONLY</strong><span>2026 / HANGZHOU</span></div>
-  </div>
-  <button class="skip" id="skip">进入活动官网 →</button>
-</div>
-
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IP ONLY / 作品主题展</title><style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}:root{--primary:#ff5f91;--secondary:#59d4ff;--accent:#ffe45c;--ink:#17151b;--paper:#fffaf7;--panel:#fff;--radius:18px;--gap:18px;--section:82px}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,"Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;overflow-x:hidden}a{text-decoration:none;color:inherit}.wrap{width:min(1180px,calc(100% - 32px));margin:auto}.ey{font-size:11px;font-weight:950;letter-spacing:.17em;text-transform:uppercase}.pill{display:inline-flex;border:2px solid var(--ink);background:#fff;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:900}.btn{display:inline-flex;align-items:center;justify-content:center;border:2px solid var(--ink);border-radius:999px;padding:11px 16px;background:var(--accent);font-weight:950;box-shadow:4px 4px 0 var(--ink);transition:.2s}.btn:hover{transform:translate(-2px,-2px)}
+.loader{position:fixed;inset:0;z-index:999;background:var(--primary);display:grid;place-items:center;transition:opacity .55s,visibility .55s}.loader.hide{opacity:0;visibility:hidden}.gate{position:relative;width:min(82vw,780px);height:min(52vw,430px);max-height:72vh;display:grid;grid-template-columns:1fr 1fr;filter:drop-shadow(16px 16px 0 var(--ink))}.ticket-half{background:var(--paper);border:4px solid var(--ink);display:grid;place-items:center;overflow:hidden}.ticket-half.left{border-radius:28px 0 0 28px;border-right:2px dashed var(--ink);transform-origin:right center;animation:tearL 1.15s .35s cubic-bezier(.2,.8,.2,1) both}.ticket-half.right{border-radius:0 28px 28px 0;border-left:0;transform-origin:left center;animation:tearR 1.15s .35s cubic-bezier(.2,.8,.2,1) both}.gate strong{font-size:clamp(44px,7vw,92px);line-height:.82;letter-spacing:-.06em;text-align:center}.gate small{display:block;margin-top:14px;letter-spacing:.18em;font-weight:900}.skip{position:absolute;right:20px;bottom:18px;border:2px solid var(--ink);background:#fff;border-radius:999px;padding:9px 13px;font-weight:900}@keyframes tearL{0%,58%{transform:none}100%{transform:translateX(-8vw) rotate(-5deg);opacity:0}}@keyframes tearR{0%,58%{transform:none}100%{transform:translateX(8vw) rotate(5deg);opacity:0}}
+.topbar{height:34px;background:var(--ink);color:#fff;font-size:11px}.topbar .wrap{height:100%;display:flex;align-items:center;justify-content:space-between}.social{display:flex;gap:14px}.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid #eadfe7}.nav .wrap{height:80px;display:flex;align-items:center;gap:22px}.brand{font-weight:950}.brand b{display:inline-grid;place-items:center;width:44px;height:44px;margin-right:9px;border:2px solid var(--ink);border-radius:14px;background:var(--primary);box-shadow:4px 4px 0 var(--ink);transform:rotate(-4deg)}.links{display:flex;gap:18px;flex:1;justify-content:center;font-size:12px;font-weight:900}
+.hero{position:relative;min-height:760px;display:flex;align-items:center;overflow:hidden}.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 82% 27%,color-mix(in srgb,var(--secondary) 75%,transparent) 0 17%,transparent 18%),radial-gradient(circle at 86% 72%,color-mix(in srgb,var(--accent) 80%,transparent) 0 12%,transparent 13%),linear-gradient(135deg,var(--paper),#fff 62%)}.hero-grid{position:relative;display:grid;grid-template-columns:1fr 1.05fr;gap:28px;align-items:center}.hero-copy{padding:70px 0}.hero h1{font-size:clamp(64px,8.8vw,126px);line-height:.82;letter-spacing:-.065em;margin:12px 0 22px}.hero h1 em{font-style:normal;color:var(--primary);text-shadow:4px 4px 0 var(--ink)}.hero p{max-width:560px;font-size:17px;line-height:1.7}.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}.hero-art{position:relative;min-height:610px}.kv{position:absolute;inset:24px 0 18px 52px;border:3px solid var(--ink);border-radius:32px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.26)),url("https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=84&w=1600") center/cover;box-shadow:20px 20px 0 var(--ink);overflow:hidden}.kv:after{content:"主办方上传 KV";position:absolute;left:18px;bottom:18px;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:7px 11px;font-size:11px;font-weight:950}.sticker{position:absolute;z-index:3;border:3px solid var(--ink);border-radius:18px;padding:14px 17px;font-weight:950;box-shadow:7px 7px 0 var(--ink);animation:float 4.5s ease-in-out infinite}.s1{right:-8px;top:48px;background:var(--accent);transform:rotate(7deg)}.s2{left:7px;bottom:78px;background:var(--secondary);transform:rotate(-6deg);animation-delay:-1.8s}.s3{right:14px;bottom:46px;background:var(--primary);color:#fff;transform:rotate(4deg);animation-delay:-2.7s}@keyframes float{50%{translate:0 -9px}}
+.quick{padding:42px 0}.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap)}.quick-card{min-height:150px;border:2px solid var(--ink);border-radius:var(--radius);background:#fff;padding:18px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:6px 6px 0 color-mix(in srgb,var(--primary) 25%,transparent);transition:.2s}.quick-card:hover{transform:translateY(-5px) rotate(-.4deg)}.quick-card b{font-size:21px}.section{padding:var(--section) 0}.section.alt{background:#fff}.head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:24px}.head h2{font-size:clamp(42px,6vw,76px);line-height:.9;letter-spacing:-.05em;margin:0}.section-no{border:2px solid var(--ink);border-radius:999px;background:#fff;padding:8px 12px;font-size:11px;font-weight:950}
+.ticket-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}.ticket{position:relative;border:2px solid var(--ink);border-radius:var(--radius);background:#fff;padding:22px;box-shadow:7px 7px 0 color-mix(in srgb,var(--primary) 22%,transparent)}.ticket:before{content:"";position:absolute;left:16px;right:16px;top:74px;border-top:2px dashed #bfb5bd}.ticket h3{margin:0 0 26px;font-size:22px}.price{font-size:44px;font-weight:950;color:var(--primary);letter-spacing:-.05em}.gift{margin-top:18px;line-height:1.7;white-space:pre-line}.ticket small{display:block;color:#756d75;margin-top:10px}.ticket-actions{display:flex;justify-content:flex-end;margin-top:20px}
+.specials{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}.special{border:2px solid var(--ink);border-radius:var(--radius);padding:20px;background:#fff;min-height:250px;position:relative;overflow:hidden}.special:after{content:"";position:absolute;width:150px;height:150px;border:2px solid var(--ink);border-radius:50%;right:-36px;bottom:-44px;background:var(--tone);opacity:.75}.special h3{font-size:28px;margin:8px 0}.stamp{display:inline-grid;place-items:center;width:64px;height:64px;border:3px solid var(--ink);border-radius:50%;font-size:12px;font-weight:950;transform:rotate(-12deg);background:var(--tone)}.special.seen .stamp{animation:stamp .42s cubic-bezier(.1,.8,.2,1) both}@keyframes stamp{0%{transform:scale(2) rotate(-12deg);opacity:0}100%{transform:scale(1) rotate(-12deg);opacity:1}}
+.booth-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:28px}.map{position:relative;min-height:440px;border:2px solid var(--ink);border-radius:var(--radius);background:linear-gradient(90deg,#e8edf2 1px,transparent 1px),linear-gradient(#e8edf2 1px,transparent 1px),#fff;background-size:38px 38px;overflow:hidden}.pin{position:absolute;border:2px solid var(--ink);border-radius:10px;padding:9px 11px;font-weight:950;background:var(--primary);color:#fff;box-shadow:4px 4px 0 var(--ink);cursor:pointer}.p1{left:18%;top:24%}.p2{left:58%;top:38%;background:var(--secondary);color:var(--ink)}.p3{right:15%;bottom:23%;background:var(--accent);color:var(--ink)}.map-pop{position:absolute;left:18px;right:18px;bottom:18px;border:2px solid var(--ink);border-radius:14px;padding:14px;background:#fff;box-shadow:6px 6px 0 var(--ink)}.booth-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}.booth{border:2px solid var(--ink);border-radius:14px;padding:16px;background:#fff}.booth b{display:block;font-size:18px;margin:5px 0}.booth small{color:#756d75}
+.timeline{display:grid}.event{display:grid;grid-template-columns:110px 1fr 160px auto;gap:16px;align-items:center;padding:18px 0;border-top:2px solid var(--ink)}.event:last-child{border-bottom:2px solid var(--ink)}.event b{font-size:20px}.community{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.community article{border:2px solid var(--ink);border-radius:14px;background:#fff;padding:18px;min-height:190px}.qr{width:94px;height:94px;margin-top:14px;border:2px dashed #aaa;display:grid;place-items:center;font-size:10px;color:#777}.sponsors{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.sponsors div{height:82px;border:1px solid #d8d0d6;background:#fff;border-radius:12px}.footer{background:var(--ink);color:#fff;padding:52px 0 28px}.footer-grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:26px}.footer p{color:#bdb6bd;line-height:1.8;font-size:12px}.reveal{opacity:0;transform:translateY(22px);transition:.65s cubic-bezier(.2,.8,.2,1)}.reveal.in{opacity:1;transform:none}
+@media(max-width:900px){.links{display:none}.hero-grid{grid-template-columns:1fr}.hero-art{min-height:500px}.quick-grid,.ticket-grid,.specials{grid-template-columns:1fr 1fr}.booth-layout{grid-template-columns:1fr}.community{grid-template-columns:1fr 1fr}.sponsors{grid-template-columns:repeat(3,1fr)}.footer-grid{grid-template-columns:1fr 1fr}}@media(max-width:560px){:root{--section:62px}.hero{min-height:680px}.hero h1{font-size:58px}.hero-art{min-height:420px}.kv{inset:16px 6px 16px 18px}.quick-grid,.ticket-grid,.specials,.booth-list,.community{grid-template-columns:1fr}.event{grid-template-columns:86px 1fr}.event span:nth-child(3),.event span:last-child{display:none}.sponsors{grid-template-columns:1fr 1fr}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style></head><body>
+<div class="loader" id="loader"><div class="gate"><div class="ticket-half left"><div><strong>STAR<br>BEAT</strong><small>ADMIT ONE</small></div></div><div class="ticket-half right"><div><strong>ONLY<br>2026</strong><small>11.08 / HANGZHOU</small></div></div></div><button class="skip" id="skip">进入活动官网 →</button></div>
 <div class="topbar"><div class="wrap"><span>2026.11.08 · 杭州</span><div class="social"><span>QQ群</span><span>微信群</span><span>B站</span></div></div></div>
-<header class="nav">
-  <div class="wrap">
-    <a class="brand" href="#top"><span class="brand-badge"><span>SB</span></span><span>STAR BEAT ONLY</span></a>
-    <nav class="links"><a href="#about">活动</a><a href="#booths">摊位</a><a href="#stage">舞台</a><a href="#news">资讯</a><a href="#guide">指南</a></nav>
-    <a class="cta" href="#guide">票务 / 报名</a>
-  </div>
-</header>
-
+<header class="nav"><div class="wrap"><a class="brand" href="#top"><b>SB</b>STAR BEAT ONLY</a><nav class="links"><a href="#highlights">本届亮点</a><a href="#tickets">票务</a><a href="#booths">摊位</a><a href="#stage">日程</a><a href="#community">社群</a></nav><a class="btn" href="https://www.bilibili.com/" target="_blank" rel="noopener">前往购票平台 ↗</a></div></header>
 <main id="top">
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div class="hero-copy reveal">
-      <div class="ey">IP ONLY / FAN EVENT</div>
-      <h1>STAR<br><em>BEAT</em><br>ONLY</h1>
-      <p>围绕单一作品 IP 的粉丝综合活动。社团摊位、舞台节目、COS、嘉宾、痛车、周边和社群企划集中在同一个官网里。</p>
-      <div class="hero-meta"><span class="pill">11.08 SUN</span><span class="pill">杭州</span><span class="pill">首届</span></div>
-    </div>
-    <div class="hero-art reveal">
-      <div class="kv-frame"></div>
-      <div class="float-sticker st1">限定企划 ✦</div>
-      <div class="float-sticker st2">40+ 社团</div>
-      <div class="float-sticker st3">COS OK!</div>
-    </div>
-  </div>
-</section>
-
-<div class="character-tabs">
-  <div class="tabs-track">
-    <button class="char active" data-p="#ff5f91" data-s="#59d4ff">主题 / MAIN</button>
-    <button class="char" data-p="#6f65ff" data-s="#aee6ff">角色 A</button>
-    <button class="char" data-p="#ffb64d" data-s="#ffd9ea">角色 B</button>
-    <button class="char" data-p="#47c889" data-s="#ffe45c">角色 C</button>
-    <button class="char" data-p="#e8578b" data-s="#b8a8ff">角色 D</button>
-  </div>
-</div>
-
-<section class="quick" id="about">
-  <div class="wrap quick-grid">
-    <a class="ticket t1 reveal"><span>01</span><b>摊位与制品</b><span>快速查摊位 →</span></a>
-    <a class="ticket t2 reveal"><span>02</span><b>舞台节目</b><span>查看时间表 →</span></a>
-    <a class="ticket t3 reveal"><span>03</span><b>COS / 自由行</b><span>规则与报名 →</span></a>
-    <a class="ticket t4 reveal"><span>04</span><b>会场地图</b><span>找摊位与设施 →</span></a>
-  </div>
-</section>
-
-<section class="section">
-  <div class="wrap">
-    <div class="section-head"><div><span class="ey">FEATURED</span><h2>本届企划</h2></div><span class="section-no">SECTION 01</span></div>
-    <div class="highlights">
-      <article class="feature reveal" style="--im:url('https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&q=84&w=1600')"><div class="feature-copy"><span class="ey">MAIN STAGE</span><h3>粉丝舞台与特别节目</h3></div></article>
-      <div class="stack">
-        <article class="feature small reveal" style="--im:url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=84&w=1200')"><div class="feature-copy"><span class="ey">COSPLAY</span><h3>角色自由行</h3></div></article>
-        <article class="feature small reveal" style="--im:url('https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=84&w=1200')"><div class="feature-copy"><span class="ey">CREATOR</span><h3>同人社团街区</h3></div></article>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section booth-area" id="booths">
-  <div class="wrap">
-    <div class="section-head"><div><span class="ey">BOOTH / MAP</span><h2>摊位与地图</h2></div><span class="section-no">SECTION 02</span></div>
-    <div class="booth-grid">
-      <div class="map-card reveal"></div>
-      <div>
-        <div class="booth-list">
-          <article class="booth reveal"><small>A01</small><b>星屑工房</b><span>同人本 · 亚克力</span></article>
-          <article class="booth reveal"><small>A02</small><b>薄荷书室</b><span>插画 · 明信片</span></article>
-          <article class="booth reveal"><small>B07</small><b>白昼制品</b><span>徽章 · 色纸</span></article>
-          <article class="booth reveal"><small>B12</small><b>纸月社</b><span>同人志 · 小物</span></article>
-        </div>
-        <a class="cta" style="display:inline-block;margin-top:18px">打开完整场地图 →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="stage">
-  <div class="wrap">
-    <div class="section-head"><div><span class="ey">STAGE</span><h2>当天日程</h2></div><span class="section-no">SECTION 03</span></div>
-    <div class="timeline">
-      <div class="event reveal"><span>11:00</span><b>开场 & 社群合影</b><span>MAIN STAGE</span><span>→</span></div>
-      <div class="event reveal"><span>13:30</span><b>角色主题问答</b><span>TALK</span><span>→</span></div>
-      <div class="event reveal"><span>15:00</span><b>COS 特别舞台</b><span>MAIN STAGE</span><span>→</span></div>
-      <div class="event reveal"><span>17:30</span><b>幸运抽选 & 闭幕</b><span>MAIN STAGE</span><span>→</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="news">
-  <div class="wrap">
-    <div class="section-head"><div><span class="ey">NEWS</span><h2>活动资讯</h2></div><span class="section-no">SECTION 04</span></div>
-    <div class="news">
-      <article class="news-card reveal"><div class="news-img" style="--im:url('https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&q=84&w=900')"></div><div class="news-body"><span class="ey">09.25</span><h3>首批社团名单公开</h3></div></article>
-      <article class="news-card reveal"><div class="news-img" style="--im:url('https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&q=84&w=900')"></div><div class="news-body"><span class="ey">09.18</span><h3>舞台企划与参与方式</h3></div></article>
-      <article class="news-card reveal"><div class="news-img" style="--im:url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=84&w=900')"></div><div class="news-body"><span class="ey">09.12</span><h3>COS 与自由行说明</h3></div></article>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="guide">
-  <div class="wrap">
-    <div class="section-head"><div><span class="ey">SUPPORT</span><h2>赞助支持</h2></div><span class="section-no">SECTION 05</span></div>
-    <div class="sponsor-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-  </div>
-</section>
+<section class="hero"><div class="wrap hero-grid"><div class="hero-copy reveal"><div class="ey">IP ONLY / FAN EVENT</div><h1>STAR<br><em>BEAT</em><br>ONLY</h1><p>围绕单一作品 IP 的粉丝综合活动。主办方负责 KV、活动信息和内容；网站负责把摊位、嘉宾、舞台、地图与特别企划组织成完整官网。</p><div class="meta"><span class="pill">11.08 SUN</span><span class="pill">杭州</span><span class="pill">首届</span></div></div><div class="hero-art reveal"><div class="kv"></div><div class="sticker s1">限定企划 ✦</div><div class="sticker s2">40+ 社团</div><div class="sticker s3">COS OK!</div></div></div></section>
+<section class="quick"><div class="wrap quick-grid"><a class="quick-card reveal" href="#booths"><span>01</span><b>摊位与制品</b><small>快速查摊位 →</small></a><a class="quick-card reveal" href="#stage"><span>02</span><b>舞台日程</b><small>查看节目 →</small></a><a class="quick-card reveal" href="#highlights"><span>03</span><b>COS / 自由行</b><small>参与说明 →</small></a><a class="quick-card reveal" href="#booths"><span>04</span><b>场地图</b><small>找摊位与设施 →</small></a></div></section>
+<section class="section alt" id="tickets"><div class="wrap"><div class="head"><div><span class="ey">TICKETS</span><h2>票种与特典</h2></div><span class="section-no">第三方售票</span></div><div class="ticket-grid"><article class="ticket reveal"><h3>普通票</h3><div class="price">¥68</div><div class="gift"><b>包含 / 特典</b>
+入场资格</div><small>实际购买与退款规则以售票平台为准</small></article><article class="ticket reveal"><h3>特典票</h3><div class="price">¥128</div><div class="gift"><b>包含 / 特典</b>
+入场资格
+限定徽章
+纪念票根</div><small>限量发售</small></article><article class="ticket reveal"><h3>VIP 票</h3><div class="price">¥198</div><div class="gift"><b>包含 / 特典</b>
+优先入场
+限定礼包
+舞台优先区</div><small>赠品内容由主办方填写</small></article></div><div class="ticket-actions"><a class="btn" href="https://www.bilibili.com/" target="_blank" rel="noopener">前往官方售票平台 ↗</a></div></div></section>
+<section class="section" id="highlights"><div class="wrap"><div class="head"><div><span class="ey">SPECIAL PROJECTS</span><h2>本届特别企划</h2></div><span class="section-no">SECTION 01</span></div><div class="specials"><article class="special reveal" style="--tone:#ffe45c"><span class="stamp">STAMP 01</span><h3>集章挑战</h3><p>在指定摊位完成互动，集齐印章兑换限定纪念物。</p></article><article class="special reveal" style="--tone:#59d4ff"><span class="stamp">STAMP 02</span><h3>应援留言墙</h3><p>现场留下角色应援与周年留言，闭幕前公开展示。</p></article><article class="special reveal" style="--tone:#ff9dbb"><span class="stamp">STAMP 03</span><h3>主题合影</h3><p>指定时段进行 COS / 自由行主题大合影。</p></article></div></div></section>
+<section class="section alt" id="booths"><div class="wrap"><div class="head"><div><span class="ey">BOOTH / MAP</span><h2>摊位与场地图</h2></div><span class="section-no">SECTION 02</span></div><div class="booth-layout"><div class="map reveal"><button class="pin p1" data-name="A01 · 星屑工房" data-info="同人本 · 亚克力">A01</button><button class="pin p2" data-name="A12 · 薄荷书室" data-info="插画 · 明信片">A12</button><button class="pin p3" data-name="B07 · 白昼制品" data-info="徽章 · 色纸">B07</button><div class="map-pop" id="mapPop"><b>点击摊位点位</b><br><span>这里会显示社团与制品摘要。</span></div></div><div><div class="booth-list"><article class="booth"><small>A01</small><b>星屑工房</b><span>同人本 · 亚克力</span></article><article class="booth"><small>A12</small><b>薄荷书室</b><span>插画 · 明信片</span></article><article class="booth"><small>B07</small><b>白昼制品</b><span>徽章 · 色纸</span></article><article class="booth"><small>B12</small><b>纸月社</b><span>同人志 · 小物</span></article></div><a class="btn" style="margin-top:18px" href="#">打开完整场地图 →</a></div></div></div></section>
+<section class="section" id="stage"><div class="wrap"><div class="head"><div><span class="ey">TIME TABLE</span><h2>舞台 / 当天日程</h2></div><span class="section-no">SECTION 03</span></div><div class="timeline"><div class="event reveal"><span>11:00</span><b>开场 & 社群合影</b><span>MAIN STAGE</span><span>→</span></div><div class="event reveal"><span>13:30</span><b>主题问答 / 互动游戏</b><span>TALK</span><span>→</span></div><div class="event reveal"><span>15:00</span><b>COS 特别舞台</b><span>MAIN STAGE</span><span>→</span></div><div class="event reveal"><span>17:30</span><b>幸运抽选 & 闭幕</b><span>MAIN STAGE</span><span>→</span></div></div></div></section>
+<section class="section alt" id="community"><div class="wrap"><div class="head"><div><span class="ey">COMMUNITY</span><h2>社群与活动公告</h2></div><span class="section-no">SECTION 04</span></div><div class="community"><article><b>QQ群</b><p>群号：123456789</p><div class="qr">QQ群二维码</div></article><article><b>微信群</b><p>现场通知与临时公告。</p><div class="qr">微信群二维码</div></article><article><b>B站</b><p>PV、嘉宾公开、节目预告。</p></article><article><b>小红书</b><p>返图、攻略与摊位推荐。</p></article></div></div></section>
+<section class="section"><div class="wrap"><div class="head"><div><span class="ey">SUPPORT</span><h2>赞助支持</h2></div><span class="section-no">SECTION 05</span></div><div class="sponsors"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div></section>
 </main>
-
-<footer class="footer">
-  <div class="wrap footer-grid">
-    <div><h2>STAR BEAT ONLY</h2><p>IP ONLY / 作品主题展模板预览。主办方可替换 KV、Logo、配色、文字与全部内容模块。</p></div>
-    <div><b>参与</b><p>摊位<br>COS<br>嘉宾<br>舞台</p></div>
-    <div><b>观展</b><p>票务<br>交通<br>地图<br>入场须知</p></div>
-    <div><b>社群</b><p>QQ群<br>微信群<br>B站<br>小红书</p></div>
-  </div>
-</footer>
-
+<footer class="footer"><div class="wrap footer-grid"><div><h2>STAR BEAT ONLY</h2><p>IP ONLY / 作品主题展。购票、报名等交易与数据由第三方平台负责，OnlyEvent 只负责官网展示与跳转。</p></div><div><b>参与</b><p>摊位<br>COS / 自由行<br>舞台</p></div><div><b>观展</b><p>票务<br>地图<br>交通<br>入场须知</p></div><div><b>社群</b><p>QQ群<br>微信群<br>B站<br>小红书</p></div></div></footer>
 <script>
-(()=> {
-  const loader=document.querySelector('#loader');
-  const close=()=>loader.classList.add('hide');
-  document.querySelector('#skip').addEventListener('click',close);
-  setTimeout(close,1800);
-
-  document.querySelectorAll('.char').forEach(btn=>btn.addEventListener('click',()=>{
-    document.querySelectorAll('.char').forEach(x=>x.classList.remove('active'));
-    btn.classList.add('active');
-    document.documentElement.style.setProperty('--primary',btn.dataset.p);
-    document.documentElement.style.setProperty('--secondary',btn.dataset.s);
-  }));
-
-  const els=[...document.querySelectorAll('.reveal')];
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -5% 0px'});
-  els.forEach(el=>io.observe(el));
-
-  document.addEventListener('click',e=>{
-    const a=e.target.closest('a[href^="#"]'); if(!a)return;
-    const id=a.getAttribute('href'); if(!id||id==='#')return;
-    const t=document.querySelector(id); if(!t)return;
-    e.preventDefault(); t.scrollIntoView({behavior:'smooth',block:'start'});
-  });
-})();
-</script>
-</body>
-</html>
+(()=>{const loader=document.querySelector('#loader');const close=()=>loader.classList.add('hide');document.querySelector('#skip').onclick=close;setTimeout(close,1700);const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');e.target.closest('.special')?.classList.add('seen');obs.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(x=>obs.observe(x));document.querySelectorAll('.pin').forEach(p=>p.onclick=()=>{document.querySelector('#mapPop').innerHTML='<b>'+p.dataset.name+'</b><br><span>'+p.dataset.info+'</span>'});document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const h=a.getAttribute('href');if(!h||h==='#')return;const t=document.querySelector(h);if(!t)return;e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})})})();
+</script></body></html>
