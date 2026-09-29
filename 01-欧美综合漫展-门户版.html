@@ -36,4 +36,20 @@ body{opacity:1}.oe-ready{animation:oePageIn .45s ease both}@keyframes oePageIn{f
 <div><h4>观展</h4><a href="#plan">票务信息</a><a href="#plan">会场与交通</a><a href="#plan">入场指南</a><a href="#footer">常见问题</a></div>
 <div><h4>社群</h4><a href="#community">QQ群</a><a href="#community">微信群</a><a href="#community">B站</a><a href="#community">小红书</a></div>
 </div><div class="footer-bottom"><span>© 2027 ONLYEVENT TEMPLATE</span><span>隐私政策 · 使用条款 · 无障碍说明</span></div></div></footer>
-<a class="back-top" href="#top" aria-label="返回顶部">↑</a><script id="onlyevent-motion-layer-js">(()=>{document.body.classList.add('oe-ready');if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const els=[...document.querySelectorAll('section,article,.news-card,.explore-card,.form-card,.artist,.event,.content-card,.company,.expo')].filter((x,i)=>i<100);els.forEach(x=>x.classList.add('oe-reveal'));const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('oe-in');io.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -5% 0px'});els.forEach(x=>io.observe(x));})();</script></body></html>
+<a class="back-top" href="#top" aria-label="返回顶部">↑</a><script id="oe-history-safe-nav">
+(()=> {
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href === '#') return;
+    const target = href === '#top' ? document.documentElement : document.querySelector(href);
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  if (location.hash) {
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+})();
+</script><script id="onlyevent-motion-layer-js">(()=>{document.body.classList.add('oe-ready');if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const els=[...document.querySelectorAll('section,article,.news-card,.explore-card,.form-card,.artist,.event,.content-card,.company,.expo')].filter((x,i)=>i<100);els.forEach(x=>x.classList.add('oe-reveal'));const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('oe-in');io.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -5% 0px'});els.forEach(x=>io.observe(x));})();</script></body></html>
