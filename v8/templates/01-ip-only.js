@@ -17,14 +17,14 @@ export const template01 = {
     heroImage:'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=84&w=1600',
     ticketUrl:'https://www.bilibili.com/',
     tickets:[
-      {id:'t1',name:'普通票',price:'¥68',gift:'入场资格',note:'实际购买与退款规则以售票平台为准'},
-      {id:'t2',name:'特典票',price:'¥128',gift:'入场资格\n限定徽章\n纪念票根',note:'限量发售'},
-      {id:'t3',name:'VIP 票',price:'¥198',gift:'优先入场\n限定礼包\n舞台优先区',note:'赠品内容由主办方填写'}
+      {id:'t1',name:'普通票',price:'¥68',gift:'入场资格',note:'实际购买与退款规则以售票平台为准',image:''},
+      {id:'t2',name:'特典票',price:'¥128',gift:'入场资格\n限定徽章\n纪念票根',note:'限量发售',image:''},
+      {id:'t3',name:'VIP 票',price:'¥198',gift:'优先入场\n限定礼包\n舞台优先区',note:'赠品内容由主办方填写',image:''}
     ],
     highlights:[
-      {id:'h1',title:'集章挑战',text:'在指定摊位完成互动，集齐印章兑换限定纪念物。',tone:'#ffe45c'},
-      {id:'h2',title:'应援留言墙',text:'现场留下角色应援与周年留言，闭幕前公开展示。',tone:'#59d4ff'},
-      {id:'h3',title:'主题合影',text:'指定时段进行 COS / 自由行主题大合影。',tone:'#ff9dbb'}
+      {id:'h1',stamp:'STAMP 01',title:'集章挑战',text:'在指定摊位完成互动，集齐印章兑换限定纪念物。',tone:'#ffe45c'},
+      {id:'h2',stamp:'STAMP 02',title:'应援留言墙',text:'现场留下角色应援与周年留言，闭幕前公开展示。',tone:'#59d4ff'},
+      {id:'h3',stamp:'STAMP 03',title:'主题合影',text:'指定时段进行 COS / 自由行主题大合影。',tone:'#ff9dbb'}
     ],
     booths:[
       {id:'b1',no:'A01',name:'星屑工房',type:'同人本 · 亚克力'},

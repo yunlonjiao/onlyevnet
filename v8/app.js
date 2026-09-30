@@ -26,21 +26,42 @@ window.addEventListener('message',e=>{
 function openFieldInspector(path){
  const value=getDeep(path);
  inspector.innerHTML='<h3>编辑内容</h3><label>内容<textarea id="fieldInput" data-path="'+esc(path)+'">'+esc(value)+'</textarea></label>';
- const input=$('#fieldInput');let started=false;
- input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep(path,e.target.value);send({type:'OE_PATCH_FIELD',path,value:e.target.value})});
+ const input=$('#fieldInput');let started=false;fitTextarea(input);
+ input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep(path,e.target.value);send({type:'OE_PATCH_FIELD',path,value:e.target.value});fitTextarea(e.target)});input.addEventListener('blur',e=>{const cleaned=cleanValue(e.target.value);if(cleaned!==e.target.value){e.target.value=cleaned;setDeep(path,cleaned);send({type:'OE_PATCH_FIELD',path,value:cleaned});fitTextarea(e.target)}});
 }
 const collectionMeta={
  tickets:{title:'票务',fields:[['name','票名'],['price','价格'],['gift','特典'],['note','备注']]},
- highlights:{title:'特别企划',fields:[['title','标题'],['text','说明'],['tone','强调色']]},
+ highlights:{title:'特别企划',fields:[['stamp','印章文字'],['title','标题'],['text','说明'],['tone','强调色']]},
  schedule:{title:'舞台日程',fields:[['time','时间'],['title','标题'],['stage','区域']]}
 };
 function uid(prefix){return prefix+Math.random().toString(36).slice(2,8)}
+function fitTextarea(el){if(!el)return;el.style.height='auto';el.style.height=Math.max(36,el.scrollHeight)+'px'}
+function cleanValue(v){return String(v??'').split('\n').map(x=>x.trimEnd()).join('\n').replace(/^\s*\n+/,'').replace(/\n+\s*$/,'').trim()}
 function openItemInspector(collection,index){
  const meta=collectionMeta[collection],item=state[collection]?.[index];if(!meta||!item)return;
  const count=state[collection].length;
- inspector.innerHTML='<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(key==='text'||key==='gift'||key==='note'?'<textarea data-key="'+key+'">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]||'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div><div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>';
- inspector.querySelectorAll('[data-key]').forEach(input=>{let started=false;input.addEventListener('input',e=>{if(!started){checkpoint();started=true}const key=e.target.dataset.key;state[collection][index][key]=e.target.value;save();send({type:'OE_PATCH_FIELD',path:collection+'.'+index+'.'+key,value:e.target.value})})});
+ const media=collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media="replace">选择图片</button>'+(item.image?'<button data-media="remove" class="ghost">移除</button>':'')+'</div></div></div>':'';
+ inspector.innerHTML='<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(key==='text'||key==='gift'||key==='note'?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]||'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>';
+ inspector.querySelectorAll('textarea').forEach(fitTextarea);
+ inspector.querySelectorAll('[data-key]').forEach(input=>{
+   let started=false;
+   input.addEventListener('input',e=>{
+     if(!started){checkpoint();started=true}
+     const key=e.target.dataset.key;state[collection][index][key]=e.target.value;save();send({type:'OE_PATCH_FIELD',path:collection+'.'+index+'.'+key,value:e.target.value});
+     if(e.target.tagName==='TEXTAREA')fitTextarea(e.target);
+   });
+   input.addEventListener('blur',e=>{
+     if(e.target.type==='color')return;
+     const key=e.target.dataset.key,cleaned=cleanValue(e.target.value);
+     if(cleaned!==e.target.value){e.target.value=cleaned;state[collection][index][key]=cleaned;save();send({type:'OE_PATCH_FIELD',path:collection+'.'+index+'.'+key,value:cleaned});if(e.target.tagName==='TEXTAREA')fitTextarea(e.target)}
+   });
+ });
  inspector.querySelectorAll('[data-op]').forEach(btn=>btn.addEventListener('click',()=>mutateItem(collection,index,btn.dataset.op)));
+ inspector.querySelectorAll('[data-media]').forEach(btn=>btn.addEventListener('click',()=>{
+   const path='tickets.'+index+'.image';
+   if(btn.dataset.media==='replace'){$('#imageInput').dataset.path=path;$('#imageInput').dataset.returnCollection='tickets';$('#imageInput').dataset.returnIndex=String(index);$('#imageInput').click()}
+   if(btn.dataset.media==='remove'){checkpoint();state.tickets[index].image='';save();send({type:'OE_PATCH_FIELD',path,value:''});openItemInspector('tickets',index)}
+ }));
 }
 function mutateItem(collection,index,op){
  const arr=state[collection];if(!Array.isArray(arr))return;checkpoint();
@@ -48,7 +69,7 @@ function mutateItem(collection,index,op){
  if(op==='down'&&index<arr.length-1){[arr[index+1],arr[index]]=[arr[index],arr[index+1]];index++}
  if(op==='delete'&&arr.length>1){arr.splice(index,1);index=Math.max(0,index-1)}
  if(op==='add'){
-   const fresh=collection==='tickets'?{id:uid('t'),name:'新票种',price:'¥0',gift:'',note:''}:collection==='highlights'?{id:uid('h'),title:'新企划',text:'',tone:'#ffe45c'}:{id:uid('s'),time:'12:00',title:'新日程',stage:'MAIN STAGE'};
+   const fresh=collection==='tickets'?{id:uid('t'),name:'新票种',price:'¥0',gift:'',note:'',image:''}:collection==='highlights'?{id:uid('h'),stamp:'STAMP '+String(arr.length+1).padStart(2,'0'),title:'新企划',text:'',tone:'#ffe45c'}:{id:uid('s'),time:'12:00',title:'新日程',stage:'MAIN STAGE'};
    arr.splice(index+1,0,fresh);index++;
  }
  save();send({type:'OE_REPLACE_STATE',state});openItemInspector(collection,index);
@@ -59,7 +80,7 @@ function openImageInspector(path){
 }
 $('#imageInput').addEventListener('change',e=>{
  const file=e.target.files?.[0],path=e.target.dataset.path;e.target.value='';if(!file||!path)return;
- checkpoint();const r=new FileReader();r.onload=()=>{setDeep(path,r.result);send({type:'OE_PATCH_FIELD',path,value:r.result});toast('图片已替换')};r.readAsDataURL(file);
+ checkpoint();const r=new FileReader();r.onload=()=>{setDeep(path,r.result);send({type:'OE_PATCH_FIELD',path,value:r.result});toast('图片已替换');const c=e.target.dataset.returnCollection,i=Number(e.target.dataset.returnIndex);delete e.target.dataset.returnCollection;delete e.target.dataset.returnIndex;if(c==='tickets'&&Number.isInteger(i))openItemInspector('tickets',i)};r.readAsDataURL(file);
 });
 $('#deviceBtn').onclick=()=>{canvas.classList.toggle('mobile');$('#deviceBtn').textContent=canvas.classList.contains('mobile')?'桌面':'手机'};
 $('#previewBtn').onclick=()=>{preview=!preview;$('#previewBtn').textContent=preview?'继续编辑':'预览';send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});inspector.style.visibility=preview?'hidden':'visible';toast(preview?'现在看到的是发布效果':'已返回编辑')};
