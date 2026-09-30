@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OnlyEvent Studio v8</title>
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="/v8/styles.css?v=8.0.0-alpha2">
 </head>
 <body>
   <header class="studio-topbar">
-    <div class="brand">OnlyEvent Studio <small>v8 alpha</small></div>
+    <div class="brand">OnlyEvent Studio <small>v8 · alpha2</small></div>
     <div class="top-actions">
       <button id="deviceBtn" type="button">手机</button>
       <button id="previewBtn" type="button">预览</button>
@@ -37,7 +37,7 @@
     </aside>
 
     <section class="canvas-wrap">
-      <div class="canvas-toolbar"><span id="saveState">已保存</span><span>点击页面内容直接编辑</span></div>
+      <div class="canvas-toolbar"><span class="status-dot"></span><span id="saveState">已保存</span><span class="canvas-hint">点击页面内容直接编辑 · 不会重载页面</span></div>
       <div class="canvas" id="canvas"></div>
     </section>
 
@@ -51,6 +51,6 @@
 
   <input id="imageInput" type="file" accept="image/*" hidden>
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="/v8/app.js?v=8.0.0-alpha2"></script>
 </body>
 </html>
