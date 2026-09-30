@@ -534,3 +534,21 @@ button{color:inherit}
 .module-switches input:checked:after{translate:11px 0}
 .page-nav button.active{background:#ece8ff;color:#5e48ca}
 .page-nav button[hidden]{display:none}
+
+/* image cropper */
+.image-crop-dialog{width:min(940px,calc(100vw - 32px));max-width:none;padding:0;border:0;border-radius:20px;background:#fff;box-shadow:0 28px 80px rgba(18,18,24,.28)}
+.image-crop-dialog::backdrop{background:rgba(16,16,22,.72);backdrop-filter:blur(7px)}
+.crop-shell{display:grid;grid-template-rows:auto minmax(360px,68vh) auto;min-height:560px}
+.crop-head,.crop-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px}
+.crop-head{border-bottom:1px solid #ececf1}.crop-foot{border-top:1px solid #ececf1}
+.crop-head>div{display:grid;gap:2px}.crop-head b{font-size:13px}.crop-head span,.crop-tools span{font-size:9px;color:#92929c;font-weight:750}
+.crop-head button{width:32px;height:32px;border:1px solid #dedee5;background:#fff;border-radius:9px;font-size:17px;cursor:pointer}
+.crop-stage{position:relative;min-height:360px;background:#17171c;overflow:hidden}
+.crop-stage>img{display:block;max-width:100%;opacity:0;pointer-events:none}
+.crop-stage cropper-canvas{width:100%;height:100%}
+.crop-stage.loading:after{content:"加载裁剪器…";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font:700 11px system-ui;background:#17171c}
+.crop-tools,.crop-actions{display:flex;align-items:center;gap:7px}
+.crop-foot button{border:1px solid #dedee5;background:#fff;border-radius:10px;padding:9px 12px;font-size:10px;font-weight:800;cursor:pointer}
+.crop-foot button.primary{background:#18181d;color:#fff;border-color:#18181d}
+.crop-foot button:disabled{opacity:.45;cursor:wait}
+@media(max-width:700px){.image-crop-dialog{width:calc(100vw - 16px)}.crop-shell{grid-template-rows:auto minmax(320px,62vh) auto}.crop-foot{align-items:stretch;flex-direction:column}.crop-tools,.crop-actions{width:100%}.crop-actions button{flex:1}}

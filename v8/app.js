@@ -149,13 +149,82 @@ function mutateItem(collection,index,op){
  }
  save();send({type:'OE_REPLACE_STATE',state});openItemInspector(collection,index);
 }
-function openImageInspector(path){
- inspector.innerHTML='<h3>图片</h3><p>当前：'+esc(path)+'</p><div class="row"><button id="replaceImage" type="button">替换图片</button></div>';
- $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()};
+function imageSlotConfig(path){
+ if(path==='heroImage')return {label:'主视觉 KV',ratio:1,ratioLabel:'KV · 1:1',width:1400,height:1400};
+ if(/^tickets\.\d+\.image$/.test(path))return {label:'票务赠品图',ratio:1,ratioLabel:'赠品图 · 1:1',width:900,height:900};
+ return {label:'图片',ratio:1,ratioLabel:'1:1',width:1200,height:1200};
 }
+function openImageInspector(path){
+ const current=getDeep(path);
+ inspector.innerHTML='<h3>图片</h3><p>当前：'+esc(path)+'</p><div class="row"><button id="replaceImage" type="button">替换图片</button>'+(current?'<button id="cropCurrentImage" type="button">裁剪当前图片</button>':'')+'</div>';
+ $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()};
+ const cropBtn=$('#cropCurrentImage');if(cropBtn)cropBtn.onclick=()=>openImageCropper(current,path);
+}
+let activeCropper=null,cropContext=null,cropperModulePromise=null;
+function getCropperModule(){
+ if(!cropperModulePromise)cropperModulePromise=import('https://cdn.jsdelivr.net/npm/cropperjs@2.2.0/+esm');
+ return cropperModulePromise;
+}
+async function openImageCropper(src,path,returnCollection='',returnIndex=''){
+ const dlg=$('#imageCropDialog'),stage=$('#cropStage'),img=$('#cropImage'),cfg=imageSlotConfig(path);
+ cropContext={path,returnCollection,returnIndex,cfg,src};
+ $('#cropSlotLabel').textContent=cfg.label;
+ $('#cropRatioLabel').textContent=cfg.ratioLabel;
+ img.src=src;
+ dlg.showModal();
+ stage.classList.add('loading');
+ try{
+   const mod=await getCropperModule(),Cropper=mod.default||mod.Cropper;
+   if(activeCropper?.destroy)activeCropper.destroy();
+   stage.querySelectorAll('cropper-canvas').forEach(x=>x.remove());
+   const template='<cropper-canvas background><cropper-image rotatable scalable skewable translatable></cropper-image><cropper-shade hidden></cropper-shade><cropper-handle action="move" plain></cropper-handle><cropper-selection initial-coverage="0.88" aspect-ratio="'+cfg.ratio+'" movable resizable zoomable outlined><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair><cropper-handle action="move" theme-color="rgba(255,255,255,.35)"></cropper-handle><cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle></cropper-selection></cropper-canvas>';
+   activeCropper=new Cropper(img,{container:stage,template});
+ }catch(err){
+   console.error('[OnlyEvent cropper]',err);
+   toast('裁剪器加载失败，可稍后重试');
+   dlg.close();
+ }finally{stage.classList.remove('loading')}
+}
+function closeImageCropper(){
+ if(activeCropper?.destroy)activeCropper.destroy();
+ activeCropper=null;cropContext=null;
+ $('#imageCropDialog').close();
+}
+async function applyImageCrop(){
+ if(!activeCropper||!cropContext)return;
+ const selection=activeCropper.getCropperSelection?.();
+ if(!selection){toast('未找到裁剪区域');return}
+ $('#cropApply').disabled=true;
+ try{
+   const canvas=await selection.$toCanvas({width:cropContext.cfg.width,height:cropContext.cfg.height});
+   const data=canvas.toDataURL('image/webp',.9);
+   checkpoint();
+   setDeep(cropContext.path,data);
+   send({type:'OE_PATCH_FIELD',path:cropContext.path,value:data});
+   toast('图片已裁剪');
+   const c=cropContext.returnCollection,i=Number(cropContext.returnIndex);
+   closeImageCropper();
+   if(c==='tickets'&&Number.isInteger(i))openItemInspector('tickets',i);
+ }catch(err){
+   console.error('[OnlyEvent crop apply]',err);
+   toast('裁剪失败，请重试');
+ }finally{const b=$('#cropApply');if(b)b.disabled=false}
+}
+$('#cropApply').onclick=applyImageCrop;
+$('#cropCancel').onclick=closeImageCropper;
+$('#cropClose').onclick=closeImageCropper;
+$('#imageCropDialog').addEventListener('cancel',e=>{e.preventDefault();closeImageCropper()});
+$('#cropReset').onclick=()=>activeCropper?.getCropperSelection?.()?.$reset?.();
+$('#cropRotateLeft').onclick=()=>activeCropper?.getCropperImage?.()?.$rotate?.('-90deg');
+
 $('#imageInput').addEventListener('change',e=>{
- const file=e.target.files?.[0],path=e.target.dataset.path;e.target.value='';if(!file||!path)return;
- checkpoint();const r=new FileReader();r.onload=()=>{setDeep(path,r.result);send({type:'OE_PATCH_FIELD',path,value:r.result});toast('图片已替换');const c=e.target.dataset.returnCollection,i=Number(e.target.dataset.returnIndex);delete e.target.dataset.returnCollection;delete e.target.dataset.returnIndex;if(c==='tickets'&&Number.isInteger(i))openItemInspector('tickets',i)};r.readAsDataURL(file);
+ const file=e.target.files?.[0],path=e.target.dataset.path;
+ const returnCollection=e.target.dataset.returnCollection||'',returnIndex=e.target.dataset.returnIndex||'';
+ e.target.value='';delete e.target.dataset.returnCollection;delete e.target.dataset.returnIndex;
+ if(!file||!path)return;
+ const r=new FileReader();
+ r.onload=()=>openImageCropper(r.result,path,returnCollection,returnIndex);
+ r.readAsDataURL(file);
 });
 $('#deviceBtn').onclick=()=>{canvas.classList.toggle('mobile');$('#deviceBtn').textContent=canvas.classList.contains('mobile')?'桌面':'手机'};
 $('#previewBtn').onclick=()=>{preview=!preview;$('#previewBtn').textContent=preview?'继续编辑':'预览';send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});inspector.style.visibility=preview?'hidden':'visible';toast(preview?'现在看到的是发布效果':'已返回编辑')};
