@@ -39,18 +39,18 @@
 .hero-copy .ey{display:inline-block;animation:heroEy .7s .18s cubic-bezier(.2,.8,.2,1) both}.hero-copy h1{animation:heroTitle .9s .28s cubic-bezier(.16,.84,.2,1) both}.hero-copy p,.hero-copy .meta{animation:heroText .8s .44s cubic-bezier(.2,.8,.2,1) both}.kv{animation:heroKv 1s .22s cubic-bezier(.16,.84,.2,1) both}.quick-card,.ticket,.special,.booth,.event{will-change:transform}.quick-card:hover,.ticket:hover,.special:hover,.booth:hover{transform:translate(-3px,-5px) rotate(-.35deg)}.event:hover{transform:translateX(7px);background:color-mix(in srgb,var(--accent) 20%,transparent)}.mobile-dock a{transition:.18s}.mobile-dock a:active{transform:translateY(2px);background:var(--accent)}.footer:before{content:"STAFF / CREDIT";display:block;width:min(1180px,calc(100% - 32px));margin:0 auto 24px;font-size:11px;font-weight:950;letter-spacing:.18em;color:#8f8790}@keyframes heroEy{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@keyframes heroTitle{from{opacity:0;transform:translateY(28px) scale(.98)}to{opacity:1;transform:none}}@keyframes heroText{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}@keyframes heroKv{from{opacity:0;transform:translateX(34px) rotate(1deg)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.hero-copy .ey,.hero-copy h1,.hero-copy p,.hero-copy .meta,.kv{animation:none!important}} 
 /* v8 direct-edit hero */
 .nav .wrap{height:72px}.brand{font-size:16px;letter-spacing:.02em}.hero{min-height:720px}.hero-copy{padding-top:58px}
-.sticker,.ribbon{touch-action:none}.sticker{display:flex;align-items:center;gap:8px;user-select:none}.editable-copy,.ribbon-edit{outline:none;user-select:text;cursor:text}.editable-copy:focus,.ribbon-edit:focus{box-shadow:0 0 0 3px rgba(255,255,255,.92),0 0 0 5px var(--ink);border-radius:6px}
-.drag-handle,.ribbon-drag-handle{appearance:none;border:1.5px solid var(--ink);background:#fff;color:var(--ink);font:900 11px/1 system-ui;cursor:grab;box-shadow:2px 2px 0 var(--ink);touch-action:none}.drag-handle{border-radius:7px;padding:5px 6px}.drag-handle:active,.ribbon-drag-handle:active{cursor:grabbing}
-.ribbon{position:relative;z-index:6;transition:box-shadow .18s}.ribbon:has(.ribbon-edit:focus){box-shadow:0 0 0 4px rgba(255,255,255,.9),0 0 0 6px var(--ink)}
-.ribbon-drag-handle{position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:5;border-radius:999px;padding:7px 10px;background:#fff8cf}
-.ribbon-track{padding-right:104px}.ribbon-edit{min-width:1em}
-@media(max-width:560px){.nav .wrap{height:64px}.brand{font-size:13px}.hero{min-height:640px}.ribbon-drag-handle{right:6px;padding:6px 8px;font-size:10px}}
+.sticker{display:flex;align-items:center;gap:8px}.editable-copy,.ribbon-edit{outline:none}
+
+.ribbon{position:relative;z-index:6;transition:box-shadow .18s}
+
+.ribbon-edit{min-width:1em}
+@media(max-width:560px){.nav .wrap{height:64px}.brand{font-size:13px}.hero{min-height:640px}}
 </style></head><body>
 <div class="loader" id="loader"><div class="gate"><div class="ticket-half left"><div><strong>STAR<br>BEAT</strong><small>ADMIT ONE</small></div></div><div class="ticket-half right"><div><strong>ONLY<br>2026</strong><small>11.08 / HANGZHOU</small></div></div></div><button class="skip" id="skip">进入活动官网 →</button></div>
 <header class="nav"><div class="wrap"><a class="brand" href="#top">STARDUST ONLY 2026</a><nav class="links"><a href="#highlights">本届亮点</a><a href="#tickets">票务</a><a href="#booths">摊位</a><a href="#stage">日程</a><a href="#community">社群</a></nav><a class="btn" href="https://www.bilibili.com/" target="_blank" rel="noopener">前往购票平台 ↗</a></div></header>
 <main id="top">
-<section class="hero"><div class="wrap hero-grid"><div class="hero-copy reveal"><h1>STAR<br><em>BEAT</em><br>ONLY</h1><p>围绕单一作品 IP 的粉丝综合活动。主办方负责 KV、活动信息和内容；网站负责把摊位、嘉宾、舞台、地图与特别企划组织成完整官网。</p><div class="meta"><span class="pill">11.08 SUN</span><span class="pill">杭州</span><span class="pill">首届</span></div></div><div class="hero-art reveal"><div class="kv"></div><div class="sticker s1" data-edit-id="sticker1"><button class="drag-handle" aria-label="拖动贴纸">⋮⋮</button><span class="editable-copy" contenteditable="true" spellcheck="false">限定企划 ✦</span></div><div class="sticker s2" data-edit-id="sticker2"><button class="drag-handle" aria-label="拖动贴纸">⋮⋮</button><span class="editable-copy" contenteditable="true" spellcheck="false">40+ 社团</span></div><div class="sticker s3" data-edit-id="sticker3"><button class="drag-handle" aria-label="拖动贴纸">⋮⋮</button><span class="editable-copy" contenteditable="true" spellcheck="false">COS OK!</span></div></div></div></section>
-<div class="ribbon" data-edit-id="ribbon"><button class="ribbon-drag-handle" aria-label="拖动黄色信息条">⋮⋮ 拖动</button><div class="ribbon-track"><span class="ribbon-edit" data-ribbon-index="0" contenteditable="true" spellcheck="false">摊位公开中</span><span class="ribbon-edit" data-ribbon-index="1" contenteditable="true" spellcheck="false">特典票限量</span><span class="ribbon-edit" data-ribbon-index="2" contenteditable="true" spellcheck="false">COS 自由行开放</span><span class="ribbon-edit" data-ribbon-index="3" contenteditable="true" spellcheck="false">舞台企划更新</span><span data-ribbon-mirror="0">摊位公开中</span><span data-ribbon-mirror="1">特典票限量</span><span data-ribbon-mirror="2">COS 自由行开放</span><span data-ribbon-mirror="3">舞台企划更新</span></div></div>
+<section class="hero"><div class="wrap hero-grid"><div class="hero-copy reveal"><h1>STAR<br><em>BEAT</em><br>ONLY</h1><p>围绕单一作品 IP 的粉丝综合活动。主办方负责 KV、活动信息和内容；网站负责把摊位、嘉宾、舞台、地图与特别企划组织成完整官网。</p><div class="meta"><span class="pill">11.08 SUN</span><span class="pill">杭州</span><span class="pill">首届</span></div></div><div class="hero-art reveal"><div class="kv"></div><div class="sticker s1" data-edit-id="sticker1"><span class="editable-copy preview-copy" contenteditable="false" spellcheck="false">限定企划 ✦</span></div><div class="sticker s2" data-edit-id="sticker2"><span class="editable-copy preview-copy" contenteditable="false" spellcheck="false">40+ 社团</span></div><div class="sticker s3" data-edit-id="sticker3"><span class="editable-copy preview-copy" contenteditable="false" spellcheck="false">COS OK!</span></div></div></div></section>
+<div class="ribbon" data-edit-id="ribbon"><div class="ribbon-track"><span class="ribbon-edit preview-copy" data-ribbon-index="0" contenteditable="false" spellcheck="false">摊位公开中</span><span class="ribbon-edit preview-copy" data-ribbon-index="1" contenteditable="false" spellcheck="false">特典票限量</span><span class="ribbon-edit preview-copy" data-ribbon-index="2" contenteditable="false" spellcheck="false">COS 自由行开放</span><span class="ribbon-edit preview-copy" data-ribbon-index="3" contenteditable="false" spellcheck="false">舞台企划更新</span><span data-ribbon-mirror="0">摊位公开中</span><span data-ribbon-mirror="1">特典票限量</span><span data-ribbon-mirror="2">COS 自由行开放</span><span data-ribbon-mirror="3">舞台企划更新</span></div></div>
 <section class="quick"><div class="wrap quick-grid"><a class="quick-card reveal" href="#booths"><span>01</span><b>摊位与制品</b><small>快速查摊位 →</small></a><a class="quick-card reveal" href="#stage"><span>02</span><b>舞台日程</b><small>查看节目 →</small></a><a class="quick-card reveal" href="#highlights"><span>03</span><b>COS / 自由行</b><small>参与说明 →</small></a><a class="quick-card reveal" href="#booths"><span>04</span><b>场地图</b><small>找摊位与设施 →</small></a></div></section>
 <section class="section alt" id="tickets"><div class="wrap"><div class="head"><div><span class="ey">TICKETS</span><h2>票种与特典</h2></div><span class="section-no">第三方售票</span></div><div class="ticket-grid"><article class="ticket cut-ticket reveal"><h3>普通票</h3><div class="price">¥68</div><div class="gift"><b>包含 / 特典</b>
 入场资格</div><small>实际购买与退款规则以售票平台为准</small></article><article class="ticket cut-ticket reveal"><h3>特典票</h3><div class="price">¥128</div><div class="gift"><b>包含 / 特典</b>
@@ -84,44 +84,5 @@ secs.forEach(s=>progObs.observe(s));document.querySelectorAll('.pin').forEach(p=
 <!-- deploy-retry-polish-2 -->
 
 <script id="oe-v8-direct-editor">
-(()=>{
- const KEY='onlyevent-ip-v8-editor';
- const state=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return {}}})();
- const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
- const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
- function setupSticker(el){
-   const id=el.dataset.editId, copy=el.querySelector('.editable-copy'), handle=el.querySelector('.drag-handle');
-   state[id]??={}; if(typeof state[id].text==='string')copy.textContent=state[id].text;
-   const apply=()=>{el.style.translate=(state[id].x||0)+'px '+(state[id].y||0)+'px'}; apply();
-   copy.addEventListener('input',()=>{state[id].text=copy.textContent;save()});
-   handle.addEventListener('pointerdown',e=>{
-     e.preventDefault(); handle.setPointerCapture(e.pointerId);
-     const sx=e.clientX,sy=e.clientY,ox=state[id].x||0,oy=state[id].y||0;
-     const move=ev=>{state[id].x=clamp(ox+ev.clientX-sx,-180,180);state[id].y=clamp(oy+ev.clientY-sy,-180,180);apply()};
-     const up=()=>{handle.removeEventListener('pointermove',move);save()};
-     handle.addEventListener('pointermove',move);handle.addEventListener('pointerup',up,{once:true});handle.addEventListener('pointercancel',up,{once:true});
-   });
- }
- document.querySelectorAll('.sticker[data-edit-id]').forEach(setupSticker);
- const ribbon=document.querySelector('.ribbon[data-edit-id]');
- if(ribbon){
-   state.ribbon??={texts:[],x:0,y:0};
-   const edits=[...ribbon.querySelectorAll('.ribbon-edit')], mirrors=[...ribbon.querySelectorAll('[data-ribbon-mirror]')];
-   edits.forEach((el,i)=>{
-     if(typeof state.ribbon.texts?.[i]==='string')el.textContent=state.ribbon.texts[i];
-     mirrors[i].textContent=el.textContent;
-     el.addEventListener('input',()=>{state.ribbon.texts[i]=el.textContent;mirrors[i].textContent=el.textContent;save()});
-   });
-   const apply=()=>{ribbon.style.translate=(state.ribbon.x||0)+'px '+(state.ribbon.y||0)+'px'};
-   apply();
-   const h=ribbon.querySelector('.ribbon-drag-handle');
-   h.addEventListener('pointerdown',e=>{
-     e.preventDefault();h.setPointerCapture(e.pointerId);
-     const sx=e.clientX,sy=e.clientY,ox=state.ribbon.x||0,oy=state.ribbon.y||0;
-     const move=ev=>{state.ribbon.x=clamp(ox+ev.clientX-sx,-80,80);state.ribbon.y=clamp(oy+ev.clientY-sy,-140,140);apply()};
-     const up=()=>{h.removeEventListener('pointermove',move);save()};
-     h.addEventListener('pointermove',move);h.addEventListener('pointerup',up,{once:true});h.addEventListener('pointercancel',up,{once:true});
-   });
- }
-})();
+(()=>{document.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));})();
 </script></body></html>
