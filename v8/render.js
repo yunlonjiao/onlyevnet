@@ -2,6 +2,7 @@ import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.
 import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.4.0';
 import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.4.0';
 import {createCollections} from '/v8/renderer/collections.js?v=8.4.0';
+import {createPassport} from '/v8/renderer/passport.js?v=8.4.0';
 const ORIGIN=location.origin;let state={},mode='edit',revealObs=null,stampObs=null,progressObs=null;
 window.__oeRenderLoadId=(window.__oeRenderLoadId||0)+1;
 const runtimeStyle=document.createElement('style');
@@ -47,26 +48,13 @@ function renderQuickAccess(){
   ['community','06','社群公告','查看社群 →','home'],
   ['sponsors','07','赞助支持','查看支持 →','home']
  ];
- grid.innerHTML=defs.filter(x=>moduleOn(x[0])).map(x=>'<a class="quick-card reveal in" href="#'+x[0]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[0]+'"><span>'+x[1]+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
-}
-function renderPassport(){
- const section=$('#passport');if(!section)return;
- const tasks=state.passport?.tasks||[],required=Math.min(Number(state.passport?.required||tasks.length),tasks.length);
- const passStamps=section.querySelector('.pass-stamps'),zones=section.querySelector('.zone-list');
- if(passStamps)passStamps.innerHTML=tasks.map(t=>'<div class="pass-stamp" data-pass-code="'+esc(t.code)+'">'+esc(t.name)+'</div>').join('');
- if(zones)zones.innerHTML=tasks.map((t,i)=>'<article class="zone"><span class="zone-no">'+String(i+1).padStart(2,'0')+'</span><div><b>'+esc(t.name)+'</b><small>'+esc(t.location||'')+'</small></div><span>QR</span></article>').join('');
- const p=section.querySelector('.passbook p');if(p)p.textContent=(state.passport?.reward||'')+' · '+required+' / '+tasks.length;
- updatePassportStamps();
-}
-function passportStorageKey(){return 'oe-passport:'+String(state.eventName||'event').toLowerCase().replace(/\s+/g,'-')}
-function getPassportHits(){try{return JSON.parse(localStorage.getItem(passportStorageKey())||'[]')}catch{return []}}
-function addPassportHit(code){const hits=new Set(getPassportHits());hits.add(String(code).toUpperCase());localStorage.setItem(passportStorageKey(),JSON.stringify([...hits]));updatePassportStamps()}
-function updatePassportStamps(){const hits=new Set(getPassportHits());qa('[data-pass-code]').forEach(el=>el.classList.toggle('hit',hits.has(String(el.dataset.passCode).toUpperCase())))}
-function consumeStampParam(){
- const u=new URL(location.href),code=u.searchParams.get('stamp');if(!code)return;
- const valid=(state.passport?.tasks||[]).some(t=>String(t.code).toUpperCase()===String(code).toUpperCase());
- if(valid)addPassportHit(code);
- u.searchParams.delete('stamp');history.replaceState(null,'',u.pathname+u.search+u.hash);
+ grid.innerHTML=defs.filter(x=>moduleOn(x[0])).map(x=>'<a class="quick-card reveal in" href="#'+x[0]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[0]+'"><span>'+x[1]+const {renderPassport,consumeStampParam}=createPassport({
+  qs:$,
+  qsa:qa,
+  escapeHtml:esc,
+  getState:()=>state
+});
+mp');history.replaceState(null,'',u.pathname+u.search+u.hash);
 }
 function applyModules(){
  $('.ribbon')?.classList.toggle('oe-page-hidden',!moduleOn('ribbon'));
