@@ -13,7 +13,7 @@ function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a
 function getDeep(path){return path.split('.').reduce((o,k)=>o?.[/^\d+$/.test(k)?Number(k):k],state)}
 function send(message){if(frameReady&&iframe?.contentWindow)iframe.contentWindow.postMessage(message,ORIGIN)}
 
-const moduleLabels={ribbon:'滚动公告',tickets:'票务',highlights:'特别企划',passport:'活动护照',booths:'摊位 / 地图',stage:'舞台日程',community:'社群',sponsors:'赞助'};
+const moduleLabels={booths:'摊位 / 地图',stage:'舞台日程'};
 function syncModuleControls(){
  document.querySelectorAll('[data-module]').forEach(input=>{input.checked=state.modules?.[input.dataset.module]!==false});
  document.querySelectorAll('[data-module-page]').forEach(btn=>{btn.hidden=state.modules?.[btn.dataset.modulePage]===false});
