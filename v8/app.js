@@ -1,90 +1,127 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.0.0-alpha2';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.0.1';
+import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.0.1';
 
-const $=s=>document.querySelector(s);const canvas=$('#canvas');const inspector=$('#inspector');const saveState=$('#saveState');const toastEl=$('#toast');
-let state=structuredClone(template01.defaults);let preview=false;let selected=null;let history=[];let future=[];let saveTimer=null;document.documentElement.dataset.studio='v8-alpha2';
-try{const saved=localStorage.getItem('onlyevent-studio-v8:01');if(saved)state={...state,...JSON.parse(saved)}}catch{}
+const $=s=>document.querySelector(s);
+const canvas=$('#canvas'), inspector=$('#inspector'), saveState=$('#saveState'), toastEl=$('#toast');
+const STORAGE='onlyevent-studio-v8:01:preview-clone';
+let state=structuredClone(template01.defaults);
+let preview=false, selected=null, history=[], future=[], saveTimer=null, surface=null, host=null, revealObs=null, stampObs=null, progressObs=null;
+try{const saved=localStorage.getItem(STORAGE);if(saved)state={...state,...JSON.parse(saved)}}catch{}
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const q=s=>surface?.querySelector(s);
+const qa=s=>surface?[...surface.querySelectorAll(s)]:[];
 function toast(t){toastEl.textContent=t;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),1400)}
 function checkpoint(){history.push(JSON.stringify(state));if(history.length>60)history.shift();future.length=0;syncHistory()}
 function syncHistory(){$('#undoBtn').disabled=!history.length;$('#redoBtn').disabled=!future.length}
-function scheduleSave(){saveState.textContent='保存中…';clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem('onlyevent-studio-v8:01',JSON.stringify(state));saveState.textContent='已保存'},220)}
-function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a.length-1;i++){const k=/^\d+$/.test(a[i])?Number(a[i]):a[i];o=o[k]}const last=/^\d+$/.test(a.at(-1))?Number(a.at(-1)):a.at(-1);o[last]=value;scheduleSave()}
+function scheduleSave(){saveState.textContent='保存中…';clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));saveState.textContent='已保存'},220)}
+function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a.length-1;i++)o=o[/^\d+$/.test(a[i])?Number(a[i]):a[i]];const k=a.at(-1);o[/^\d+$/.test(k)?Number(k):k]=value;scheduleSave()}
 function getDeep(path){return path.split('.').reduce((o,k)=>o?.[/^\d+$/.test(k)?Number(k):k],state)}
 
-function siteHtml(){return `<div class="oe-site oe-editing" style="--primary:${esc(state.theme)}">
-<header class="pv-nav"><div class="pv-wrap"><a class="pv-brand" href="#top"><span data-edit="eventName" contenteditable="true">${esc(state.eventName)}</span></a><nav class="pv-links"><a href="#highlights">本届亮点</a><a href="#tickets">票务</a><a href="#booths">摊位</a><a href="#stage">日程</a><a href="#community">社群</a></nav><a class="pv-btn" href="https://www.bilibili.com/" target="_blank" rel="noopener">前往购票平台 ↗</a></div></header>
-<main id="top">
-<section class="pv-hero"><div class="pv-wrap pv-pv-hero-grid"><div class="pv-pv-hero-copy pv-reveal"><h1><span data-edit="eventName" contenteditable="true">${esc(state.eventName)}</span></h1><p data-edit="tagline" contenteditable="true">${esc(state.tagline)}</p><div class="pv-meta"><span class="pv-pill" data-edit="date" contenteditable="true">${esc(state.date)}</span><span class="pv-pill" data-edit="location" contenteditable="true">${esc(state.location)}</span><span class="pv-pill">首届</span></div></div><div class="pv-pv-hero-art pv-reveal"><div class="pv-kv" data-image="heroImage"></div><div class="pv-sticker pv-s1" data-edit-id="sticker1"><span class="pv-editable-copy" contenteditable="false">${esc(state.sticker1)}</span></div><div class="pv-sticker pv-s2" data-edit-id="sticker2"><span class="pv-editable-copy" contenteditable="false">${esc(state.sticker2)}</span></div><div class="pv-sticker pv-s3" data-edit-id="sticker3"><span class="pv-editable-copy" contenteditable="false">${esc(state.sticker3)}</span></div></div></div></section>
-<div class="pv-ribbon" data-edit-id="ribbon"><div class="pv-pv-ribbon-track"><span class="pv-pv-ribbon-edit" data-ribbon-index="0" contenteditable="false" data-edit="ribbon1" contenteditable="true">${esc(state.ribbon1)}</span><span class="pv-pv-ribbon-edit" data-ribbon-index="1" contenteditable="false" data-edit="ribbon2" contenteditable="true">${esc(state.ribbon2)}</span><span class="pv-pv-ribbon-edit" data-ribbon-index="2" contenteditable="false" data-edit="ribbon3" contenteditable="true">${esc(state.ribbon3)}</span><span class="pv-pv-ribbon-edit" data-ribbon-index="3" contenteditable="false" data-edit="ribbon4" contenteditable="true">${esc(state.ribbon4)}</span><span data-ribbon-mirror="0">${esc(state.ribbon1)}</span><span data-ribbon-mirror="1">${esc(state.ribbon2)}</span><span data-ribbon-mirror="2">${esc(state.ribbon3)}</span><span data-ribbon-mirror="3">${esc(state.ribbon4)}</span></div></div>
-<section class="pv-quick"><div class="pv-wrap pv-pv-quick-grid"><a class="pv-pv-quick-card pv-reveal" href="#booths"><span>01</span><b>摊位与制品</b><small>快速查摊位 →</small></a><a class="pv-pv-quick-card pv-reveal" href="#stage"><span>02</span><b>舞台日程</b><small>查看节目 →</small></a><a class="pv-pv-quick-card pv-reveal" href="#highlights"><span>03</span><b>COS / 自由行</b><small>参与说明 →</small></a><a class="pv-pv-quick-card pv-reveal" href="#booths"><span>04</span><b>场地图</b><small>找摊位与设施 →</small></a></div></section>
-<section class="pv-section pv-alt" id="tickets"><div class="pv-wrap"><div class="pv-head"><div><span class="pv-ey">TICKETS</span><h2>票种与特典</h2></div><span class="pv-pv-section-no">第三方售票</span></div><div class="pv-pv-ticket-grid"><article class="pv-ticket pv-cut-pv-ticket pv-reveal"><h3>普通票</h3><div class="pv-price">¥68</div><div class="pv-gift"><b>包含 / 特典</b>
-入场资格</div><small>实际购买与退款规则以售票平台为准</small></article><article class="pv-ticket pv-cut-pv-ticket pv-reveal"><h3>特典票</h3><div class="pv-price">¥128</div><div class="pv-gift"><b>包含 / 特典</b>
-入场资格
-限定徽章
-纪念票根</div><small>限量发售</small></article><article class="pv-ticket pv-cut-pv-ticket pv-reveal"><h3>VIP 票</h3><div class="pv-price">¥198</div><div class="pv-gift"><b>包含 / 特典</b>
-优先入场
-限定礼包
-舞台优先区</div><small>赠品内容由主办方填写</small></article></div><div class="pv-pv-ticket-actions"><a class="pv-btn" href="https://www.bilibili.com/" target="_blank" rel="noopener">前往官方售票平台 ↗</a></div></div></section>
-<section class="pv-section" id="highlights"><div class="pv-wrap"><div class="pv-head"><div><span class="pv-ey">SPECIAL PROJECTS</span><h2>本届特别企划</h2></div><span class="pv-pv-section-no">SECTION 01</span></div><div class="pv-specials"><article class="pv-special pv-reveal" style="--tone:#ffe45c"><span class="pv-stamp">STAMP 01</span><h3>集章挑战</h3><p>在指定摊位完成互动，集齐印章兑换限定纪念物。</p></article><article class="pv-special pv-reveal" style="--tone:#59d4ff"><span class="pv-stamp">STAMP 02</span><h3>应援留言墙</h3><p>现场留下角色应援与周年留言，闭幕前公开展示。</p></article><article class="pv-special pv-reveal" style="--tone:#ff9dbb"><span class="pv-stamp">STAMP 03</span><h3>主题合影</h3><p>指定时段进行 COS / 自由行主题大合影。</p></article></div></div></section>
-
-<section class="pv-section" id="passport" style="position:relative"><div class="pv-pv-section-orbit pv-o-a"></div><div class="pv-pv-section-orbit pv-o-b"></div><div class="pv-wrap"><div class="pv-head"><div><span class="pv-ey">ONLY PASSPORT</span><h2>活动护照</h2></div><span class="pv-pv-section-no">SECTION 02</span></div><div class="pv-passport"><aside class="pv-passbook pv-reveal"><span class="pv-ey">${esc(state.eventName)}</span><h3>逛展护照<br>STAMP RALLY</h3><p>这不是后台功能，而是一种前台视觉表达。主办方只需要配置哪些企划需要展示，网站负责把它做得像活动场刊。</p><div class="pv-pass-stamps"><div class="pv-pass-pv-stamp" data-stamp="A">A区<br>摊位</div><div class="pv-pass-pv-stamp" data-stamp="B">舞台<br>企划</div><div class="pv-pass-pv-stamp" data-stamp="C">COS<br>合影</div><div class="pv-pass-pv-stamp" data-stamp="D">特别<br>企划</div></div></aside><div class="pv-pv-zone-list"><div class="pv-zone pv-reveal" data-hit="A"><span class="pv-pv-zone-no">01</span><div><b>同人摊位街区</b><small>社团 / 制品 / 收藏 / 快速查摊位</small></div><span>→</span></div><div class="pv-zone pv-reveal" data-hit="B"><span class="pv-pv-zone-no">02</span><div><b>主舞台与互动节目</b><small>时间表 / 嘉宾 / 抽选 / TALK</small></div><span>→</span></div><div class="pv-zone pv-reveal" data-hit="C"><span class="pv-pv-zone-no">03</span><div><b>COS / 自由行区域</b><small>规则 / 更衣 / 合影 / 参加表明</small></div><span>→</span></div><div class="pv-zone pv-reveal" data-hit="D"><span class="pv-pv-zone-no">04</span><div><b>限定企划</b><small>集章 / 应援墙 / 纪念活动</small></div><span>→</span></div></div></div></div></section>
-<section class="pv-section pv-alt" id="booths"><div class="pv-wrap"><div class="pv-head"><div><span class="pv-ey">BOOTH / MAP</span><h2>摊位与场地图</h2></div><span class="pv-pv-section-no">SECTION 03</span></div><div class="pv-pv-booth-layout"><div class="pv-map pv-reveal"><button class="pv-pin pv-p1" data-name="A01 · 星屑工房" data-info="同人本 · 亚克力">A01</button><button class="pv-pin pv-p2" data-name="A12 · 薄荷书室" data-info="插画 · 明信片">A12</button><button class="pv-pin pv-p3" data-name="B07 · 白昼制品" data-info="徽章 · 色纸">B07</button><div class="pv-pv-map-pop" id="mapPop"><b>点击摊位点位</b><br><span>这里会显示社团与制品摘要。</span></div></div><div><div class="pv-pv-booth-list"><article class="pv-booth"><small>A01</small><b>星屑工房</b><span>同人本 · 亚克力</span></article><article class="pv-booth"><small>A12</small><b>薄荷书室</b><span>插画 · 明信片</span></article><article class="pv-booth"><small>B07</small><b>白昼制品</b><span>徽章 · 色纸</span></article><article class="pv-booth"><small>B12</small><b>纸月社</b><span>同人志 · 小物</span></article></div><a class="pv-btn" style="margin-top:18px" href="#">打开完整场地图 →</a></div></div></div></section>
-<section class="pv-section" id="stage"><div class="pv-wrap"><div class="pv-head"><div><span class="pv-ey">TIME TABLE</span><h2>舞台 / 当天日程</h2></div><span class="pv-pv-section-no">SECTION 04</span></div><div class="pv-timeline"><div class="pv-event pv-reveal"><span>11:00</span><b>开场 & 社群合影</b><span>MAIN STAGE</span><span>→</span></div><div class="pv-event pv-reveal"><span>13:30</span><b>主题问答 / 互动游戏</b><span>TALK</span><span>→</span></div><div class="pv-event pv-reveal"><span>15:00</span><b>COS 特别舞台</b><span>MAIN STAGE</span><span>→</span></div><div class="pv-event pv-reveal"><span>17:30</span><b>幸运抽选 & 闭幕</b><span>MAIN STAGE</span><span>→</span></div></div></div></section>
-<section class="pv-section pv-alt" id="community"><div class="pv-wrap"><div class="pv-head"><div><span class="pv-ey">COMMUNITY</span><h2>社群与活动公告</h2></div><span class="pv-pv-section-no">SECTION 05</span></div><div class="pv-community"><article><b>QQ群</b><p>群号：123456789</p><div class="pv-qr">QQ群二维码</div></article><article><b>微信群</b><p>现场通知与临时公告。</p><div class="pv-qr">微信群二维码</div></article><article><b>B站</b><p>PV、嘉宾公开、节目预告。</p></article><article><b>小红书</b><p>返图、攻略与摊位推荐。</p></article></div></div></section>
-<section class="pv-section"><div class="pv-wrap"><div class="pv-head"><div><span class="pv-ey">SUPPORT</span><h2>赞助支持</h2></div><span class="pv-pv-section-no">SECTION 06</span></div><div class="pv-sponsors"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div></section>
-</main>
-<nav class="pv-scroll-progress" aria-label="章节进度"><a href="#top" class="pv-active" data-sec="top"></a><a href="#tickets" data-sec="tickets"></a><a href="#highlights" data-sec="highlights"></a><a href="#passport" data-sec="passport"></a><a href="#booths" data-sec="booths"></a><a href="#stage" data-sec="stage"></a></nav>
-<nav class="pv-mobile-dock"><a href="#tickets">票务</a><a href="#booths">摊位</a><a href="#stage">日程</a><a href="#community">社群</a></nav>
-<footer class="pv-footer"><div class="pv-wrap pv-pv-footer-grid"><div><h2>${esc(state.eventName)}</h2><p>${esc(state.eventName)} / IP ONLY。购票、报名等交易与数据由第三方平台负责，OnlyEvent 只负责官网展示与跳转。</p></div><div><b>参与</b><p>摊位<br>COS / 自由行<br>舞台</p></div><div><b>观展</b><p>票务<br>地图<br>交通<br>入场须知</p></div><div><b>社群</b><p>QQ群<br>微信群<br>B站<br>小红书</p></div></div></footer>
-<!-- preview-sync-v7.23.0-20260930 -->
-<!-- ip-polish-4steps -->
-<!-- deploy-retry-polish-2 -->
-
-</div>`}
-function ticketHtml(x,i){return `<article class="oe-card" data-item="tickets.${i}"><h3 data-edit="tickets.${i}.name" contenteditable="true">${esc(x.name)}</h3><div class="oe-price" data-edit="tickets.${i}.price" contenteditable="true">${esc(x.price)}</div><p data-edit="tickets.${i}.gift" contenteditable="true">${esc(x.gift)}</p></article>`}
-function highlightHtml(x,i){return `<article class="oe-special" data-item="highlights.${i}"><h3 data-edit="highlights.${i}.title" contenteditable="true">${esc(x.title)}</h3><p data-edit="highlights.${i}.text" contenteditable="true">${esc(x.text)}</p></article>`}
-function boothHtml(x,i){return `<article class="oe-card" data-item="booths.${i}"><small data-edit="booths.${i}.no" contenteditable="true">${esc(x.no)}</small><h3 data-edit="booths.${i}.name" contenteditable="true">${esc(x.name)}</h3><p data-edit="booths.${i}.type" contenteditable="true">${esc(x.type)}</p></article>`}
-function scheduleHtml(x,i){return `<div class="oe-event" data-item="schedule.${i}"><span data-edit="schedule.${i}.time" contenteditable="true">${esc(x.time)}</span><b data-edit="schedule.${i}.title" contenteditable="true">${esc(x.title)}</b><span data-edit="schedule.${i}.stage" contenteditable="true">${esc(x.stage)}</span></div>`}
-function mount(){canvas.innerHTML=siteHtml();bindCanvas();syncPreviewClass();initCanvasMotion()}
-function syncPreviewClass(){canvas.classList.toggle('preview',preview);canvas.querySelectorAll('[contenteditable]').forEach(el=>el.contentEditable=preview?'false':'true')}
-function bindCanvas(){canvas.addEventListener('input',onInput);canvas.addEventListener('click',onClick);canvas.addEventListener('focusin',onFocus,true)}
-function onInput(e){const el=e.target.closest('[data-edit]');if(!el||preview)return;setDeep(el.dataset.edit,el.textContent)}
-function onFocus(e){const el=e.target.closest('[data-edit]');if(!el||preview)return;selected={kind:'field',path:el.dataset.edit};openFieldInspector(el.dataset.edit)}
-function onClick(e){if(preview)return;const img=e.target.closest('[data-image]');if(img){selected={kind:'image',path:img.dataset.image};openImageInspector(img.dataset.image);return}const add=e.target.closest('[data-add]');if(add){addItem(add.dataset.add,add);return}const item=e.target.closest('[data-item]');if(item&&!e.target.closest('[data-edit]')){selected={kind:'item',path:item.dataset.item};openItemInspector(item.dataset.item);return}const sec=e.target.closest('[data-section]');if(sec&&!e.target.closest('[data-edit]'))openSectionInspector(sec.dataset.section)}
-function openFieldInspector(path){const value=getDeep(path);inspector.innerHTML=`<h3>编辑内容</h3><label>内容<textarea id="fieldInput">${esc(value)}</textarea></label><p class="hint">也可以直接在画布里输入，不会刷新页面。</p>`;$('#fieldInput').addEventListener('input',e=>{checkpoint();setDeep(path,e.target.value);canvas.querySelectorAll(`[data-edit="${CSS.escape(path)}"]`).forEach(x=>x.textContent=e.target.value)})}
-function openImageInspector(path){inspector.innerHTML=`<h3>图片</h3><p>当前：${esc(path)}</p><div class="row"><button id="replaceImage" type="button">替换图片</button></div><p class="hint">替换后只修改当前图片节点，不重建整页。</p>`;$('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()}}
-function openItemInspector(path){const [root,idxStr]=path.split('.');const i=Number(idxStr);inspector.innerHTML=`<h3>条目</h3><p>${esc(path)}</p><div class="row"><button id="dupItem" type="button">复制</button><button id="upItem" type="button">上移</button><button id="downItem" type="button">下移</button><button id="delItem" class="danger" type="button">删除</button></div>`;$('#dupItem').onclick=()=>duplicateItem(root,i);$('#upItem').onclick=()=>moveItem(root,i,-1);$('#downItem').onclick=()=>moveItem(root,i,1);$('#delItem').onclick=()=>deleteItem(root,i)}
-function openSectionInspector(key){inspector.innerHTML=`<h3>模块</h3><p>${esc(key)}</p><p class="hint">模板负责布局；这里只放该模块真正需要的内容设置。</p>`}
-function addItem(root,button){checkpoint();let item;if(root==='tickets')item={id:crypto.randomUUID(),name:'新票种',price:'¥0',gift:'填写特典'};if(root==='highlights')item={id:crypto.randomUUID(),title:'新企划',text:'填写企划说明'};if(root==='booths')item={id:crypto.randomUUID(),no:'A00',name:'新社团',type:'填写制品类型'};if(root==='schedule')item={id:crypto.randomUUID(),time:'12:00',title:'新节目',stage:'MAIN STAGE'};state[root].push(item);scheduleSave();const i=state[root].length-1;const wrap=document.createElement('div');wrap.innerHTML=root==='tickets'?ticketHtml(item,i):root==='highlights'?highlightHtml(item,i):root==='booths'?boothHtml(item,i):scheduleHtml(item,i);const node=wrap.firstElementChild;button.before(node);node.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>node.querySelector('[data-edit]')?.focus(),250);toast('已添加')}
-function duplicateItem(root,i){checkpoint();const copy=structuredClone(state[root][i]);copy.id=crypto.randomUUID();state[root].splice(i+1,0,copy);scheduleSave();rerenderList(root,i+1)}
-function moveItem(root,i,d){const j=i+d;if(j<0||j>=state[root].length)return;checkpoint();[state[root][i],state[root][j]]=[state[root][j],state[root][i]];scheduleSave();rerenderList(root,j)}
-function deleteItem(root,i){if(!confirm('删除这个条目？'))return;checkpoint();state[root].splice(i,1);scheduleSave();rerenderList(root);inspector.innerHTML='<div class="inspector-empty"><b>已删除</b></div>'}
-function rerenderList(root,focusIndex){const map={tickets:['ticketList',ticketHtml],highlights:['highlightList',highlightHtml],booths:['boothList',boothHtml],schedule:['scheduleList',scheduleHtml]};const [id,fn]=map[root];const list=canvas.querySelector('#'+id);const add=list.querySelector('[data-add]');[...list.querySelectorAll('[data-item]')].forEach(x=>x.remove());state[root].forEach((x,i)=>{const wrap=document.createElement('div');wrap.innerHTML=fn(x,i);list.insertBefore(wrap.firstElementChild,add)});if(Number.isInteger(focusIndex))list.querySelector(`[data-item="${root}.${focusIndex}"]`)?.scrollIntoView({block:'center'})}
-$('#imageInput').addEventListener('change',e=>{const file=e.target.files?.[0];const path=e.target.dataset.path;e.target.value='';if(!file||!path)return;checkpoint();const r=new FileReader();r.onload=()=>{setDeep(path,r.result);const el=canvas.querySelector(`[data-image="${CSS.escape(path)}"]`);if(el)el.style.backgroundImage=`linear-gradient(180deg,transparent,#0004),url("${r.result}")`;toast('图片已替换')};r.readAsDataURL(file)})
-
-function initCanvasMotion(){
-  const site=canvas.querySelector('.oe-site'); if(!site)return;
-  const revealTargets=[...site.querySelectorAll('.pv-reveal,.pv-section,.pv-ticket,.pv-special,.pv-booth,.pv-event,.pv-community article')];
-  revealTargets.forEach((el,i)=>{el.classList.add('oe-reveal');el.style.setProperty('--oe-delay',Math.min(i%6,5)*55+'ms')});
-  if(window.__oeStudioObserver) window.__oeStudioObserver.disconnect();
-  window.__oeStudioObserver=new IntersectionObserver(entries=>entries.forEach(e=>{
-    if(e.isIntersecting)e.target.classList.add('oe-in');
-  }),{root:canvas,threshold:.08});
-  revealTargets.forEach(el=>window.__oeStudioObserver.observe(el));
-  site.classList.toggle('oe-motion-preview',preview);
-  site.classList.toggle('oe-motion-edit',!preview);
+function mount(){
+  if(revealObs)revealObs.disconnect(); if(stampObs)stampObs.disconnect(); if(progressObs)progressObs.disconnect();
+  canvas.innerHTML='<div class="preview-host" id="previewHost"></div>';
+  host=$('#previewHost');
+  surface=host.attachShadow({mode:'open'});
+  surface.innerHTML='<style>'+previewStyle+'\n:host{display:block;position:relative} .loader{display:none!important}</style>'+previewBody;
+  applyStateAndEditMarkers();
+  bindSurface();
+  initPreviewRuntime();
+  syncPreviewClass();
 }
-function restartPreviewMotion(){
-  const site=canvas.querySelector('.oe-site'); if(!site)return;
-  site.classList.remove('oe-preview-enter');
-  void site.offsetWidth;
-  site.classList.add('oe-preview-enter');
+function applyStateAndEditMarkers(){
+  const brand=q('.brand');
+  if(brand){brand.textContent=state.eventName;brand.dataset.edit='eventName';brand.contentEditable='true'}
+  const desc=q('.hero-copy p');
+  if(desc){desc.textContent=state.tagline;desc.dataset.edit='tagline';desc.contentEditable='true'}
+  const pills=qa('.meta .pill');
+  if(pills[0]){pills[0].textContent=state.date;pills[0].dataset.edit='date';pills[0].contentEditable='true'}
+  if(pills[1]){pills[1].textContent=state.location;pills[1].dataset.edit='location';pills[1].contentEditable='true'}
+  const stickers=qa('.sticker .editable-copy');
+  ['sticker1','sticker2','sticker3'].forEach((key,i)=>{if(stickers[i]){stickers[i].textContent=state[key];stickers[i].dataset.edit=key;stickers[i].contentEditable='true'}});
+  const ribbon=qa('.ribbon-edit');
+  ['ribbon1','ribbon2','ribbon3','ribbon4'].forEach((key,i)=>{if(ribbon[i]){ribbon[i].textContent=state[key];ribbon[i].dataset.edit=key;ribbon[i].contentEditable='true'}});
+  qa('[data-ribbon-mirror]').forEach((el,i)=>{const key=['ribbon1','ribbon2','ribbon3','ribbon4'][Number(el.dataset.ribbonMirror)];if(key)el.textContent=state[key]});
+  const kv=q('.kv');
+  if(kv){kv.dataset.image='heroImage';kv.style.backgroundImage="linear-gradient(180deg,transparent,rgba(0,0,0,.26)),url('"+String(state.heroImage).replace(/'/g,"%27")+"')"}
 }
+function bindSurface(){
+  surface.addEventListener('input',onInput);
+  surface.addEventListener('click',onClick);
+  surface.addEventListener('focusin',onFocus,true);
+}
+function onInput(e){
+  const el=e.target.closest?.('[data-edit]'); if(!el||preview)return;
+  if(!history.length||history.at(-1)!==JSON.stringify(state)) checkpoint();
+  setDeep(el.dataset.edit,el.textContent);
+  if(el.dataset.edit.startsWith('ribbon')){
+    const n=Number(el.dataset.edit.replace('ribbon',''))-1;
+    qa('[data-ribbon-mirror="'+n+'"]').forEach(x=>x.textContent=el.textContent);
+  }
+}
+function onFocus(e){
+  const el=e.target.closest?.('[data-edit]'); if(!el||preview)return;
+  selected={kind:'field',path:el.dataset.edit}; openFieldInspector(el.dataset.edit);
+}
+function onClick(e){
+  const anchor=e.target.closest?.('a[href^="#"]');
+  if(anchor){const target=q(anchor.getAttribute('href'));if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth',block:'start'})}}
+  if(preview)return;
+  const img=e.target.closest?.('[data-image]');
+  if(img){selected={kind:'image',path:img.dataset.image};openImageInspector(img.dataset.image);return}
+}
+function openFieldInspector(path){
+  const value=getDeep(path);
+  inspector.innerHTML='<h3>编辑内容</h3><label>内容<textarea id="fieldInput">'+esc(value)+'</textarea></label><p class="hint">也可以直接在画布里输入，不会刷新页面。</p>';
+  $('#fieldInput').addEventListener('input',e=>{
+    checkpoint(); setDeep(path,e.target.value);
+    qa('[data-edit="'+CSS.escape(path)+'"]').forEach(x=>x.textContent=e.target.value);
+    if(path.startsWith('ribbon')){const n=Number(path.replace('ribbon',''))-1;qa('[data-ribbon-mirror="'+n+'"]').forEach(x=>x.textContent=e.target.value)}
+  });
+}
+function openImageInspector(path){
+  inspector.innerHTML='<h3>图片</h3><p>当前：'+esc(path)+'</p><div class="row"><button id="replaceImage" type="button">替换图片</button></div><p class="hint">只替换当前图片，不改变模板布局。</p>';
+  $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()}
+}
+function syncPreviewClass(){
+  canvas.classList.toggle('preview',preview);
+  qa('[data-edit]').forEach(el=>el.contentEditable=preview?'false':'true');
+  qa('.editable-copy,.ribbon-edit').forEach(el=>{if(!el.dataset.edit)el.contentEditable='false'});
+  inspector.style.visibility=preview?'hidden':'visible';
+}
+function initPreviewRuntime(){
+  const reveal=qa('.reveal');
+  revealObs=new IntersectionObserver(entries=>entries.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('in');e.target.closest('.special')?.classList.add('seen');revealObs.unobserve(e.target)}
+  }),{threshold:.12});
+  reveal.forEach(x=>revealObs.observe(x));
+
+  stampObs=new IntersectionObserver(entries=>entries.forEach(e=>{
+    if(e.isIntersecting){const hit=e.target.dataset.hit;const stamp=q('.pass-stamp[data-stamp="'+hit+'"]');if(stamp)stamp.classList.add('hit');stampObs.unobserve(e.target)}
+  }),{threshold:.65});
+  qa('.zone[data-hit]').forEach(x=>stampObs.observe(x));
+
+  const secs=['top','tickets','highlights','passport','booths','stage'].map(id=>q('#'+id)).filter(Boolean);
+  const prog=qa('.scroll-progress a');
+  progressObs=new IntersectionObserver(entries=>entries.forEach(e=>{
+    if(e.isIntersecting)prog.forEach(a=>a.classList.toggle('active',a.dataset.sec===e.target.id))
+  }),{threshold:.35});
+  secs.forEach(s=>progressObs.observe(s));
+
+  qa('.pin').forEach(p=>p.onclick=()=>{
+    const pop=q('#mapPop'); if(pop)pop.innerHTML='<b>'+esc(p.dataset.name)+'</b><br><span>'+esc(p.dataset.info)+'</span>';
+  });
+}
+$('#imageInput').addEventListener('change',e=>{
+  const file=e.target.files?.[0], path=e.target.dataset.path; e.target.value=''; if(!file||!path)return;
+  checkpoint(); const r=new FileReader();
+  r.onload=()=>{setDeep(path,r.result);const el=q('[data-image="'+CSS.escape(path)+'"]');if(el)el.style.backgroundImage='linear-gradient(180deg,transparent,rgba(0,0,0,.26)),url("'+r.result+'")';toast('图片已替换')};
+  r.readAsDataURL(file)
+});
 $('#deviceBtn').onclick=()=>{canvas.classList.toggle('mobile');$('#deviceBtn').textContent=canvas.classList.contains('mobile')?'桌面':'手机'}
-$('#previewBtn').onclick=()=>{preview=!preview;$('#previewBtn').textContent=preview?'继续编辑':'预览';syncPreviewClass();initCanvasMotion();if(preview)restartPreviewMotion();toast(preview?'现在看到的是发布效果':'已返回编辑')}
-$('.page-nav').addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(!b)return;canvas.querySelector('#'+b.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'})})
+$('#previewBtn').onclick=()=>{preview=!preview;$('#previewBtn').textContent=preview?'继续编辑':'预览';syncPreviewClass();toast(preview?'现在看到的是发布效果':'已返回编辑')}
+$('.page-nav').addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(!b)return;q('#'+b.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'})})
 $('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());mount();scheduleSave();syncHistory()}
 $('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());mount();scheduleSave();syncHistory()}
-$('#publishBtn').onclick=()=>{const html='<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+canvas.innerHTML;const blob=new Blob([html],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='onlyevent-01.html';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('已导出 HTML')}
-mount();initCanvasMotion();syncHistory();
+$('#publishBtn').onclick=()=>{toast('发布功能保留；先完成模板复刻核对')}
+mount();syncHistory();
