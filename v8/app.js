@@ -24,7 +24,7 @@ window.addEventListener('message',e=>{
 });
 function openFieldInspector(path){
  const value=getDeep(path);
- inspector.innerHTML='<h3>编辑内容</h3><label>内容<textarea id="fieldInput" data-path="'+esc(path)+'">'+esc(value)+'</textarea></label><p class="hint">实时更新真实页面，不刷新 iframe。</p>';
+ inspector.innerHTML='<h3>编辑内容</h3><label>内容<textarea id="fieldInput" data-path="'+esc(path)+'">'+esc(value)+'</textarea></label>';
  const input=$('#fieldInput');let started=false;
  input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep(path,e.target.value);send({type:'OE_PATCH_FIELD',path,value:e.target.value})});
 }
@@ -41,5 +41,5 @@ $('#previewBtn').onclick=()=>{preview=!preview;$('#previewBtn').textContent=prev
 $('.page-nav').addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(b)send({type:'OE_SCROLL_TO',id:b.dataset.jump})});
 $('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory()};
 $('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory()};
-$('#publishBtn').onclick=()=>toast('发布继续沿用同一 renderer；当前先验证实时编辑内核');
+$('#publishBtn').onclick=()=>toast('发布暂未开放');
 mountFrame();syncHistory();
