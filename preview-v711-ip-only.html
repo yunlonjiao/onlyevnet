@@ -71,7 +71,7 @@ const secs=[...document.querySelectorAll('#top,#tickets,#highlights,#passport,#b
 const prog=[...document.querySelectorAll('.scroll-progress a')];
 const progObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){prog.forEach(a=>a.classList.toggle('active',a.dataset.sec===e.target.id))}}),{threshold:.35});
 secs.forEach(s=>progObs.observe(s));document.querySelectorAll('.pin').forEach(p=>p.onclick=()=>{document.querySelector('#mapPop').innerHTML='<b>'+p.dataset.name+'</b><br><span>'+p.dataset.info+'</span>'});document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const h=a.getAttribute('href');if(!h||h==='#')return;const t=document.querySelector(h);if(!t)return;e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})})})();
-</script><!-- preview-sync-v7.20.5-20260930 -->
+</script><!-- preview-sync-v7.23.0-20260930 -->
 <!-- ip-polish-4steps -->
 <!-- deploy-retry-polish-2 -->
 </body></html>
