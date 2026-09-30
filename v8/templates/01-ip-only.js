@@ -7,6 +7,13 @@ export const template01 = {
     location:'杭州',
     tagline:'围绕单一作品 IP 的粉丝综合活动。主办方只需要修改内容，模板负责整体视觉。',
     theme:'#ff5f91',
+    sticker1:'限定企划 ✦',
+    sticker2:'40+ 社团',
+    sticker3:'COS OK!',
+    ribbon1:'摊位公开中',
+    ribbon2:'特典票限量',
+    ribbon3:'COS 自由行开放',
+    ribbon4:'舞台企划更新',
     heroImage:'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=84&w=1600',
     tickets:[
       {id:'t1',name:'普通票',price:'¥68',gift:'入场资格'},
