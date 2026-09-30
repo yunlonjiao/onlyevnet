@@ -51,23 +51,24 @@
     },
     {
       "id": "03",
-      "name": "日系ONLY展",
-      "structureProfile": "catalogue",
-      "artDirection": "minimal-japanese-print",
-      "motionProfile": "calm",
-      "heroRenderer": "catalogue",
-      "guestRenderer": "editorial-index",
-      "boothRenderer": "directory",
-      "programRenderer": "compact-list",
-      "newsRenderer": "list",
-      "sponsorRenderer": "footer-strip",
+      "name": "IP ONLY / 作品主题展",
+      "structureProfile": "ip-only",
+      "artDirection": "playful-acg-event",
+      "motionProfile": "energetic",
+      "heroRenderer": "ip-kv",
+      "guestRenderer": "grid",
+      "boothRenderer": "map-linked",
+      "programRenderer": "timeline",
+      "newsRenderer": "ticker",
+      "sponsorRenderer": "logo-wall",
       "recommendedFor": [
-        "ONLY展",
+        "IP ONLY",
+        "作品主题展",
         "同人展",
-        "社团目录"
+        "粉丝活动"
       ],
       "notRecommendedFor": [
-        "大型舞台活动"
+        "大型商务展会"
       ]
     },
     {
