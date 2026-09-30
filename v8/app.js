@@ -37,6 +37,7 @@ window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
  if(m.type==='OE_READY'){frameReady=true;send({type:'OE_INIT_STATE',state,mode:preview?'preview':'edit',page:currentPage});return}
+ if(m.type==='OE_RENDER_ERROR'){toast(m.stage==='fallback'?'预览加载失败':'模块加载异常，已自动切换安全渲染');return}
  if(m.type==='OE_SELECT_FIELD'){focusCheckpointTaken=false;openFieldInspector(m.path);return}
  if(m.type==='OE_FIELD_FOCUS'){if(!focusCheckpointTaken){checkpoint();focusCheckpointTaken=true}return}
  if(m.type==='OE_FIELD_CHANGE'){setDeep(m.path,m.value);const f=$('#fieldInput');if(f&&f.dataset.path===m.path)f.value=m.value;return}
