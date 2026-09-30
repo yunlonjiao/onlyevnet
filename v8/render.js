@@ -3,7 +3,7 @@ const ORIGIN=location.origin;let state={},mode='edit',revealObs=null,stampObs=nu
 window.__oeRenderLoadId=(window.__oeRenderLoadId||0)+1;
 document.head.insertAdjacentHTML('beforeend','<style>'+previewStyle+'\n.loader{display:none!important}\n[data-oe-field]{cursor:text}[data-oe-field]:hover{outline:2px solid #7b61ff77;outline-offset:2px}[data-oe-field]:focus{outline:2px solid #7b61ff;background:#fff7b3}.oe-preview [data-oe-field],.oe-preview [data-oe-item]{outline:none!important;cursor:inherit}[data-oe-item]{cursor:pointer;transition:outline-color .15s}[data-oe-item]:hover{outline:2px solid #7b61ff55;outline-offset:4px}.ticket-top{display:grid;grid-template-columns:minmax(0,1fr) 104px;gap:14px;align-items:start}.ticket-copy h3{margin-bottom:6px}.ticket-gift-image{width:104px;height:104px;padding:0;border:2px solid var(--ink);border-radius:14px;background:#fff;overflow:hidden;cursor:zoom-in;box-shadow:4px 4px 0 var(--ink)}.ticket-gift-image img{width:100%;height:100%;object-fit:cover;display:block}.gift-lightbox{border:0;padding:0;background:transparent;max-width:min(92vw,1100px);max-height:92vh}.gift-lightbox::backdrop{background:rgba(12,12,16,.82);backdrop-filter:blur(6px)}.gift-lightbox img{display:block;max-width:92vw;max-height:88vh;object-fit:contain;border-radius:14px}.gift-lightbox button{position:fixed;right:22px;top:18px;width:40px;height:40px;border:0;border-radius:50%;background:#fff;color:#111;font-size:22px;cursor:pointer}.special{isolation:isolate}.special:after{display:none!important}.special>*{position:relative;z-index:2}.kv:after{display:none!important}@media(max-width:560px){.ticket-top{grid-template-columns:1fr 88px}.ticket-gift-image{width:88px;height:88px}}.oe-page-hidden{display:none!important}.oe-page-view{min-height:calc(100vh - 72px)}.nav .links a[hidden],.mobile-dock a[hidden]{display:none!important}</style>');
 document.body.innerHTML=previewBody.replace('这不是后台功能，而是一种前台视觉表达。主办方只需要配置哪些企划需要展示，网站负责把它做得像活动场刊。','');const sponsorSection=$('.sponsors')?.closest('section');if(sponsorSection)sponsorSection.id='sponsors';$('.scroll-progress')?.remove();
-const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],send=m=>parent.postMessage(m,ORIGIN);
+const $=s=>document.querySelector(s),$=s=>[...document.querySelectorAll(s)],qa=s=>[...document.querySelectorAll(s)],send=m=>parent.postMessage(m,ORIGIN);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function getDeep(path){return path.split('.').reduce((o,k)=>o?.[/^\d+$/.test(k)?Number(k):k],state)}
 function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a.length-1;i++)o=o[/^\d+$/.test(a[i])?Number(a[i]):a[i]];o[/^\d+$/.test(a.at(-1))?Number(a.at(-1)):a.at(-1)]=value}
@@ -77,7 +77,7 @@ function renderPassport(){
 function passportStorageKey(){return 'oe-passport:'+String(state.eventName||'event').toLowerCase().replace(/\s+/g,'-')}
 function getPassportHits(){try{return JSON.parse(localStorage.getItem(passportStorageKey())||'[]')}catch{return []}}
 function addPassportHit(code){const hits=new Set(getPassportHits());hits.add(String(code).toUpperCase());localStorage.setItem(passportStorageKey(),JSON.stringify([...hits]));updatePassportStamps()}
-function updatePassportStamps(){const hits=new Set(getPassportHits());$('[data-pass-code]').forEach(el=>el.classList.toggle('hit',hits.has(String(el.dataset.passCode).toUpperCase())))}
+function updatePassportStamps(){const hits=new Set(getPassportHits());qa('[data-pass-code]').forEach(el=>el.classList.toggle('hit',hits.has(String(el.dataset.passCode).toUpperCase())))}
 function consumeStampParam(){
  const u=new URL(location.href),code=u.searchParams.get('stamp');if(!code)return;
  const valid=(state.passport?.tasks||[]).some(t=>String(t.code).toUpperCase()===String(code).toUpperCase());
@@ -88,7 +88,7 @@ function applyModules(){
  $('.ribbon')?.classList.toggle('oe-page-hidden',!moduleOn('ribbon'));
  pageModules.forEach(id=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(id)));
  const navMap={tickets:'tickets',highlights:'highlights',booths:'booths',stage:'stage',community:'community'};
- Object.entries(navMap).forEach(([id,key])=>$('.nav a[href="#'+id+'"],.mobile-dock a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
+ Object.entries(navMap).forEach(([id,key])=>qa('.nav a[href="#'+id+'"],.mobile-dock a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
  renderQuickAccess();renderPassport();
 }
 function showPage(page,updateHash=true){
