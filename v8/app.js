@@ -1,7 +1,7 @@
-import {template01} from './templates/01-ip-only.js';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.0.0-alpha2';
 
 const $=s=>document.querySelector(s);const canvas=$('#canvas');const inspector=$('#inspector');const saveState=$('#saveState');const toastEl=$('#toast');
-let state=structuredClone(template01.defaults);let preview=false;let selected=null;let history=[];let future=[];let saveTimer=null;
+let state=structuredClone(template01.defaults);let preview=false;let selected=null;let history=[];let future=[];let saveTimer=null;document.documentElement.dataset.studio='v8-alpha2';
 try{const saved=localStorage.getItem('onlyevent-studio-v8:01');if(saved)state={...state,...JSON.parse(saved)}}catch{}
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
