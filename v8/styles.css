@@ -324,3 +324,181 @@ button{color:inherit}
   .canvas-toolbar{grid-template-columns:1fr auto}
   .canvas-title{display:none}
 }
+/* richer inspector */
+.inspector{
+  display:flex;
+  flex-direction:column;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.96),rgba(249,249,252,.92));
+}
+.inspector-header{
+  margin:-2px -2px 0;
+  padding:4px 4px 13px;
+}
+.inspector-header b{font-size:13px;letter-spacing:-.015em}
+.inspector-context{
+  margin-top:12px;
+  display:grid;
+  grid-template-columns:34px 1fr 28px;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border:1px solid #e6e6ec;
+  border-radius:13px;
+  background:#fff;
+  box-shadow:0 4px 12px rgba(25,25,36,.04);
+}
+.context-icon{
+  display:grid;
+  place-items:center;
+  width:34px;height:34px;
+  border-radius:10px;
+  background:linear-gradient(145deg,#f2efff,#fff0f6);
+  color:#6f58e8;
+  font-size:15px;
+  border:1px solid #e6defd;
+}
+.context-copy{display:grid;gap:2px;min-width:0}
+.context-copy span{font-size:8px;text-transform:uppercase;letter-spacing:.11em;color:#aaaab3;font-weight:850}
+.context-copy b{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.context-action{
+  width:28px;height:28px;padding:0!important;
+  display:grid;place-items:center;
+  border-radius:8px!important;
+  background:#f6f6f9!important;
+  color:#7c7c86;
+}
+.inspector-empty{
+  min-height:0;
+  flex:1;
+  justify-content:flex-start;
+  padding:30px 18px 20px;
+}
+.empty-visual{
+  width:82px;height:66px;
+  margin-bottom:20px;
+  border-radius:16px;
+}
+.empty-visual:after{
+  content:"";
+  position:absolute;
+  width:18px;height:18px;
+  right:-7px;bottom:-7px;
+  border-radius:7px;
+  background:#18181d;
+  box-shadow:0 4px 10px rgba(20,20,28,.15);
+}
+.inspector-empty b{font-size:12px}
+.inspector-empty p{max-width:230px;font-size:10px;line-height:1.65}
+.empty-shortcuts{
+  display:flex;
+  gap:6px;
+  margin-top:15px;
+}
+.empty-shortcuts span{
+  padding:5px 8px;
+  border-radius:999px;
+  background:#f1f1f5;
+  border:1px solid #e7e7ed;
+  color:#7d7d87;
+  font-size:8px;
+  font-weight:800;
+}
+.inspector-footer{
+  margin-top:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:11px 4px 2px;
+  border-top:1px solid #ececf1;
+  color:#9898a2;
+  font-size:9px;
+}
+.inspector-footer b{
+  color:#27865c;
+  font-size:9px;
+  font-weight:850;
+}
+
+/* dynamic inspector field presentation */
+.inspector h3{
+  margin:14px 0 8px;
+  padding:0 2px;
+  font-size:11px;
+  color:#2c2c33;
+}
+.inspector label{
+  margin:10px 0 14px;
+  padding:12px;
+  border:1px solid #e7e7ec;
+  border-radius:13px;
+  background:#fff;
+  box-shadow:0 3px 10px rgba(28,28,39,.035);
+}
+.inspector label:before{
+  content:"内容";
+  display:block;
+  margin-bottom:2px;
+  font-size:8px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#aaaab3;
+  font-weight:850;
+}
+.inspector textarea,.inspector input{
+  margin-top:4px;
+  border:1px solid #e2e2e7;
+  background:#fafafd;
+}
+.inspector textarea:focus,.inspector input:focus{
+  background:#fff;
+}
+.inspector .row{
+  padding:12px;
+  border:1px solid #e7e7ec;
+  background:#fff;
+  border-radius:13px;
+}
+.inspector .row:before{
+  content:"快捷操作";
+  width:100%;
+  font-size:8px;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  color:#aaaab3;
+  font-weight:850;
+  margin-bottom:3px;
+}
+.inspector .row button{
+  flex:1;
+  min-width:88px;
+  background:#f7f7fa;
+}
+.inspector .hint{
+  margin:8px 2px 0;
+  padding:10px 11px;
+  border-radius:10px;
+  background:#f5f3ff;
+  color:#7165a8;
+  border:1px solid #e7e1ff;
+}
+
+/* future section-card rhythm */
+.inspector-section{
+  margin-top:12px;
+  border:1px solid #e7e7ec;
+  border-radius:14px;
+  background:#fff;
+  overflow:hidden;
+}
+.inspector-section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 12px;
+  border-bottom:1px solid #efeff3;
+  font-size:9px;
+  font-weight:850;
+  color:#5b5b64;
+}
+.inspector-section-body{padding:10px 12px}

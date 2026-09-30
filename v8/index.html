@@ -74,15 +74,33 @@
     <aside class="inspector" id="inspector">
       <div class="inspector-header">
         <div>
-          <span class="inspector-kicker">属性</span>
-          <b>内容设置</b>
+          <span class="inspector-kicker">属性面板</span>
+          <b>内容与样式</b>
         </div>
         <span class="inspector-badge">LIVE</span>
       </div>
+
+      <div class="inspector-context">
+        <div class="context-icon">◫</div>
+        <div class="context-copy">
+          <span>当前选择</span>
+          <b>未选择元素</b>
+        </div>
+        <button class="context-action" type="button" aria-label="定位">⌖</button>
+      </div>
+
       <div class="inspector-empty">
         <div class="empty-visual"><span></span><span></span><span></span></div>
         <b>选择页面内容</b>
         <p>点击画布中的标题、图片或可编辑文字，这里会显示对应设置。</p>
+        <div class="empty-shortcuts">
+          <span>文字</span><span>图片</span><span>模块</span>
+        </div>
+      </div>
+
+      <div class="inspector-footer">
+        <span>自动保存</span>
+        <b>已开启</b>
       </div>
     </aside>
   </main>
