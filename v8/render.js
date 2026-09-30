@@ -1,8 +1,6 @@
 import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.3.0';
 import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.4.0';
 import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.4.0';
-import {createCollections} from '/v8/renderer/collections.js?v=8.4.0';
-import {createPassport} from '/v8/renderer/passport.js?v=8.4.0';
 const ORIGIN=location.origin;let state={},mode='edit',revealObs=null,stampObs=null,progressObs=null;
 window.__oeRenderLoadId=(window.__oeRenderLoadId||0)+1;
 const runtimeStyle=document.createElement('style');
@@ -13,12 +11,33 @@ const send=m=>parent.postMessage(m,ORIGIN);
 const sponsorSection=$('.sponsors')?.closest('section');if(sponsorSection)sponsorSection.id='sponsors';$('.scroll-progress')?.remove();
 const getDeep=path=>getByPath(state,path);
 const setDeep=(path,value)=>setByPath(state,path,value);
-const fieldMap={eventName:()=>$('.brand'),tagline:()=>$('.hero-copy p'),date:()=>qa('.meta .pill')[0],location:()=>qa('.meta .pill')[1],edition:()=>qa('.meta .pill')[2],sticker1:()=>qa('.sticker .editable-copy')[0],sticker2:()=>qa('.sticker .editable-copy')[1],sticker3:()=>qa('.sticker .editable-copy')[2],ribbon1:()=>qa('.ribbon-edit')[0],ribbon2:()=>qa('.ribbon-edit')[1],ribbon3:()=>qa('.ribbonconst {field,openGiftLightbox,renderTickets,renderHighlights,renderSchedule,renderCollections}=createCollections({
-  qs:$,
-  escapeHtml:esc,
-  getState:()=>state,
-  getMode:()=>mode
-});enderCollections(){renderTickets();renderHighlights();renderSchedule()}
+const fieldMap={eventName:()=>$('.brand'),tagline:()=>$('.hero-copy p'),date:()=>qa('.meta .pill')[0],location:()=>qa('.meta .pill')[1],edition:()=>qa('.meta .pill')[2],sticker1:()=>qa('.sticker .editable-copy')[0],sticker2:()=>qa('.sticker .editable-copy')[1],sticker3:()=>qa('.sticker .editable-copy')[2],ribbon1:()=>qa('.ribbon-edit')[0],ribbon2:()=>qa('.ribbon-edit')[1],ribbon3:()=>qa('.ribbon-edit')[2],ribbon4:()=>qa('.ribbon-edit')[3],heroImage:()=>$('.kv')};
+
+function field(path,value,tag='span',cls=''){return '<'+tag+(cls?' class="'+cls+'"':'')+' data-oe-field="'+path+'" contenteditable="'+(mode==='edit')+'" spellcheck="false">'+esc(value)+'</'+tag+'>'}
+function ensureLightbox(){
+ let dlg=$('#giftLightbox');if(dlg)return dlg;
+ dlg=document.createElement('dialog');dlg.id='giftLightbox';dlg.className='gift-lightbox';dlg.innerHTML='<button type="button" aria-label="关闭">×</button><img alt="赠品图片">';
+ document.body.appendChild(dlg);dlg.querySelector('button').onclick=()=>dlg.close();dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});return dlg;
+}
+function openGiftLightbox(src){if(!src)return;const dlg=ensureLightbox();dlg.querySelector('img').src=src;dlg.showModal()}
+function cleanupTicketShell(){$('#tickets .section-no')?.remove();$('#tickets .ticket-actions')?.remove();$('.nav .btn')?.remove()}
+function renderTickets(){
+ cleanupTicketShell();
+ const box=$('#tickets .ticket-grid');if(!box)return;
+ box.innerHTML=(state.tickets||[]).map((x,i)=>{
+   const image=x.image?'<button class="ticket-gift-image" type="button" data-ticket-image="'+i+'" aria-label="查看赠品图片"><img src="'+esc(x.image)+'" alt="'+esc(x.name||'')+' 赠品"></button>':'';
+   return '<article class="ticket cut-ticket reveal in" data-oe-item="tickets" data-oe-index="'+i+'"><div class="ticket-top"><div class="ticket-copy">'+field('tickets.'+i+'.name',x.name,'h3')+'<div class="price" data-oe-field="tickets.'+i+'.price" contenteditable="'+(mode==='edit')+'" spellcheck="false">'+esc(x.price)+'</div></div>'+image+'</div><div class="gift"><b>包含 / 特典</b>\n'+field('tickets.'+i+'.gift',x.gift,'span')+'</div>'+field('tickets.'+i+'.note',x.note||'','small')+'</article>';
+ }).join('');
+}
+function renderHighlights(){
+ const box=$('#highlights .specials');if(!box)return;
+ box.innerHTML=(state.highlights||[]).map((x,i)=>'<article class="special reveal in" data-oe-item="highlights" data-oe-index="'+i+'" style="--tone:'+esc(x.tone||'#ffe45c')+'">'+field('highlights.'+i+'.stamp',x.stamp||('STAMP '+String(i+1).padStart(2,'0')),'span','stamp')+field('highlights.'+i+'.title',x.title,'h3')+field('highlights.'+i+'.text',x.text,'p')+'</article>').join('');
+}
+function renderSchedule(){
+ const box=$('#stage .timeline');if(!box)return;
+ box.innerHTML=(state.schedule||[]).map((x,i)=>'<div class="event reveal in" data-oe-item="schedule" data-oe-index="'+i+'">'+field('schedule.'+i+'.time',x.time,'span')+field('schedule.'+i+'.title',x.title,'b')+field('schedule.'+i+'.stage',x.stage,'span')+'<span>→</span></div>').join('');
+}
+function renderCollections(){renderTickets();renderHighlights();renderSchedule()}
 function applyField(path,value){
  if(path.includes('.')){
    setDeep(path,value);
@@ -48,13 +67,26 @@ function renderQuickAccess(){
   ['community','06','社群公告','查看社群 →','home'],
   ['sponsors','07','赞助支持','查看支持 →','home']
  ];
- grid.innerHTML=defs.filter(x=>moduleOn(x[0])).map(x=>'<a class="quick-card reveal in" href="#'+x[0]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[0]+'"><span>'+x[1]+const {renderPassport,consumeStampParam}=createPassport({
-  qs:$,
-  qsa:qa,
-  escapeHtml:esc,
-  getState:()=>state
-});
-mp');history.replaceState(null,'',u.pathname+u.search+u.hash);
+ grid.innerHTML=defs.filter(x=>moduleOn(x[0])).map(x=>'<a class="quick-card reveal in" href="#'+x[0]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[0]+'"><span>'+x[1]+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
+}
+function renderPassport(){
+ const section=$('#passport');if(!section)return;
+ const tasks=state.passport?.tasks||[],required=Math.min(Number(state.passport?.required||tasks.length),tasks.length);
+ const passStamps=section.querySelector('.pass-stamps'),zones=section.querySelector('.zone-list');
+ if(passStamps)passStamps.innerHTML=tasks.map(t=>'<div class="pass-stamp" data-pass-code="'+esc(t.code)+'">'+esc(t.name)+'</div>').join('');
+ if(zones)zones.innerHTML=tasks.map((t,i)=>'<article class="zone"><span class="zone-no">'+String(i+1).padStart(2,'0')+'</span><div><b>'+esc(t.name)+'</b><small>'+esc(t.location||'')+'</small></div><span>QR</span></article>').join('');
+ const p=section.querySelector('.passbook p');if(p)p.textContent=(state.passport?.reward||'')+' · '+required+' / '+tasks.length;
+ updatePassportStamps();
+}
+function passportStorageKey(){return 'oe-passport:'+String(state.eventName||'event').toLowerCase().replace(/\s+/g,'-')}
+function getPassportHits(){try{return JSON.parse(localStorage.getItem(passportStorageKey())||'[]')}catch{return []}}
+function addPassportHit(code){const hits=new Set(getPassportHits());hits.add(String(code).toUpperCase());localStorage.setItem(passportStorageKey(),JSON.stringify([...hits]));updatePassportStamps()}
+function updatePassportStamps(){const hits=new Set(getPassportHits());qa('[data-pass-code]').forEach(el=>el.classList.toggle('hit',hits.has(String(el.dataset.passCode).toUpperCase())))}
+function consumeStampParam(){
+ const u=new URL(location.href),code=u.searchParams.get('stamp');if(!code)return;
+ const valid=(state.passport?.tasks||[]).some(t=>String(t.code).toUpperCase()===String(code).toUpperCase());
+ if(valid)addPassportHit(code);
+ u.searchParams.delete('stamp');history.replaceState(null,'',u.pathname+u.search+u.hash);
 }
 function applyModules(){
  $('.ribbon')?.classList.toggle('oe-page-hidden',!moduleOn('ribbon'));
