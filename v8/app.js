@@ -6,6 +6,7 @@ let state=structuredClone(template01.defaults),preview=false,history=[],future=[
 try{const saved=localStorage.getItem(STORAGE);if(saved)state={...state,...JSON.parse(saved)}}catch{}
 if(!state.edition||state.edition==='首届')state.edition=template01.defaults.edition;
 if(!state.navigationUrl)state.navigationUrl=template01.defaults.navigationUrl;
+if(state.modules?.activities===undefined&&state.modules?.stage!==undefined){state.modules.activities=state.modules.stage;delete state.modules.stage}
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(t){toastEl.textContent=t;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),1400)}
 function save(){saveState.textContent='保存中…';clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));saveState.textContent='已保存'},180)}
@@ -15,7 +16,7 @@ function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a
 function getDeep(path){return path.split('.').reduce((o,k)=>o?.[/^\d+$/.test(k)?Number(k):k],state)}
 function send(message){if(frameReady&&iframe?.contentWindow)iframe.contentWindow.postMessage(message,ORIGIN)}
 
-const moduleLabels={booths:'摊位 / 地图',stage:'舞台日程'};
+const moduleLabels={booths:'摊位 / 地图',activities:'活动 / 日程'};
 function syncModuleControls(){
  document.querySelectorAll('[data-module]').forEach(input=>{input.checked=state.modules?.[input.dataset.module]!==false});
  document.querySelectorAll('[data-module-page]').forEach(btn=>{btn.hidden=state.modules?.[btn.dataset.modulePage]===false});

@@ -22,7 +22,7 @@ export const template01 = {
     ribbon2:'特典票限量',
     ribbon3:'COS 自由行开放',
     ribbon4:'舞台企划更新',
-    modules:{ribbon:true,tickets:true,highlights:true,passport:false,booths:true,stage:true,community:true,sponsors:false},
+    modules:{ribbon:true,tickets:true,highlights:true,passport:false,booths:true,activities:true,guests:false,guide:false,freewalk:false,itasha:false,community:true,sponsors:false},
     passport:{
       required:3,
       reward:'完成 3 个印章可领取限定纪念物',
@@ -55,6 +55,21 @@ export const template01 = {
       {id:'s2',time:'13:30',title:'主题问答 / 互动游戏',stage:'TALK'},
       {id:'s3',time:'15:00',title:'COS 特别舞台',stage:'MAIN STAGE'},
       {id:'s4',time:'17:30',title:'幸运抽选 & 闭幕',stage:'MAIN STAGE'}
-    ]
+    ],
+    guests:[
+      {id:'g1',name:'特邀嘉宾',role:'Guest / Creator',intro:'嘉宾介绍与作品信息由主办方填写。'}
+    ],
+    guide:{
+      title:'观展指南',
+      text:'交通、入场、寄存、更衣、摄影规则等信息由主办方填写。'
+    },
+    freewalk:{
+      title:'自由行',
+      text:'自由行报名、集合方式与参与规则由主办方填写。'
+    },
+    itasha:{
+      title:'痛车展示',
+      text:'痛车报名、展示区域与现场规则由主办方填写。'
+    }
   }
 };

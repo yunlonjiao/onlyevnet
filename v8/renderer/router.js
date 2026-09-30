@@ -1,5 +1,6 @@
 export function createRouter({qs:$,qsa:qa,getState,renderPassport}){
-  const standalonePages=['booths','stage'],homeModules=['tickets','highlights','passport','community','sponsors'];
+  const standalonePages=['booths','activities'];
+  const homeModules=['tickets','highlights','passport','guests','guide','freewalk','itasha','community','sponsors'];
   let currentPage='home';
   function getCurrentPage(){return currentPage}
   function setCurrentPage(page){currentPage=page||'home'}
@@ -9,20 +10,24 @@ export function createRouter({qs:$,qsa:qa,getState,renderPassport}){
   function renderQuickAccess(){
     const grid=$('.quick-grid');if(!grid)return;
     const defs=[
-      ['tickets','01','票务与特典','查看票种 →','home'],
-      ['highlights','02','特别企划','查看企划 →','home'],
-      ['passport','03','活动护照','开始集章 →','home'],
-      ['booths','04','摊位与地图','查找摊位 →','page'],
-      ['stage','05','舞台日程','查看节目 →','page'],
-      ['community','06','社群公告','查看社群 →','home'],
-      ['sponsors','07','赞助支持','查看支持 →','home']
+      ['tickets','票务与特典','查看票种 →','home'],
+      ['highlights','特别企划','查看企划 →','home'],
+      ['passport','活动护照','开始集章 →','home'],
+      ['booths','摊位与地图','查找摊位 →','page'],
+      ['activities','活动 / 日程','查看活动 →','page'],
+      ['guests','嘉宾','查看嘉宾 →','home'],
+      ['guide','观展指南','查看指南 →','home'],
+      ['freewalk','自由行','参与说明 →','home'],
+      ['itasha','痛车','报名 / 展示 →','home'],
+      ['community','社群公告','查看社群 →','home'],
+      ['sponsors','赞助支持','查看支持 →','home']
     ];
-    grid.innerHTML=defs.filter(x=>moduleOn(x[0])).map(x=>'<a class="quick-card reveal in" href="#'+x[0]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[0]+'"><span>'+x[1]+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
+    grid.innerHTML=defs.filter(x=>moduleOn(x[0])).map((x,i)=>'<a class="quick-card reveal in" href="#'+x[0]+'" data-target-mode="'+x[3]+'" data-page-link="'+x[0]+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+x[1]+'</b><small>'+x[2]+'</small></a>').join('');
   }
   function applyModules(){
     $('.ribbon')?.classList.toggle('oe-page-hidden',!moduleOn('ribbon'));
     [...homeModules,...standalonePages].forEach(id=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(id)));
-    const navMap={tickets:'tickets',highlights:'highlights',booths:'booths',stage:'stage',community:'community'};
+    const navMap={tickets:'tickets',highlights:'highlights',booths:'booths',activities:'activities',community:'community'};
     Object.entries(navMap).forEach(([id,key])=>qa('.nav a[href="#'+id+'"],.mobile-dock a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
     renderQuickAccess();renderPassport();
   }
