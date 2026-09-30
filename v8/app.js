@@ -22,7 +22,14 @@ window.addEventListener('message',e=>{
  if(m.type==='OE_FIELD_CHANGE'){setDeep(m.path,m.value);const f=$('#fieldInput');if(f&&f.dataset.path===m.path)f.value=m.value;return}
  if(m.type==='OE_SELECT_IMAGE'){openImageInspector(m.path);return}
  if(m.type==='OE_SELECT_ITEM'){openItemInspector(m.collection,m.index);return}
+ if(m.type==='OE_EXPORT_HTML_RESULT'){downloadPublishedHtml(m.html);return}
 });
+function downloadPublishedHtml(html){
+ const blob=new Blob([html],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ const name=(state.eventName||'onlyevent').replace(/[\\/:*?"<>|]+/g,'-').trim()||'onlyevent';
+ a.href=url;a.download=name+'.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('已生成游客站');
+}
+
 function openFieldInspector(path){
  const value=getDeep(path);
  inspector.innerHTML='<h3>编辑内容</h3><label>内容<textarea id="fieldInput" data-path="'+esc(path)+'">'+esc(value)+'</textarea></label>';
@@ -87,5 +94,5 @@ $('#previewBtn').onclick=()=>{preview=!preview;$('#previewBtn').textContent=prev
 $('.page-nav').addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(b)send({type:'OE_SCROLL_TO',id:b.dataset.jump})});
 $('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory()};
 $('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory()};
-$('#publishBtn').onclick=()=>toast('发布暂未开放');
+$('#publishBtn').onclick=()=>send({type:'OE_EXPORT_HTML'});
 mountFrame();syncHistory();
