@@ -26,7 +26,7 @@ function ticketHtml(x,i){return `<article class="oe-card" data-item="tickets.${i
 function highlightHtml(x,i){return `<article class="oe-special" data-item="highlights.${i}"><h3 data-edit="highlights.${i}.title" contenteditable="true">${esc(x.title)}</h3><p data-edit="highlights.${i}.text" contenteditable="true">${esc(x.text)}</p></article>`}
 function boothHtml(x,i){return `<article class="oe-card" data-item="booths.${i}"><small data-edit="booths.${i}.no" contenteditable="true">${esc(x.no)}</small><h3 data-edit="booths.${i}.name" contenteditable="true">${esc(x.name)}</h3><p data-edit="booths.${i}.type" contenteditable="true">${esc(x.type)}</p></article>`}
 function scheduleHtml(x,i){return `<div class="oe-event" data-item="schedule.${i}"><span data-edit="schedule.${i}.time" contenteditable="true">${esc(x.time)}</span><b data-edit="schedule.${i}.title" contenteditable="true">${esc(x.title)}</b><span data-edit="schedule.${i}.stage" contenteditable="true">${esc(x.stage)}</span></div>`}
-function mount(){canvas.innerHTML=siteHtml();bindCanvas();syncPreviewClass()}
+function mount(){canvas.innerHTML=siteHtml();bindCanvas();syncPreviewClass();initCanvasMotion()}
 function syncPreviewClass(){canvas.classList.toggle('preview',preview);canvas.querySelectorAll('[contenteditable]').forEach(el=>el.contentEditable=preview?'false':'true')}
 function bindCanvas(){canvas.addEventListener('input',onInput);canvas.addEventListener('click',onClick);canvas.addEventListener('focusin',onFocus,true)}
 function onInput(e){const el=e.target.closest('[data-edit]');if(!el||preview)return;setDeep(el.dataset.edit,el.textContent)}
@@ -42,10 +42,29 @@ function moveItem(root,i,d){const j=i+d;if(j<0||j>=state[root].length)return;che
 function deleteItem(root,i){if(!confirm('删除这个条目？'))return;checkpoint();state[root].splice(i,1);scheduleSave();rerenderList(root);inspector.innerHTML='<div class="inspector-empty"><b>已删除</b></div>'}
 function rerenderList(root,focusIndex){const map={tickets:['ticketList',ticketHtml],highlights:['highlightList',highlightHtml],booths:['boothList',boothHtml],schedule:['scheduleList',scheduleHtml]};const [id,fn]=map[root];const list=canvas.querySelector('#'+id);const add=list.querySelector('[data-add]');[...list.querySelectorAll('[data-item]')].forEach(x=>x.remove());state[root].forEach((x,i)=>{const wrap=document.createElement('div');wrap.innerHTML=fn(x,i);list.insertBefore(wrap.firstElementChild,add)});if(Number.isInteger(focusIndex))list.querySelector(`[data-item="${root}.${focusIndex}"]`)?.scrollIntoView({block:'center'})}
 $('#imageInput').addEventListener('change',e=>{const file=e.target.files?.[0];const path=e.target.dataset.path;e.target.value='';if(!file||!path)return;checkpoint();const r=new FileReader();r.onload=()=>{setDeep(path,r.result);const el=canvas.querySelector(`[data-image="${CSS.escape(path)}"]`);if(el)el.style.backgroundImage=`linear-gradient(180deg,transparent,#0004),url("${r.result}")`;toast('图片已替换')};r.readAsDataURL(file)})
+
+function initCanvasMotion(){
+  const site=canvas.querySelector('.oe-site'); if(!site)return;
+  const revealTargets=[...site.querySelectorAll('.oe-section,.oe-card,.oe-special,.oe-event,.oe-community article')];
+  revealTargets.forEach((el,i)=>{el.classList.add('oe-reveal');el.style.setProperty('--oe-delay',Math.min(i%6,5)*55+'ms')});
+  if(window.__oeStudioObserver) window.__oeStudioObserver.disconnect();
+  window.__oeStudioObserver=new IntersectionObserver(entries=>entries.forEach(e=>{
+    if(e.isIntersecting)e.target.classList.add('oe-in');
+  }),{root:canvas,threshold:.08});
+  revealTargets.forEach(el=>window.__oeStudioObserver.observe(el));
+  site.classList.toggle('oe-motion-preview',preview);
+  site.classList.toggle('oe-motion-edit',!preview);
+}
+function restartPreviewMotion(){
+  const site=canvas.querySelector('.oe-site'); if(!site)return;
+  site.classList.remove('oe-preview-enter');
+  void site.offsetWidth;
+  site.classList.add('oe-preview-enter');
+}
 $('#deviceBtn').onclick=()=>{canvas.classList.toggle('mobile');$('#deviceBtn').textContent=canvas.classList.contains('mobile')?'桌面':'手机'}
-$('#previewBtn').onclick=()=>{preview=!preview;$('#previewBtn').textContent=preview?'继续编辑':'预览';syncPreviewClass();toast(preview?'现在看到的是发布效果':'已返回编辑')}
+$('#previewBtn').onclick=()=>{preview=!preview;$('#previewBtn').textContent=preview?'继续编辑':'预览';syncPreviewClass();initCanvasMotion();if(preview)restartPreviewMotion();toast(preview?'现在看到的是发布效果':'已返回编辑')}
 $('.page-nav').addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(!b)return;canvas.querySelector('#'+b.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'})})
 $('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());mount();scheduleSave();syncHistory()}
 $('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());mount();scheduleSave();syncHistory()}
 $('#publishBtn').onclick=()=>{const html='<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+canvas.innerHTML;const blob=new Blob([html],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='onlyevent-01.html';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('已导出 HTML')}
-mount();syncHistory();
+mount();initCanvasMotion();syncHistory();
