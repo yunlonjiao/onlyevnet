@@ -1,9 +1,11 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.1.0';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.6.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
 let state=structuredClone(template01.defaults),preview=false,history=[],future=[],saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home';
 try{const saved=localStorage.getItem(STORAGE);if(saved)state={...state,...JSON.parse(saved)}}catch{}
+if(!state.edition||state.edition==='首届')state.edition=template01.defaults.edition;
+if(!state.navigationUrl)state.navigationUrl=template01.defaults.navigationUrl;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(t){toastEl.textContent=t;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),1400)}
 function save(){saveState.textContent='保存中…';clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));saveState.textContent='已保存'},180)}
@@ -32,7 +34,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.1.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.6.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -40,7 +42,12 @@ window.addEventListener('message',e=>{
  if(m.type==='OE_RENDER_ERROR'){toast(m.stage==='fallback'?'预览加载失败':'模块加载异常，已自动切换安全渲染');return}
  if(m.type==='OE_SELECT_FIELD'){focusCheckpointTaken=false;openFieldInspector(m.path);return}
  if(m.type==='OE_FIELD_FOCUS'){if(!focusCheckpointTaken){checkpoint();focusCheckpointTaken=true}return}
- if(m.type==='OE_FIELD_CHANGE'){setDeep(m.path,m.value);const f=$('#fieldInput');if(f&&f.dataset.path===m.path)f.value=m.value;return}
+ if(m.type==='OE_FIELD_CHANGE'){
+ setDeep(m.path,m.value);
+ const f=$('#fieldInput');if(f&&f.dataset.path===m.path)f.value=m.value;
+ const linked=inspector.querySelector('[data-sync-path="'+CSS.escape(m.path)+'"]');if(linked)linked.value=m.value;
+ return
+}
  if(m.type==='OE_SELECT_IMAGE'){openImageInspector(m.path);return}
  if(m.type==='OE_SELECT_ITEM'){openItemInspector(m.collection,m.index);return}
  if(m.type==='OE_EXPORT_HTML_RESULT'){downloadPublishedHtml(m.html);return}
@@ -51,11 +58,51 @@ function downloadPublishedHtml(html){
  a.href=url;a.download=name+'.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('已生成游客站');
 }
 
+function bindInspectorStateInput(input,path,{clean=false,number=false}={}){
+ let started=false;
+ input.addEventListener('input',e=>{
+   if(!started){checkpoint();started=true}
+   const value=number?Number(e.target.value):e.target.value;
+   setDeep(path,value);send({type:'OE_PATCH_FIELD',path,value});
+   if(path==='heroTitleSize'){const out=$('#heroTitleSizeValue');if(out)out.textContent=value+' px'}
+ });
+ if(clean)input.addEventListener('blur',e=>{
+   const value=cleanValue(e.target.value);
+   if(value!==e.target.value)e.target.value=value;
+   setDeep(path,value);send({type:'OE_PATCH_FIELD',path,value});
+ });
+}
+
+function openHeroTitleInspector(){
+ inspector.innerHTML='<h3>主视觉标题</h3><div class="item-fields">'+
+  '<label><span>第一行</span><input data-sync-path="heroTitle1" value="'+esc(state.heroTitle1||'')+'"></label>'+
+  '<label><span>第二行</span><input data-sync-path="heroTitle2" value="'+esc(state.heroTitle2||'')+'"></label>'+
+  '<label><span>第三行</span><input data-sync-path="heroTitle3" value="'+esc(state.heroTitle3||'')+'"></label>'+
+  '<label><span>字号 · <b id="heroTitleSizeValue">'+Number(state.heroTitleSize||126)+' px</b></span><input type="range" min="56" max="160" step="1" data-sync-path="heroTitleSize" value="'+Number(state.heroTitleSize||126)+'"></label>'+
+  '<label><span>主文字颜色</span><input type="color" data-sync-path="heroTitleColor" value="'+esc(state.heroTitleColor||'#17151b')+'"></label>'+
+  '<label><span>强调色</span><input type="color" data-sync-path="heroTitleAccentColor" value="'+esc(state.heroTitleAccentColor||'#ff5f91')+'"></label>'+
+ '</div>';
+ inspector.querySelectorAll('[data-sync-path]').forEach(input=>bindInspectorStateInput(input,input.dataset.syncPath,{clean:input.type==='text',number:input.type==='range'}));
+}
+
+function openAddressInspector(){
+ inspector.innerHTML='<h3>地址与导航</h3><div class="item-fields">'+
+  '<label><span>场馆地址</span><input data-sync-path="edition" value="'+esc(state.edition||'')+'"></label>'+
+  '<label><span>导航链接</span><input type="url" data-sync-path="navigationUrl" value="'+esc(state.navigationUrl||'')+'" placeholder="https://"></label>'+
+ '</div><div class="row"><button id="testNavigation" type="button">打开导航 ↗</button></div>';
+ bindInspectorStateInput(inspector.querySelector('[data-sync-path="edition"]'),'edition',{clean:true});
+ bindInspectorStateInput(inspector.querySelector('[data-sync-path="navigationUrl"]'),'navigationUrl',{clean:true});
+ $('#testNavigation').onclick=()=>{const url=String(state.navigationUrl||'').trim();if(url.startsWith('https://')||url.startsWith('http://'))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
+}
+
 function openFieldInspector(path){
+ if(path==='edition'){openAddressInspector();return}
+ if(path.startsWith('heroTitle')){openHeroTitleInspector();return}
  const value=getDeep(path);
  inspector.innerHTML='<h3>编辑内容</h3><label>内容<textarea id="fieldInput" data-path="'+esc(path)+'">'+esc(value)+'</textarea></label>';
  const input=$('#fieldInput');let started=false;fitTextarea(input);
- input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep(path,e.target.value);send({type:'OE_PATCH_FIELD',path,value:e.target.value});fitTextarea(e.target)});input.addEventListener('blur',e=>{const cleaned=cleanValue(e.target.value);if(cleaned!==e.target.value){e.target.value=cleaned;setDeep(path,cleaned);send({type:'OE_PATCH_FIELD',path,value:cleaned});fitTextarea(e.target)}});
+ input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep(path,e.target.value);send({type:'OE_PATCH_FIELD',path,value:e.target.value});fitTextarea(e.target)});
+ input.addEventListener('blur',e=>{const cleaned=cleanValue(e.target.value);if(cleaned!==e.target.value){e.target.value=cleaned;setDeep(path,cleaned);send({type:'OE_PATCH_FIELD',path,value:cleaned});fitTextarea(e.target)}});
 }
 const collectionMeta={
  tickets:{title:'票务',fields:[['name','票名'],['price','价格'],['gift','特典'],['note','备注']]},

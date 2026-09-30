@@ -3,6 +3,8 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
   document.addEventListener('input',e=>{const el=e.target.closest?.('[data-oe-field]');if(!el||getMode()!=='edit')return;const path=el.dataset.oeField;setDeep(path,el.textContent);if(path.startsWith('ribbon')){const i=Number(path.replace('ribbon',''))-1;qa('[data-ribbon-mirror="'+i+'"]').forEach(x=>x.textContent=el.textContent)}send({type:'OE_FIELD_CHANGE',path,value:el.textContent})});
   document.addEventListener('click',e=>{
     if(e.target.closest?.('.brand')){e.preventDefault();router.showPage('home');return}
+    const venueLink=e.target.closest?.('.venue-nav');
+    if(venueLink&&getMode()==='edit'){e.preventDefault();send({type:'OE_SELECT_FIELD',path:'edition'});return}
     const giftImage=e.target.closest?.('[data-ticket-image]');
     if(giftImage){const i=Number(giftImage.dataset.ticketImage);if(getMode()==='preview'){e.preventDefault();openGiftLightbox(getState().tickets?.[i]?.image);return}else{e.preventDefault();send({type:'OE_SELECT_ITEM',collection:'tickets',index:i});return}}
     const item=e.target.closest?.('[data-oe-item]');if(item&&getMode()==='edit')send({type:'OE_SELECT_ITEM',collection:item.dataset.oeItem,index:Number(item.dataset.oeIndex)});
