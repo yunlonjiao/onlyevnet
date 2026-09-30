@@ -15,3 +15,39 @@
 .oe-card,.oe-special,.oe-community article{transition:transform .18s ease,box-shadow .18s ease}
 .oe-editing [data-item]:hover{box-shadow:0 0 0 3px #7b61ff18}
 @media(max-width:1100px){.studio-shell{grid-template-columns:170px minmax(0,1fr)}.inspector{position:fixed;right:0;top:58px;width:290px;z-index:90;box-shadow:-12px 0 30px #0002}.canvas-wrap{padding-right:310px}}
+
+/* Studio motion runtime */
+.oe-site{--oe-ease:cubic-bezier(.2,.8,.2,1)}
+.oe-motion-edit .oe-kv{animation:oeEditKv 7s ease-in-out infinite alternate}
+.oe-motion-edit .oe-sticker{animation:oeEditFloat 5.4s ease-in-out infinite}
+.oe-motion-edit .oe-s2{animation-delay:-1.8s}.oe-motion-edit .oe-s3{animation-delay:-3.1s}
+.oe-motion-edit .oe-ribbon{background-size:200% 100%;animation:oeEditRibbon 12s linear infinite}
+.oe-motion-edit .oe-reveal{opacity:1;transform:none}
+
+.oe-motion-preview.oe-preview-enter .oe-copy h1{animation:oeHeroTitle .85s .05s var(--oe-ease) both}
+.oe-motion-preview.oe-preview-enter .oe-copy p{animation:oeHeroText .72s .16s var(--oe-ease) both}
+.oe-motion-preview.oe-preview-enter .oe-meta{animation:oeHeroText .72s .24s var(--oe-ease) both}
+.oe-motion-preview.oe-preview-enter .oe-kv{animation:oeHeroKv .95s .08s var(--oe-ease) both,oePreviewKvFloat 7s 1.1s ease-in-out infinite alternate}
+.oe-motion-preview.oe-preview-enter .oe-sticker{animation:oeStickerIn .62s var(--oe-ease) both,oePreviewFloat 4.8s .8s ease-in-out infinite}
+.oe-motion-preview.oe-preview-enter .oe-s1{animation-delay:.2s,.9s}.oe-motion-preview.oe-preview-enter .oe-s2{animation-delay:.3s,1.1s}.oe-motion-preview.oe-preview-enter .oe-s3{animation-delay:.4s,1.3s}
+.oe-motion-preview .oe-ribbon{position:relative;overflow:hidden;background:linear-gradient(90deg,var(--accent),#fff1a8,var(--accent));background-size:220% 100%;animation:oeRibbonSweep 9s linear infinite}
+.oe-motion-preview .oe-reveal{opacity:0;transform:translateY(24px);transition:opacity .62s var(--oe-ease) var(--oe-delay,0ms),transform .62s var(--oe-ease) var(--oe-delay,0ms)}
+.oe-motion-preview .oe-reveal.oe-in{opacity:1;transform:none}
+.oe-motion-preview .oe-card:hover,.oe-motion-preview .oe-special:hover,.oe-motion-preview .oe-community article:hover{transform:translateY(-5px) rotate(-.25deg)}
+.oe-motion-preview .oe-event:hover{transform:translateX(6px)}
+
+@keyframes oeHeroTitle{from{opacity:0;transform:translateY(28px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes oeHeroText{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes oeHeroKv{from{opacity:0;transform:translateX(34px) rotate(1deg)}to{opacity:1;transform:none}}
+@keyframes oeStickerIn{from{opacity:0;scale:.72}to{opacity:1;scale:1}}
+@keyframes oePreviewFloat{50%{translate:0 -8px}}
+@keyframes oePreviewKvFloat{to{transform:translateY(-7px) rotate(.2deg)}}
+@keyframes oeEditFloat{50%{translate:0 -3px}}
+@keyframes oeEditKv{to{transform:translateY(-3px)}}
+@keyframes oeEditRibbon{to{background-position:200% 0}}
+@keyframes oeRibbonSweep{to{background-position:220% 0}}
+
+@media(prefers-reduced-motion:reduce){
+ .oe-site *{animation:none!important;transition:none!important}
+ .oe-motion-preview .oe-reveal{opacity:1!important;transform:none!important}
+}
