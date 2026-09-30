@@ -523,3 +523,14 @@ button{color:inherit}
 .item-media-empty{display:grid;place-items:center;color:#aaaab4;font-size:18px}
 .item-media-row>div:last-child{display:grid;gap:6px}
 .item-media-row button{width:100%}.item-media-row .ghost{background:#fafafd;color:#777781}
+
+/* optional modules */
+.module-switches{display:grid;gap:2px;margin:0 3px 14px}
+.module-switches label{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:34px;padding:0 7px;border-radius:9px;font-size:10px;font-weight:720;color:#666670}
+.module-switches label:hover{background:#f0f0f4}
+.module-switches input{appearance:none;width:28px;height:17px;border-radius:999px;background:#d9d9df;position:relative;cursor:pointer;transition:.16s}
+.module-switches input:after{content:"";position:absolute;width:13px;height:13px;left:2px;top:2px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0003;transition:.16s}
+.module-switches input:checked{background:#7c5cff}
+.module-switches input:checked:after{translate:11px 0}
+.page-nav button.active{background:#ece8ff;color:#5e48ca}
+.page-nav button[hidden]{display:none}
