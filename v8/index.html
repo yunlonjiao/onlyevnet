@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OnlyEvent Studio v8</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="studio-topbar">
+    <div class="brand">OnlyEvent Studio <small>v8 alpha</small></div>
+    <div class="top-actions">
+      <button id="deviceBtn" type="button">手机</button>
+      <button id="previewBtn" type="button">预览</button>
+      <button id="undoBtn" type="button" disabled>撤销</button>
+      <button id="redoBtn" type="button" disabled>重做</button>
+      <button id="publishBtn" class="primary" type="button">发布</button>
+    </div>
+  </header>
+
+  <main class="studio-shell">
+    <aside class="sidebar">
+      <div class="side-title">模板</div>
+      <button class="template-card active" data-template="01-ip-only" type="button">
+        <b>01 · IP ONLY</b><span>粉丝 ONLY / 主题活动</span>
+      </button>
+      <div class="side-title">页面</div>
+      <nav class="page-nav">
+        <button data-jump="hero" type="button">首页</button>
+        <button data-jump="tickets" type="button">票务</button>
+        <button data-jump="highlights" type="button">企划</button>
+        <button data-jump="booths" type="button">摊位</button>
+        <button data-jump="stage" type="button">日程</button>
+        <button data-jump="community" type="button">社群</button>
+      </nav>
+      <p class="hint">正常编辑不会重载页面；文字、图片、增删、排序都直接修改当前 DOM。</p>
+    </aside>
+
+    <section class="canvas-wrap">
+      <div class="canvas-toolbar"><span id="saveState">已保存</span><span>点击页面内容直接编辑</span></div>
+      <div class="canvas" id="canvas"></div>
+    </section>
+
+    <aside class="inspector" id="inspector">
+      <div class="inspector-empty">
+        <b>选择一个内容</b>
+        <p>点击标题、图片、票种、摊位或模块。</p>
+      </div>
+    </aside>
+  </main>
+
+  <input id="imageInput" type="file" accept="image/*" hidden>
+  <div id="toast" class="toast" role="status"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
