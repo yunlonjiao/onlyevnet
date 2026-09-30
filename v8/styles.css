@@ -502,3 +502,11 @@ button{color:inherit}
   color:#5b5b64;
 }
 .inspector-section-body{padding:10px 12px}
+
+/* editable collections */
+.item-inspector-head{display:flex;align-items:center;justify-content:space-between;padding:12px 2px 13px;border-bottom:1px solid #ececf1}
+.item-inspector-head>div:first-child{display:grid;gap:3px}.item-inspector-head span{font-size:9px;color:#9999a3;font-weight:800;letter-spacing:.08em}.item-inspector-head b{font-size:13px}
+.item-tools{display:flex;gap:5px}.item-tools button{width:30px;height:30px;padding:0!important}.item-tools button:disabled{opacity:.3;cursor:not-allowed}
+.item-fields{display:grid;gap:9px;margin-top:12px}.item-fields label{margin:0;padding:10px 11px;gap:6px}.item-fields label:before{display:none}
+.item-fields label>span{font-size:9px;font-weight:800;color:#7b7b85}.item-fields input,.item-fields textarea{margin:0}.item-fields input[type=color]{height:36px;padding:4px}
+.item-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px;padding-top:12px;border-top:1px solid #ececf1}.item-actions button{width:100%}

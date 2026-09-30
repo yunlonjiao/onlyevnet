@@ -15,15 +15,16 @@ export const template01 = {
     ribbon3:'COS 自由行开放',
     ribbon4:'舞台企划更新',
     heroImage:'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=84&w=1600',
+    ticketUrl:'https://www.bilibili.com/',
     tickets:[
-      {id:'t1',name:'普通票',price:'¥68',gift:'入场资格'},
-      {id:'t2',name:'特典票',price:'¥128',gift:'限定徽章 · 纪念票根'},
-      {id:'t3',name:'VIP 票',price:'¥198',gift:'优先入场 · 限定礼包'}
+      {id:'t1',name:'普通票',price:'¥68',gift:'入场资格',note:'实际购买与退款规则以售票平台为准'},
+      {id:'t2',name:'特典票',price:'¥128',gift:'入场资格\n限定徽章\n纪念票根',note:'限量发售'},
+      {id:'t3',name:'VIP 票',price:'¥198',gift:'优先入场\n限定礼包\n舞台优先区',note:'赠品内容由主办方填写'}
     ],
     highlights:[
-      {id:'h1',title:'集章挑战',text:'完成指定互动，集齐印章兑换限定纪念物。'},
-      {id:'h2',title:'应援留言墙',text:'留下角色应援与周年留言。'},
-      {id:'h3',title:'主题合影',text:'指定时段进行 COS / 自由行主题合影。'}
+      {id:'h1',title:'集章挑战',text:'在指定摊位完成互动，集齐印章兑换限定纪念物。',tone:'#ffe45c'},
+      {id:'h2',title:'应援留言墙',text:'现场留下角色应援与周年留言，闭幕前公开展示。',tone:'#59d4ff'},
+      {id:'h3',title:'主题合影',text:'指定时段进行 COS / 自由行主题大合影。',tone:'#ff9dbb'}
     ],
     booths:[
       {id:'b1',no:'A01',name:'星屑工房',type:'同人本 · 亚克力'},
@@ -33,7 +34,8 @@ export const template01 = {
     schedule:[
       {id:'s1',time:'11:00',title:'开场 & 社群合影',stage:'MAIN STAGE'},
       {id:'s2',time:'13:30',title:'主题问答 / 互动游戏',stage:'TALK'},
-      {id:'s3',time:'15:00',title:'COS 特别舞台',stage:'MAIN STAGE'}
+      {id:'s3',time:'15:00',title:'COS 特别舞台',stage:'MAIN STAGE'},
+      {id:'s4',time:'17:30',title:'幸运抽选 & 闭幕',stage:'MAIN STAGE'}
     ]
   }
 };

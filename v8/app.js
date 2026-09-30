@@ -20,7 +20,8 @@ window.addEventListener('message',e=>{
  if(m.type==='OE_SELECT_FIELD'){focusCheckpointTaken=false;openFieldInspector(m.path);return}
  if(m.type==='OE_FIELD_FOCUS'){if(!focusCheckpointTaken){checkpoint();focusCheckpointTaken=true}return}
  if(m.type==='OE_FIELD_CHANGE'){setDeep(m.path,m.value);const f=$('#fieldInput');if(f&&f.dataset.path===m.path)f.value=m.value;return}
- if(m.type==='OE_SELECT_IMAGE')openImageInspector(m.path);
+ if(m.type==='OE_SELECT_IMAGE'){openImageInspector(m.path);return}
+ if(m.type==='OE_SELECT_ITEM'){openItemInspector(m.collection,m.index);return}
 });
 function openFieldInspector(path){
  const value=getDeep(path);
@@ -28,8 +29,32 @@ function openFieldInspector(path){
  const input=$('#fieldInput');let started=false;
  input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep(path,e.target.value);send({type:'OE_PATCH_FIELD',path,value:e.target.value})});
 }
+const collectionMeta={
+ tickets:{title:'票务',fields:[['name','票名'],['price','价格'],['gift','特典'],['note','备注']]},
+ highlights:{title:'特别企划',fields:[['title','标题'],['text','说明'],['tone','强调色']]},
+ schedule:{title:'舞台日程',fields:[['time','时间'],['title','标题'],['stage','区域']]}
+};
+function uid(prefix){return prefix+Math.random().toString(36).slice(2,8)}
+function openItemInspector(collection,index){
+ const meta=collectionMeta[collection],item=state[collection]?.[index];if(!meta||!item)return;
+ const count=state[collection].length;
+ inspector.innerHTML='<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(key==='text'||key==='gift'||key==='note'?'<textarea data-key="'+key+'">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]||'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div><div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>';
+ inspector.querySelectorAll('[data-key]').forEach(input=>{let started=false;input.addEventListener('input',e=>{if(!started){checkpoint();started=true}const key=e.target.dataset.key;state[collection][index][key]=e.target.value;save();send({type:'OE_PATCH_FIELD',path:collection+'.'+index+'.'+key,value:e.target.value})})});
+ inspector.querySelectorAll('[data-op]').forEach(btn=>btn.addEventListener('click',()=>mutateItem(collection,index,btn.dataset.op)));
+}
+function mutateItem(collection,index,op){
+ const arr=state[collection];if(!Array.isArray(arr))return;checkpoint();
+ if(op==='up'&&index>0){[arr[index-1],arr[index]]=[arr[index],arr[index-1]];index--}
+ if(op==='down'&&index<arr.length-1){[arr[index+1],arr[index]]=[arr[index],arr[index+1]];index++}
+ if(op==='delete'&&arr.length>1){arr.splice(index,1);index=Math.max(0,index-1)}
+ if(op==='add'){
+   const fresh=collection==='tickets'?{id:uid('t'),name:'新票种',price:'¥0',gift:'',note:''}:collection==='highlights'?{id:uid('h'),title:'新企划',text:'',tone:'#ffe45c'}:{id:uid('s'),time:'12:00',title:'新日程',stage:'MAIN STAGE'};
+   arr.splice(index+1,0,fresh);index++;
+ }
+ save();send({type:'OE_REPLACE_STATE',state});openItemInspector(collection,index);
+}
 function openImageInspector(path){
- inspector.innerHTML='<h3>图片</h3><p>当前：'+esc(path)+'</p><div class="row"><button id="replaceImage" type="button">替换图片</button></div><p class="hint">替换图片不会重新加载页面。</p>';
+ inspector.innerHTML='<h3>图片</h3><p>当前：'+esc(path)+'</p><div class="row"><button id="replaceImage" type="button">替换图片</button></div>';
  $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()};
 }
 $('#imageInput').addEventListener('change',e=>{
