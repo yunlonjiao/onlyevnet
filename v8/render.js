@@ -1,7 +1,25 @@
 import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.3.0';
 const ORIGIN=location.origin;let state={},mode='edit',revealObs=null,stampObs=null,progressObs=null;
 window.__oeRenderLoadId=(window.__oeRenderLoadId||0)+1;
-document.head.insertAdjacentHTML('beforeend','<style>'+previewStyle+'\n.loader{display:none!important}\n[data-oe-field]{cursor:text}[data-oe-field]:hover{outline:2px solid #7b61ff77;outline-offset:2px}[data-oe-field]:focus{outline:2px solid #7b61ff;background:#fff7b3}.oe-preview [data-oe-field],.oe-preview [data-oe-item]{outline:none!important;cursor:inherit}[data-oe-item]{cursor:pointer;transition:outline-color .15s}[data-oe-item]:hover{outline:2px solid #7b61ff55;outline-offset:4px}.ticket-top{display:grid;grid-template-columns:minmax(0,1fr) 104px;gap:14px;align-items:start}.ticket-copy h3{margin-bottom:6px}.ticket-gift-image{width:104px;height:104px;padding:0;border:2px solid var(--ink);border-radius:14px;background:#fff;overflow:hidden;cursor:zoom-in;box-shadow:4px 4px 0 var(--ink)}.ticket-gift-image img{width:100%;height:100%;object-fit:cover;display:block}.gift-lightbox{border:0;padding:0;background:transparent;max-width:min(92vw,1100px);max-height:92vh}.gift-lightbox::backdrop{background:rgba(12,12,16,.82);backdrop-filter:blur(6px)}.gift-lightbox img{display:block;max-width:92vw;max-height:88vh;object-fit:contain;border-radius:14px}.gift-lightbox button{position:fixed;right:22px;top:18px;width:40px;height:40px;border:0;border-radius:50%;background:#fff;color:#111;font-size:22px;cursor:pointer}.special{isolation:isolate}.special:after{display:none!important}.special>*{position:relative;z-index:2}.kv:after{display:none!important}@media(max-width:560px){.ticket-top{grid-template-columns:1fr 88px}.ticket-gift-image{width:88px;height:88px}}.oe-page-hidden{display:none!important}.oe-page-view{min-height:calc(100vh - 72px)}.nav .links a[hidden],.mobile-dock a[hidden]{display:none!important}</style>');
+document.head.insertAdjacentHTML('beforeend','<style>'+previewStyle+'\n.loader{display:none!important}\n[data-oe-field]{cursor:text}[data-oe-field]:hover{outline:2px solid #7b61ff77;outline-offset:2px}[data-oe-field]:focus{outline:2px solid #7b61ff;background:#fff7b3}.oe-preview [data-oe-field],.oe-preview [data-oe-item]{outline:none!important;cursor:inherit}[data-oe-item]{cursor:pointer;transition:outline-color .15s}[data-oe-item]:hover{outline:2px solid #7b61ff55;outline-offset:4px}.ticket-top{display:grid;grid-template-columns:minmax(0,1fr) 104px;gap:14px;align-items:start}.ticket-copy h3{margin-bottom:6px}.ticket-gift-image{width:104px;height:104px;padding:0;border:2px solid var(--ink);border-radius:14px;background:#fff;overflow:hidden;cursor:zoom-in;box-shadow:4px 4px 0 var(--ink)}.ticket-gift-image img{width:100%;height:100%;object-fit:cover;display:block}.gift-lightbox{border:0;padding:0;background:transparent;max-width:min(92vw,1100px);max-height:92vh}.gift-lightbox::backdrop{background:rgba(12,12,16,.82);backdrop-filter:blur(6px)}.gift-lightbox img{display:block;max-width:92vw;max-height:88vh;object-fit:contain;border-radius:14px}.gift-lightbox button{position:fixed;right:22px;top:18px;width:40px;height:40px;border:0;border-radius:50%;background:#fff;color:#111;font-size:22px;cursor:pointer}.special{isolation:isolate}.special:after{display:none!important}.special>*{position:relative;z-index:2}.kv:after{display:none!important}@media(max-width:560px){.ticket-top{grid-template-columns:1fr 88px}.ticket-gift-image{width:88px;height:88px}}.oe-page-hidden{display:none!important}.oe-page-view{min-height:calc(100vh - 72px)}.nav .links a[hidden],.mobile-dock a[hidden]{display:none!important}
+.quick-hub{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr)!important;gap:18px!important;align-items:stretch}
+.quick-feature{min-height:224px;border:2px solid var(--ink);border-radius:22px;background:var(--primary);color:#fff;padding:22px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:8px 8px 0 var(--ink);transition:.2s}
+.quick-feature:hover{transform:translate(-3px,-4px) rotate(-.25deg)}
+.quick-feature .quick-kicker{font-size:10px;font-weight:950;letter-spacing:.14em;opacity:.8}
+.quick-feature b{display:block;font-size:clamp(34px,4vw,58px);line-height:.9;letter-spacing:-.05em}
+.quick-feature p{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 0}
+.quick-feature p span{display:inline-flex;padding:6px 9px;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);font-size:10px;font-weight:900}
+.quick-feature small{font-size:11px;font-weight:950}
+.quick-index{display:grid;grid-template-columns:1fr;align-content:start;border-top:2px solid var(--ink)}
+.quick-row{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;min-height:48px;padding:9px 2px;border-bottom:2px solid var(--ink);transition:.18s}
+.quick-row:hover{padding-left:8px;background:color-mix(in srgb,var(--accent) 28%,transparent)}
+.quick-row .quick-no{font-size:10px;font-weight:950;color:#8a8188}
+.quick-row b{font-size:14px}
+.quick-row small{font-size:10px;color:#6f676e;white-space:nowrap}
+.quick-hub.no-feature{grid-template-columns:1fr!important}.quick-hub.no-feature .quick-index{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+@media(max-width:900px){.quick-hub{grid-template-columns:1fr!important}.quick-feature{min-height:190px}.quick-hub.no-feature .quick-index{grid-template-columns:1fr}}
+@media(max-width:560px){.quick{padding:28px 0}.quick-feature{min-height:168px;padding:18px}.quick-feature b{font-size:38px}.quick-row{grid-template-columns:34px 1fr auto;min-height:44px}.quick-row small{font-size:9px}}
+</style>');
 document.body.innerHTML=previewBody.replace('这不是后台功能，而是一种前台视觉表达。主办方只需要配置哪些企划需要展示，网站负责把它做得像活动场刊。','');
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)],send=m=>parent.postMessage(m,ORIGIN);
 const sponsorSection=$('.sponsors')?.closest('section');if(sponsorSection)sponsorSection.id='sponsors';$('.scroll-progress')?.remove();
@@ -55,16 +73,19 @@ let currentPage='home';
 function moduleOn(key){return state.modules?.[key]!==false}
 function renderQuickAccess(){
  const grid=$('.quick-grid');if(!grid)return;
- const defs=[
-  ['tickets','01','票务与特典','查看票种 →','home'],
-  ['highlights','02','特别企划','查看企划 →','home'],
-  ['passport','03','活动护照','开始集章 →','home'],
-  ['booths','04','摊位与地图','查找摊位 →','page'],
-  ['stage','05','舞台日程','查看节目 →','page'],
-  ['community','06','社群公告','查看社群 →','home'],
-  ['sponsors','07','赞助支持','查看支持 →','home']
- ];
- grid.innerHTML=defs.filter(x=>moduleOn(x[0])).map(x=>'<a class="quick-card reveal in" href="#'+x[0]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[0]+'"><span>'+x[1]+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
+ const links=[
+  ['tickets','票务与特典','查看票种','home'],
+  ['passport','活动护照','开始集章','home'],
+  ['booths','摊位与地图','查找摊位','page'],
+  ['stage','舞台日程','查看节目','page'],
+  ['community','社群公告','查看社群','home'],
+  ['sponsors','赞助支持','查看支持','home']
+ ].filter(x=>moduleOn(x[0]));
+ const highlightTitles=(state.highlights||[]).slice(0,3).map(x=>'<span>'+esc(x.title||'')+'</span>').join('');
+ const feature=moduleOn('highlights')?'<a class="quick-feature reveal in" href="#highlights" data-target-mode="home" data-page-link="highlights"><span class="quick-kicker">FEATURED / THIS EVENT</span><div><b>本届亮点</b><p>'+highlightTitles+'</p></div><small>查看特别企划 →</small></a>':'';
+ const index=links.length?'<div class="quick-index">'+links.map((x,i)=>'<a class="quick-row reveal in" href="#'+x[0]+'" data-target-mode="'+x[3]+'" data-page-link="'+x[0]+'"><span class="quick-no">'+String(i+1).padStart(2,'0')+'</span><b>'+x[1]+'</b><small>'+x[2]+' →</small></a>').join('')+'</div>':'';
+ grid.className='quick-grid quick-hub'+(!feature?' no-feature':'');
+ grid.innerHTML=feature+index;
 }
 function renderPassport(){
  const section=$('#passport');if(!section)return;
