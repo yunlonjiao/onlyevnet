@@ -22,7 +22,7 @@ export const template01 = {
     ribbon2:'特典票限量',
     ribbon3:'COS 自由行开放',
     ribbon4:'舞台企划更新',
-    modules:{ribbon:true,tickets:true,highlights:true,passport:false,booths:true,activities:true,guests:false,guide:false,freewalk:false,itasha:false,community:true,sponsors:false},
+    modules:{ribbon:true,tickets:true,highlights:true,passport:true,booths:true,activities:true,guests:false,guide:false,freewalk:false,itasha:false,community:true,sponsors:false},
     passport:{
       required:3,
       reward:'完成 3 个印章可领取限定纪念物',
@@ -30,7 +30,8 @@ export const template01 = {
         {id:'a',name:'同人摊位街区',location:'A区',code:'A',target:'booths'},
         {id:'b',name:'主舞台',location:'舞台区',code:'B',target:'activities'},
         {id:'c',name:'COS 合影',location:'COS区',code:'C',target:'freewalk'},
-        {id:'d',name:'特别企划',location:'企划区',code:'D',target:'highlights'}
+        {id:'d',name:'特别企划',location:'企划区',code:'D',target:'highlights'},
+        {id:'e',name:'痛车展示',location:'展示区',code:'E',target:'itasha'}
       ]
     },
     heroImage:'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=84&w=1600',
