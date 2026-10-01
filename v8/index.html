@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OnlyEvent Studio v8</title>
-  <link rel="stylesheet" href="/v8/styles.css?v=8.15.0">
+  <link rel="stylesheet" href="/v8/styles.css?v=8.16.0">
 </head>
 <body>
   <header class="studio-topbar">
@@ -17,9 +17,12 @@
     </div>
 
     <div class="top-actions">
-      <div class="action-group view-group">
-        <button id="deviceBtn" type="button" title="切换设备视图"><span class="action-icon">▯</span><span>手机</span></button>
-        <button id="previewBtn" type="button" title="查看发布效果"><span class="action-icon">◉</span><span>预览</span></button>
+      <div class="action-group device-group" aria-label="设备预览">
+        <button id="deviceDesktopBtn" class="active" data-device="desktop" type="button" title="桌面画布"><span class="action-icon">▭</span><span>桌面</span></button>
+        <button id="deviceMobileBtn" data-device="mobile" type="button" title="手机画布"><span class="action-icon">▯</span><span>手机</span></button>
+      </div>
+      <div class="action-group preview-group">
+        <button id="previewBtn" type="button" title="查看发布效果"><span class="action-icon">◉</span><span id="previewLabel">预览</span></button>
       </div>
       <div class="action-separator"></div>
       <div class="action-group history-group">
@@ -34,53 +37,62 @@
     <aside class="sidebar">
       <div class="sidebar-head">
         <span class="workspace-label">工作区</span>
+        <span class="workspace-template">IP ONLY</span>
       </div>
 
-      <div class="side-title">模板</div>
-      <button class="template-card active" data-template="01-ip-only" type="button">
-        <span class="template-thumb"><i></i><i></i><i></i></span>
-        <span class="template-copy"><b>IP ONLY</b><small>粉丝 ONLY / 主题活动</small></span>
-        <span class="template-check">✓</span>
-      </button>
-
-      <div class="side-title side-title-pages">页面</div>
-      <nav class="page-nav">
-        <button data-page="home" type="button"><span class="nav-icon">⌂</span><span>首页</span></button>
-        <button data-page="booths" data-module-page="booths" type="button"><span class="nav-icon">⌘</span><span>摊位详情</span></button>
-        <button data-page="activities" data-module-page="activities" type="button"><span class="nav-icon">◷</span><span>活动详情</span></button>
-        <button data-page="guide" type="button"><span class="nav-icon">i</span><span>观展指南</span></button>
+      <nav class="workspace-tabs" aria-label="编辑工作区">
+        <button type="button" class="active" data-workspace="pages"><span>▤</span><b>页面</b></button>
+        <button type="button" data-workspace="content"><span>◆</span><b>内容</b></button>
+        <button type="button" data-workspace="modules"><span>◫</span><b>模块</b></button>
       </nav>
 
-      <div class="side-title">内容</div>
-      <div class="content-managers">
-        <button type="button" data-content-manager="tickets"><span>票务</span><b data-content-count="tickets">0</b></button>
-        <button type="button" data-content-manager="highlights"><span>特别企划</span><b data-content-count="highlights">0</b></button>
-        <button type="button" data-content-manager="booths"><span>摊位</span><b data-content-count="booths">0</b></button>
-        <button type="button" data-content-manager="schedule"><span>活动</span><b data-content-count="schedule">0</b></button>
-        <button type="button" data-content-manager="guests"><span>嘉宾</span><b data-content-count="guests">0</b></button>
-        <button type="button" data-content-manager="mapPoints"><span>地图点位</span><b data-content-count="mapPoints">0</b></button>
-        <button type="button" data-content-manager="guide"><span>观展指南</span><b data-content-count="guide">0</b></button>
-        <button type="button" data-content-manager="updates"><span>重要更新</span><b data-content-count="updates">0</b></button>
-        <button type="button" data-content-manager="socialLinks"><span>社群入口</span><b data-content-count="socialLinks">0</b></button>
-        <button type="button" data-content-manager="sponsors"><span>赞助支持</span><b data-content-count="sponsors">0</b></button>
-      </div>
+      <section class="workspace-panel active" data-workspace-panel="pages">
+        <div class="workspace-panel-head"><b>页面</b><small>网站结构</small></div>
+        <nav class="page-nav">
+          <button data-page="home" type="button"><span class="nav-icon">⌂</span><span>首页</span></button>
+          <button data-page="booths" data-module-page="booths" type="button"><span class="nav-icon">⌘</span><span>摊位详情</span></button>
+          <button data-page="activities" data-module-page="activities" type="button"><span class="nav-icon">◷</span><span>活动详情</span></button>
+          <button data-page="guide" type="button"><span class="nav-icon">i</span><span>观展指南</span></button>
+        </nav>
+      </section>
 
-      <div class="side-title">模块</div>
-      <div class="module-switches">
-        <label><span>滚动公告</span><input type="checkbox" data-module="ribbon"></label>
-        <label><span>特别企划</span><input type="checkbox" data-module="highlights"></label>
-        <label><span>嘉宾</span><input type="checkbox" data-module="guests"></label>
-        <label><span>自由行（活动参与）</span><input type="checkbox" data-module="freewalk"></label>
-        <label><span>痛车（活动参与）</span><input type="checkbox" data-module="itasha"></label>
-        <label><span>社群</span><input type="checkbox" data-module="community"></label>
-        <label><span>赞助</span><input type="checkbox" data-module="sponsors"></label>
-      </div>
+      <section class="workspace-panel" data-workspace-panel="content" hidden>
+        <div class="workspace-panel-head"><b>内容库</b><small>选择内容类型</small></div>
+        <div class="content-managers">
+          <button type="button" data-content-manager="tickets"><span>票务</span><b data-content-count="tickets">0</b></button>
+          <button type="button" data-content-manager="highlights"><span>特别企划</span><b data-content-count="highlights">0</b></button>
+          <button type="button" data-content-manager="booths"><span>摊位</span><b data-content-count="booths">0</b></button>
+          <button type="button" data-content-manager="schedule"><span>活动</span><b data-content-count="schedule">0</b></button>
+          <button type="button" data-content-manager="guests"><span>嘉宾</span><b data-content-count="guests">0</b></button>
+          <button type="button" data-content-manager="mapPoints"><span>地图点位</span><b data-content-count="mapPoints">0</b></button>
+          <button type="button" data-content-manager="guide"><span>观展指南</span><b data-content-count="guide">0</b></button>
+          <button type="button" data-content-manager="updates"><span>重要更新</span><b data-content-count="updates">0</b></button>
+          <button type="button" data-content-manager="socialLinks"><span>社群入口</span><b data-content-count="socialLinks">0</b></button>
+          <button type="button" data-content-manager="sponsors"><span>赞助支持</span><b data-content-count="sponsors">0</b></button>
+        </div>
+        <div class="sidebar-content-list" id="contentListPanel">
+          <div class="sidebar-content-empty">选择上方内容类型后，在这里管理具体项目。</div>
+        </div>
+      </section>
+
+      <section class="workspace-panel" data-workspace-panel="modules" hidden>
+        <div class="workspace-panel-head"><b>模块</b><small>控制首页可选内容</small></div>
+        <div class="module-switches">
+          <label><span>滚动公告</span><input type="checkbox" data-module="ribbon"></label>
+          <label><span>特别企划</span><input type="checkbox" data-module="highlights"></label>
+          <label><span>嘉宾</span><input type="checkbox" data-module="guests"></label>
+          <label><span>自由行（活动参与）</span><input type="checkbox" data-module="freewalk"></label>
+          <label><span>痛车（活动参与）</span><input type="checkbox" data-module="itasha"></label>
+          <label><span>社群</span><input type="checkbox" data-module="community"></label>
+          <label><span>赞助</span><input type="checkbox" data-module="sponsors"></label>
+        </div>
+      </section>
     </aside>
 
     <section class="canvas-wrap">
       <div class="canvas-toolbar">
         <div class="save-status"><span class="status-dot"></span><span id="saveState">已保存</span></div>
-        <div class="canvas-title"><span class="canvas-page-dot"></span><b>首页</b><span>/</span><span>桌面画布</span></div>
+        <div class="canvas-title"><span class="canvas-page-dot"></span><b>首页</b><span>/</span><span id="canvasDeviceLabel">桌面画布</span></div>
         <div class="canvas-hint"></div>
       </div>
       <div class="canvas-stage">
@@ -90,29 +102,14 @@
 
     <aside class="inspector" id="inspector">
       <div class="inspector-header">
-        <div>
-          <span class="inspector-kicker">属性面板</span>
-          <b>内容与样式</b>
+        <div><span class="inspector-kicker">属性</span><b>未选择内容</b></div>
+        <span class="inspector-status"><i></i>自动保存</span>
+      </div>
+      <div class="inspector-body">
+        <div class="inspector-empty">
+          <div class="empty-visual"><span></span><span></span><span></span></div>
+          <b>从画布或左侧内容库选择内容</b>
         </div>
-        <span class="inspector-badge">LIVE</span>
-      </div>
-
-      <div class="inspector-context">
-        <div class="context-icon">◫</div>
-        <div class="context-copy">
-          <span>当前选择</span>
-          <b>未选择元素</b>
-        </div>
-      </div>
-
-      <div class="inspector-empty">
-        <div class="empty-visual"><span></span><span></span><span></span></div>
-        <b>未选择内容</b>
-      </div>
-
-      <div class="inspector-footer">
-        <span>自动保存</span>
-        <b>已开启</b>
       </div>
     </aside>
   </main>
@@ -139,6 +136,6 @@
     </div>
   </dialog>
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="/v8/app.js?v=8.15.0"></script>
+  <script type="module" src="/v8/app.js?v=8.16.0"></script>
 </body>
 </html>

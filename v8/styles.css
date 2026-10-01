@@ -589,3 +589,47 @@ button{color:inherit}
 .collection-empty{border:1px dashed #d8d8df;border-radius:11px;padding:18px;text-align:center;font-size:9px;color:#999}
 .collection-add{width:100%;margin-top:10px;border:1px solid #cfc9f3!important;background:#f4f1ff!important;color:#6555c7!important;border-radius:10px!important;padding:9px!important;font-size:10px!important;font-weight:850!important;cursor:pointer}
 .inspector-back{border:0;background:transparent;padding:2px 0 8px;color:#8173d8;font-size:9px;font-weight:850;cursor:pointer}
+
+/* Studio 8.16 — workspace architecture inspired by mature visual editors */
+.studio-shell{grid-template-columns:244px minmax(0,1fr) 310px}
+.sidebar{padding:12px 10px 18px}
+.sidebar-head{height:30px;padding:0 5px 8px;border-bottom:1px solid #ededf1}
+.workspace-template{font-size:8px;font-weight:900;letter-spacing:.08em;color:#7666d7;background:#f0edff;border:1px solid #e0dbff;border-radius:999px;padding:4px 7px}
+.workspace-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:11px 2px 12px;padding:3px;border:1px solid #e1e1e7;background:#f0f0f4;border-radius:12px}
+.workspace-tabs button{border:0;background:transparent;border-radius:9px;min-height:42px;display:grid;place-items:center;align-content:center;gap:2px;color:#85858f;cursor:pointer}
+.workspace-tabs button span{font-size:12px}.workspace-tabs button b{font-size:9px}
+.workspace-tabs button:hover{background:#e8e8ed;color:#46464f}.workspace-tabs button.active{background:#fff;color:#25252b;box-shadow:0 1px 5px rgba(30,30,40,.10)}
+.workspace-panel[hidden]{display:none!important}.workspace-panel-head{display:flex;align-items:flex-end;justify-content:space-between;padding:3px 7px 9px}
+.workspace-panel-head b{font-size:10px}.workspace-panel-head small{font-size:8px;color:#9a9aa4}
+.page-nav{gap:3px}.page-nav button{min-height:38px}.page-nav button.active{box-shadow:inset 3px 0 0 #7c5cff}
+.content-managers{grid-template-columns:1fr 1fr;gap:5px;padding:0 2px 10px;border-bottom:1px solid #ececf1}
+.content-managers button{padding:7px 8px;background:transparent}.content-managers button:hover{background:#f4f3fa}.content-managers button.active{background:#efebff;border-color:#d8d0ff}
+.sidebar-content-list{padding:10px 2px 0}.sidebar-content-empty{padding:20px 10px;text-align:center;color:#9a9aa4;font-size:9px;line-height:1.6;border:1px dashed #dddde4;border-radius:11px}
+.sidebar-content-head{display:grid;gap:8px;margin-bottom:8px}.sidebar-content-head>div{display:flex;align-items:center;justify-content:space-between;padding:0 4px}.sidebar-content-head b{font-size:10px}.sidebar-content-head span{font-size:8px;color:#9999a3}
+.sidebar-content-search{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:6px;border:1px solid #dedee5;border-radius:9px;background:#fff;padding:0 8px}.sidebar-content-search input{min-width:0;border:0;outline:0;padding:8px 0;font-size:9px;background:transparent}
+.sidebar-content-rows{display:grid;gap:4px;max-height:calc(100vh - 430px);overflow:auto;padding-right:2px}
+.sidebar-content-row{width:100%;display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:8px;border:1px solid transparent;background:transparent;border-radius:10px;padding:6px;text-align:left;cursor:pointer;color:#4e4e57}
+.sidebar-content-row:hover{background:#f2f2f6}.sidebar-content-row.active{background:#fff;border-color:#dcd9f0;box-shadow:0 3px 10px rgba(40,35,80,.06)}
+.sidebar-content-row[hidden]{display:none}.sidebar-content-thumb{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#f0edff,#fff3f7);border:1px solid #e5e1ea;display:grid;place-items:center;font-size:9px;font-weight:900;color:#7869c4;overflow:hidden}
+.sidebar-content-thumb img{width:100%;height:100%;object-fit:cover}.sidebar-content-copy{display:grid;gap:2px;min-width:0}.sidebar-content-copy b,.sidebar-content-copy small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sidebar-content-copy b{font-size:9.5px}.sidebar-content-copy small{font-size:8px;color:#96969f}.sidebar-content-row>i{font-style:normal;color:#aaa}
+.sidebar-content-add{width:100%;margin-top:7px;border:1px solid #d7d1f8;background:#f5f2ff;border-radius:9px;padding:8px;color:#6555c7;font-size:9px;font-weight:850;cursor:pointer}.sidebar-content-add:hover{background:#eee9ff}
+.module-switches{margin-top:0}
+
+.inspector{padding:0 14px 14px}.inspector-header{position:sticky;top:0;z-index:5;margin:0 -14px 0;padding:13px 14px 11px;background:rgba(252,252,253,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.inspector-header b{font-size:12px;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.inspector-status{display:inline-flex;align-items:center;gap:5px;font-size:8px;font-weight:800;color:#7d7d86}.inspector-status i{width:6px;height:6px;border-radius:50%;background:#23a36d;box-shadow:0 0 0 3px rgba(35,163,109,.10)}
+.inspector-body{padding-top:4px}.inspector-path{font-size:9px;color:#9a9aa4;overflow-wrap:anywhere;background:#f5f5f8;border-radius:8px;padding:8px}
+.item-inspector-head{margin-top:8px}
+
+.device-group button.active,.preview-group button.active{background:#fff!important;color:#1d1d22!important;box-shadow:0 1px 4px rgba(0,0,0,.08)!important}
+
+body.previewing .sidebar,body.previewing .inspector,body.previewing .canvas-toolbar{display:none!important}
+body.previewing .studio-shell{display:block;min-height:calc(100vh - 64px)}
+body.previewing .brand-zone,body.previewing .history-group,body.previewing .action-separator,body.previewing #publishBtn{display:none!important}
+body.previewing .studio-topbar{justify-content:center}
+body.previewing .top-actions{width:auto}
+body.previewing .canvas-wrap{padding:0;min-height:calc(100vh - 64px);display:grid;place-items:center;background:#fff}
+body.previewing .canvas-stage{width:100%;max-width:none;height:calc(100vh - 64px)}
+body.previewing .canvas:not(.mobile){width:100%;height:100%;min-height:0;border:0;border-radius:0;box-shadow:none}
+body.previewing .canvas.mobile{height:calc(100vh - 88px);min-height:560px;margin:12px auto;border-radius:18px}
+body.previewing .canvas-stage:before{display:none}
+@media(max-width:980px){.studio-shell{grid-template-columns:214px minmax(0,1fr) 280px}.sidebar-content-row{grid-template-columns:30px minmax(0,1fr) auto}.sidebar-content-thumb{width:30px;height:30px}}

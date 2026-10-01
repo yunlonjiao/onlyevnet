@@ -24,6 +24,26 @@ function syncHistory(){$('#undoBtn').disabled=!history.length;$('#redoBtn').disa
 function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a.length-1;i++)o=o[/^\d+$/.test(a[i])?Number(a[i]):a[i]];const k=a.at(-1);o[/^\d+$/.test(k)?Number(k):k]=value;save()}
 function getDeep(path){return path.split('.').reduce((o,k)=>o?.[/^\d+$/.test(k)?Number(k):k],state)}
 function send(message){if(frameReady&&iframe?.contentWindow)iframe.contentWindow.postMessage(message,ORIGIN)}
+function setInspector(kicker,title,html){
+ inspector.innerHTML='<div class="inspector-header"><div><span class="inspector-kicker">'+esc(kicker||'属性')+'</span><b>'+esc(title||'未选择内容')+'</b></div><span class="inspector-status"><i></i>自动保存</span></div><div class="inspector-body">'+html+'</div>';
+}
+function showInspectorEmpty(){
+ setInspector('属性','未选择内容','<div class="inspector-empty"><div class="empty-visual"><span></span><span></span><span></span></div><b>从画布或左侧内容库选择内容</b></div>');
+}
+function setWorkspace(name){
+ document.querySelectorAll('[data-workspace]').forEach(b=>b.classList.toggle('active',b.dataset.workspace===name));
+ document.querySelectorAll('[data-workspace-panel]').forEach(p=>{const on=p.dataset.workspacePanel===name;p.hidden=!on;p.classList.toggle('active',on)});
+}
+function contentThumb(collection,item){
+ let src='';
+ if(collection==='booths')src=(item.products||[]).find(p=>p.image)?.image||'';
+ if(collection==='guests')src=item.image||'';
+ if(collection==='tickets')src=item.image||'';
+ if(collection==='socialLinks')src=item.image||'';
+ if(collection==='sponsors')src=item.logo||'';
+ const fallback={tickets:'票',highlights:'企',booths:'摊',schedule:'时',guests:'嘉',mapPoints:'点',guide:'指',updates:'更',socialLinks:'社',sponsors:'赞'}[collection]||'•';
+ return '<span class="sidebar-content-thumb '+(src?'has-image':'')+'">'+(src?'<img src="'+esc(src)+'" alt="">':fallback)+'</span>';
+}
 
 const moduleLabels={booths:'摊位详情',activities:'活动详情',guide:'观展指南'};
 const contentManagerMeta={
@@ -44,27 +64,27 @@ function syncContentCounts(){
    el.textContent=Array.isArray(arr)?arr.length:0;
  });
 }
-function openCollectionManager(collection){
- const meta=contentManagerMeta[collection],arr=collectionArray(collection);if(!meta||!Array.isArray(arr))return;
+function openCollectionManager(collection,selectedIndex=-1){
+ const meta=contentManagerMeta[collection],arr=collectionArray(collection),panel=$('#contentListPanel');if(!meta||!Array.isArray(arr)||!panel)return;
+ document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.toggle('active',x.dataset.contentManager===collection));
  const rows=arr.map((item,i)=>{
-   const [title,sub]=meta.item(item,i);
-   return '<button type="button" class="content-row" data-open-item="'+i+'"><span><b>'+esc(title)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</span><i>→</i></button>';
+   const [title,sub]=meta.item(item,i),search=(title+' '+sub).toLowerCase();
+   return '<button type="button" class="sidebar-content-row '+(i===selectedIndex?'active':'')+'" data-open-item="'+i+'" data-search="'+esc(search)+'">'+contentThumb(collection,item)+'<span class="sidebar-content-copy"><b>'+esc(title)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</span><i>›</i></button>';
  }).join('');
- inspector.innerHTML='<div class="collection-manager-head"><div><span>内容</span><h3>'+esc(meta.title)+'</h3></div><b>'+arr.length+' 项</b></div>'+
-   '<div class="collection-list">'+(rows||'<div class="collection-empty">'+esc(meta.empty)+'</div>')+'</div>'+
-   '<button type="button" class="collection-add" id="collectionAdd">＋ 添加'+esc(meta.title)+'</button>';
- inspector.querySelectorAll('[data-open-item]').forEach(btn=>btn.onclick=()=>openItemInspector(collection,Number(btn.dataset.openItem)));
- $('#collectionAdd').onclick=()=>mutateItem(collection,arr.length-1,'add');
+ panel.innerHTML='<div class="sidebar-content-head"><div><b>'+esc(meta.title)+'</b><span>'+arr.length+' 项</span></div>'+(arr.length>6?'<label class="sidebar-content-search"><span>⌕</span><input type="search" placeholder="搜索'+esc(meta.title)+'" data-sidebar-content-search></label>':'')+'</div><div class="sidebar-content-rows">'+(rows||'<div class="sidebar-content-empty">'+esc(meta.empty)+'</div>')+'</div><button type="button" class="sidebar-content-add" data-sidebar-content-add>＋ 添加'+esc(meta.title)+'</button>';
+ panel.querySelectorAll('[data-open-item]').forEach(btn=>btn.onclick=()=>{const i=Number(btn.dataset.openItem);panel.querySelectorAll('[data-open-item]').forEach(x=>x.classList.toggle('active',x===btn));openItemInspector(collection,i)});
+ panel.querySelector('[data-sidebar-content-add]')?.addEventListener('click',()=>mutateItem(collection,arr.length-1,'add'));
+ panel.querySelector('[data-sidebar-content-search]')?.addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();panel.querySelectorAll('[data-open-item]').forEach(row=>row.hidden=!!q&&!String(row.dataset.search||'').includes(q))});
 }
 
 function openGuideInspector(){
  const items=state.guide?.items||[];
  const max=Math.min(items.length,4);
  const count=Math.max(0,Math.min(max,Number(state.guide?.homeCount??2)));
- inspector.innerHTML='<div class="inspector-section-head"><div><h3>观展指南</h3><small>首页摘要</small></div><b id="guideCountReadout">'+count+' 项</b></div>'+
+ setInspector('页面设置','观展指南','<div class="inspector-section-head"><div><h3>首页摘要</h3><small>控制首页显示数量</small></div><b id="guideCountReadout">'+count+' 项</b></div>'+
    '<div class="segmented-count" id="guideCountSegments">'+
    Array.from({length:max+1},(_,i)=>'<button type="button" data-count="'+i+'" class="'+(i===count?'active':'')+'" aria-pressed="'+(i===count)+'">'+i+'</button>').join('')+
-   '</div><p class="inspector-note">完整内容保留在「观展指南」页面。</p>';
+   '</div><p class="inspector-note">完整内容保留在「观展指南」页面。</p>');
  $('#guideCountSegments').addEventListener('click',e=>{
    const b=e.target.closest('[data-count]');if(!b)return;
    const next=Number(b.dataset.count);if(next===Number(state.guide.homeCount??2))return;
@@ -107,7 +127,7 @@ window.addEventListener('message',e=>{
  return
 }
  if(m.type==='OE_SELECT_IMAGE'){document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.remove('active'));openImageInspector(m.path);return}
- if(m.type==='OE_SELECT_ITEM'){document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.toggle('active',x.dataset.contentManager===m.collection));openItemInspector(m.collection,m.index);return}
+ if(m.type==='OE_SELECT_ITEM'){setWorkspace('content');openCollectionManager(m.collection,m.index);openItemInspector(m.collection,m.index);return}
  if(m.type==='OE_MAP_POINT_MOVE'){
    const p=state.venueMap?.points?.[m.index];if(!p)return;
    checkpoint();p.x=m.x;p.y=m.y;save();
@@ -118,7 +138,7 @@ window.addEventListener('message',e=>{
    checkpoint();state.venueMap??={image:'',points:[]};state.venueMap.points??=[];
    state.venueMap.points.push({id:uid('mp'),kind:'booth',label:'新点位',x:m.x,y:m.y});
    save();send({type:'OE_REPLACE_STATE',state});
-   document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.toggle('active',x.dataset.contentManager==='mapPoints'));
+   setWorkspace('content');openCollectionManager('mapPoints',state.venueMap.points.length-1);
    openItemInspector('mapPoints',state.venueMap.points.length-1);
    return
  }
@@ -146,22 +166,22 @@ function bindInspectorStateInput(input,path,{clean=false,number=false}={}){
 }
 
 function openHeroTitleInspector(){
- inspector.innerHTML='<h3>主视觉标题</h3><div class="item-fields">'+
+ setInspector('主视觉','标题与样式','<div class="item-fields">'+
   '<label><span>第一行</span><input data-sync-path="heroTitle1" value="'+esc(state.heroTitle1||'')+'"></label>'+
   '<label><span>第二行</span><input data-sync-path="heroTitle2" value="'+esc(state.heroTitle2||'')+'"></label>'+
   '<label><span>第三行</span><input data-sync-path="heroTitle3" value="'+esc(state.heroTitle3||'')+'"></label>'+
   '<label><span>字号 · <b id="heroTitleSizeValue">'+Number(state.heroTitleSize||126)+' px</b></span><input type="range" min="56" max="160" step="1" data-sync-path="heroTitleSize" value="'+Number(state.heroTitleSize||126)+'"></label>'+
   '<label><span>主文字颜色</span><input type="color" data-sync-path="heroTitleColor" value="'+esc(state.heroTitleColor||'#17151b')+'"></label>'+
   '<label><span>强调色</span><input type="color" data-sync-path="heroTitleAccentColor" value="'+esc(state.heroTitleAccentColor||'#ff5f91')+'"></label>'+
- '</div>';
+ '</div>');
  inspector.querySelectorAll('[data-sync-path]').forEach(input=>bindInspectorStateInput(input,input.dataset.syncPath,{clean:input.type==='text',number:input.type==='range'}));
 }
 
 function openAddressInspector(){
- inspector.innerHTML='<h3>地址与导航</h3><div class="item-fields">'+
+ setInspector('基础信息','场馆与导航','<div class="item-fields">'+
   '<label><span>场馆地址</span><input data-sync-path="edition" value="'+esc(state.edition||'')+'"></label>'+
   '<label><span>导航链接</span><input type="url" data-sync-path="navigationUrl" value="'+esc(state.navigationUrl||'')+'" placeholder="https://"></label>'+
- '</div><div class="row"><button id="testNavigation" type="button">打开导航 ↗</button></div>';
+ '</div><div class="row"><button id="testNavigation" type="button">打开导航 ↗</button></div>');
  bindInspectorStateInput(inspector.querySelector('[data-sync-path="edition"]'),'edition',{clean:true});
  bindInspectorStateInput(inspector.querySelector('[data-sync-path="navigationUrl"]'),'navigationUrl',{clean:true});
  $('#testNavigation').onclick=()=>{const url=String(state.navigationUrl||'').trim();if(url.startsWith('https://')||url.startsWith('http://'))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
@@ -171,7 +191,7 @@ function openFieldInspector(path){
  if(path==='edition'){openAddressInspector();return}
  if(path.startsWith('heroTitle')){openHeroTitleInspector();return}
  const value=getDeep(path);
- inspector.innerHTML='<h3>编辑内容</h3><label>内容<textarea id="fieldInput" data-path="'+esc(path)+'">'+esc(value)+'</textarea></label>';
+ setInspector('内容','编辑文字','<label>内容<textarea id="fieldInput" data-path="'+esc(path)+'">'+esc(value)+'</textarea></label>');
  const input=$('#fieldInput');let started=false;fitTextarea(input);
  input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep(path,e.target.value);send({type:'OE_PATCH_FIELD',path,value:e.target.value});fitTextarea(e.target)});
  input.addEventListener('blur',e=>{const cleaned=cleanValue(e.target.value);if(cleaned!==e.target.value){e.target.value=cleaned;setDeep(path,cleaned);send({type:'OE_PATCH_FIELD',path,value:cleaned});fitTextarea(e.target)}});
@@ -238,8 +258,8 @@ function openItemInspector(collection,index){
  const count=arr.length;
  const isLong=k=>['text','gift','note','detail','intro','works','appearance'].includes(k);
  const media=collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='sponsors'?'<div class="item-media"><span>Logo</span><div class="item-media-row">'+(item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="sponsors.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="sponsors.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>':'';
- inspector.innerHTML='<button type="button" class="inspector-back" data-back-collection="'+collection+'">← '+esc(meta.title)+'列表</button><div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+extraInspector(collection,index,item)+'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>';
- inspector.querySelector('[data-back-collection]')?.addEventListener('click',()=>openCollectionManager(collection));
+ const itemTitle=contentManagerMeta[collection]?.item?.(item,index)?.[0]||meta.title;
+ setInspector('内容',meta.title+' · '+itemTitle,'<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+extraInspector(collection,index,item)+'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>');
  inspector.querySelectorAll('textarea').forEach(fitTextarea);
  inspector.querySelectorAll('[data-key]').forEach(input=>{
    let started=false;
@@ -284,7 +304,7 @@ function mutateItem(collection,index,op){
      {id:uid('s'),time:'12:00',title:'新活动',stage:'MAIN STAGE',detail:'',locationId:'',guestIds:[],registrationUrl:''};
    arr.splice(index+1,0,fresh);index++;
  }
- save();send({type:'OE_REPLACE_STATE',state});openItemInspector(collection,index);
+ save();send({type:'OE_REPLACE_STATE',state});syncContentCounts();openCollectionManager(collection,index);openItemInspector(collection,index);
 }
 function imageSlotConfig(path){
  if(path==='heroImage')return {label:'主视觉 KV',ratio:1,ratioLabel:'KV · 1:1',width:1400,height:1400};
@@ -298,7 +318,7 @@ function imageSlotConfig(path){
 }
 function openImageInspector(path){
  const current=getDeep(path);
- inspector.innerHTML='<h3>图片</h3><p>当前：'+esc(path)+'</p><div class="row"><button id="replaceImage" type="button">替换图片</button>'+(current?'<button id="cropCurrentImage" type="button">裁剪当前图片</button>':'')+'</div>';
+ setInspector('媒体','图片','<p class="inspector-path">'+esc(path)+'</p><div class="row"><button id="replaceImage" type="button">替换图片</button>'+(current?'<button id="cropCurrentImage" type="button">裁剪当前图片</button>':'')+'</div>');
  $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()};
  const cropBtn=$('#cropCurrentImage');if(cropBtn)cropBtn.onclick=()=>openImageCropper(current,path);
 }
@@ -369,15 +389,25 @@ $('#imageInput').addEventListener('change',e=>{
  r.onload=()=>openImageCropper(r.result,path,returnCollection,returnIndex);
  r.readAsDataURL(file);
 });
-$('#deviceBtn').onclick=()=>{canvas.classList.toggle('mobile');$('#deviceBtn').textContent=canvas.classList.contains('mobile')?'桌面':'手机'};
-$('#previewBtn').onclick=()=>{preview=!preview;$('#previewBtn').textContent=preview?'继续编辑':'预览';send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});inspector.style.visibility=preview?'hidden':'visible';toast(preview?'现在看到的是发布效果':'已返回编辑')};
-$('.page-nav').addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(!b)return;setStudioPage(b.dataset.page);if(b.dataset.page==='guide')openGuideInspector()});
-document.querySelector('.content-managers').addEventListener('click',e=>{
- const b=e.target.closest('[data-content-manager]');if(!b)return;
- document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.toggle('active',x===b));
- openCollectionManager(b.dataset.contentManager);
-});
+function setDevice(mode){
+ const mobile=mode==='mobile';canvas.classList.toggle('mobile',mobile);
+ document.querySelectorAll('[data-device]').forEach(b=>b.classList.toggle('active',b.dataset.device===mode));
+ const label=$('#canvasDeviceLabel');if(label)label.textContent=mobile?'手机画布':'桌面画布';
+}
+$('#deviceDesktopBtn').onclick=()=>setDevice('desktop');
+$('#deviceMobileBtn').onclick=()=>setDevice('mobile');
+function setPreview(next){
+ preview=!!next;document.body.classList.toggle('previewing',preview);
+ const label=$('#previewLabel');if(label)label.textContent=preview?'退出预览':'预览';
+ $('#previewBtn').classList.toggle('active',preview);
+ send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});toast(preview?'预览模式 · 页面交互已启用':'已返回编辑');
+}
+$('#previewBtn').onclick=()=>setPreview(!preview);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&preview)setPreview(false)});
+document.querySelector('.workspace-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-workspace]');if(!b)return;setWorkspace(b.dataset.workspace)});
+$('.page-nav').addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(!b)return;setWorkspace('pages');setStudioPage(b.dataset.page);if(b.dataset.page==='guide')openGuideInspector()});
+document.querySelector('.content-managers').addEventListener('click',e=>{const b=e.target.closest('[data-content-manager]');if(!b)return;setWorkspace('content');openCollectionManager(b.dataset.contentManager)});
 $('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts()};
 $('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts()};
 $('#publishBtn').onclick=()=>send({type:'OE_EXPORT_HTML'});
-syncModuleControls();syncContentCounts();bindModuleControls();mountFrame();syncHistory();
+syncModuleControls();syncContentCounts();setWorkspace('pages');showInspectorEmpty();bindModuleControls();mountFrame();syncHistory();
