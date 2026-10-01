@@ -4,7 +4,11 @@ export function createPassport({qs:$,qsa:qa,escapeHtml:esc,getState}){
     const state=getState(),tasks=state.passport?.tasks||[],required=Math.min(Number(state.passport?.required||tasks.length),tasks.length);
     const passStamps=section.querySelector('.pass-stamps'),zones=section.querySelector('.zone-list');
     if(passStamps)passStamps.innerHTML=tasks.map(t=>'<div class="pass-stamp" data-pass-code="'+esc(t.code)+'">'+esc(t.name)+'</div>').join('');
-    if(zones)zones.innerHTML=tasks.map((t,i)=>'<article class="zone"><span class="zone-no">'+String(i+1).padStart(2,'0')+'</span><div><b>'+esc(t.name)+'</b><small>'+esc(t.location||'')+'</small></div><span>QR</span></article>').join('');
+    if(zones)zones.innerHTML=tasks.map((t,i)=>{
+      const legacyTargets={A:'booths',B:'activities',C:'freewalk',D:'highlights'};
+      const target=t.target||legacyTargets[String(t.code||'').toUpperCase()]||'highlights',pageTarget=target==='booths'||target==='activities',mode=pageTarget?'page':'home';
+      return '<a class="zone" href="#'+esc(target)+'" data-target-mode="'+mode+'" data-page-link="'+esc(target)+'"><span class="zone-no">'+String(i+1).padStart(2,'0')+'</span><div><b>'+esc(t.name)+'</b><small>'+esc(t.location||'')+'</small></div><span>→</span></a>';
+    }).join('');
     const p=section.querySelector('.passbook p');if(p)p.textContent=(state.passport?.reward||'')+' · '+required+' / '+tasks.length;
     updatePassportStamps();
   }

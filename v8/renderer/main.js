@@ -1,13 +1,13 @@
-import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.8.0';
-import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.8.0';
-import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.8.0';
-import {createCollections} from '/v8/renderer/collections.js?v=8.8.0';
-import {createPassport} from '/v8/renderer/passport.js?v=8.8.0';
-import {createRouter} from '/v8/renderer/router.js?v=8.8.0';
-import {createFields} from '/v8/renderer/fields.js?v=8.8.0';
-import {createRuntime} from '/v8/renderer/runtime.js?v=8.8.0';
-import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.8.0';
-import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.8.0';
+import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.9.0';
+import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.9.0';
+import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.9.0';
+import {createCollections} from '/v8/renderer/collections.js?v=8.9.0';
+import {createPassport} from '/v8/renderer/passport.js?v=8.9.0';
+import {createRouter} from '/v8/renderer/router.js?v=8.9.0';
+import {createFields} from '/v8/renderer/fields.js?v=8.9.0';
+import {createRuntime} from '/v8/renderer/runtime.js?v=8.9.0';
+import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.9.0';
+import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.9.0';
 
 const ORIGIN=location.origin;
 let state={},mode='edit';
@@ -31,7 +31,7 @@ const passport=createPassport({qs:$,qsa:qa,escapeHtml:esc,getState:()=>state});
 const router=createRouter({qs:$,qsa:qa,getState:()=>state,renderPassport:passport.renderPassport});
 const fields=createFields({qs:$,qsa:qa,getMode:()=>mode,setModeState:next=>{mode=next},setDeep,renderTickets:collections.renderTickets});
 const runtime=createRuntime({qs:$,qsa:qa});
-const buildStandaloneHtml=createStandaloneExporter({getState:()=>state,previewStyle,escapeHtml:esc});
+const buildStandaloneHtml=createStandaloneExporter({getState:()=>state,previewStyle,runtimeExtraStyle,escapeHtml:esc});
 
 function applyState(next){
   state={...state,...next};

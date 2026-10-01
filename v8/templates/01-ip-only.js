@@ -27,10 +27,10 @@ export const template01 = {
       required:3,
       reward:'完成 3 个印章可领取限定纪念物',
       tasks:[
-        {id:'a',name:'同人摊位街区',location:'A区',code:'A'},
-        {id:'b',name:'主舞台',location:'舞台区',code:'B'},
-        {id:'c',name:'COS 合影',location:'COS区',code:'C'},
-        {id:'d',name:'特别企划',location:'企划区',code:'D'}
+        {id:'a',name:'同人摊位街区',location:'A区',code:'A',target:'booths'},
+        {id:'b',name:'主舞台',location:'舞台区',code:'B',target:'activities'},
+        {id:'c',name:'COS 合影',location:'COS区',code:'C',target:'freewalk'},
+        {id:'d',name:'特别企划',location:'企划区',code:'D',target:'highlights'}
       ]
     },
     heroImage:'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=84&w=1600',
@@ -51,10 +51,10 @@ export const template01 = {
       {id:'b3',no:'B07',name:'白昼制品',type:'徽章 · 色纸'}
     ],
     schedule:[
-      {id:'s1',time:'11:00',title:'开场 & 社群合影',stage:'MAIN STAGE'},
-      {id:'s2',time:'13:30',title:'主题问答 / 互动游戏',stage:'TALK'},
-      {id:'s3',time:'15:00',title:'COS 特别舞台',stage:'MAIN STAGE'},
-      {id:'s4',time:'17:30',title:'幸运抽选 & 闭幕',stage:'MAIN STAGE'}
+      {id:'s1',time:'11:00',title:'开场 & 社群合影',stage:'MAIN STAGE',detail:'活动开场与全体社群合影。'},
+      {id:'s2',time:'13:30',title:'主题问答 / 互动游戏',stage:'TALK',detail:'主题问答、观众互动与现场小游戏。'},
+      {id:'s3',time:'15:00',title:'COS 特别舞台',stage:'MAIN STAGE',detail:'COS 舞台展示与主题合影活动。'},
+      {id:'s4',time:'17:30',title:'幸运抽选 & 闭幕',stage:'MAIN STAGE',detail:'幸运抽选、闭幕致谢与活动结束提醒。'}
     ],
     guests:[
       {id:'g1',name:'特邀嘉宾',role:'Guest / Creator',intro:'嘉宾介绍与作品信息由主办方填写。'}
