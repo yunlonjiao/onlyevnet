@@ -1,4 +1,4 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.13.0';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.14.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
@@ -18,7 +18,7 @@ state.guests=(state.guests||[]).map((g,i)=>({...structuredClone(template01.defau
 state.schedule=(state.schedule||[]).map((a,i)=>({...structuredClone(template01.defaults.schedule[i]||{guestIds:[]}),...a,guestIds:Array.isArray(a.guestIds)?a.guestIds:[]}));
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(t){toastEl.textContent=t;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),1400)}
-function save(){saveState.textContent='保存中…';clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));saveState.textContent='已保存'},180)}
+function save(){saveState.textContent='保存中…';syncContentCounts();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));saveState.textContent='已保存'},180)}
 function checkpoint(){history.push(JSON.stringify(state));if(history.length>80)history.shift();future.length=0;syncHistory()}
 function syncHistory(){$('#undoBtn').disabled=!history.length;$('#redoBtn').disabled=!future.length}
 function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a.length-1;i++)o=o[/^\d+$/.test(a[i])?Number(a[i]):a[i]];const k=a.at(-1);o[/^\d+$/.test(k)?Number(k):k]=value;save()}
@@ -26,6 +26,37 @@ function getDeep(path){return path.split('.').reduce((o,k)=>o?.[/^\d+$/.test(k)?
 function send(message){if(frameReady&&iframe?.contentWindow)iframe.contentWindow.postMessage(message,ORIGIN)}
 
 const moduleLabels={booths:'摊位详情',activities:'活动详情',guide:'观展指南'};
+const contentManagerMeta={
+ tickets:{title:'票务',empty:'还没有票种',item:(x,i)=>[x.name||('票种 '+(i+1)),x.price||'']},
+ highlights:{title:'特别企划',empty:'还没有企划',item:(x,i)=>[x.title||('企划 '+(i+1)),x.stamp||'']},
+ booths:{title:'摊位',empty:'还没有摊位',item:(x,i)=>[(x.no?x.no+' · ':'')+(x.name||('摊位 '+(i+1))),String((x.products||[]).length)+' 个制品']},
+ schedule:{title:'活动',empty:'还没有活动',item:(x,i)=>[(x.time?x.time+' · ':'')+(x.title||('活动 '+(i+1))),x.stage||'']},
+ guests:{title:'嘉宾',empty:'还没有嘉宾',item:(x,i)=>[x.name||('嘉宾 '+(i+1)),x.role||'']},
+ mapPoints:{title:'地图点位',empty:'还没有点位',item:(x,i)=>[x.label||('点位 '+(i+1)),x.kind||'']},
+ guide:{title:'观展指南',empty:'还没有指南内容',item:(x,i)=>[x.title||('指南 '+(i+1)),(x.text||'').slice(0,24)]},
+ updates:{title:'重要更新',empty:'还没有重要更新',item:(x,i)=>[x.title||('更新 '+(i+1)),x.date||'']},
+ socialLinks:{title:'社群入口',empty:'还没有社群入口',item:(x,i)=>[x.label||('入口 '+(i+1)),x.url?'已设置链接':'未设置链接']},
+ sponsors:{title:'赞助支持',empty:'还没有赞助信息',item:(x,i)=>[x.name||('赞助 '+(i+1)),x.level||'']}
+};
+function syncContentCounts(){
+ document.querySelectorAll('[data-content-count]').forEach(el=>{
+   const arr=collectionArray(el.dataset.contentCount);
+   el.textContent=Array.isArray(arr)?arr.length:0;
+ });
+}
+function openCollectionManager(collection){
+ const meta=contentManagerMeta[collection],arr=collectionArray(collection);if(!meta||!Array.isArray(arr))return;
+ const rows=arr.map((item,i)=>{
+   const [title,sub]=meta.item(item,i);
+   return '<button type="button" class="content-row" data-open-item="'+i+'"><span><b>'+esc(title)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</span><i>→</i></button>';
+ }).join('');
+ inspector.innerHTML='<div class="collection-manager-head"><div><span>内容</span><h3>'+esc(meta.title)+'</h3></div><b>'+arr.length+' 项</b></div>'+
+   '<div class="collection-list">'+(rows||'<div class="collection-empty">'+esc(meta.empty)+'</div>')+'</div>'+
+   '<button type="button" class="collection-add" id="collectionAdd">＋ 添加'+esc(meta.title)+'</button>';
+ inspector.querySelectorAll('[data-open-item]').forEach(btn=>btn.onclick=()=>openItemInspector(collection,Number(btn.dataset.openItem)));
+ $('#collectionAdd').onclick=()=>mutateItem(collection,arr.length-1,'add');
+}
+
 function openGuideInspector(){
  const items=state.guide?.items||[];
  const max=Math.min(items.length,4);
@@ -61,13 +92,13 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.13.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.14.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
  if(m.type==='OE_READY'){frameReady=true;send({type:'OE_INIT_STATE',state,mode:preview?'preview':'edit',page:currentPage});return}
  if(m.type==='OE_RENDER_ERROR'){toast(m.stage==='fallback'?'预览加载失败':'模块加载异常，已自动切换安全渲染');return}
- if(m.type==='OE_SELECT_FIELD'){focusCheckpointTaken=false;openFieldInspector(m.path);return}
+ if(m.type==='OE_SELECT_FIELD'){document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.remove('active'));focusCheckpointTaken=false;openFieldInspector(m.path);return}
  if(m.type==='OE_FIELD_FOCUS'){if(!focusCheckpointTaken){checkpoint();focusCheckpointTaken=true}return}
  if(m.type==='OE_FIELD_CHANGE'){
  setDeep(m.path,m.value);
@@ -75,8 +106,8 @@ window.addEventListener('message',e=>{
  const linked=inspector.querySelector('[data-sync-path="'+CSS.escape(m.path)+'"]');if(linked)linked.value=m.value;
  return
 }
- if(m.type==='OE_SELECT_IMAGE'){openImageInspector(m.path);return}
- if(m.type==='OE_SELECT_ITEM'){openItemInspector(m.collection,m.index);return}
+ if(m.type==='OE_SELECT_IMAGE'){document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.remove('active'));openImageInspector(m.path);return}
+ if(m.type==='OE_SELECT_ITEM'){document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.toggle('active',x.dataset.contentManager===m.collection));openItemInspector(m.collection,m.index);return}
  if(m.type==='OE_MAP_POINT_MOVE'){
    const p=state.venueMap?.points?.[m.index];if(!p)return;
    checkpoint();p.x=m.x;p.y=m.y;save();
@@ -197,7 +228,8 @@ function openItemInspector(collection,index){
  const count=arr.length;
  const isLong=k=>['text','gift','note','detail','intro','works','appearance'].includes(k);
  const media=collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='sponsors'?'<div class="item-media"><span>Logo</span><div class="item-media-row">'+(item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="sponsors.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="sponsors.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>':'';
- inspector.innerHTML='<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+extraInspector(collection,index,item)+'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>';
+ inspector.innerHTML='<button type="button" class="inspector-back" data-back-collection="'+collection+'">← '+esc(meta.title)+'列表</button><div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+extraInspector(collection,index,item)+'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>';
+ inspector.querySelector('[data-back-collection]')?.addEventListener('click',()=>openCollectionManager(collection));
  inspector.querySelectorAll('textarea').forEach(fitTextarea);
  inspector.querySelectorAll('[data-key]').forEach(input=>{
    let started=false;
@@ -330,7 +362,12 @@ $('#imageInput').addEventListener('change',e=>{
 $('#deviceBtn').onclick=()=>{canvas.classList.toggle('mobile');$('#deviceBtn').textContent=canvas.classList.contains('mobile')?'桌面':'手机'};
 $('#previewBtn').onclick=()=>{preview=!preview;$('#previewBtn').textContent=preview?'继续编辑':'预览';send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});inspector.style.visibility=preview?'hidden':'visible';toast(preview?'现在看到的是发布效果':'已返回编辑')};
 $('.page-nav').addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(!b)return;setStudioPage(b.dataset.page);if(b.dataset.page==='guide')openGuideInspector()});
-$('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory()};
-$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory()};
+document.querySelector('.content-managers').addEventListener('click',e=>{
+ const b=e.target.closest('[data-content-manager]');if(!b)return;
+ document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.toggle('active',x===b));
+ openCollectionManager(b.dataset.contentManager);
+});
+$('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts()};
+$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts()};
 $('#publishBtn').onclick=()=>send({type:'OE_EXPORT_HTML'});
-syncModuleControls();bindModuleControls();mountFrame();syncHistory();
+syncModuleControls();syncContentCounts();bindModuleControls();mountFrame();syncHistory();

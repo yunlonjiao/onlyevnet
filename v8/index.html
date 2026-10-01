@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OnlyEvent Studio v8</title>
-  <link rel="stylesheet" href="/v8/styles.css?v=8.13.0">
+  <link rel="stylesheet" href="/v8/styles.css?v=8.14.0">
 </head>
 <body>
   <header class="studio-topbar">
@@ -34,7 +34,6 @@
     <aside class="sidebar">
       <div class="sidebar-head">
         <span class="workspace-label">工作区</span>
-        <button class="sidebar-more" type="button" aria-label="更多选项">•••</button>
       </div>
 
       <div class="side-title">模板</div>
@@ -51,6 +50,20 @@
         <button data-page="activities" data-module-page="activities" type="button"><span class="nav-icon">◷</span><span>活动详情</span></button>
         <button data-page="guide" type="button"><span class="nav-icon">i</span><span>观展指南</span></button>
       </nav>
+
+      <div class="side-title">内容</div>
+      <div class="content-managers">
+        <button type="button" data-content-manager="tickets"><span>票务</span><b data-content-count="tickets">0</b></button>
+        <button type="button" data-content-manager="highlights"><span>特别企划</span><b data-content-count="highlights">0</b></button>
+        <button type="button" data-content-manager="booths"><span>摊位</span><b data-content-count="booths">0</b></button>
+        <button type="button" data-content-manager="schedule"><span>活动</span><b data-content-count="schedule">0</b></button>
+        <button type="button" data-content-manager="guests"><span>嘉宾</span><b data-content-count="guests">0</b></button>
+        <button type="button" data-content-manager="mapPoints"><span>地图点位</span><b data-content-count="mapPoints">0</b></button>
+        <button type="button" data-content-manager="guide"><span>观展指南</span><b data-content-count="guide">0</b></button>
+        <button type="button" data-content-manager="updates"><span>重要更新</span><b data-content-count="updates">0</b></button>
+        <button type="button" data-content-manager="socialLinks"><span>社群入口</span><b data-content-count="socialLinks">0</b></button>
+        <button type="button" data-content-manager="sponsors"><span>赞助支持</span><b data-content-count="sponsors">0</b></button>
+      </div>
 
       <div class="side-title">模块</div>
       <div class="module-switches">
@@ -90,16 +103,11 @@
           <span>当前选择</span>
           <b>未选择元素</b>
         </div>
-        <button class="context-action" type="button" aria-label="定位">⌖</button>
       </div>
 
       <div class="inspector-empty">
         <div class="empty-visual"><span></span><span></span><span></span></div>
         <b>未选择内容</b>
-        
-        <div class="empty-shortcuts">
-          <span>文字</span><span>图片</span><span>模块</span>
-        </div>
       </div>
 
       <div class="inspector-footer">
@@ -131,6 +139,6 @@
     </div>
   </dialog>
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="/v8/app.js?v=8.13.0"></script>
+  <script type="module" src="/v8/app.js?v=8.14.0"></script>
 </body>
 </html>
