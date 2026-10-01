@@ -1,4 +1,4 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.14.0';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.15.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
@@ -92,7 +92,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.14.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.15.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -112,6 +112,14 @@ window.addEventListener('message',e=>{
    const p=state.venueMap?.points?.[m.index];if(!p)return;
    checkpoint();p.x=m.x;p.y=m.y;save();
    const x=inspector.querySelector('[data-key="x"]'),y=inspector.querySelector('[data-key="y"]');if(x)x.value=m.x;if(y)y.value=m.y;
+   return
+ }
+ if(m.type==='OE_MAP_POINT_ADD'){
+   checkpoint();state.venueMap??={image:'',points:[]};state.venueMap.points??=[];
+   state.venueMap.points.push({id:uid('mp'),kind:'booth',label:'新点位',x:m.x,y:m.y});
+   save();send({type:'OE_REPLACE_STATE',state});
+   document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.toggle('active',x.dataset.contentManager==='mapPoints'));
+   openItemInspector('mapPoints',state.venueMap.points.length-1);
    return
  }
  if(m.type==='OE_EXPORT_HTML_RESULT'){downloadPublishedHtml(m.html);return}
@@ -175,7 +183,7 @@ const collectionMeta={
  guide:{title:'指南内容',fields:[['title','标题'],['text','说明']]},
  guests:{title:'嘉宾',fields:[['name','姓名 / 名称'],['role','身份'],['works','代表作'],['intro','介绍'],['socialLabel','平台名称'],['socialUrl','平台链接'],['appearance','签售 / 舞台时间']]},
  booths:{title:'摊位',fields:[['no','摊位号'],['name','社团名'],['type','分类'],['intro','简介']]},
- mapPoints:{title:'地图点位',fields:[['label','点位名称'],['kind','类型'],['x','横向位置 %'],['y','纵向位置 %']]},
+ mapPoints:{title:'地图点位',fields:[['label','点位名称']]},
  updates:{title:'重要更新',fields:[['date','日期'],['title','更新内容']]},socialLinks:{title:'社群入口',fields:[['label','名称'],['note','说明'],['url','链接']]},sponsors:{title:'赞助支持',fields:[['name','名称'],['level','级别'],['url','链接']]}
 };
 function uid(prefix){return prefix+Math.random().toString(36).slice(2,8)}
@@ -215,7 +223,9 @@ function extraInspector(collection,index,item){
  }
  if(collection==='mapPoints'){
    const linked=(state.booths||[]).filter(b=>b.pointId===item.id);
-   return '<div class="reference-panel"><b>点位使用情况</b><div class="linked-summary">'+(linked.length?linked.map(b=>'<span>'+esc((b.no||'')+' '+b.name)+'</span>').join(''):'<span>暂未关联摊位</span>')+'</div><p class="inspector-note">摊位与点位的关联在摊位编辑器中设置；点位可直接在地图上拖动。</p></div>';
+   const kinds=[['booth','摊位'],['stage','舞台'],['service','服务台'],['restroom','卫生间'],['changing','更衣室'],['entrance','出入口'],['food','餐饮'],['other','其他']];
+   return '<div class="reference-panel"><b>点位类型</b><label><span>类型</span><select data-ref="kind">'+kinds.map(x=>'<option value="'+x[0]+'" '+(item.kind===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select></label></div>'+
+     '<div class="reference-panel"><b>点位使用情况</b><div class="linked-summary">'+(linked.length?linked.map(b=>'<span>'+esc((b.no||'')+' '+b.name)+'</span>').join(''):'<span>暂未关联摊位</span>')+'</div><p class="inspector-note">直接在地图上拖动点位调整位置；摊位关联在摊位编辑器中设置。</p></div>';
  }
  if(collection==='updates'){
    const targets=[['top','首页顶部'],['tickets','票务'],['passport','活动参与'],['map-home','场地图'],['schedule-home','当天日程'],['guests','嘉宾'],['guide-home','观展指南'],['community','社群']];

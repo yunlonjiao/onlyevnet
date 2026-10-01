@@ -5,6 +5,9 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
     clone.querySelectorAll('[data-oe-field]').forEach(el=>{el.removeAttribute('data-oe-field');el.removeAttribute('contenteditable');el.removeAttribute('spellcheck')});
     clone.querySelectorAll('[data-oe-item]').forEach(el=>{el.removeAttribute('data-oe-item');el.removeAttribute('data-oe-index')});
     clone.querySelectorAll('[data-oe-image]').forEach(el=>el.removeAttribute('data-oe-image'));
+    clone.querySelectorAll('[data-favorite-booth]').forEach(el=>{el.classList.remove('active');el.setAttribute('aria-pressed','false');el.textContent='♡ 收藏社团'});
+    clone.querySelectorAll('[data-wishlist-product]').forEach(el=>{el.classList.remove('active');el.setAttribute('aria-pressed','false');el.textContent='☆ 心愿'});
+    clone.querySelectorAll('[data-wishlist-count]').forEach(el=>el.textContent='0');
 
     const stateJson=JSON.stringify(state).replace(/</g,'\\u003c');
     const runtime=`(()=>{
@@ -12,6 +15,13 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       const mods=S.modules||{},standalone=["booths","activities","guide"],fixed=new Set(["tickets","passport","booths","activities","guide"]);
       const homeSections=[["tickets","tickets"],["highlights","highlights"],["passport","passport"],["map-home","booths"],["schedule-home","activities"],["guests","guests"],["guide-home","guide"],["community","community"],["sponsors","sponsors"]];
       const on=k=>fixed.has(k)||mods[k]!==false;
+      const wishKey=()=>("oe-wishlist:"+String(S.eventName||"event").toLowerCase().replace(/\s+/g,"-"));
+      const readWish=()=>{try{const x=JSON.parse(localStorage.getItem(wishKey())||"{}");return{booths:Array.isArray(x.booths)?x.booths:[],products:Array.isArray(x.products)?x.products:[]}}catch{return{booths:[],products:[]}}};
+      const writeWish=x=>localStorage.setItem(wishKey(),JSON.stringify(x));
+      function paintWish(){const x=readWish(),bs=new Set(x.booths),ps=new Set(x.products);qa("[data-favorite-booth]").forEach(b=>{const on=bs.has(b.dataset.favoriteBooth);b.classList.toggle("active",on);b.setAttribute("aria-pressed",String(on));b.textContent=on?"♥ 已收藏":"♡ 收藏社团"});qa("[data-wishlist-product]").forEach(b=>{const on=ps.has(b.dataset.wishlistProduct);b.classList.toggle("active",on);b.setAttribute("aria-pressed",String(on));b.textContent=on?"★ 已加入":"☆ 心愿"});qa("[data-wishlist-count]").forEach(el=>el.textContent=String(new Set([...x.booths,...x.products]).size))}
+      function toggleWish(kind,id){const x=readWish(),key=kind==="booth"?"booths":"products",set=new Set(x[key]);set.has(id)?set.delete(id):set.add(id);x[key]=[...set];writeWish(x);paintWish()}
+      function focusPoint(id){const pin=document.querySelector('.map-pin[data-point-id="'+CSS.escape(id)+'"]');if(!pin)return;qa(".map-pin.focused").forEach(x=>x.classList.remove("focused"));pin.classList.add("focused");const pop=$("#mapPop");if(pop)pop.innerHTML="<b>"+pin.dataset.name+"</b><br><span>"+pin.dataset.info+"</span>"+(pin.dataset.boothId?'<br><a href="#booths" data-page-link="booths" data-booth-id="'+pin.dataset.boothId+'">查看摊位与制品 →</a>':"");setTimeout(()=>pin.classList.remove("focused"),1800)}
+
 
       function show(page){
         if(page!=="home"&&!standalone.includes(page))page="home";
@@ -39,7 +49,14 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       }
       paint();
 
+      document.addEventListener("input",e=>{const booth=e.target.closest("[data-booth-search]");if(booth){const q=booth.value.trim().toLowerCase(),savedOnly=$('[data-booth-filter="saved"]')?.classList.contains("active"),fav=readWish(),bs=new Set(fav.booths),ps=new Set(fav.products);let shown=0;qa(".booth-rich").forEach(card=>{const matches=!q||String(card.dataset.search||"").includes(q),saved=bs.has(card.dataset.boothId)||[...card.querySelectorAll("[data-product-id]")].some(p=>ps.has(p.dataset.productId)),on=matches&&(!savedOnly||saved);card.hidden=!on;if(on)shown++});const empty=$(".booth-no-result");if(empty)empty.hidden=shown>0}const map=e.target.closest("[data-map-search-input]");if(map){const q=map.value.trim().toLowerCase();qa(".map-search-result").forEach(b=>b.hidden=!!q&&!String(b.dataset.mapSearch||"").includes(q))}});
+      paintWish();
       document.addEventListener("click",e=>{
+        const mapLocate=e.target.closest("[data-map-locate]");if(mapLocate&&mapLocate.dataset.mapLocate){e.preventDefault();goHomeSection("map-home");requestAnimationFrame(()=>focusPoint(mapLocate.dataset.mapLocate));return}
+        const boothFav=e.target.closest("[data-favorite-booth]");if(boothFav){e.preventDefault();toggleWish("booth",boothFav.dataset.favoriteBooth);return}
+        const productFav=e.target.closest("[data-wishlist-product]");if(productFav){e.preventDefault();toggleWish("product",productFav.dataset.wishlistProduct);return}
+        const filter=e.target.closest("[data-booth-filter]");if(filter){e.preventDefault();qa("[data-booth-filter]").forEach(x=>x.classList.toggle("active",x===filter));$("[data-booth-search]")?.dispatchEvent(new Event("input",{bubbles:true}));return}
+        const boothJump=e.target.closest('a[data-booth-id]');if(boothJump){e.preventDefault();show("booths");requestAnimationFrame(()=>$("#booth-"+CSS.escape(boothJump.dataset.boothId))?.scrollIntoView({behavior:"smooth",block:"start"}));return}
         const rich=e.target.closest("[data-product-lightbox]");
         if(rich){
           e.preventDefault();

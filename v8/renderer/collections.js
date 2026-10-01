@@ -56,26 +56,40 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     if(map.image)box.style.backgroundImage='linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08)),url("'+String(map.image).replace(/"/g,'%22')+'")';
     else box.style.backgroundImage='';
     const side=$('.map-home-side');if(side){
-      side.innerHTML='<span class="ey">BOOTH DIRECTORY</span><b>查完整摊位与制品</b><p>地图点位与摊位、活动共用同一份数据。</p><div class="map-actions"><button type="button" data-oe-image="venueMap.image">'+(map.image?'替换场地图':'上传场地图')+'</button><a class="btn" href="#booths" data-target-mode="page" data-page-link="booths">查看摊位详情 →</a></div>';
+      const editTools=getMode()==='edit'?'<button type="button" data-map-add-mode>＋ 在地图上添加点位</button>':'';
+      const boothButtons=(state.booths||[]).filter(b=>b.pointId).map(b=>'<button type="button" class="map-search-result" data-map-locate="'+esc(b.pointId)+'" data-map-search="'+esc([b.no,b.name,b.type,...(b.products||[]).map(p=>p.name)].filter(Boolean).join(' ').toLowerCase())+'"><b>'+esc(b.no||'')+'</b><span>'+esc(b.name||'')+'</span></button>').join('');
+      side.innerHTML='<span class="ey">FIND A BOOTH</span><b>查摊位与制品</b><label class="map-search"><span>⌕</span><input type="search" data-map-search-input placeholder="搜索摊位号、社团或制品"></label><div class="map-search-results">'+boothButtons+'</div><div class="map-actions">'+editTools+'<button type="button" data-oe-image="venueMap.image">'+(map.image?'替换场地图':'上传场地图')+'</button><a class="btn" href="#booths" data-target-mode="page" data-page-link="booths">查看摊位详情 →</a></div>';
     }
     pointsBox.innerHTML=(map.points||[]).map((p,i)=>{
       let title=p.label||'点位',info=p.kind||'point';
       const b=(state.booths||[]).find(x=>x.pointId===p.id);if(b){title=(b.no||p.label)+' · '+b.name;info=(b.products||[]).slice(0,2).map(x=>x.name).join(' · ')||b.type||''}
       const linkedActivities=(state.schedule||[]).filter(a=>a.locationId===p.id);
       if(linkedActivities.length)info=linkedActivities.map(a=>a.time+' '+a.title).join(' / ');
-      return '<button class="pin map-pin kind-'+esc(p.kind||'other')+'" style="left:'+Number(p.x||0)+'%;top:'+Number(p.y||0)+'%" data-name="'+esc(title)+'" data-info="'+esc(info)+'" data-oe-item="mapPoints" data-oe-index="'+i+'">'+esc(p.label||String(i+1))+'</button>';
+      const booth=(state.booths||[]).find(x=>x.pointId===p.id),boothAttrs=booth?' data-booth-id="'+esc(booth.id)+'" data-booth-index="'+Math.max(0,(state.booths||[]).indexOf(booth))+'"':'';
+      return '<button class="pin map-pin kind-'+esc(p.kind||'other')+'" style="left:'+Number(p.x||0)+'%;top:'+Number(p.y||0)+'%" data-point-id="'+esc(p.id)+'" data-name="'+esc(title)+'" data-info="'+esc(info)+'"'+boothAttrs+' data-oe-item="mapPoints" data-oe-index="'+i+'">'+esc(p.label||String(i+1))+'</button>';
     }).join('');
   }
 
+  function wishlistKey(){
+    return 'oe-wishlist:'+String(getState().eventName||'event').toLowerCase().replace(/\s+/g,'-');
+  }
+  function readWishlist(){
+    try{const raw=JSON.parse(localStorage.getItem(wishlistKey())||'{}');return {booths:Array.isArray(raw.booths)?raw.booths:[],products:Array.isArray(raw.products)?raw.products:[]}}catch{return {booths:[],products:[]}}
+  }
   function renderBooths(){
     const state=getState(),box=$('#booths .booth-directory-rich');if(!box)return;
-    box.innerHTML=(state.booths||[]).map((b,i)=>{
+    const saved=readWishlist(),savedBooths=new Set(saved.booths),savedProducts=new Set(saved.products);
+    const cards=(state.booths||[]).map((b,i)=>{
       const products=(b.products||[]).map((p,j)=>{
         const img=p.image?'<button class="product-image" data-product-lightbox="'+esc(p.image)+'" data-oe-image="booths.'+i+'.products.'+j+'.image" type="button"><img src="'+esc(p.image)+'" alt="'+esc(p.name||'制品')+'"></button>':'<button class="product-image empty" type="button" data-oe-image="booths.'+i+'.products.'+j+'.image">＋ 图片</button>';
-        return '<article class="product-card" data-product-index="'+j+'">'+img+'<div>'+field('booths.'+i+'.products.'+j+'.name',p.name,'b')+field('booths.'+i+'.products.'+j+'.price',p.price||'','span','product-price')+field('booths.'+i+'.products.'+j+'.note',p.note||'','small')+'</div></article>';
+        const wished=savedProducts.has(p.id);
+        return '<article class="product-card" data-product-index="'+j+'" data-product-id="'+esc(p.id)+'"><div class="product-media-wrap">'+img+'<button class="wishlist-product'+(wished?' active':'')+'" type="button" data-wishlist-product="'+esc(p.id)+'" data-booth-id="'+esc(b.id)+'" aria-pressed="'+wished+'">'+(wished?'★ 已加入':'☆ 心愿')+'</button></div><div>'+field('booths.'+i+'.products.'+j+'.name',p.name,'b')+field('booths.'+i+'.products.'+j+'.price',p.price||'','span','product-price')+field('booths.'+i+'.products.'+j+'.note',p.note||'','small')+'</div></article>';
       }).join('');
-      return '<article class="booth-rich" data-oe-item="booths" data-oe-index="'+i+'"><div class="booth-rich-head"><span>'+esc(b.no||'')+'</span>'+field('booths.'+i+'.name',b.name,'h3')+'<small>'+esc(b.type||'')+'</small></div>'+field('booths.'+i+'.intro',b.intro||'','p')+'<div class="product-grid">'+products+'</div><a class="booth-map-link" href="#map-home" data-target-mode="home" data-page-link="map-home">⌖ '+esc(getPoint(b.pointId)?.label||b.no||'查看地图')+'</a></article>';
+      const fav=savedBooths.has(b.id),search=[b.no,b.name,b.type,b.intro,...(b.products||[]).flatMap(p=>[p.name,p.note,p.price])].filter(Boolean).join(' ').toLowerCase();
+      return '<article class="booth-rich" id="booth-'+esc(b.id)+'" data-booth-id="'+esc(b.id)+'" data-booth-point="'+esc(b.pointId||'')+'" data-search="'+esc(search)+'" data-oe-item="booths" data-oe-index="'+i+'"><div class="booth-rich-head"><span>'+esc(b.no||'')+'</span><div>'+field('booths.'+i+'.name',b.name,'h3')+'<small>'+esc(b.type||'')+'</small></div><button class="favorite-booth'+(fav?' active':'')+'" type="button" data-favorite-booth="'+esc(b.id)+'" aria-pressed="'+fav+'">'+(fav?'♥ 已收藏':'♡ 收藏社团')+'</button></div>'+field('booths.'+i+'.intro',b.intro||'','p')+'<div class="product-grid">'+products+'</div><a class="booth-map-link" href="#map-home" data-target-mode="home" data-page-link="map-home" data-map-locate="'+esc(b.pointId||'')+'">⌖ '+esc(getPoint(b.pointId)?.label||b.no||'查看地图')+'</a></article>';
     }).join('');
+    const totalSaved=new Set([...saved.booths,...saved.products]).size;
+    box.innerHTML='<div class="booth-directory-tools"><label class="booth-search"><span>⌕</span><input type="search" data-booth-search placeholder="搜索社团、摊位号或制品"></label><button type="button" data-booth-filter="saved">我的收藏 <b data-wishlist-count>'+totalSaved+'</b></button><button type="button" data-booth-filter="all" class="active">全部摊位</button></div><div class="booth-directory-grid">'+cards+'</div><div class="booth-no-result" hidden>没有找到匹配的摊位或制品。</div>';
   }
 
   function renderGuests(){
