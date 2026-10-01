@@ -46,19 +46,46 @@ export const template01 = {
       {id:'h2',stamp:'STAMP 02',title:'应援留言墙',text:'现场留下角色应援与周年留言，闭幕前公开展示。',tone:'#59d4ff'},
       {id:'h3',stamp:'STAMP 03',title:'主题合影',text:'指定时段进行 COS / 自由行主题大合影。',tone:'#ff9dbb'}
     ],
+    venueMap:{
+      image:'',
+      points:[
+        {id:'mp-b1',kind:'booth',label:'A01',x:18,y:24,boothId:'b1'},
+        {id:'mp-b2',kind:'booth',label:'A12',x:58,y:38,boothId:'b2'},
+        {id:'mp-b3',kind:'booth',label:'B07',x:78,y:67,boothId:'b3'},
+        {id:'mp-stage',kind:'stage',label:'主舞台',x:48,y:58},
+        {id:'mp-service',kind:'service',label:'服务台',x:34,y:72}
+      ]
+    },
     booths:[
-      {id:'b1',no:'A01',name:'星屑工房',type:'同人本 · 亚克力'},
-      {id:'b2',no:'A12',name:'薄荷书室',type:'插画 · 明信片'},
-      {id:'b3',no:'B07',name:'白昼制品',type:'徽章 · 色纸'}
+      {id:'b1',no:'A01',name:'星屑工房',type:'同人本 · 亚克力',intro:'原创插画与角色主题制品。',pointId:'mp-b1',products:[
+        {id:'p1',name:'新刊',price:'¥45',note:'现场首发',image:''},
+        {id:'p2',name:'亚克力立牌',price:'¥60',note:'数量有限',image:''}
+      ]},
+      {id:'b2',no:'A12',name:'薄荷书室',type:'插画 · 明信片',intro:'插画本、明信片与纸制品。',pointId:'mp-b2',products:[
+        {id:'p3',name:'插画本',price:'¥50',note:'',image:''}
+      ]},
+      {id:'b3',no:'B07',name:'白昼制品',type:'徽章 · 色纸',intro:'徽章、色纸与随机小物。',pointId:'mp-b3',products:[
+        {id:'p4',name:'徽章套组',price:'¥35',note:'',image:''}
+      ]}
     ],
     schedule:[
-      {id:'s1',time:'11:00',title:'开场 & 社群合影',stage:'MAIN STAGE',detail:'活动开场与全体社群合影。'},
-      {id:'s2',time:'13:30',title:'主题问答 / 互动游戏',stage:'TALK',detail:'主题问答、观众互动与现场小游戏。'},
-      {id:'s3',time:'15:00',title:'COS 特别舞台',stage:'MAIN STAGE',detail:'COS 舞台展示与主题合影活动。'},
-      {id:'s4',time:'17:30',title:'幸运抽选 & 闭幕',stage:'MAIN STAGE',detail:'幸运抽选、闭幕致谢与活动结束提醒。'}
+      {id:'s1',time:'11:00',title:'开场 & 社群合影',stage:'MAIN STAGE',detail:'活动开场与全体社群合影。',locationId:'mp-stage',guestIds:[],registrationUrl:''},
+      {id:'s2',time:'13:30',title:'主题问答 / 互动游戏',stage:'TALK',detail:'主题问答、观众互动与现场小游戏。',locationId:'mp-stage',guestIds:['g1'],registrationUrl:''},
+      {id:'s3',time:'15:00',title:'COS 特别舞台',stage:'MAIN STAGE',detail:'COS 舞台展示与主题合影活动。',locationId:'mp-stage',guestIds:['g1'],registrationUrl:''},
+      {id:'s4',time:'17:30',title:'幸运抽选 & 闭幕',stage:'MAIN STAGE',detail:'幸运抽选、闭幕致谢与活动结束提醒。',locationId:'mp-stage',guestIds:[],registrationUrl:''}
     ],
     guests:[
-      {id:'g1',name:'特邀嘉宾',role:'Guest / Creator',intro:'嘉宾介绍与作品信息由主办方填写。'}
+      {id:'g1',name:'特邀嘉宾',role:'Guest / Creator',intro:'嘉宾介绍与作品信息由主办方填写。',works:'代表作 / 参与作品',image:'',socialLabel:'B站',socialUrl:'',appearance:'13:30 主题问答 · 15:00 COS 特别舞台'}
+    ],
+    updates:[
+      {id:'u1',date:'10/01',title:'场地图已公开',target:'map-home'},
+      {id:'u2',date:'09/28',title:'当天日程已更新',target:'schedule-home'}
+    ],
+    socialLinks:[
+      {id:'sl1',label:'QQ群',note:'游客群与活动通知',url:'',image:''},
+      {id:'sl2',label:'微信群',note:'现场交流与临时通知',url:'',image:''},
+      {id:'sl3',label:'B站',note:'PV、嘉宾公开、节目预告',url:'',image:''},
+      {id:'sl4',label:'小红书',note:'返图、攻略与活动内容',url:'',image:''}
     ],
     guide:{
       homeCount:2,
