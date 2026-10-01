@@ -1,12 +1,13 @@
 export function createRouter({qs:$,qsa:qa,getState,renderPassport}){
-  const standalonePages=['booths','activities'];
+  const standalonePages=['booths','activities','guide'];
+  const fixedModules=new Set(['tickets','passport','booths','activities','guide']);
   const homeSections=[
-    ['tickets','tickets'],['highlights','highlights'],['passport','passport'],['map-home','booths'],['schedule-home','activities'],['guests','guests'],['guide','guide'],['community','community'],['sponsors','sponsors']
+    ['tickets','tickets'],['highlights','highlights'],['passport','passport'],['map-home','booths'],['schedule-home','activities'],['guests','guests'],['guide-home','guide'],['community','community'],['sponsors','sponsors']
   ];
   let currentPage='home';
   function getCurrentPage(){return currentPage}
   function setCurrentPage(page){currentPage=page||'home'}
-  function moduleOn(key){return getState().modules?.[key]!==false}
+  function moduleOn(key){return fixedModules.has(key)||getState().modules?.[key]!==false}
   function isHomeModule(id){return homeSections.some(([section])=>section===id)}
   function isStandalonePage(id){return standalonePages.includes(id)}
   function renderQuickAccess(){
@@ -16,15 +17,15 @@ export function createRouter({qs:$,qsa:qa,getState,renderPassport}){
       ['passport','passport','活动参与','查看参与内容 →','home'],
       ['booths','map-home','场地图','查看场地 →','home'],
       ['activities','schedule-home','当天日程','查看日程 →','home'],
-      ['guide','guide','观展指南','查看指南 →','home']
+      ['guide','guide-home','观展指南','查看指南 →','home']
     ];
-    grid.innerHTML=defs.filter(x=>moduleOn(x[0])).map((x,i)=>'<a class="quick-card reveal in" href="#'+x[1]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[1]+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
+    grid.innerHTML=defs.map((x,i)=>'<a class="quick-card reveal in" href="#'+x[1]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[1]+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
   }
   function applyModules(){
     $('.ribbon')?.classList.toggle('oe-page-hidden',!moduleOn('ribbon'));
     homeSections.forEach(([id,key])=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(key)));
     standalonePages.forEach(id=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(id)));
-    const navMap={'tickets':'tickets','highlights':'highlights','map-home':'booths','schedule-home':'activities','community':'community'};
+    const navMap={'tickets':'tickets','highlights':'highlights','map-home':'booths','schedule-home':'activities','guide-home':'guide','community':'community'};
     Object.entries(navMap).forEach(([id,key])=>qa('.nav a[href="#'+id+'"],.mobile-dock a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
     renderQuickAccess();renderPassport();
   }

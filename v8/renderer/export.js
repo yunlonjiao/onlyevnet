@@ -9,9 +9,9 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
     const stateJson=JSON.stringify(state).replace(/</g,'\\u003c');
     const runtime=`(()=>{
       const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)],S=${stateJson};
-      const mods=S.modules||{},standalone=["booths","activities"];
-      const homeSections=[["tickets","tickets"],["highlights","highlights"],["passport","passport"],["map-home","booths"],["schedule-home","activities"],["guests","guests"],["guide","guide"],["community","community"],["sponsors","sponsors"]];
-      const on=k=>mods[k]!==false;
+      const mods=S.modules||{},standalone=["booths","activities","guide"],fixed=new Set(["tickets","passport","booths","activities","guide"]);
+      const homeSections=[["tickets","tickets"],["highlights","highlights"],["passport","passport"],["map-home","booths"],["schedule-home","activities"],["guests","guests"],["guide-home","guide"],["community","community"],["sponsors","sponsors"]];
+      const on=k=>fixed.has(k)||mods[k]!==false;
 
       function show(page){
         if(page!=="home"&&!standalone.includes(page))page="home";

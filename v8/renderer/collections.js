@@ -22,6 +22,12 @@ export function createCollections({qs:$,escapeHtml:esc,getState,getMode}){
     const detail=$('#activities .activity-detail-list');
     if(detail)detail.innerHTML=items.map((x,i)=>'<article class="activity-detail" id="activity-detail-'+i+'" data-oe-item="schedule" data-oe-index="'+i+'"><span>'+esc(x.time||'')+' · '+esc(x.stage||'')+'</span>'+field('schedule.'+i+'.title',x.title,'h3')+field('schedule.'+i+'.detail',x.detail||'','p')+'</article>').join('');
   }
-  function renderCollections(){renderTickets();renderHighlights();renderSchedule()}
-  return {openGiftLightbox,renderTickets,renderHighlights,renderSchedule,renderCollections};
+  function renderGuide(){
+    const state=getState(),items=state.guide?.items||[],homeCount=Math.max(0,Math.min(items.length,Number(state.guide?.homeCount??2)));
+    const card=(x,i)=>'<article data-oe-item="guide" data-oe-index="'+i+'"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b>'+field('guide.items.'+i+'.text',x.text||'','p')+'</article>';
+    const home=$('#guide-home .guide-home-grid');if(home)home.innerHTML=items.slice(0,homeCount).map(card).join('');
+    const detail=$('#guide .guide-detail-grid');if(detail)detail.innerHTML=items.map(card).join('');
+  }
+  function renderCollections(){renderTickets();renderHighlights();renderSchedule();renderGuide()}
+  return {openGiftLightbox,renderTickets,renderHighlights,renderSchedule,renderGuide,renderCollections};
 }

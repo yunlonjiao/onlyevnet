@@ -22,7 +22,7 @@ export const template01 = {
     ribbon2:'特典票限量',
     ribbon3:'COS 自由行开放',
     ribbon4:'舞台企划更新',
-    modules:{ribbon:true,tickets:true,highlights:true,passport:true,booths:true,activities:true,guests:false,guide:false,freewalk:false,itasha:false,community:true,sponsors:false},
+    modules:{ribbon:true,highlights:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
     passport:{
       required:3,
       reward:'完成 3 个印章可领取限定纪念物',
@@ -61,8 +61,13 @@ export const template01 = {
       {id:'g1',name:'特邀嘉宾',role:'Guest / Creator',intro:'嘉宾介绍与作品信息由主办方填写。'}
     ],
     guide:{
-      title:'观展指南',
-      text:'交通、入场、寄存、更衣、摄影规则等信息由主办方填写。'
+      homeCount:2,
+      items:[
+        {id:'gd1',title:'交通与入场',text:'交通方式、入场时间、排队与检票说明。'},
+        {id:'gd2',title:'现场规则',text:'摄影、寄存、禁止事项与现场参与注意事项。'},
+        {id:'gd3',title:'更衣与摄影',text:'更衣室位置、开放时间与摄影区域说明。'},
+        {id:'gd4',title:'场馆服务',text:'寄存、失物、服务台、餐饮与其他现场服务。'}
+      ]
     },
     freewalk:{
       title:'自由行',
