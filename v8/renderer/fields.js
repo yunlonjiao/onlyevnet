@@ -38,8 +38,7 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
         markEditable();
         return;
       }
-      const el=$('[data-oe-field="'+CSS.escape(path)+'"]');
-      if(el)el.textContent=value??'';
+      qa('[data-oe-field="'+CSS.escape(path)+'"]').forEach(el=>{el.textContent=value??''});
       return;
     }
 

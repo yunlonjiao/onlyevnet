@@ -60,7 +60,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     }
     pointsBox.innerHTML=(map.points||[]).map((p,i)=>{
       let title=p.label||'点位',info=p.kind||'point';
-      if(p.boothId){const b=getBooth(p.boothId);if(b){title=(b.no||p.label)+' · '+b.name;info=(b.products||[]).slice(0,2).map(x=>x.name).join(' · ')||b.type||''}}
+      const b=(state.booths||[]).find(x=>x.pointId===p.id);if(b){title=(b.no||p.label)+' · '+b.name;info=(b.products||[]).slice(0,2).map(x=>x.name).join(' · ')||b.type||''}
       const linkedActivities=(state.schedule||[]).filter(a=>a.locationId===p.id);
       if(linkedActivities.length)info=linkedActivities.map(a=>a.time+' '+a.title).join(' / ');
       return '<button class="pin map-pin kind-'+esc(p.kind||'other')+'" style="left:'+Number(p.x||0)+'%;top:'+Number(p.y||0)+'%" data-name="'+esc(title)+'" data-info="'+esc(info)+'" data-oe-item="mapPoints" data-oe-index="'+i+'">'+esc(p.label||String(i+1))+'</button>';
@@ -84,8 +84,9 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
       const activities=(state.schedule||[]).filter(a=>(a.guestIds||[]).includes(g.id));
       const img=g.image?'<button class="guest-image" data-product-lightbox="'+esc(g.image)+'" data-oe-image="guests.'+i+'.image" type="button"><img src="'+esc(g.image)+'" alt="'+esc(g.name||'嘉宾')+'"></button>':'<button class="guest-image empty" type="button" data-oe-image="guests.'+i+'.image">＋ 嘉宾图</button>';
       const schedule=activities.length?'<div class="guest-appearances">'+activities.map(a=>'<a href="#activities" data-target-mode="page" data-page-link="activities" data-activity-index="'+Math.max(0,(state.schedule||[]).indexOf(a))+'">'+esc(a.time)+' '+esc(a.title)+'</a>').join('')+'</div>':'';
+      const appearance=g.appearance?'<div class="guest-note"><b>签售 / 舞台</b>'+field('guests.'+i+'.appearance',g.appearance,'span')+'</div>':'';
       const social=g.socialUrl?'<a class="guest-social" href="'+esc(g.socialUrl)+'" target="_blank" rel="noopener">'+esc(g.socialLabel||'社交平台')+' ↗</a>':'';
-      return '<article class="guest-card guest-rich" id="guest-'+esc(g.id)+'" data-oe-item="guests" data-oe-index="'+i+'">'+img+'<div class="guest-copy">'+field('guests.'+i+'.name',g.name,'b')+field('guests.'+i+'.role',g.role||'','small')+field('guests.'+i+'.works',g.works||'','span','guest-works')+field('guests.'+i+'.intro',g.intro||'','p')+schedule+social+'</div></article>';
+      return '<article class="guest-card guest-rich" id="guest-'+esc(g.id)+'" data-oe-item="guests" data-oe-index="'+i+'">'+img+'<div class="guest-copy">'+field('guests.'+i+'.name',g.name,'b')+field('guests.'+i+'.role',g.role||'','small')+field('guests.'+i+'.works',g.works||'','span','guest-works')+field('guests.'+i+'.intro',g.intro||'','p')+appearance+schedule+social+'</div></article>';
     }).join('');
   }
 
@@ -102,6 +103,17 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
       const img=x.image?'<button class="social-image" data-product-lightbox="'+esc(x.image)+'" data-oe-image="socialLinks.'+i+'.image" type="button"><img src="'+esc(x.image)+'" alt="'+esc(x.label||'社群')+'"></button>':'<button class="social-image empty" data-oe-image="socialLinks.'+i+'.image" type="button">＋ 图片 / 二维码</button>';
       const action=x.url?'<a class="social-action" href="'+esc(x.url)+'" target="_blank" rel="noopener">进入 ↗</a>':'<span class="social-action muted">未设置链接</span>';
       return '<article data-oe-item="socialLinks" data-oe-index="'+i+'">'+field('socialLinks.'+i+'.label',x.label,'b')+field('socialLinks.'+i+'.note',x.note||'','p')+img+action+'</article>';
+    }).join('');
+  }
+
+  function renderSponsors(){
+    const state=getState(),box=$('.sponsors');if(!box)return;
+    box.innerHTML=(state.sponsors||[]).map((x,i)=>{
+      const logo=x.logo?'<button class="sponsor-logo" data-product-lightbox="'+esc(x.logo)+'" data-oe-image="sponsors.'+i+'.logo" type="button"><img src="'+esc(x.logo)+'" alt="'+esc(x.name||'赞助商')+'"></button>':'<button class="sponsor-logo empty" data-oe-image="sponsors.'+i+'.logo" type="button">＋ Logo</button>';
+      const name=field('sponsors.'+i+'.name',x.name||'','b');
+      const level=field('sponsors.'+i+'.level',x.level||'','small');
+      const action=x.url?'<a class="sponsor-link" href="'+esc(x.url)+'" target="_blank" rel="noopener">访问 ↗</a>':'';
+      return '<article class="sponsor-card" data-oe-item="sponsors" data-oe-index="'+i+'">'+logo+'<div class="sponsor-copy">'+name+level+'</div>'+action+'</article>';
     }).join('');
   }
 
@@ -125,7 +137,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
   }
 
   function renderCollections(){
-    renderTickets();renderHighlights();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderUpdates();renderCommunity();renderFooter();
+    renderTickets();renderHighlights();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderUpdates();renderCommunity();renderSponsors();renderFooter();
   }
-  return {openGiftLightbox,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderUpdates,renderCommunity,renderFooter,renderCollections};
+  return {openGiftLightbox,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderUpdates,renderCommunity,renderSponsors,renderFooter,renderCollections};
 }

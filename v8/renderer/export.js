@@ -40,6 +40,13 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       paint();
 
       document.addEventListener("click",e=>{
+        const rich=e.target.closest("[data-product-lightbox]");
+        if(rich){
+          e.preventDefault();
+          let dlg=$("#oeImagePreview");
+          if(!dlg){dlg=document.createElement("dialog");dlg.id="oeImagePreview";dlg.className="gift-lightbox";dlg.innerHTML='<button type="button" aria-label="关闭">×</button><img alt="图片预览">';document.body.appendChild(dlg);dlg.querySelector("button").onclick=()=>dlg.close();dlg.addEventListener("click",ev=>{if(ev.target===dlg)dlg.close()})}
+          dlg.querySelector("img").src=rich.dataset.productLightbox;dlg.showModal();return;
+        }
         const pin=e.target.closest(".pin");
         if(pin){const pop=$("#mapPop");if(pop)pop.innerHTML="<b>"+pin.dataset.name+"</b><br><span>"+pin.dataset.info+"</span>";return}
 

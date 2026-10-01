@@ -1,6 +1,6 @@
 export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftLightbox,qsa:qa}){
   document.addEventListener('focusin',e=>{const el=e.target.closest?.('[data-oe-field]');if(!el||getMode()!=='edit')return;send({type:'OE_FIELD_FOCUS',path:el.dataset.oeField});send({type:'OE_SELECT_FIELD',path:el.dataset.oeField})},true);
-  document.addEventListener('input',e=>{const el=e.target.closest?.('[data-oe-field]');if(!el||getMode()!=='edit')return;const path=el.dataset.oeField;setDeep(path,el.textContent);if(path.startsWith('ribbon')){const i=Number(path.replace('ribbon',''))-1;qa('[data-ribbon-mirror="'+i+'"]').forEach(x=>x.textContent=el.textContent)}send({type:'OE_FIELD_CHANGE',path,value:el.textContent})});
+  document.addEventListener('input',e=>{const el=e.target.closest?.('[data-oe-field]');if(!el||getMode()!=='edit')return;const path=el.dataset.oeField,value=el.textContent;setDeep(path,value);qa('[data-oe-field="'+CSS.escape(path)+'"]').forEach(x=>{if(x!==el)x.textContent=value});if(path.startsWith('ribbon')){const i=Number(path.replace('ribbon',''))-1;qa('[data-ribbon-mirror="'+i+'"]').forEach(x=>x.textContent=value)}send({type:'OE_FIELD_CHANGE',path,value})});
   document.addEventListener('pointerdown',e=>{
     const pin=e.target.closest?.('.map-pin[data-oe-item="mapPoints"]');
     if(!pin||getMode()!=='edit')return;
@@ -30,7 +30,7 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
     if(giftImage){const i=Number(giftImage.dataset.ticketImage);if(getMode()==='preview'){e.preventDefault();openGiftLightbox(getState().tickets?.[i]?.image);return}else{e.preventDefault();send({type:'OE_SELECT_ITEM',collection:'tickets',index:i});return}}
     const richImage=e.target.closest?.('[data-product-lightbox]');
     if(richImage&&getMode()==='preview'){e.preventDefault();openGiftLightbox(richImage.dataset.productLightbox);return}
-    const item=e.target.closest?.('[data-oe-item]');if(item&&getMode()==='edit'){send({type:'OE_SELECT_ITEM',collection:item.dataset.oeItem,index:Number(item.dataset.oeIndex)});if(item.dataset.oeItem==='schedule'||item.dataset.oeItem==='mapPoints'){e.preventDefault();return}}
+    const item=e.target.closest?.('[data-oe-item]');if(item&&getMode()==='edit'){send({type:'OE_SELECT_ITEM',collection:item.dataset.oeItem,index:Number(item.dataset.oeIndex)});if(e.target.closest?.('a,button'))e.preventDefault();if(item.dataset.oeItem==='schedule'||item.dataset.oeItem==='mapPoints'){return}}
     const img=e.target.closest?.('[data-oe-image]');if(img&&getMode()==='edit'){e.preventDefault();send({type:'OE_SELECT_IMAGE',path:img.dataset.oeImage})}
     const a=e.target.closest?.('a[href^="#"]');if(a){
       const target=(a.dataset.pageLink||a.getAttribute('href').slice(1)||'home');

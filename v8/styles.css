@@ -563,3 +563,19 @@ button{color:inherit}
 .segmented-count button:hover{background:#e8e8ee!important}
 .segmented-count button.active{background:#fff!important;color:#26262d;box-shadow:0 1px 4px rgba(28,28,36,.10)!important}
 .inspector-note{margin:8px 2px 0;font-size:9px;line-height:1.45;color:#9a9aa4}
+
+/* connected content inspector */
+.reference-panel{margin-top:10px;padding:11px;border:1px solid #e7e7ec;border-radius:13px;background:#fff}
+.reference-panel>b{display:block;font-size:9px;color:#7b7b85;margin-bottom:8px}
+.reference-panel label{margin:0!important;padding:0!important;border:0!important;box-shadow:none!important}
+.reference-panel select{width:100%;border:1px solid #dedee5;border-radius:10px;padding:8px;background:#fafafd;color:#2d2d33}
+.reference-list{display:grid;gap:5px;margin-top:10px}.reference-list>span{font-size:9px;font-weight:800;color:#7b7b85}
+.check-row{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:7px!important;min-height:28px!important}
+.check-row input{width:auto!important;margin:0!important}.linked-summary{display:flex;flex-wrap:wrap;gap:5px}
+.linked-summary span{font-size:9px;padding:5px 7px;border-radius:999px;background:#f0edff;color:#6658aa}
+.product-editor{margin-top:10px;padding-top:10px;border-top:1px solid #ececf1}
+.product-editor-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.product-editor-head>b{font-size:9px;color:#7b7b85}
+.product-edit-card{position:relative;display:grid;grid-template-columns:54px 1fr auto;gap:8px;padding:8px;border:1px solid #e7e7ec;border-radius:11px;background:#fff;margin-bottom:7px}
+.product-edit-media{display:grid;gap:4px}.product-edit-media img,.product-edit-media>div{width:54px;height:54px;border-radius:8px;object-fit:cover;background:#f5f5f8;display:grid;place-items:center;color:#aaa}
+.product-edit-media button{padding:4px!important;font-size:8px!important}.product-edit-fields{display:grid;gap:4px}
+.product-edit-fields input{padding:6px 7px!important;margin:0!important;font-size:9px}.product-remove{align-self:start;padding:3px 6px!important}

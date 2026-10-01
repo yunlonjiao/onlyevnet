@@ -87,6 +87,9 @@ export const template01 = {
       {id:'sl3',label:'B站',note:'PV、嘉宾公开、节目预告',url:'',image:''},
       {id:'sl4',label:'小红书',note:'返图、攻略与活动内容',url:'',image:''}
     ],
+    sponsors:[
+      {id:'sp1',name:'合作伙伴',level:'合作伙伴',url:'',logo:''}
+    ],
     guide:{
       homeCount:2,
       items:[

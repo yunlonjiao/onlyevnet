@@ -12,6 +12,7 @@ for(const k of ['tickets','passport','booths','activities','guide'])if(state.mod
 if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
 if(!Array.isArray(state.updates))state.updates=structuredClone(template01.defaults.updates);
 if(!Array.isArray(state.socialLinks))state.socialLinks=structuredClone(template01.defaults.socialLinks);
+if(!Array.isArray(state.sponsors))state.sponsors=structuredClone(template01.defaults.sponsors);
 state.booths=(state.booths||[]).map((b,i)=>({...structuredClone(template01.defaults.booths[i]||{products:[]}),...b,products:Array.isArray(b.products)?b.products:structuredClone(template01.defaults.booths[i]?.products||[])}));
 state.guests=(state.guests||[]).map((g,i)=>({...structuredClone(template01.defaults.guests[i]||{}),...g}));
 state.schedule=(state.schedule||[]).map((a,i)=>({...structuredClone(template01.defaults.schedule[i]||{guestIds:[]}),...a,guestIds:Array.isArray(a.guestIds)?a.guestIds:[]}));
@@ -144,7 +145,7 @@ const collectionMeta={
  guests:{title:'嘉宾',fields:[['name','姓名 / 名称'],['role','身份'],['works','代表作'],['intro','介绍'],['socialLabel','平台名称'],['socialUrl','平台链接'],['appearance','签售 / 舞台时间']]},
  booths:{title:'摊位',fields:[['no','摊位号'],['name','社团名'],['type','分类'],['intro','简介']]},
  mapPoints:{title:'地图点位',fields:[['label','点位名称'],['kind','类型'],['x','横向位置 %'],['y','纵向位置 %']]},
- updates:{title:'重要更新',fields:[['date','日期'],['title','更新内容']]},socialLinks:{title:'社群入口',fields:[['label','名称'],['note','说明'],['url','链接']]}
+ updates:{title:'重要更新',fields:[['date','日期'],['title','更新内容']]},socialLinks:{title:'社群入口',fields:[['label','名称'],['note','说明'],['url','链接']]},sponsors:{title:'赞助支持',fields:[['name','名称'],['level','级别'],['url','链接']]}
 };
 function uid(prefix){return prefix+Math.random().toString(36).slice(2,8)}
 function fitTextarea(el){if(!el)return;el.style.height='auto';el.style.height=Math.max(36,el.scrollHeight)+'px'}
@@ -182,8 +183,8 @@ function extraInspector(collection,index,item){
      '</div>';
  }
  if(collection==='mapPoints'){
-   const booths=state.booths||[];
-   return '<div class="reference-panel"><b>点位关联</b><label><span>关联摊位</span><select data-ref="boothId">'+optionsHtml(booths,item.boothId,x=>(x.no||'')+' '+x.name)+'</select></label><p class="inspector-note">位置用百分比保存，后续可继续升级成地图上直接拖点。</p></div>';
+   const linked=(state.booths||[]).filter(b=>b.pointId===item.id);
+   return '<div class="reference-panel"><b>点位使用情况</b><div class="linked-summary">'+(linked.length?linked.map(b=>'<span>'+esc((b.no||'')+' '+b.name)+'</span>').join(''):'<span>暂未关联摊位</span>')+'</div><p class="inspector-note">摊位与点位的关联在摊位编辑器中设置；点位可直接在地图上拖动。</p></div>';
  }
  if(collection==='updates'){
    const targets=[['top','首页顶部'],['tickets','票务'],['passport','活动参与'],['map-home','场地图'],['schedule-home','当天日程'],['guests','嘉宾'],['guide-home','观展指南'],['community','社群']];
@@ -195,7 +196,7 @@ function openItemInspector(collection,index){
  const meta=collectionMeta[collection],arr=collectionArray(collection),item=arr?.[index];if(!meta||!item)return;
  const count=arr.length;
  const isLong=k=>['text','gift','note','detail','intro','works','appearance'].includes(k);
- const media=collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':'';
+ const media=collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='sponsors'?'<div class="item-media"><span>Logo</span><div class="item-media-row">'+(item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="sponsors.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="sponsors.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>':'';
  inspector.innerHTML='<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+extraInspector(collection,index,item)+'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>';
  inspector.querySelectorAll('textarea').forEach(fitTextarea);
  inspector.querySelectorAll('[data-key]').forEach(input=>{
@@ -237,6 +238,7 @@ function mutateItem(collection,index,op){
      collection==='mapPoints'?{id:uid('mp'),kind:'other',label:'新点位',x:50,y:50,boothId:''}:
      collection==='updates'?{id:uid('u'),date:'',title:'新更新',target:'top'}:
      collection==='socialLinks'?{id:uid('sl'),label:'新社群入口',note:'',url:'',image:''}:
+     collection==='sponsors'?{id:uid('sp'),name:'新赞助商',level:'合作伙伴',url:'',logo:''}:
      {id:uid('s'),time:'12:00',title:'新活动',stage:'MAIN STAGE',detail:'',locationId:'',guestIds:[],registrationUrl:''};
    arr.splice(index+1,0,fresh);index++;
  }
@@ -249,6 +251,7 @@ function imageSlotConfig(path){
  if(/^booths\.\d+\.products\.\d+\.image$/.test(path))return {label:'制品图片',ratio:1,ratioLabel:'制品图 · 1:1',width:1000,height:1000};
  if(path==='venueMap.image')return {label:'场地图',ratio:1.5,ratioLabel:'地图 · 3:2',width:1500,height:1000};
  if(/^socialLinks\.\d+\.image$/.test(path))return {label:'二维码 / 社群图片',ratio:1,ratioLabel:'社群图 · 1:1',width:900,height:900};
+ if(/^sponsors\.\d+\.logo$/.test(path))return {label:'赞助商 Logo',ratio:1.8,ratioLabel:'Logo · 9:5',width:1080,height:600};
  return {label:'图片',ratio:1,ratioLabel:'1:1',width:1200,height:1200};
 }
 function openImageInspector(path){
