@@ -552,3 +552,14 @@ button{color:inherit}
 .crop-foot button.primary{background:#18181d;color:#fff;border-color:#18181d}
 .crop-foot button:disabled{opacity:.45;cursor:wait}
 @media(max-width:700px){.image-crop-dialog{width:calc(100vw - 16px)}.crop-shell{grid-template-rows:auto minmax(320px,62vh) auto}.crop-foot{align-items:stretch;flex-direction:column}.crop-tools,.crop-actions{width:100%}.crop-actions button{flex:1}}
+
+.inspector-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:14px 2px 10px}
+.inspector-section-head>div{display:grid;gap:2px}
+.inspector-section-head h3{margin:0;font-size:12px}
+.inspector-section-head small{font-size:9px;color:#9a9aa4;font-weight:720}
+.inspector-section-head>b{font-size:10px;color:#6f5ee7;background:#f0edff;border:1px solid #e1dcff;border-radius:999px;padding:4px 7px}
+.segmented-count{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:3px;padding:3px;border:1px solid #dedee5;background:#f1f1f5;border-radius:11px}
+.segmented-count button{min-width:0;border:0!important;border-radius:8px!important;padding:8px 4px!important;background:transparent!important;color:#777780;font-size:10px!important;font-weight:850!important;box-shadow:none!important}
+.segmented-count button:hover{background:#e8e8ee!important}
+.segmented-count button.active{background:#fff!important;color:#26262d;box-shadow:0 1px 4px rgba(28,28,36,.10)!important}
+.inspector-note{margin:8px 2px 0;font-size:9px;line-height:1.45;color:#9a9aa4}

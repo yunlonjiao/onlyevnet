@@ -38,8 +38,11 @@ export function createRouter({qs:$,qsa:qa,getState,renderPassport}){
     homeSections.forEach(([id,key])=>{const el=$('#'+id);if(el)el.classList.toggle('oe-page-hidden',page!=='home'||!moduleOn(key))});
     standalonePages.forEach(id=>{const el=$('#'+id);if(el)el.classList.toggle('oe-page-hidden',page!==id||!moduleOn(id))});
     $('.footer')?.classList.toggle('oe-page-hidden',false);
-    document.documentElement.scrollTop=0;document.body.scrollTop=0;
-    if(updateHash){const hash=page==='home'?'#home':'#'+page;history.replaceState(null,'',location.pathname+location.search+hash)}
+    if(updateHash){
+      const hash=page==='home'?'#home':'#'+page;
+      history.replaceState(null,'',location.pathname+location.search+hash);
+      window.scrollTo({top:0,left:0,behavior:'auto'});
+    }
   }
   function scrollHomeSection(id){showPage('home',false);requestAnimationFrame(()=>$('#'+id)?.scrollIntoView({behavior:'smooth',block:'start'}))}
   function showActivityDetail(index){showPage('activities',false);requestAnimationFrame(()=>$('#activity-detail-'+Number(index))?.scrollIntoView({behavior:'smooth',block:'start'}))}

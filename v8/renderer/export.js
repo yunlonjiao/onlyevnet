@@ -21,7 +21,6 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
         homeSections.forEach(([id,key])=>$("#"+id)?.classList.toggle("oe-page-hidden",page!=="home"||!on(key)));
         standalone.forEach(id=>$("#"+id)?.classList.toggle("oe-page-hidden",page!==id||!on(id)));
         $(".footer")?.classList.remove("oe-page-hidden");
-        scrollTo(0,0);
       }
 
       function goHomeSection(id){

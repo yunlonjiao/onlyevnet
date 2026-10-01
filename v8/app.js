@@ -1,4 +1,4 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.11.0';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.12.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
@@ -21,11 +21,20 @@ function send(message){if(frameReady&&iframe?.contentWindow)iframe.contentWindow
 const moduleLabels={booths:'摊位详情',activities:'活动详情',guide:'观展指南'};
 function openGuideInspector(){
  const items=state.guide?.items||[];
- const count=Math.max(0,Math.min(items.length,Number(state.guide?.homeCount??2)));
- inspector.innerHTML='<h3>观展指南</h3><div class="item-fields"><label><span>首页展示数量</span><select id="guideHomeCount">'+
-   Array.from({length:items.length+1},(_,i)=>'<option value="'+i+'"'+(i===count?' selected':'')+'>'+i+' 项</option>').join('')+
-   '</select></label></div><div class="hint">首页只显示前 N 项，完整内容在“观展指南”页面展示。</div>';
- $('#guideHomeCount').onchange=e=>{checkpoint();state.guide.homeCount=Number(e.target.value);save();send({type:'OE_REPLACE_STATE',state});};
+ const max=Math.min(items.length,4);
+ const count=Math.max(0,Math.min(max,Number(state.guide?.homeCount??2)));
+ inspector.innerHTML='<div class="inspector-section-head"><div><h3>观展指南</h3><small>首页摘要</small></div><b id="guideCountReadout">'+count+' 项</b></div>'+
+   '<div class="segmented-count" id="guideCountSegments">'+
+   Array.from({length:max+1},(_,i)=>'<button type="button" data-count="'+i+'" class="'+(i===count?'active':'')+'" aria-pressed="'+(i===count)+'">'+i+'</button>').join('')+
+   '</div><p class="inspector-note">完整内容保留在「观展指南」页面。</p>';
+ $('#guideCountSegments').addEventListener('click',e=>{
+   const b=e.target.closest('[data-count]');if(!b)return;
+   const next=Number(b.dataset.count);if(next===Number(state.guide.homeCount??2))return;
+   checkpoint();state.guide.homeCount=next;save();
+   document.querySelectorAll('#guideCountSegments [data-count]').forEach(x=>{const on=Number(x.dataset.count)===next;x.classList.toggle('active',on);x.setAttribute('aria-pressed',String(on))});
+   $('#guideCountReadout').textContent=next+' 项';
+   send({type:'OE_REPLACE_STATE',state});
+ });
 }
 function syncModuleControls(){
  document.querySelectorAll('[data-module]').forEach(input=>{input.checked=state.modules?.[input.dataset.module]!==false});
@@ -45,7 +54,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.11.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.12.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
