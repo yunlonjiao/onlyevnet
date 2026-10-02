@@ -153,7 +153,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.25.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.29.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
