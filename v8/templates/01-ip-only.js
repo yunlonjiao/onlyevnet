@@ -31,46 +31,39 @@ export const template01 = {
       {id:'t2',name:'特典票',price:'¥128',gift:'入场资格\n限定徽章\n纪念票根',note:'限量发售',image:''},
       {id:'t3',name:'VIP 票',price:'¥198',gift:'优先入场\n限定礼包\n舞台优先区',note:'赠品内容由主办方填写',image:''}
     ],
-    modules:{ribbon:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
+    modules:{ribbon:true,booths:true,activities:true,guide:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
     participation:[
-      {id:'pa1',title:'舞台互动',meta:'主舞台 · 13:30',text:'参与主题问答、互动游戏与现场抽选。',target:'schedule-home',url:''},
-      {id:'pa2',title:'主题合影',meta:'主舞台 · 15:00',text:'到指定区域参加本届主题合影活动。',target:'schedule-home',url:''},
-      {id:'pa3',title:'应援留言墙',meta:'企划区 · 全天',text:'留下角色应援与周年留言，现场统一展示。',target:'participation',url:''},
-      {id:'pa4',title:'COS / 自由行',meta:'活动区域 · 指定时段',text:'查看本届自由行参与方式、规则与集合信息。',target:'freewalk',url:''}
+      {id:'pa1',preset:'stage',title:'舞台活动',meta:'主舞台 · 时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'activities',url:''},
+      {id:'pa2',preset:'stamp',title:'集章 / 打卡',meta:'活动区域 · 全天',text:'填写集章点、打卡规则和兑换方式。',target:'activities',url:''},
+      {id:'pa3',preset:'photo',title:'主题合影',meta:'集合区域 · 时间待定',text:'填写集合时间、地点和参与方式。',target:'activities',url:''},
+      {id:'pa4',preset:'game',title:'互动游戏 / 抽选',meta:'活动区域 · 时间待定',text:'填写互动游戏、抽选或现场挑战规则。',target:'activities',url:''}
     ],
     venueMap:{
       image:'',
       links:[
-        {id:'ml1',label:'主舞台',target:'schedule-home'},
-        {id:'ml2',label:'摊位',target:'booths'},
-        {id:'ml3',label:'痛车区',target:'itasha'},
-        {id:'ml4',label:'COS 区',target:'freewalk'}
-      ],
-      points:[
-        {id:'mp-b1',kind:'booth',label:'A01',x:18,y:24,boothId:'b1'},
-        {id:'mp-b2',kind:'booth',label:'A12',x:58,y:38,boothId:'b2'},
-        {id:'mp-b3',kind:'booth',label:'B07',x:78,y:67,boothId:'b3'},
-        {id:'mp-stage',kind:'stage',label:'主舞台',x:48,y:58},
-        {id:'mp-service',kind:'service',label:'服务台',x:34,y:72}
+        {id:'ml1',label:'主舞台',target:'activities',itemType:'page',itemId:''},
+        {id:'ml2',label:'摊位区',target:'booths',itemType:'page',itemId:''},
+        {id:'ml3',label:'痛车区',target:'itasha',itemType:'page',itemId:''},
+        {id:'ml4',label:'COS 区',target:'freewalk',itemType:'page',itemId:''}
       ]
     },
     booths:[
-      {id:'b1',no:'A01',name:'星屑工房',logo:'',type:'同人本 · 亚克力',intro:'原创插画与角色主题制品。',pointId:'mp-b1',products:[
+      {id:'b1',no:'A01',name:'星屑工房',logo:'',type:'同人本 · 亚克力',intro:'原创插画与角色主题制品。',products:[
         {id:'p1',name:'新刊',price:'¥45',note:'现场首发',image:''},
         {id:'p2',name:'亚克力立牌',price:'¥60',note:'数量有限',image:''}
       ]},
-      {id:'b2',no:'A12',name:'薄荷书室',logo:'',type:'插画 · 明信片',intro:'插画本、明信片与纸制品。',pointId:'mp-b2',products:[
+      {id:'b2',no:'A12',name:'薄荷书室',logo:'',type:'插画 · 明信片',intro:'插画本、明信片与纸制品。',products:[
         {id:'p3',name:'插画本',price:'¥50',note:'',image:''}
       ]},
-      {id:'b3',no:'B07',name:'白昼制品',logo:'',type:'徽章 · 色纸',intro:'徽章、色纸与随机小物。',pointId:'mp-b3',products:[
+      {id:'b3',no:'B07',name:'白昼制品',logo:'',type:'徽章 · 色纸',intro:'徽章、色纸与随机小物。',products:[
         {id:'p4',name:'徽章套组',price:'¥35',note:'',image:''}
       ]}
     ],
     schedule:[
-      {id:'s1',time:'11:00',title:'开场 & 社群合影',stage:'MAIN STAGE',detail:'活动开场与全体社群合影。',locationId:'mp-stage',guestIds:[],registrationUrl:''},
-      {id:'s2',time:'13:30',title:'主题问答 / 互动游戏',stage:'TALK',detail:'主题问答、观众互动与现场小游戏。',locationId:'mp-stage',guestIds:['g1'],registrationUrl:''},
-      {id:'s3',time:'15:00',title:'COS 特别舞台',stage:'MAIN STAGE',detail:'COS 舞台展示与主题合影活动。',locationId:'mp-stage',guestIds:['g1'],registrationUrl:''},
-      {id:'s4',time:'17:30',title:'幸运抽选 & 闭幕',stage:'MAIN STAGE',detail:'幸运抽选、闭幕致谢与活动结束提醒。',locationId:'mp-stage',guestIds:[],registrationUrl:''}
+      {id:'s1',time:'11:00',title:'开场 & 社群合影',stage:'MAIN STAGE',detail:'活动开场与全体社群合影。',guestIds:[],registrationUrl:''},
+      {id:'s2',time:'13:30',title:'主题问答 / 互动游戏',stage:'TALK',detail:'主题问答、观众互动与现场小游戏。',guestIds:['g1'],registrationUrl:''},
+      {id:'s3',time:'15:00',title:'COS 特别舞台',stage:'MAIN STAGE',detail:'COS 舞台展示与主题合影活动。',guestIds:['g1'],registrationUrl:''},
+      {id:'s4',time:'17:30',title:'幸运抽选 & 闭幕',stage:'MAIN STAGE',detail:'幸运抽选、闭幕致谢与活动结束提醒。',guestIds:[],registrationUrl:''}
     ],
     guests:[
       {id:'g1',name:'特邀嘉宾',role:'Guest / Creator',intro:'嘉宾介绍与作品信息由主办方填写。',works:'代表作 / 参与作品',image:'',socialLabel:'B站',socialUrl:'',appearance:'13:30 主题问答 · 15:00 COS 特别舞台'}
@@ -91,10 +84,11 @@ export const template01 = {
     guide:{
       homeCount:2,
       items:[
-        {id:'gd1',title:'交通与入场',text:'交通方式、入场时间、排队与检票说明。'},
-        {id:'gd2',title:'现场规则',text:'摄影、寄存、禁止事项与现场参与注意事项。'},
-        {id:'gd3',title:'更衣与摄影',text:'更衣室位置、开放时间与摄影区域说明。'},
-        {id:'gd4',title:'场馆服务',text:'寄存、失物、服务台、餐饮与其他现场服务。'}
+        {id:'gd1',preset:'traffic',title:'交通到达',text:'填写场馆地址、公共交通、自驾 / 网约车、入口位置等信息。',image:''},
+        {id:'gd2',preset:'admission',title:'入场须知',text:'填写入场时间、检票、排队、二次入场等说明。',image:''},
+        {id:'gd3',preset:'facilities',title:'场馆设施',text:'填写卫生间、更衣室、寄存、餐饮、医疗点、休息区等信息。',image:''},
+        {id:'gd4',preset:'cosplay',title:'COS / 道具规则',text:'填写更衣、摄影、道具尺寸和现场拍摄规则。',image:''},
+        {id:'gd5',preset:'safety',title:'安全与禁止事项',text:'填写禁止携带物品、禁止行为和紧急情况处理。',image:''}
       ]
     },
     freewalk:{
