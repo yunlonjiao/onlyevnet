@@ -346,16 +346,16 @@ function mutateItem(collection,index,op){
  save();send({type:'OE_REPLACE_STATE',state});syncContentCounts();openCollectionManager(collection,index);openItemInspector(collection,index);
 }
 function imageSlotConfig(path){
- if(path==='heroImage')return {label:'主视觉 KV',ratio:1,ratioLabel:'固定比例 · 1:1',width:1400,height:1400,fixed:true};
- if(/^tickets\.\d+\.image$/.test(path))return {label:'票务赠品图',ratio:1,ratioLabel:'固定比例 · 1:1',width:900,height:900,fixed:true};
- if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾图片',ratio:.8,ratioLabel:'固定比例 · 4:5',width:960,height:1200,fixed:true};
- if(/^booths\.\d+\.products\.\d+\.image$/.test(path))return {label:'制品图片',ratio:1,ratioLabel:'固定比例 · 1:1',width:1000,height:1000,fixed:true};
- if(path==='venueMap.image')return {label:'场地图',ratio:null,ratioLabel:'自由裁剪',maxSize:2000,free:true};
- if(/^(freewalk|itasha)\.image$/.test(path))return {label:'活动图片',ratio:.8,ratioLabel:'固定比例 · 4:5',width:960,height:1200,fixed:true};
- if(/^booths\.\d+\.logo$/.test(path))return {label:'社团 Logo',ratio:1,ratioLabel:'固定比例 · 1:1',width:700,height:700,fixed:true};
- if(/^socialLinks\.\d+\.image$/.test(path))return {label:'二维码 / 社群图片',ratio:1,ratioLabel:'固定比例 · 1:1',width:900,height:900,fixed:true};
- if(/^sponsors\.\d+\.logo$/.test(path))return {label:'赞助商 Logo',ratio:1.8,ratioLabel:'固定比例 · 9:5',width:1080,height:600,fixed:true};
- return {label:'图片',ratio:1,ratioLabel:'固定比例 · 1:1',width:1200,height:1200,fixed:true};
+ if(path==='heroImage')return {label:'主视觉 KV',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1400,height:1400,fixed:true};
+ if(/^tickets\.\d+\.image$/.test(path))return {label:'票务赠品图',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:900,height:900,fixed:true};
+ if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾图片',ratio:.8,ratioLabel:'裁剪框可移动 · 比例 4:5',width:960,height:1200,fixed:true};
+ if(/^booths\.\d+\.products\.\d+\.image$/.test(path))return {label:'制品图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1000,height:1000,fixed:true};
+ if(path==='venueMap.image')return {label:'场地图',ratio:null,ratioLabel:'裁剪框自由比例',maxSize:2000,free:true};
+ if(/^(freewalk|itasha)\.image$/.test(path))return {label:'活动图片',ratio:.8,ratioLabel:'裁剪框可移动 · 比例 4:5',width:960,height:1200,fixed:true};
+ if(/^booths\.\d+\.logo$/.test(path))return {label:'社团 Logo',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:700,height:700,fixed:true};
+ if(/^socialLinks\.\d+\.image$/.test(path))return {label:'二维码 / 社群图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:900,height:900,fixed:true};
+ if(/^sponsors\.\d+\.logo$/.test(path))return {label:'赞助商 Logo',ratio:1.8,ratioLabel:'裁剪框可移动 · 比例 9:5',width:1080,height:600,fixed:true};
+ return {label:'图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1200,height:1200,fixed:true};
 }
 function openImageInspector(path){
  const current=getDeep(path);
@@ -419,6 +419,29 @@ async function prepareCropFile(file,cfg){
 }
 if('requestIdleCallback' in window)requestIdleCallback(()=>getCropperModule(),{timeout:1800});
 else setTimeout(()=>getCropperModule(),900);
+function fitCropSelectionToImage(){
+ const selection=activeCropper?.getCropperSelection?.(),cropperImage=activeCropper?.getCropperImage?.(),cropperCanvas=activeCropper?.getCropperCanvas?.();
+ if(!selection||!cropperImage||!cropperCanvas||!cropContext)return;
+ const canvasRect=cropperCanvas.getBoundingClientRect(),imageRect=cropperImage.getBoundingClientRect();
+ const left=imageRect.left-canvasRect.left,top=imageRect.top-canvasRect.top,imgW=imageRect.width,imgH=imageRect.height;
+ if(!imgW||!imgH)return;
+ const pad=.88,ratio=cropContext.cfg.ratio;
+ let width=imgW*pad,height=imgH*pad;
+ if(cropContext.cfg.fixed&&Number.isFinite(ratio)&&ratio>0){
+   if(width/height>ratio)width=height*ratio;else height=width/ratio;
+   if(width>imgW*pad){width=imgW*pad;height=width/ratio}
+   if(height>imgH*pad){height=imgH*pad;width=height*ratio}
+ }
+ const x=left+(imgW-width)/2,y=top+(imgH-height)/2;
+ selection.$change?.(x,y,width,height,cropContext.cfg.fixed?ratio:NaN);
+}
+function keepCropSelectionInsideImage(event){
+ const cropperCanvas=activeCropper?.getCropperCanvas?.(),cropperImage=activeCropper?.getCropperImage?.();
+ if(!cropperCanvas||!cropperImage)return;
+ const c=cropperCanvas.getBoundingClientRect(),r=cropperImage.getBoundingClientRect(),d=event.detail||{};
+ const left=r.left-c.left,top=r.top-c.top,right=left+r.width,bottom=top+r.height,eps=.5;
+ if(d.x<left-eps||d.y<top-eps||d.x+d.width>right+eps||d.y+d.height>bottom+eps)event.preventDefault();
+}
 async function openImageCropper(src,path,returnCollection='',returnIndex='',ownedUrl=''){
  const dlg=$('#imageCropDialog'),stage=$('#cropStage'),img=$('#cropImage'),cfg=imageSlotConfig(path);
  cropContext={path,returnCollection,returnIndex,cfg,src,ownedUrl};
@@ -434,13 +457,15 @@ async function openImageCropper(src,path,returnCollection='',returnIndex='',owne
    stage.querySelectorAll('cropper-canvas').forEach(x=>x.remove());
    try{await img.decode()}catch{}
    const ratioAttr=Number.isFinite(cfg.ratio)&&cfg.ratio>0?' aspect-ratio="'+cfg.ratio+'" initial-aspect-ratio="'+cfg.ratio+'"':'';
-   const resizeHandles=cfg.free
-     ?'<cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle>'
-     :'<cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle>';
-   const template='<cropper-canvas background><cropper-image rotatable scalable skewable translatable></cropper-image><cropper-shade hidden></cropper-shade><cropper-handle action="move" plain></cropper-handle><cropper-selection initial-coverage="0.88"'+ratioAttr+' movable resizable outlined><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair><cropper-handle action="move" theme-color="rgba(255,255,255,.35)"></cropper-handle>'+resizeHandles+'</cropper-selection></cropper-canvas>';
+   const handles='<cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle>';
+   const template='<cropper-canvas background><cropper-image initial-center-size="contain" rotatable></cropper-image><cropper-shade hidden></cropper-shade><cropper-selection initial-coverage="0.72"'+ratioAttr+' movable resizable outlined><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair><cropper-handle action="move" theme-color="rgba(255,255,255,.32)"></cropper-handle>'+handles+'</cropper-selection></cropper-canvas>';
    activeCropper=new Cropper(img,{container:stage,template});
    const selection=activeCropper.getCropperSelection?.();
-   if(selection&&cfg.fixed&&Number.isFinite(cfg.ratio)){selection.aspectRatio=cfg.ratio;selection.initialAspectRatio=cfg.ratio}
+   if(selection){
+     if(cfg.fixed&&Number.isFinite(cfg.ratio)){selection.aspectRatio=cfg.ratio;selection.initialAspectRatio=cfg.ratio}
+     selection.addEventListener('change',keepCropSelectionInsideImage);
+   }
+   requestAnimationFrame(()=>fitCropSelectionToImage());
  }catch(err){
    console.error('[OnlyEvent cropper]',err);toast('裁剪器加载失败，可稍后重试');closeImageCropper();
  }finally{stage.classList.remove('loading')}
@@ -478,8 +503,8 @@ $('#cropApply').onclick=applyImageCrop;
 $('#cropCancel').onclick=closeImageCropper;
 $('#cropClose').onclick=closeImageCropper;
 $('#imageCropDialog').addEventListener('cancel',e=>{e.preventDefault();closeImageCropper()});
-$('#cropReset').onclick=()=>activeCropper?.getCropperSelection?.()?.$reset?.();
-$('#cropRotateLeft').onclick=()=>activeCropper?.getCropperImage?.()?.$rotate?.('-90deg');
+$('#cropReset').onclick=()=>fitCropSelectionToImage();
+$('#cropRotateLeft').onclick=()=>{activeCropper?.getCropperImage?.()?.$rotate?.('-90deg');requestAnimationFrame(()=>fitCropSelectionToImage())};
 
 $('#imageInput').addEventListener('change',async e=>{
  const file=e.target.files?.[0],path=e.target.dataset.path;
