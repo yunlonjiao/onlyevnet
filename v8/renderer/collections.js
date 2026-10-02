@@ -4,13 +4,13 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
   }
   function renderRibbon(){
     const state=getState(),ribbon=$('.ribbon'),track=$('.ribbon-track');if(!ribbon||!track)return;
-    const items=(state.ribbonItems||[]).filter(x=>String(x?.text||'').trim());
+    const items=(state.ribbonItems||[]).map((item,index)=>({item,index})).filter(x=>String(x.item?.text||'').trim());
     if(!items.length){track.innerHTML='';ribbon.hidden=getMode()!=='edit';return}
     ribbon.hidden=false;
-    const sequence=items.map((x,i)=>field('ribbonItems.'+i+'.text',x.text,'span','ribbon-edit')).join('');
+    const sequence=items.map(({item,index})=>field('ribbonItems.'+index+'.text',item.text,'span','ribbon-edit')).join('');
     track.innerHTML='<div class="ribbon-sequence">'+sequence+'</div><div class="ribbon-sequence" aria-hidden="true">'+sequence+'</div>';
     ribbon.setAttribute('role','marquee');
-    ribbon.setAttribute('aria-label',items.map(x=>x.text).join(' · '));
+    ribbon.setAttribute('aria-label',items.map(x=>x.item.text).join(' · '));
     requestAnimationFrame(()=>{const seq=track.querySelector('.ribbon-sequence');if(!seq)return;const seconds=Math.max(16,Math.min(42,seq.scrollWidth/72));track.style.setProperty('--ribbon-duration',seconds.toFixed(2)+'s')});
   }
 
@@ -78,15 +78,15 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     box.dataset.oeImage='venueMap.image';box.classList.toggle('has-map',!!map.image);
     box.innerHTML=map.image?'<button class="map-image-view" type="button" data-product-lightbox="'+esc(map.image)+'" aria-label="查看场地图大图"><img src="'+esc(map.image)+'" alt="活动场地图"><span>查看大图 ↗</span></button>':'<div class="map-static-placeholder"><b>场地图</b><span>主办方暂未上传场地图</span></div>';
     const firstLevelPages=new Set(['booths','activities','guide','freewalk','itasha']);
-    const links=(map.links||[]).filter(x=>{
-      if(!String(x?.label||'').trim()||!firstLevelPages.has(x.target))return false;
-      if(state.modules?.[x.target]===false)return false;
+    const links=(map.links||[]).map((item,index)=>({item,index})).filter(({item})=>{
+      if(!String(item?.label||'').trim()||!firstLevelPages.has(item.target))return false;
+      if(state.modules?.[item.target]===false)return false;
       return true;
     });
     if(list){
-      list.innerHTML=links.map((x,i)=>{
+      list.innerHTML=links.map(({item:x,index})=>{
         const target=x.target||'activities',kind=x.itemType||'page',itemId=x.itemId||'';
-        return '<a class="map-jump-tag" href="#'+esc(target)+'" data-target-mode="page" data-page-link="'+esc(target)+'" data-explore-link data-explore-kind="'+esc(kind)+'" data-explore-id="'+esc(itemId)+'" data-oe-item="explore" data-oe-index="'+i+'"><span>'+field('venueMap.links.'+i+'.label',x.label,'span')+'</span><i>↗</i></a>';
+        return '<a class="map-jump-tag" href="#'+esc(target)+'" data-target-mode="page" data-page-link="'+esc(target)+'" data-explore-link data-explore-kind="'+esc(kind)+'" data-explore-id="'+esc(itemId)+'" data-oe-item="explore" data-oe-index="'+index+'"><span>'+field('venueMap.links.'+index+'.label',x.label,'span')+'</span><i>↗</i></a>';
       }).join('');
     }
     if(rail)rail.hidden=!links.length;
