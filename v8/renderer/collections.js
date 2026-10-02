@@ -68,7 +68,10 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
 
   function renderGuide(){
     const state=getState(),items=state.guide?.items||[],homeCount=Math.max(0,Math.min(items.length,Number(state.guide?.homeCount??2)));
-    const card=(x,i)=>'<article data-oe-item="guide" data-oe-index="'+i+'"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b>'+field('guide.items.'+i+'.text',x.text||'','p')+'</article>';
+    const card=(x,i)=>{
+      const image=x.image?'<button class="guide-image" type="button" data-product-lightbox="'+esc(x.image)+'" data-oe-image="guide.items.'+i+'.image"><img src="'+esc(x.image)+'" alt="'+esc(x.title||'观展指南')+'"></button>':(getMode()==='edit'?'<button class="guide-image empty" type="button" data-oe-image="guide.items.'+i+'.image">＋ 路线图 / 说明图</button>':'');
+      return '<article data-oe-item="guide" data-oe-index="'+i+'"><div class="guide-copy"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b>'+field('guide.items.'+i+'.text',x.text||'','p')+'</div>'+image+'</article>';
+    };
     const home=$('#guide-home .guide-home-grid');if(home)home.innerHTML=items.slice(0,homeCount).map(card).join('');
     const detail=$('#guide .guide-detail-grid');if(detail)detail.innerHTML=items.map(card).join('');
   }
