@@ -80,7 +80,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     const firstLevelPages=new Set(['booths','activities','guide','freewalk','itasha']);
     const links=(map.links||[]).map((item,index)=>({item,index})).filter(({item})=>{
       if(!String(item?.label||'').trim()||!firstLevelPages.has(item.target))return false;
-      if(state.modules?.[item.target]===false)return false;
+      if(state.modules?.[item.target]===false&&getMode()!=='edit')return false;
       return true;
     });
     if(list){
