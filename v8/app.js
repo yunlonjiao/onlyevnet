@@ -394,7 +394,6 @@ async function openImageCropper(src,path,returnCollection='',returnIndex=''){
  cropContext={path,returnCollection,returnIndex,cfg,src};
  $('#cropSlotLabel').textContent=cfg.label;
  $('#cropRatioLabel').textContent=cfg.ratioLabel;
- $('#cropUseOriginal').hidden=false;
  img.src=src;
  dlg.showModal();
  stage.classList.add('loading');
@@ -403,12 +402,12 @@ async function openImageCropper(src,path,returnCollection='',returnIndex=''){
    if(activeCropper?.destroy)activeCropper.destroy();
    stage.querySelectorAll('cropper-canvas').forEach(x=>x.remove());
    const ratioAttr=Number.isFinite(cfg.ratio)&&cfg.ratio>0?' aspect-ratio="'+cfg.ratio+'"':'';
-   const handles=cfg.free?'<cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle>':'';
-   const selectionFlags=cfg.free?' movable resizable keyboard':' keyboard';
-   const template='<cropper-canvas background><cropper-image rotatable scalable skewable translatable></cropper-image><cropper-shade></cropper-shade><cropper-handle action="move" plain></cropper-handle><cropper-selection initial-coverage="'+(cfg.free?'0.92':'0.82')+'"'+ratioAttr+selectionFlags+' outlined><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair>'+handles+'</cropper-selection></cropper-canvas>';
+   const template='<cropper-canvas background><cropper-image rotatable scalable skewable translatable></cropper-image><cropper-shade hidden></cropper-shade><cropper-handle action="move" plain></cropper-handle><cropper-selection initial-coverage="0.88"'+ratioAttr+' movable resizable zoomable outlined><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair><cropper-handle action="move" theme-color="rgba(255,255,255,.35)"></cropper-handle><cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle></cropper-selection></cropper-canvas>';
    activeCropper=new Cropper(img,{container:stage,template});
  }catch(err){
-   console.error('[OnlyEvent cropper]',err);toast('裁剪器加载失败，可稍后重试');dlg.close();
+   console.error('[OnlyEvent cropper]',err);
+   toast('裁剪器加载失败，可稍后重试');
+   dlg.close();
  }finally{stage.classList.remove('loading')}
 }
 function closeImageCropper(){
@@ -435,32 +434,12 @@ async function applyImageCrop(){
  }catch(err){console.error('[OnlyEvent crop apply]',err);toast('裁剪失败，请重试')}
  finally{const b=$('#cropApply');if(b)b.disabled=false}
 }
-async function useOriginalImage(){
- if(!cropContext)return;
- $('#cropUseOriginal').disabled=true;
- try{
-   const image=new Image();
-   const ready=new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject});
-   image.src=cropContext.src;await ready;
-   const max=cropContext.cfg.maxSize||Math.max(cropContext.cfg.width||0,cropContext.cfg.height||0,1800),scale=Math.min(1,max/Math.max(image.naturalWidth,image.naturalHeight));
-   const width=Math.max(1,Math.round(image.naturalWidth*scale)),height=Math.max(1,Math.round(image.naturalHeight*scale)),canvas=document.createElement('canvas');
-   canvas.width=width;canvas.height=height;canvas.getContext('2d').drawImage(image,0,0,width,height);
-   const data=canvas.toDataURL('image/webp',.9);
-   checkpoint();setDeep(cropContext.path,data);send({type:'OE_REPLACE_STATE',state});toast('已使用原图');
-   const c=cropContext.returnCollection,i=Number(cropContext.returnIndex);closeImageCropper();if(c&&Number.isInteger(i))openItemInspector(c,i);
- }catch(err){console.error('[OnlyEvent original image]',err);toast('图片处理失败')}
- finally{const b=$('#cropUseOriginal');if(b)b.disabled=false}
-}
 $('#cropApply').onclick=applyImageCrop;
-$('#cropUseOriginal').onclick=useOriginalImage;
 $('#cropCancel').onclick=closeImageCropper;
 $('#cropClose').onclick=closeImageCropper;
 $('#imageCropDialog').addEventListener('cancel',e=>{e.preventDefault();closeImageCropper()});
-$('#cropReset').onclick=()=>{activeCropper?.getCropperImage?.()?.$resetTransform?.();activeCropper?.getCropperImage?.()?.$center?.('contain');activeCropper?.getCropperSelection?.()?.$reset?.()};
+$('#cropReset').onclick=()=>activeCropper?.getCropperSelection?.()?.$reset?.();
 $('#cropRotateLeft').onclick=()=>activeCropper?.getCropperImage?.()?.$rotate?.('-90deg');
-$('#cropZoomOut').onclick=()=>activeCropper?.getCropperImage?.()?.$zoom?.(-.1);
-$('#cropZoomIn').onclick=()=>activeCropper?.getCropperImage?.()?.$zoom?.(.1);
-$('#cropStage').addEventListener('wheel',e=>{if(!$('#imageCropDialog').open||!activeCropper)return;e.preventDefault();activeCropper.getCropperImage?.()?.$zoom?.(e.deltaY<0?.08:-.08)},{passive:false});
 
 $('#imageInput').addEventListener('change',e=>{
  const file=e.target.files?.[0],path=e.target.dataset.path;

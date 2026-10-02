@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OnlyEvent Studio v8</title>
-  <link rel="stylesheet" href="/v8/styles.css?v=8.22.0">
+  <link rel="stylesheet" href="/v8/styles.css?v=8.23.0">
 </head>
 <body>
   <header class="studio-topbar">
@@ -121,17 +121,14 @@
         <div><b>裁剪图片</b><span id="cropSlotLabel">图片</span></div>
         <button id="cropClose" type="button" aria-label="关闭">×</button>
       </div>
-      <div class="crop-stage" id="cropStage"><img id="cropImage" alt=""><div class="crop-tip">拖动图片调整位置 · 滚轮或 ± 缩放</div></div>
+      <div class="crop-stage" id="cropStage"><img id="cropImage" alt=""></div>
       <div class="crop-foot">
         <div class="crop-tools">
-          <button id="cropZoomOut" type="button" title="缩小">−</button>
-          <button id="cropZoomIn" type="button" title="放大">＋</button>
           <button id="cropRotateLeft" type="button">↶ 90°</button>
           <button id="cropReset" type="button">重置</button>
           <span id="cropRatioLabel">推荐比例</span>
         </div>
         <div class="crop-actions">
-          <button id="cropUseOriginal" type="button">使用原图</button>
           <button id="cropCancel" type="button">取消</button>
           <button id="cropApply" type="button" class="primary">应用裁剪</button>
         </div>
@@ -139,6 +136,6 @@
     </div>
   </dialog>
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="/v8/app.js?v=8.22.0"></script>
+  <script type="module" src="/v8/app.js?v=8.23.0"></script>
 </body>
 </html>
