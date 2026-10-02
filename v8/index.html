@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OnlyEvent Studio v8</title>
-  <link rel="stylesheet" href="/v8/styles.css?v=8.23.0">
+  <link rel="stylesheet" href="/v8/styles.css?v=8.29.0">
 </head>
 <body>
   <header class="studio-topbar">
@@ -24,6 +24,9 @@
       </div>
       <div class="action-group preview-group">
         <button id="previewBtn" type="button" title="查看发布效果"><span class="action-icon">◉</span><span id="previewLabel">预览</span></button>
+      </div>
+      <div class="action-group help-group">
+        <button id="tutorialBtn" type="button" title="新手引导"><span class="action-icon">?</span><span>新手引导</span></button>
       </div>
       <div class="action-separator"></div>
       <div class="action-group history-group">
@@ -44,11 +47,10 @@
       <nav class="workspace-tabs" aria-label="编辑工作区">
         <button type="button" class="active" data-workspace="pages"><span>▤</span><b>页面</b></button>
         <button type="button" data-workspace="content"><span>◆</span><b>内容</b></button>
-        <button type="button" data-workspace="modules"><span>◫</span><b>模块</b></button>
       </nav>
 
       <section class="workspace-panel active" data-workspace-panel="pages">
-        <div class="workspace-panel-head"><b>页面</b><small>网站结构</small></div>
+        <div class="workspace-panel-head"><b>页面</b><small>网站结构与显示</small></div>
         <nav class="page-nav">
           <button data-page="home" type="button"><span class="nav-icon">⌂</span><span>首页</span></button>
           <button data-page="booths" data-module-page="booths" type="button"><span class="nav-icon">⌘</span><span>摊位详情</span></button>
@@ -57,6 +59,20 @@
           <button data-page="freewalk" data-module-page="freewalk" type="button"><span class="nav-icon">◇</span><span>COS / 自由行</span></button>
           <button data-page="itasha" data-module-page="itasha" type="button"><span class="nav-icon">◇</span><span>痛车展示</span></button>
         </nav>
+
+        <div class="page-settings-block">
+          <div class="page-settings-title"><b>可选一级页面</b><span>不用就关闭</span></div>
+          <label class="page-setting-row"><span>COS / 自由行</span><input type="checkbox" data-module="freewalk"></label>
+          <label class="page-setting-row"><span>痛车展示</span><input type="checkbox" data-module="itasha"></label>
+        </div>
+
+        <div class="page-settings-block">
+          <div class="page-settings-title"><b>首页内容</b><span>保留原有设计</span></div>
+          <label class="page-setting-row"><span>滚动公告</span><input type="checkbox" data-module="ribbon"></label>
+          <label class="page-setting-row"><span>嘉宾</span><input type="checkbox" data-module="guests"></label>
+          <label class="page-setting-row"><span>社群</span><input type="checkbox" data-module="community"></label>
+          <label class="page-setting-row"><span>赞助</span><input type="checkbox" data-module="sponsors"></label>
+        </div>
       </section>
 
       <section class="workspace-panel" data-workspace-panel="content" hidden>
@@ -64,7 +80,7 @@
         <div class="content-managers">
           <button type="button" data-content-manager="tickets"><span>票务</span><b data-content-count="tickets">0</b></button>
           <button type="button" data-content-manager="booths"><span>摊位</span><b data-content-count="booths">0</b></button>
-          <button type="button" data-content-manager="participation"><span>活动参与</span><b data-content-count="participation">0</b></button>
+          <button type="button" data-content-manager="participation"><span>活动</span><b data-content-count="participation">0</b></button>
           <button type="button" data-content-manager="schedule"><span>当天日程</span><b data-content-count="schedule">0</b></button>
           <button type="button" data-content-manager="guests"><span>嘉宾</span><b data-content-count="guests">0</b></button>
                     <button type="button" data-content-manager="guide"><span>观展指南</span><b data-content-count="guide">0</b></button>
@@ -77,17 +93,6 @@
         </div>
       </section>
 
-      <section class="workspace-panel" data-workspace-panel="modules" hidden>
-        <div class="workspace-panel-head"><b>模块</b><small>控制首页可选内容</small></div>
-        <div class="module-switches">
-          <label><span>滚动公告</span><input type="checkbox" data-module="ribbon"></label>
-          <label><span>嘉宾</span><input type="checkbox" data-module="guests"></label>
-          <label><span>自由行（活动参与）</span><input type="checkbox" data-module="freewalk"></label>
-          <label><span>痛车（活动参与）</span><input type="checkbox" data-module="itasha"></label>
-          <label><span>社群</span><input type="checkbox" data-module="community"></label>
-          <label><span>赞助</span><input type="checkbox" data-module="sponsors"></label>
-        </div>
-      </section>
     </aside>
 
     <section class="canvas-wrap">
@@ -147,7 +152,25 @@
       </div>
     </div>
   </dialog>
+  <dialog id="tutorialDialog" class="tutorial-dialog">
+    <div class="tutorial-shell">
+      <div class="tutorial-head">
+        <div><span>ONLYEVENT START</span><b>第一次建站，按这 6 步完成</b></div>
+        <button id="tutorialClose" type="button" aria-label="关闭">×</button>
+      </div>
+      <p class="tutorial-intro">先把已有材料放进网站，再逐步补全。所有修改会自动保存。</p>
+      <div class="tutorial-steps">
+        <button type="button" data-tutorial-step="basic"><i>01</i><span><b>基本信息</b><small>活动名、日期、场馆和导航</small></span><em>开始 →</em></button>
+        <button type="button" data-tutorial-step="kv"><i>02</i><span><b>上传 KV</b><small>上传并裁剪主视觉</small></span><em>去上传 →</em></button>
+        <button type="button" data-tutorial-step="pages"><i>03</i><span><b>选择页面</b><small>决定是否展示自由行、痛车等页面</small></span><em>去设置 →</em></button>
+        <button type="button" data-tutorial-step="content"><i>04</i><span><b>填写核心内容</b><small>票务、摊位、活动、嘉宾与社群</small></span><em>去填写 →</em></button>
+        <button type="button" data-tutorial-step="guide"><i>05</i><span><b>完善观展指南</b><small>交通、入场、设施和规则</small></span><em>去完善 →</em></button>
+        <button type="button" data-tutorial-step="preview"><i>06</i><span><b>预览并发布</b><small>检查游客看到的最终效果</small></span><em>去预览 →</em></button>
+      </div>
+      <label class="tutorial-auto"><input id="tutorialNoAuto" type="checkbox"><span>下次不自动显示</span></label>
+    </div>
+  </dialog>
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="/v8/app.js?v=8.27.0"></script>
+  <script type="module" src="/v8/app.js?v=8.29.0"></script>
 </body>
 </html>
