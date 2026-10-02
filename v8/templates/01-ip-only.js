@@ -73,7 +73,7 @@ export const template01 = {
     socialLinks:[
       {id:'sl1',label:'游客群',note:'游客交流、现场问答与活动信息',url:'',image:''},
       {id:'sl2',label:'摊主群',note:'摊主沟通与布撤展信息',url:'',image:''},
-      {id:'sl3',label:'COS / 自由行群',note:'自由行、COS 集合与摄影交流',url:'',image:''},
+      {id:'sl3',label:'COS自由行群',note:'自由行、COS 集合与摄影交流',url:'',image:''},
       {id:'sl4',label:'节目 / 活动报名',note:'节目、舞台或互动活动报名入口',url:'',image:''},
       {id:'sl5',label:'B站',note:'PV、嘉宾公开与节目预告',url:'',image:''},
       {id:'sl6',label:'小红书',note:'宣发、返图与观展攻略',url:'',image:''}
@@ -90,7 +90,7 @@ export const template01 = {
       ]
     },
     freewalk:{
-      title:'COS / 自由行',
+      title:'COS自由行',
       text:'自由行报名、集合方式与参与规则由主办方填写。',
       image:''
     },
