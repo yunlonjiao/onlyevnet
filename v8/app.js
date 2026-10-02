@@ -31,7 +31,14 @@ state.venueMap.links=(state.venueMap.links||[]).map((link,i)=>{
  return {id:link.id||('ml'+(i+1)),label:label||'继续探索',target,itemType:link.itemType||'page',itemId:link.itemId||''};
 });
 delete state.venueMap.points;
-state.participation=(state.participation||[]).map(item=>({...item,target:'activities',guestIds:Array.isArray(item.guestIds)?item.guestIds:[]}));
+state.participation=(state.participation||[]).map(item=>({
+ image:item.image||'',
+ detail:item.detail||item.text||'',
+ rules:item.rules||'',
+ ...item,
+ target:'activities',
+ guestIds:Array.isArray(item.guestIds)?item.guestIds:[]
+}));
 state.modules??={};
 for(const k of ['booths','activities','guide','freewalk','itasha','ribbon','guests','community','sponsors']){
  if(state.modules[k]===undefined)state.modules[k]=template01.defaults.modules?.[k]!==false;
@@ -71,6 +78,7 @@ function contentThumb(collection,item){
  if(collection==='booths')src=(item.products||[]).find(p=>p.image)?.image||'';
  if(collection==='guests')src=item.image||'';
  if(collection==='tickets')src=item.image||'';
+ if(collection==='participation')src=item.image||'';
  if(collection==='socialLinks')src=item.image||'';
  if(collection==='sponsors')src=item.logo||'';
  const fallback={ribbonItems:'告',tickets:'票',explore:'↗',participation:'参',booths:'摊',schedule:'时',guests:'嘉',guide:'指',updates:'更',socialLinks:'社',sponsors:'赞'}[collection]||'•';
@@ -103,7 +111,7 @@ const PARTICIPATION_PRESETS={
  stage:{preset:'stage',title:'舞台活动',meta:'主舞台 · 时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'activities',url:'',guestIds:[]},
  guest:{preset:'guest',title:'嘉宾互动 / Talk',meta:'主舞台 · 时间待定',text:'填写嘉宾互动、Q&A、访谈或见面会内容。',target:'activities',url:'',guestIds:[]},
  signing:{preset:'signing',title:'嘉宾签售 / 签绘',meta:'签售区 · 时间待定',text:'填写签售、签绘、合影规则与参与方式。',target:'activities',url:'',guestIds:[]},
- cosplay:{preset:'cosplay',title:'COS / 自由行',meta:'COS 区 · 全天',text:'填写自由行、COS 集合、摄影或报名说明。',target:'activities',url:'',guestIds:[]},
+ cosplay:{preset:'cosplay',title:'COS自由行',meta:'COS 区 · 全天',text:'填写自由行、COS 集合、摄影或报名说明。',target:'activities',url:'',guestIds:[]},
  itasha:{preset:'itasha',title:'痛车展示',meta:'痛车区 · 全天',text:'填写痛车展示、招募、展示时间与现场规则。',target:'activities',url:'',guestIds:[]},
  stamp:{preset:'stamp',title:'集章 / 打卡',meta:'活动区域 · 全天',text:'填写集章点、打卡规则、兑换方式或完成奖励。',target:'activities',url:'',guestIds:[]},
  photo:{preset:'photo',title:'主题合影',meta:'集合区域 · 时间待定',text:'填写集合时间、地点和参与方式。',target:'activities',url:'',guestIds:[]},
@@ -133,7 +141,7 @@ const COLLECTION_PAGE={
  booths:'booths',participation:'activities',schedule:'activities',guests:'guests',guide:'guide'
 };
 function openOptionalPageInspector(key){
- const page=state[key]||{},label=key==='freewalk'?'COS / 自由行':'痛车展示';
+ const page=state[key]||{},label=key==='freewalk'?'COS自由行':'痛车展示';
  setInspector('页面内容',label,
    '<div class="item-fields">'+
    '<label><span>页面标题</span><input data-optional-field="title" value="'+esc(page.title||label)+'"></label>'+
@@ -366,7 +374,7 @@ const collectionMeta={
  ribbonItems:{title:'滚动公告',fields:[['text','内容']]},
  explore:{title:'继续探索',fields:[['label','显示名称']]},
  tickets:{title:'票务',fields:[['name','票名'],['price','价格'],['gift','特典'],['note','备注']]},
- participation:{title:'活动参与',fields:[['title','活动名称'],['meta','时间 / 地点'],['text','参与说明'],['url','外部报名 / 详情链接']]},
+ participation:{title:'活动参与',fields:[['title','活动名称'],['meta','时间 / 地点'],['text','首页简介'],['detail','活动内容'],['rules','参与规则'],['url','报名 / 外部链接']]},
  schedule:{title:'当天日程',fields:[['time','时间'],['title','标题'],['stage','区域名称'],['detail','详情'],['registrationUrl','报名 / 外部链接']]},
  guide:{title:'指南内容',fields:[['title','标题'],['text','说明']]},
  guests:{title:'嘉宾',fields:[['name','姓名 / 名称'],['role','身份'],['works','代表作'],['intro','介绍'],['socialLabel','平台名称'],['socialUrl','平台链接'],['appearance','签售 / 舞台时间']]},
@@ -430,7 +438,7 @@ function extraInspector(collection,index,item){
  }
  if(collection==='participation'){
    const guests=state.guests||[];
-   return '<div class="reference-panel"><b>关联嘉宾</b><div class="reference-list"><span>参加这个活动的嘉宾</span>'+guests.map(g=>'<label class="check-row"><input type="checkbox" data-guest-ref="'+esc(g.id)+'" '+((item.guestIds||[]).includes(g.id)?'checked':'')+'><span>'+esc(g.name)+'</span></label>').join('')+'</div><p class="inspector-note">如填写外部报名 / 详情链接，游客仍可从活动卡片进入外部页面。</p></div>';
+   return '<div class="reference-panel"><b>关联嘉宾</b><div class="reference-list"><span>参加这个活动的嘉宾</span>'+guests.map(g=>'<label class="check-row"><input type="checkbox" data-guest-ref="'+esc(g.id)+'" '+((item.guestIds||[]).includes(g.id)?'checked':'')+'><span>'+esc(g.name)+'</span></label>').join('')+'</div><p class="inspector-note">如填写报名 / 外部链接，会在活动详情中显示对应按钮。</p></div>';
  }
  if(collection==='updates'){
    const targets=[['top','首页顶部'],['tickets','票务'],['passport','活动参与'],['map-home','场地图'],['schedule-home','当天日程'],['guests','嘉宾'],['guide-home','观展指南'],['community','社群']];
@@ -441,8 +449,10 @@ function extraInspector(collection,index,item){
 function openItemInspector(collection,index){
  const meta=collectionMeta[collection],arr=collectionArray(collection),item=arr?.[index];if(!meta||!item)return;
  const count=arr.length;
- const isLong=k=>['text','gift','note','detail','intro','works','appearance'].includes(k);
- const media=collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='sponsors'?'<div class="item-media"><span>Logo</span><div class="item-media-row">'+(item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="sponsors.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="sponsors.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>':'';
+ const isLong=k=>['text','gift','note','detail','rules','intro','works','appearance'].includes(k);
+ const media=collection==='participation'
+   ?'<div class="item-media"><span>活动宣传图</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="participation.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="participation.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>'
+   :collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='sponsors'?'<div class="item-media"><span>Logo</span><div class="item-media-row">'+(item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="sponsors.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="sponsors.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>':'';
  const guideMedia=collection==='guide'
    ?(item.image
      ?'<div class="item-media"><span>'+(item.preset==='traffic'?'路线图 / 入口示意图':'附图')+'</span><div class="item-media-row"><img src="'+esc(item.image)+'" alt=""><div><button data-media-path="guide.items.'+index+'.image">替换图片</button><button data-remove-media="guide.items.'+index+'.image" class="ghost">移除</button></div></div></div>'
@@ -496,7 +506,7 @@ function mutateItem(collection,index,op){
      collection==='guests'?{id:uid('g'),name:'新嘉宾',role:'Guest',works:'',intro:'',image:'',socialLabel:'',socialUrl:'',appearance:''}:
      collection==='booths'?{id:uid('b'),no:'',name:'新摊位',logo:'',type:'',intro:'',products:[{id:uid('p'),name:'新制品',price:'',note:'',image:''}]}:
      collection==='updates'?{id:uid('u'),date:'',title:'新更新',target:'top'}:
-     collection==='participation'?{id:uid('pa'),preset:'custom',title:'新活动',meta:'时间 / 地点待定',text:'',target:'participation',url:''}:
+     collection==='participation'?{id:uid('pa'),preset:'custom',title:'新活动',meta:'时间 / 地点待定',text:'',detail:'',rules:'',image:'',target:'activities',url:'',guestIds:[]}:
      collection==='socialLinks'?{id:uid('sl'),label:'新社群入口',note:'',url:'',image:''}:
      collection==='sponsors'?{id:uid('sp'),name:'新赞助商',level:'合作伙伴',url:'',logo:''}:
      {id:uid('s'),time:'12:00',title:'新活动',stage:'MAIN STAGE',detail:'',guestIds:[],registrationUrl:''};
@@ -507,6 +517,7 @@ function mutateItem(collection,index,op){
 function imageSlotConfig(path){
  if(path==='heroImage')return {label:'主视觉 KV',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1400,height:1400,fixed:true};
  if(/^tickets\.\d+\.image$/.test(path))return {label:'票务赠品图',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:900,height:900,fixed:true};
+ if(/^participation\.\d+\.image$/.test(path))return {label:'活动宣传图',ratio:16/9,ratioLabel:'裁剪框可移动 · 比例 16:9',width:1440,height:810,fixed:true};
  if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾图片',ratio:.8,ratioLabel:'裁剪框可移动 · 比例 4:5',width:960,height:1200,fixed:true};
  if(/^booths\.\d+\.products\.\d+\.image$/.test(path))return {label:'制品图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1000,height:1000,fixed:true};
  if(path==='venueMap.image')return {label:'场地图',ratio:null,ratioLabel:'裁剪框自由比例',maxSize:2000,free:true};
