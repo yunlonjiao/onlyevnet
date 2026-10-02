@@ -1,4 +1,4 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.30.0';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.31.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
@@ -22,11 +22,12 @@ if(!Array.isArray(state.participation))state.participation=structuredClone(templ
 if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
 if(!Array.isArray(state.venueMap.links))state.venueMap.links=structuredClone(template01.defaults.venueMap.links);
 const FIRST_LEVEL_TARGETS=new Set(['booths','activities','guide','freewalk','itasha']);
-state.venueMap.links=(state.venueMap.links||[]).map(link=>{
+state.venueMap.links=(state.venueMap.links||[]).map((link,i)=>{
  const legacy={participation:'activities','schedule-home':'activities','map-home':'booths','guide-home':'guide'}[link.target];
- const target=legacy||link.target;
- return {...link,target:FIRST_LEVEL_TARGETS.has(target)?target:'activities'};
+ const target=FIRST_LEVEL_TARGETS.has(legacy||link.target)?(legacy||link.target):'activities';
+ return {id:link.id||('ml'+(i+1)),label:link.label||'继续探索',target,itemType:link.itemType||'page',itemId:link.itemId||''};
 });
+delete state.venueMap.points;
 state.participation=(state.participation||[]).map(item=>({...item,target:{participation:'activities','schedule-home':'activities','guide-home':'guide'}[item.target]||item.target||'activities'}));
 state.modules??={};
 for(const k of ['booths','activities','guide','freewalk','itasha','ribbon','guests','community','sponsors']){
@@ -36,9 +37,9 @@ if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
 if(!Array.isArray(state.updates))state.updates=structuredClone(template01.defaults.updates);
 if(!Array.isArray(state.socialLinks))state.socialLinks=structuredClone(template01.defaults.socialLinks);
 if(!Array.isArray(state.sponsors))state.sponsors=structuredClone(template01.defaults.sponsors);
-state.booths=(state.booths||[]).map((b,i)=>({...structuredClone(template01.defaults.booths[i]||{products:[]}),...b,products:Array.isArray(b.products)?b.products:structuredClone(template01.defaults.booths[i]?.products||[])}));
+state.booths=(state.booths||[]).map((b,i)=>{const next={...structuredClone(template01.defaults.booths[i]||{products:[]}),...b,products:Array.isArray(b.products)?b.products:structuredClone(template01.defaults.booths[i]?.products||[])};delete next.pointId;return next});
 state.guests=(state.guests||[]).map((g,i)=>({...structuredClone(template01.defaults.guests[i]||{}),...g}));
-state.schedule=(state.schedule||[]).map((a,i)=>({...structuredClone(template01.defaults.schedule[i]||{guestIds:[]}),...a,guestIds:Array.isArray(a.guestIds)?a.guestIds:[]}));
+state.schedule=(state.schedule||[]).map((a,i)=>{const next={...structuredClone(template01.defaults.schedule[i]||{guestIds:[]}),...a,guestIds:Array.isArray(a.guestIds)?a.guestIds:[]};delete next.locationId;return next});
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(t){toastEl.textContent=t;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),1400)}
 function save(){saveState.textContent='保存中…';syncContentCounts();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));saveState.textContent='已保存'},180)}
@@ -65,18 +66,19 @@ function contentThumb(collection,item){
  if(collection==='tickets')src=item.image||'';
  if(collection==='socialLinks')src=item.image||'';
  if(collection==='sponsors')src=item.logo||'';
- const fallback={tickets:'票',participation:'参',booths:'摊',schedule:'时',guests:'嘉',mapPoints:'点',guide:'指',updates:'更',socialLinks:'社',sponsors:'赞'}[collection]||'•';
+ const fallback={ribbonItems:'告',tickets:'票',explore:'↗',participation:'参',booths:'摊',schedule:'时',guests:'嘉',guide:'指',updates:'更',socialLinks:'社',sponsors:'赞'}[collection]||'•';
  return '<span class="sidebar-content-thumb '+(src?'has-image':'')+'">'+(src?'<img src="'+esc(src)+'" alt="">':fallback)+'</span>';
 }
 
 const moduleLabels={booths:'摊位',activities:'活动',guide:'观展指南',freewalk:'COS / 自由行',itasha:'痛车展示'};
 const contentManagerMeta={
+ ribbonItems:{title:'滚动公告',empty:'还没有滚动公告',item:(x,i)=>[x.text||('公告 '+(i+1)),'']},
+ explore:{title:'继续探索',empty:'还没有探索入口',item:(x,i)=>[x.label||('入口 '+(i+1)),moduleLabels[x.target]||'页面']},
  tickets:{title:'票务',empty:'还没有票种',item:(x,i)=>[x.name||('票种 '+(i+1)),x.price||'']},
  booths:{title:'摊位',empty:'还没有摊位',item:(x,i)=>[(x.no?x.no+' · ':'')+(x.name||('摊位 '+(i+1))),String((x.products||[]).length)+' 个制品']},
  participation:{title:'活动',empty:'还没有活动',item:(x,i)=>[x.title||('活动 '+(i+1)),x.meta||'']},
  schedule:{title:'当天日程',empty:'还没有日程',item:(x,i)=>[(x.time?x.time+' · ':'')+(x.title||('日程 '+(i+1))),x.stage||'']},
  guests:{title:'嘉宾',empty:'还没有嘉宾',item:(x,i)=>[x.name||('嘉宾 '+(i+1)),x.role||'']},
- mapPoints:{title:'地图点位',empty:'还没有点位',item:(x,i)=>[x.label||('点位 '+(i+1)),x.kind||'']},
  guide:{title:'观展指南',empty:'还没有指南内容',item:(x,i)=>[x.title||('指南 '+(i+1)),(x.text||'').slice(0,24)]},
  updates:{title:'重要更新',empty:'还没有重要更新',item:(x,i)=>[x.title||('更新 '+(i+1)),x.date||'']},
  socialLinks:{title:'社群入口',empty:'还没有社群入口',item:(x,i)=>[x.label||('入口 '+(i+1)),x.url?'已设置链接':'未设置链接']},
@@ -102,10 +104,10 @@ const PAGE_CONTENT_CONFIG={
  home:[
    {tool:'basic',label:'基本信息'},
    {tool:'hero',label:'主视觉'},
-   {tool:'ribbon',label:'滚动公告'},
+   {collection:'ribbonItems',label:'滚动公告'},
    {collection:'tickets',label:'票务'},
    {tool:'map',label:'场地图'},
-   {collection:'mapPoints',label:'地图点位'},
+   {collection:'explore',label:'继续探索'},
    {collection:'updates',label:'重要更新'},
    {collection:'guests',label:'嘉宾'},
    {collection:'socialLinks',label:'社群'},
@@ -118,7 +120,7 @@ const PAGE_CONTENT_CONFIG={
  itasha:[{tool:'itasha',label:'页面内容'}]
 };
 const COLLECTION_PAGE={
- tickets:'home',mapPoints:'home',updates:'home',guests:'home',socialLinks:'home',sponsors:'home',
+ ribbonItems:'home',tickets:'home',explore:'home',updates:'home',guests:'home',socialLinks:'home',sponsors:'home',
  booths:'booths',participation:'activities',schedule:'activities',guide:'guide'
 };
 function openOptionalPageInspector(key){
@@ -142,7 +144,6 @@ function openPageTool(tool){
  const panel=$('#contentListPanel');if(panel)panel.innerHTML='';
  if(tool==='basic'){openAddressInspector();return}
  if(tool==='hero'){openHeroTitleInspector();return}
- if(tool==='ribbon'){openRibbonInspector();return}
  if(tool==='map'){openImageInspector('venueMap.image');return}
  if(tool==='freewalk'||tool==='itasha'){openOptionalPageInspector(tool);return}
  showInspectorEmpty();
@@ -233,7 +234,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.30.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.31.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -253,20 +254,7 @@ window.addEventListener('message',e=>{
    setWorkspace('pages');setStudioPage(page,{openContent:false});renderPageContentNav(page,{openDefault:false});
    openCollectionManager(m.collection,m.index);openItemInspector(m.collection,m.index);return
  }
- if(m.type==='OE_MAP_POINT_MOVE'){
-   const p=state.venueMap?.points?.[m.index];if(!p)return;
-   checkpoint();p.x=m.x;p.y=m.y;save();
-   const x=inspector.querySelector('[data-key="x"]'),y=inspector.querySelector('[data-key="y"]');if(x)x.value=m.x;if(y)y.value=m.y;
-   return
- }
- if(m.type==='OE_MAP_POINT_ADD'){
-   checkpoint();state.venueMap??={image:'',points:[]};state.venueMap.points??=[];
-   state.venueMap.points.push({id:uid('mp'),kind:'booth',label:'新点位',x:m.x,y:m.y});
-   save();send({type:'OE_REPLACE_STATE',state});
-   setWorkspace('pages');setStudioPage('home',{openContent:false});renderPageContentNav('home',{openDefault:false});openCollectionManager('mapPoints',state.venueMap.points.length-1);
-   openItemInspector('mapPoints',state.venueMap.points.length-1);
-   return
- }
+
  if(m.type==='OE_EXPORT_HTML_RESULT'){downloadPublishedHtml(m.html);return}
 });
 function downloadPublishedHtml(html){
@@ -334,7 +322,11 @@ function openTicketSettingsInspector(){
  $('#testTicketUrl').onclick=()=>{const url=String(state.ticketUrl||'').trim();if(/^https?:\/\//i.test(url))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
 }
 function openFieldInspector(path){
- if(path.startsWith('ribbon')){openRibbonInspector();return}
+ if(path.startsWith('ribbonItems.')){
+   const i=Number(path.split('.')[1])||0;
+   setWorkspace('pages');setStudioPage('home',{openContent:false});renderPageContentNav('home',{openDefault:false});
+   openCollectionManager('ribbonItems',i);openItemInspector('ribbonItems',i);return
+ }
  if(path==='ticketUrl'||path==='ticketLinkLabel'){openTicketSettingsInspector();return}
  if(path==='edition'){openAddressInspector();return}
  if(path.startsWith('heroTitle')){openHeroTitleInspector();return}
@@ -345,13 +337,14 @@ function openFieldInspector(path){
  input.addEventListener('blur',e=>{const cleaned=cleanValue(e.target.value);if(cleaned!==e.target.value){e.target.value=cleaned;setDeep(path,cleaned);send({type:'OE_PATCH_FIELD',path,value:cleaned});fitTextarea(e.target)}});
 }
 const collectionMeta={
+ ribbonItems:{title:'滚动公告',fields:[['text','内容']]},
+ explore:{title:'继续探索',fields:[['label','显示名称']]},
  tickets:{title:'票务',fields:[['name','票名'],['price','价格'],['gift','特典'],['note','备注']]},
  participation:{title:'活动参与',fields:[['title','活动名称'],['meta','时间 / 地点'],['text','参与说明'],['url','外部报名 / 详情链接']]},
  schedule:{title:'当天日程',fields:[['time','时间'],['title','标题'],['stage','区域名称'],['detail','详情'],['registrationUrl','报名 / 外部链接']]},
  guide:{title:'指南内容',fields:[['title','标题'],['text','说明']]},
  guests:{title:'嘉宾',fields:[['name','姓名 / 名称'],['role','身份'],['works','代表作'],['intro','介绍'],['socialLabel','平台名称'],['socialUrl','平台链接'],['appearance','签售 / 舞台时间']]},
  booths:{title:'摊位',fields:[['no','摊位号'],['name','社团名'],['type','分类'],['intro','简介']]},
- mapPoints:{title:'地图点位',fields:[['label','点位名称']]},
  updates:{title:'重要更新',fields:[['date','日期'],['title','更新内容']]},socialLinks:{title:'社群入口',fields:[['label','名称'],['note','说明'],['url','链接']]},sponsors:{title:'赞助支持',fields:[['name','名称'],['level','级别'],['url','链接']]}
 };
 function uid(prefix){return prefix+Math.random().toString(36).slice(2,8)}
@@ -359,22 +352,32 @@ function fitTextarea(el){if(!el)return;el.style.height='auto';el.style.height=Ma
 function cleanValue(v){return String(v??'').split('\n').map(x=>x.trimEnd()).join('\n').replace(/^\s*\n+/,'').replace(/\n+\s*$/,'').trim()}
 function collectionArray(collection){
  if(collection==='guide')return state.guide?.items;
- if(collection==='mapPoints')return state.venueMap?.points;
+ if(collection==='explore')return state.venueMap?.links;
  return state[collection];
 }
 function collectionPath(collection,index,key){
  if(collection==='guide')return 'guide.items.'+index+'.'+key;
- if(collection==='mapPoints')return 'venueMap.points.'+index+'.'+key;
+ if(collection==='explore')return 'venueMap.links.'+index+'.'+key;
  return collection+'.'+index+'.'+key;
 }
 function optionsHtml(items,value,labelFn=x=>x.label||x.name||x.id){
  return '<option value="">未关联</option>'+items.map(x=>'<option value="'+esc(x.id)+'" '+(x.id===value?'selected':'')+'>'+esc(labelFn(x))+'</option>').join('');
 }
+function exploreDetailOptions(page,itemType='page',itemId=''){
+ const selected=(type,id)=>type===itemType&&String(id||'')===String(itemId||'')?' selected':'';
+ let out='<option value="page:"'+selected('page','')+'>页面顶部</option>';
+ if(page==='booths')out+=(state.booths||[]).map(x=>'<option value="booth:'+esc(x.id)+'"'+selected('booth',x.id)+'>'+esc((x.no?x.no+' · ':'')+(x.name||'摊位'))+'</option>').join('');
+ if(page==='activities'){
+   out+=(state.participation||[]).map(x=>'<option value="participation:'+esc(x.id)+'"'+selected('participation',x.id)+'>企划 · '+esc(x.title||'活动')+'</option>').join('');
+   out+=(state.schedule||[]).map(x=>'<option value="schedule:'+esc(x.id)+'"'+selected('schedule',x.id)+'>日程 · '+esc((x.time?x.time+' ':'')+(x.title||'活动'))+'</option>').join('');
+ }
+ if(page==='guide')out+=(state.guide?.items||[]).map(x=>'<option value="guide:'+esc(x.id)+'"'+selected('guide',x.id)+'>'+esc(x.title||'指南')+'</option>').join('');
+ return out;
+}
 function extraInspector(collection,index,item){
  if(collection==='schedule'){
-   const locations=state.venueMap?.points||[],guests=state.guests||[];
-   return '<div class="reference-panel"><b>内容关联</b><label><span>活动地点</span><select data-ref="locationId">'+optionsHtml(locations,item.locationId,x=>x.label+' · '+x.kind)+'</select></label>'+
-     '<div class="reference-list"><span>出席嘉宾</span>'+guests.map(g=>'<label class="check-row"><input type="checkbox" data-guest-ref="'+esc(g.id)+'" '+((item.guestIds||[]).includes(g.id)?'checked':'')+'><span>'+esc(g.name)+'</span></label>').join('')+'</div></div>';
+   const guests=state.guests||[];
+   return '<div class="reference-panel"><b>内容关联</b><div class="reference-list"><span>出席嘉宾</span>'+guests.map(g=>'<label class="check-row"><input type="checkbox" data-guest-ref="'+esc(g.id)+'" '+((item.guestIds||[]).includes(g.id)?'checked':'')+'><span>'+esc(g.name)+'</span></label>').join('')+'</div></div>';
  }
  if(collection==='guests'){
    const related=(state.schedule||[]).filter(a=>(a.guestIds||[]).includes(item.id));
@@ -389,11 +392,12 @@ function extraInspector(collection,index,item){
      products.map((p,j)=>'<div class="product-edit-card" data-product-row="'+j+'><div class="product-edit-media">'+(p.image?'<img src="'+esc(p.image)+'" alt="">':'<div>＋</div>')+'<button type="button" data-product-image="'+j+'">图片</button></div><div class="product-edit-fields"><input data-product-key="name" data-product-index="'+j+'" value="'+esc(p.name||'')+'" placeholder="制品名称"><input data-product-key="price" data-product-index="'+j+'" value="'+esc(p.price||'')+'" placeholder="价格"><input data-product-key="note" data-product-index="'+j+'" value="'+esc(p.note||'')+'" placeholder="说明"></div><button type="button" class="product-remove" data-product-op="remove" data-product-index="'+j+'">×</button></div>').join('')+
      '</div>';
  }
- if(collection==='mapPoints'){
-   const linked=(state.booths||[]).filter(b=>b.pointId===item.id);
-   const kinds=[['booth','摊位'],['stage','舞台'],['service','服务台'],['restroom','卫生间'],['changing','更衣室'],['entrance','出入口'],['food','餐饮'],['other','其他']];
-   return '<div class="reference-panel"><b>点位类型</b><label><span>类型</span><select data-ref="kind">'+kinds.map(x=>'<option value="'+x[0]+'" '+(item.kind===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select></label></div>'+
-     '<div class="reference-panel"><b>点位使用情况</b><div class="linked-summary">'+(linked.length?linked.map(b=>'<span>'+esc((b.no||'')+' '+b.name)+'</span>').join(''):'<span>暂未关联摊位</span>')+'</div><p class="inspector-note">直接在地图上拖动点位调整位置；摊位关联在摊位编辑器中设置。</p></div>';
+ if(collection==='explore'){
+   const pages=[['booths','摊位'],['activities','活动'],['guide','观展指南'],['freewalk','COS / 自由行'],['itasha','痛车展示']];
+   const detailOptions=exploreDetailOptions(item.target,item.itemType,item.itemId);
+   return '<div class="reference-panel explore-link-settings"><b>跳转目标</b>'+
+     '<label><span>一级页面</span><select data-explore-page>'+pages.map(x=>'<option value="'+x[0]+'" '+(item.target===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select></label>'+
+     '<label><span>页内内容（可选）</span><select data-explore-detail>'+detailOptions+'</select></label></div>';
  }
  if(collection==='participation'){
    const targets=[['participation','活动参与'],['schedule-home','当天日程'],['highlights','特别企划'],['tickets','票务'],['booths','摊位'],['map-home','场地图'],['guide','观展指南'],['freewalk','自由行'],['itasha','痛车']];
@@ -424,17 +428,20 @@ function openItemInspector(collection,index){
      if(!started){checkpoint();started=true}
      const key=e.target.dataset.key;
      let value=e.target.value;
-     if(collection==='mapPoints'&&(key==='x'||key==='y'))value=Math.max(0,Math.min(100,Number(value)||0));
-     item[key]=value;save();if(collection==='mapPoints')send({type:'OE_REPLACE_STATE',state});else send({type:'OE_PATCH_FIELD',path:collectionPath(collection,index,key),value});
+     item[key]=value;save();send({type:'OE_PATCH_FIELD',path:collectionPath(collection,index,key),value});
      if(e.target.tagName==='TEXTAREA')fitTextarea(e.target);
    });
    input.addEventListener('blur',e=>{
      if(e.target.type==='color')return;
      const key=e.target.dataset.key,cleaned=cleanValue(e.target.value);
-     if(cleaned!==e.target.value&&!(collection==='mapPoints'&&(key==='x'||key==='y'))){e.target.value=cleaned;item[key]=cleaned;save();send({type:'OE_PATCH_FIELD',path:collectionPath(collection,index,key),value:cleaned});if(e.target.tagName==='TEXTAREA')fitTextarea(e.target)}
+     if(cleaned!==e.target.value){e.target.value=cleaned;item[key]=cleaned;save();send({type:'OE_PATCH_FIELD',path:collectionPath(collection,index,key),value:cleaned});if(e.target.tagName==='TEXTAREA')fitTextarea(e.target)}
    });
  });
  inspector.querySelectorAll('[data-ref]').forEach(sel=>sel.addEventListener('change',e=>{checkpoint();item[e.target.dataset.ref]=e.target.value;save();send({type:'OE_REPLACE_STATE',state})}));
+ if(collection==='explore'){
+   inspector.querySelector('[data-explore-page]')?.addEventListener('change',e=>{checkpoint();item.target=e.target.value;item.itemType='page';item.itemId='';save();send({type:'OE_REPLACE_STATE',state});openItemInspector('explore',index)});
+   inspector.querySelector('[data-explore-detail]')?.addEventListener('change',e=>{checkpoint();const [type,id='']=String(e.target.value||'page:').split(':');item.itemType=type||'page';item.itemId=id;save();send({type:'OE_REPLACE_STATE',state})});
+ }
  inspector.querySelectorAll('[data-guest-ref]').forEach(ch=>ch.addEventListener('change',e=>{checkpoint();item.guestIds??=[];item.guestIds=e.target.checked?[...new Set([...item.guestIds,e.target.dataset.guestRef])]:item.guestIds.filter(id=>id!==e.target.dataset.guestRef);save();send({type:'OE_REPLACE_STATE',state})}));
  inspector.querySelectorAll('[data-op]').forEach(btn=>btn.addEventListener('click',()=>mutateItem(collection,index,btn.dataset.op)));
  inspector.querySelectorAll('[data-media-path]').forEach(btn=>btn.addEventListener('click',()=>{$('#imageInput').dataset.path=btn.dataset.mediaPath;$('#imageInput').dataset.returnCollection=collection;$('#imageInput').dataset.returnIndex=String(index);$('#imageInput').click()}));
@@ -449,11 +456,12 @@ function mutateItem(collection,index,op){
  if(op==='down'&&index<arr.length-1){[arr[index+1],arr[index]]=[arr[index],arr[index+1]];index++}
  if(op==='delete'&&arr.length>1){arr.splice(index,1);index=Math.max(0,index-1)}
  if(op==='add'){
-   const fresh=collection==='tickets'?{id:uid('t'),name:'新票种',price:'¥0',gift:'',note:'',image:''}:
+   const fresh=collection==='ribbonItems'?{id:uid('rb'),text:'新滚动公告'}:
+     collection==='explore'?{id:uid('ml'),label:'新探索入口',target:'activities',itemType:'page',itemId:''}:
+     collection==='tickets'?{id:uid('t'),name:'新票种',price:'¥0',gift:'',note:'',image:''}:
      collection==='guide'?{id:uid('gd'),preset:'custom',title:'新指南内容',text:'',image:''}:
      collection==='guests'?{id:uid('g'),name:'新嘉宾',role:'Guest',works:'',intro:'',image:'',socialLabel:'',socialUrl:'',appearance:''}:
      collection==='booths'?{id:uid('b'),no:'',name:'新摊位',logo:'',type:'',intro:'',products:[{id:uid('p'),name:'新制品',price:'',note:'',image:''}]}:
-     collection==='mapPoints'?{id:uid('mp'),kind:'other',label:'新点位',x:50,y:50,boothId:''}:
      collection==='updates'?{id:uid('u'),date:'',title:'新更新',target:'top'}:
      collection==='participation'?{id:uid('pa'),preset:'custom',title:'新活动',meta:'时间 / 地点待定',text:'',target:'participation',url:''}:
      collection==='socialLinks'?{id:uid('sl'),label:'新社群入口',note:'',url:'',image:''}:
@@ -479,23 +487,10 @@ function imageSlotConfig(path){
 function openImageInspector(path){
  const current=getDeep(path);
  if(path==='venueMap.image'){
-   const links=state.venueMap?.links||[];
-   const targets=[['booths','摊位'],['activities','活动'],['guide','观展指南'],['freewalk','COS / 自由行'],['itasha','痛车展示']];
-   const rows=links.map((item,i)=>'<div class="map-link-setting-row"><span class="map-link-setting-index">'+String(i+1).padStart(2,'0')+'</span><div class="map-link-setting-fields"><input data-map-link-label="'+i+'" value="'+esc(item.label||'')+'" placeholder="标签名称"><select data-map-link-target="'+i+'">'+targets.map(x=>'<option value="'+x[0]+'" '+(item.target===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select></div><div class="map-link-setting-actions"><button type="button" data-map-link-op="up" data-map-link-index="'+i+'" '+(i===0?'disabled':'')+'>↑</button><button type="button" data-map-link-op="down" data-map-link-index="'+i+'" '+(i===links.length-1?'disabled':'')+'>↓</button><button type="button" data-map-link-op="delete" data-map-link-index="'+i+'">×</button></div></div>').join('');
-   setInspector('场地图','地图与快捷标签',
-     '<div class="map-image-actions"><button id="replaceImage" type="button">'+(current?'替换场地图':'上传场地图')+'</button>'+(current?'<button id="removeImage" type="button" class="danger ghost">删除场地图</button>':'')+'</div>'+
-     '<p class="inspector-note">上传或替换后会先进入裁剪；场地图使用自由比例，横图和竖图都可以按实际内容调整。游客可点击查看大图。</p>'+
-     '<div class="reference-panel map-link-settings"><div class="product-editor-head"><b>地图旁探索入口</b><button type="button" data-map-link-add>＋ 添加入口</button></div>'+rows+'</div>');
+   setInspector('场地图','场地图',
+     '<div class="map-image-actions"><button id="replaceImage" type="button">'+(current?'替换场地图':'上传场地图')+'</button>'+(current?'<button id="removeImage" type="button" class="danger ghost">删除场地图</button>':'')+'</div>');
    $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()};
-   $('#removeImage')?.addEventListener('click',()=>{checkpoint();setDeep(path,'');save();send({type:'OE_REPLACE_STATE',state});toast('已删除场地图');openImageInspector(path)});
-   inspector.querySelectorAll('[data-map-link-label]').forEach(input=>{
-     let started=false;
-     input.addEventListener('input',e=>{const i=Number(e.target.dataset.mapLinkLabel);if(!state.venueMap?.links?.[i])return;if(!started){checkpoint();started=true}state.venueMap.links[i].label=e.target.value;save();send({type:'OE_PATCH_FIELD',path:'venueMap.links.'+i+'.label',value:e.target.value})});
-     input.addEventListener('blur',e=>{const i=Number(e.target.dataset.mapLinkLabel);if(!state.venueMap?.links?.[i])return;const v=cleanValue(e.target.value);state.venueMap.links[i].label=v;e.target.value=v;save();send({type:'OE_REPLACE_STATE',state})});
-   });
-   inspector.querySelectorAll('[data-map-link-target]').forEach(select=>select.addEventListener('change',e=>{const i=Number(e.target.dataset.mapLinkTarget);if(!state.venueMap?.links?.[i])return;checkpoint();state.venueMap.links[i].target=e.target.value;save();send({type:'OE_REPLACE_STATE',state})}));
-   inspector.querySelector('[data-map-link-add]')?.addEventListener('click',()=>{checkpoint();state.venueMap.links.push({id:uid('ml'),label:'新入口',target:'activities'});save();send({type:'OE_REPLACE_STATE',state});openImageInspector(path)});
-   inspector.querySelectorAll('[data-map-link-op]').forEach(btn=>btn.addEventListener('click',()=>{const i=Number(btn.dataset.mapLinkIndex),op=btn.dataset.mapLinkOp,arr=state.venueMap.links;if(!arr?.[i])return;checkpoint();if(op==='delete')arr.splice(i,1);if(op==='up'&&i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]];if(op==='down'&&i<arr.length-1)[arr[i+1],arr[i]]=[arr[i],arr[i+1]];save();send({type:'OE_REPLACE_STATE',state});openImageInspector(path)}));
+   $('#removeImage')?.addEventListener('click',()=>{checkpoint();setDeep(path,'');save();send({type:'OE_REPLACE_STATE',state});openImageInspector(path)});
    return;
  }
  setInspector('媒体','图片','<p class="inspector-path">'+esc(path)+'</p><div class="row"><button id="replaceImage" type="button">替换图片</button>'+(current?'<button id="cropCurrentImage" type="button">裁剪当前图片</button><button id="removeImage" type="button" class="danger ghost">移除图片</button>':'')+'</div>');
