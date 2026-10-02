@@ -7,7 +7,13 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation})
   let currentPage='home';
   function getCurrentPage(){return currentPage}
   function setCurrentPage(page){currentPage=page||'home'}
-  function moduleOn(key){return fixedModules.has(key)||getState().modules?.[key]!==false}
+  function hasSponsors(){
+    return (getState().sponsors||[]).some(x=>String(x?.name||'').trim()||String(x?.logo||'').trim()||String(x?.url||'').trim());
+  }
+  function moduleOn(key){
+    if(key==='sponsors')return hasSponsors();
+    return fixedModules.has(key)||getState().modules?.[key]!==false;
+  }
   function isHomeModule(id){return homeSections.some(([section])=>section===id)}
   function isStandalonePage(id){return standalonePages.includes(id)}
   function renderQuickAccess(){
