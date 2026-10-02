@@ -1,8 +1,8 @@
-export function createRouter({qs:$,qsa:qa,getState,renderParticipation}){
+export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation}){
   const standalonePages=['booths','activities','guide','freewalk','itasha'];
-  const fixedModules=new Set(['tickets','participation','booths','activities','guide']);
+  const fixedModules=new Set(['tickets','map']);
   const homeSections=[
-    ['tickets','tickets'],['participation','participation'],['map-home','booths'],['schedule-home','activities'],['guests','guests'],['guide-home','guide'],['community','community'],['sponsors','sponsors']
+    ['tickets','tickets'],['participation','activities'],['map-home','map'],['schedule-home','activities'],['guests','guests'],['guide-home','guide'],['community','community'],['sponsors','sponsors']
   ];
   let currentPage='home';
   function getCurrentPage(){return currentPage}
@@ -14,11 +14,11 @@ export function createRouter({qs:$,qsa:qa,getState,renderParticipation}){
     const grid=$('.quick-grid');if(!grid)return;
     const defs=[
       ['tickets','tickets','票务与特典','查看票种 →','home'],
-      ['participation','participation','活动参与','查看参与内容 →','home'],
-      ['booths','map-home','场地图','查看场地 →','home'],
-      ['activities','schedule-home','当天日程','查看日程 →','home'],
-      ['guide','guide-home','观展指南','查看指南 →','home']
-    ];
+      ['booths','booths','摊位与制品','查看摊位 →','page'],
+      ['activities','activities','活动','查看活动 →','page'],
+      ['guide','guide','观展指南','查看指南 →','page'],
+      ['map','map-home','场地图','查看场地 →','home']
+    ].filter(x=>moduleOn(x[0]));
     grid.innerHTML=defs.map((x,i)=>'<a class="quick-card reveal in" href="#'+x[1]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[1]+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
   }
   function applyModules(){
@@ -31,12 +31,12 @@ export function createRouter({qs:$,qsa:qa,getState,renderParticipation}){
   }
   function showPage(page,updateHash=true){
     if(page!=='home'&&!standalonePages.includes(page))page='home';
-    if(page!=='home'&&!moduleOn(page))page='home';
+    if(page!=='home'&&!moduleOn(page)&&getMode?.()!=='edit')page='home';
     currentPage=page;
     [$('.hero'),$('.quick')].filter(Boolean).forEach(el=>el.classList.toggle('oe-page-hidden',page!=='home'));
     $('.ribbon')?.classList.toggle('oe-page-hidden',page!=='home'||!moduleOn('ribbon'));
     homeSections.forEach(([id,key])=>{const el=$('#'+id);if(el)el.classList.toggle('oe-page-hidden',page!=='home'||!moduleOn(key))});
-    standalonePages.forEach(id=>{const el=$('#'+id);if(el)el.classList.toggle('oe-page-hidden',page!==id||!moduleOn(id))});
+    standalonePages.forEach(id=>{const el=$('#'+id);if(el)el.classList.toggle('oe-page-hidden',page!==id||(!moduleOn(id)&&getMode?.()!=='edit'))});
     $('.footer')?.classList.toggle('oe-page-hidden',false);
     if(updateHash){
       const hash=page==='home'?'#home':'#'+page;
