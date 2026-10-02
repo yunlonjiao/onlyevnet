@@ -22,7 +22,7 @@ export const template01 = {
     ribbon2:'特典票限量',
     ribbon3:'COS 自由行开放',
     ribbon4:'舞台企划更新',
-    modules:{ribbon:true,highlights:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
+    modules:{ribbon:true,highlights:true,passport:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
     passport:{
       required:3,
       reward:'完成 3 个印章可领取限定纪念物',
@@ -57,14 +57,14 @@ export const template01 = {
       ]
     },
     booths:[
-      {id:'b1',no:'A01',name:'星屑工房',type:'同人本 · 亚克力',intro:'原创插画与角色主题制品。',pointId:'mp-b1',products:[
+      {id:'b1',no:'A01',name:'星屑工房',logo:'',type:'同人本 · 亚克力',intro:'原创插画与角色主题制品。',pointId:'mp-b1',products:[
         {id:'p1',name:'新刊',price:'¥45',note:'现场首发',image:''},
         {id:'p2',name:'亚克力立牌',price:'¥60',note:'数量有限',image:''}
       ]},
-      {id:'b2',no:'A12',name:'薄荷书室',type:'插画 · 明信片',intro:'插画本、明信片与纸制品。',pointId:'mp-b2',products:[
+      {id:'b2',no:'A12',name:'薄荷书室',logo:'',type:'插画 · 明信片',intro:'插画本、明信片与纸制品。',pointId:'mp-b2',products:[
         {id:'p3',name:'插画本',price:'¥50',note:'',image:''}
       ]},
-      {id:'b3',no:'B07',name:'白昼制品',type:'徽章 · 色纸',intro:'徽章、色纸与随机小物。',pointId:'mp-b3',products:[
+      {id:'b3',no:'B07',name:'白昼制品',logo:'',type:'徽章 · 色纸',intro:'徽章、色纸与随机小物。',pointId:'mp-b3',products:[
         {id:'p4',name:'徽章套组',price:'¥35',note:'',image:''}
       ]}
     ],

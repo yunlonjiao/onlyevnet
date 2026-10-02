@@ -52,22 +52,9 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
   }
 
   function renderMap(){
-    const state=getState(),map=state.venueMap||{},box=$('#venueMap'),pointsBox=$('#venueMap .map-points');if(!box||!pointsBox)return;
-    if(map.image)box.style.backgroundImage='linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08)),url("'+String(map.image).replace(/"/g,'%22')+'")';
-    else box.style.backgroundImage='';
-    const side=$('.map-home-side');if(side){
-      const editTools=getMode()==='edit'?'<button type="button" data-map-add-mode>＋ 在地图上添加点位</button>':'';
-      const boothButtons=(state.booths||[]).filter(b=>b.pointId).map(b=>'<button type="button" class="map-search-result" data-map-locate="'+esc(b.pointId)+'" data-map-search="'+esc([b.no,b.name,b.type,...(b.products||[]).map(p=>p.name)].filter(Boolean).join(' ').toLowerCase())+'"><b>'+esc(b.no||'')+'</b><span>'+esc(b.name||'')+'</span></button>').join('');
-      side.innerHTML='<span class="ey">FIND A BOOTH</span><b>查摊位与制品</b><label class="map-search"><span>⌕</span><input type="search" data-map-search-input placeholder="搜索摊位号、社团或制品"></label><div class="map-search-results">'+boothButtons+'</div><div class="map-actions">'+editTools+'<button type="button" data-oe-image="venueMap.image">'+(map.image?'替换场地图':'上传场地图')+'</button><a class="btn" href="#booths" data-target-mode="page" data-page-link="booths">查看摊位详情 →</a></div>';
-    }
-    pointsBox.innerHTML=(map.points||[]).map((p,i)=>{
-      let title=p.label||'点位',info=p.kind||'point';
-      const b=(state.booths||[]).find(x=>x.pointId===p.id);if(b){title=(b.no||p.label)+' · '+b.name;info=(b.products||[]).slice(0,2).map(x=>x.name).join(' · ')||b.type||''}
-      const linkedActivities=(state.schedule||[]).filter(a=>a.locationId===p.id);
-      if(linkedActivities.length)info=linkedActivities.map(a=>a.time+' '+a.title).join(' / ');
-      const booth=(state.booths||[]).find(x=>x.pointId===p.id),boothAttrs=booth?' data-booth-id="'+esc(booth.id)+'" data-booth-index="'+Math.max(0,(state.booths||[]).indexOf(booth))+'"':'';
-      return '<button class="pin map-pin kind-'+esc(p.kind||'other')+'" style="left:'+Number(p.x||0)+'%;top:'+Number(p.y||0)+'%" data-point-id="'+esc(p.id)+'" data-name="'+esc(title)+'" data-info="'+esc(info)+'"'+boothAttrs+' data-oe-item="mapPoints" data-oe-index="'+i+'">'+esc(p.label||String(i+1))+'</button>';
-    }).join('');
+    const state=getState(),map=state.venueMap||{},box=$('#venueMap');if(!box)return;
+    box.dataset.oeImage='venueMap.image';box.classList.toggle('has-map',!!map.image);
+    box.innerHTML=map.image?'<img src="'+esc(map.image)+'" alt="活动场地图">':'<div class="map-static-placeholder"><b>场地图</b><span>主办方暂未上传场地图</span></div>';
   }
 
   function wishlistKey(){
@@ -79,17 +66,33 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
   function renderBooths(){
     const state=getState(),box=$('#booths .booth-directory-rich');if(!box)return;
     const saved=readWishlist(),savedBooths=new Set(saved.booths),savedProducts=new Set(saved.products);
-    const cards=(state.booths||[]).map((b,i)=>{
-      const products=(b.products||[]).map((p,j)=>{
-        const img=p.image?'<button class="product-image" data-product-lightbox="'+esc(p.image)+'" data-oe-image="booths.'+i+'.products.'+j+'.image" type="button"><img src="'+esc(p.image)+'" alt="'+esc(p.name||'制品')+'"></button>':'<button class="product-image empty" type="button" data-oe-image="booths.'+i+'.products.'+j+'.image">＋ 图片</button>';
-        const wished=savedProducts.has(p.id);
-        return '<article class="product-card" data-product-index="'+j+'" data-product-id="'+esc(p.id)+'"><div class="product-media-wrap">'+img+'<button class="wishlist-product'+(wished?' active':'')+'" type="button" data-wishlist-product="'+esc(p.id)+'" data-booth-id="'+esc(b.id)+'" aria-pressed="'+wished+'">'+(wished?'★ 已加入':'☆ 心愿')+'</button></div><div>'+field('booths.'+i+'.products.'+j+'.name',p.name,'b')+field('booths.'+i+'.products.'+j+'.price',p.price||'','span','product-price')+field('booths.'+i+'.products.'+j+'.note',p.note||'','small')+'</div></article>';
-      }).join('');
+    const boothCards=(state.booths||[]).map((b,i)=>{
+      const logo=b.logo?'<img class="booth-logo" src="'+esc(b.logo)+'" alt="'+esc(b.name||'社团')+' logo">':'';
+      const previews=(b.products||[]).filter(p=>p.image).slice(0,4).map(p=>'<button class="booth-preview-image" type="button" data-product-lightbox="'+esc(p.image)+'"><img src="'+esc(p.image)+'" alt="'+esc(p.name||'制品')+'"></button>').join('');
       const fav=savedBooths.has(b.id),search=[b.no,b.name,b.type,b.intro,...(b.products||[]).flatMap(p=>[p.name,p.note,p.price])].filter(Boolean).join(' ').toLowerCase();
-      return '<article class="booth-rich" id="booth-'+esc(b.id)+'" data-booth-id="'+esc(b.id)+'" data-booth-point="'+esc(b.pointId||'')+'" data-search="'+esc(search)+'" data-oe-item="booths" data-oe-index="'+i+'"><div class="booth-rich-head"><span>'+esc(b.no||'')+'</span><div>'+field('booths.'+i+'.name',b.name,'h3')+'<small>'+esc(b.type||'')+'</small></div><button class="favorite-booth'+(fav?' active':'')+'" type="button" data-favorite-booth="'+esc(b.id)+'" aria-pressed="'+fav+'">'+(fav?'♥ 已收藏':'♡ 收藏社团')+'</button></div>'+field('booths.'+i+'.intro',b.intro||'','p')+'<div class="product-grid">'+products+'</div><a class="booth-map-link" href="#map-home" data-target-mode="home" data-page-link="map-home" data-map-locate="'+esc(b.pointId||'')+'">⌖ '+esc(getPoint(b.pointId)?.label||b.no||'查看地图')+'</a></article>';
+      return '<article class="booth-directory-card" data-directory-card data-kind="booth" data-booth-id="'+esc(b.id)+'" data-search="'+esc(search)+'" data-oe-item="booths" data-oe-index="'+i+'"><div class="booth-card-head">'+logo+'<div><span class="booth-no">'+esc(b.no||'')+'</span>'+field('booths.'+i+'.name',b.name,'h3')+'<small>'+esc(b.type||'')+'</small></div></div>'+field('booths.'+i+'.intro',b.intro||'','p')+(previews?'<div class="booth-preview-grid">'+previews+'</div>':'')+'<div class="booth-card-foot"><span>'+String((b.products||[]).length)+' 件制品</span><button class="favorite-booth'+(fav?' active':'')+'" type="button" data-favorite-booth="'+esc(b.id)+'" aria-pressed="'+fav+'">'+(fav?'♥ 已收藏':'♡ 收藏社团')+'</button></div></article>';
     }).join('');
+    const productCards=(state.booths||[]).flatMap((b,i)=>(b.products||[]).map((p,j)=>{
+      const wished=savedProducts.has(p.id),search=[p.name,p.note,p.price,b.no,b.name,b.type].filter(Boolean).join(' ').toLowerCase();
+      const img=p.image?'<button class="directory-product-image" data-product-lightbox="'+esc(p.image)+'" data-oe-image="booths.'+i+'.products.'+j+'.image" type="button"><img src="'+esc(p.image)+'" alt="'+esc(p.name||'制品')+'"></button>':'<button class="directory-product-image empty" data-oe-image="booths.'+i+'.products.'+j+'.image" type="button">＋ 制品图片</button>';
+      return '<article class="directory-product-card" data-directory-card data-kind="product" data-product-id="'+esc(p.id)+'" data-booth-id="'+esc(b.id)+'" data-search="'+esc(search)+'">'+img+'<div class="directory-product-copy"><b>'+esc(p.name||'未命名制品')+'</b><span>'+esc(p.price||'')+'</span><small>'+esc((b.no?b.no+' · ':'')+(b.name||''))+'</small></div><button class="wishlist-product'+(wished?' active':'')+'" type="button" data-wishlist-product="'+esc(p.id)+'" data-booth-id="'+esc(b.id)+'" aria-pressed="'+wished+'">'+(wished?'★ 已加入':'☆ 心愿')+'</button></article>';
+    })).join('');
     const totalSaved=new Set([...saved.booths,...saved.products]).size;
-    box.innerHTML='<div class="booth-directory-tools"><label class="booth-search"><span>⌕</span><input type="search" data-booth-search placeholder="搜索社团、摊位号或制品"></label><button type="button" data-booth-filter="saved">我的收藏 <b data-wishlist-count>'+totalSaved+'</b></button><button type="button" data-booth-filter="all" class="active">全部摊位</button></div><div class="booth-directory-grid">'+cards+'</div><div class="booth-no-result" hidden>没有找到匹配的摊位或制品。</div>';
+    box.dataset.directoryView='booths';box.dataset.directoryPage='1';box.dataset.directorySaved='0';
+    box.innerHTML='<div class="booth-directory-tools"><div class="directory-tabs"><button type="button" class="active" data-directory-view-btn="booths">社团</button><button type="button" data-directory-view-btn="products">制品</button></div><label class="booth-search"><span>⌕</span><input type="search" data-directory-search placeholder="搜索社团、摊位号或制品"></label><button type="button" data-directory-saved>我的收藏 <b data-wishlist-count>'+totalSaved+'</b></button></div><div class="booth-directory-grid" data-directory-grid="booths">'+boothCards+'</div><div class="product-directory-grid" data-directory-grid="products" hidden>'+productCards+'</div><div class="booth-no-result" hidden>没有找到匹配内容。</div><nav class="directory-pagination" aria-label="分页"></nav>';
+    const apply=()=>{
+      const view=box.dataset.directoryView||'booths',q=box.querySelector('[data-directory-search]')?.value.trim().toLowerCase()||'',savedOnly=box.dataset.directorySaved==='1',wish=readWishlist(),bs=new Set(wish.booths),ps=new Set(wish.products),perPage=view==='booths'?16:20;
+      box.querySelectorAll('[data-directory-grid]').forEach(g=>g.hidden=g.dataset.directoryGrid!==view);
+      const cards=[...box.querySelectorAll('[data-directory-grid="'+view+'"] [data-directory-card]')],matches=cards.filter(card=>{const base=!q||String(card.dataset.search||'').includes(q);if(!base)return false;if(!savedOnly)return true;return view==='booths'?bs.has(card.dataset.boothId):ps.has(card.dataset.productId)||bs.has(card.dataset.boothId)});
+      const pages=Math.max(1,Math.ceil(matches.length/perPage));let page=Math.max(1,Math.min(pages,Number(box.dataset.directoryPage)||1));box.dataset.directoryPage=String(page);
+      cards.forEach(c=>c.hidden=true);matches.slice((page-1)*perPage,page*perPage).forEach(c=>c.hidden=false);
+      const pager=box.querySelector('.directory-pagination');if(pager)pager.innerHTML=matches.length>perPage?'<button type="button" data-directory-page="'+Math.max(1,page-1)+'" '+(page===1?'disabled':'')+'>←</button><span>'+page+' / '+pages+'</span><button type="button" data-directory-page="'+Math.min(pages,page+1)+'" '+(page===pages?'disabled':'')+'>→</button>':'';
+      const empty=box.querySelector('.booth-no-result');if(empty)empty.hidden=matches.length>0;
+    };
+    box._applyDirectory=apply;
+    box.onclick=e=>{const v=e.target.closest('[data-directory-view-btn]');if(v){box.dataset.directoryView=v.dataset.directoryViewBtn;box.dataset.directoryPage='1';box.querySelectorAll('[data-directory-view-btn]').forEach(x=>x.classList.toggle('active',x===v));apply();return}const s=e.target.closest('[data-directory-saved]');if(s){box.dataset.directorySaved=box.dataset.directorySaved==='1'?'0':'1';box.dataset.directoryPage='1';s.classList.toggle('active',box.dataset.directorySaved==='1');apply();return}const p=e.target.closest('[data-directory-page]');if(p&&!p.disabled){box.dataset.directoryPage=p.dataset.directoryPage;apply();box.scrollIntoView({behavior:'smooth',block:'start'})}};
+    box.oninput=e=>{if(e.target.matches('[data-directory-search]')){box.dataset.directoryPage='1';apply()}};
+    apply();
   }
 
   function renderGuests(){

@@ -1,6 +1,6 @@
 export function createRouter({qs:$,qsa:qa,getState,renderPassport}){
   const standalonePages=['booths','activities','guide'];
-  const fixedModules=new Set(['tickets','passport','booths','activities','guide']);
+  const fixedModules=new Set(['tickets','booths','activities','guide']);
   const homeSections=[
     ['tickets','tickets'],['highlights','highlights'],['passport','passport'],['map-home','booths'],['schedule-home','activities'],['guests','guests'],['guide-home','guide'],['community','community'],['sponsors','sponsors']
   ];
@@ -12,9 +12,10 @@ export function createRouter({qs:$,qsa:qa,getState,renderPassport}){
   function isStandalonePage(id){return standalonePages.includes(id)}
   function renderQuickAccess(){
     const grid=$('.quick-grid');if(!grid)return;
+    const participationTarget=moduleOn('passport')?'passport':(moduleOn('highlights')?'highlights':'schedule-home');
     const defs=[
       ['tickets','tickets','票务与特典','查看票种 →','home'],
-      ['passport','passport','活动参与','查看参与内容 →','home'],
+      ['passport',participationTarget,'活动参与','查看参与内容 →','home'],
       ['booths','map-home','场地图','查看场地 →','home'],
       ['activities','schedule-home','当天日程','查看日程 →','home'],
       ['guide','guide-home','观展指南','查看指南 →','home']

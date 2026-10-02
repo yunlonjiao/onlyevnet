@@ -1,4 +1,4 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.15.0';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.17.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
@@ -8,7 +8,8 @@ if(!state.edition||state.edition==='首届')state.edition=template01.defaults.ed
 if(!state.navigationUrl)state.navigationUrl=template01.defaults.navigationUrl;
 if(state.modules?.activities===undefined&&state.modules?.stage!==undefined){state.modules.activities=state.modules.stage;delete state.modules.stage}
 if(!state.guide||!Array.isArray(state.guide.items))state.guide=structuredClone(template01.defaults.guide);
-for(const k of ['tickets','passport','booths','activities','guide'])if(state.modules&&k in state.modules)delete state.modules[k];
+for(const k of ['tickets','booths','activities','guide'])if(state.modules&&k in state.modules)delete state.modules[k];
+if(state.modules?.passport===undefined)state.modules.passport=true;
 if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
 if(!Array.isArray(state.updates))state.updates=structuredClone(template01.defaults.updates);
 if(!Array.isArray(state.socialLinks))state.socialLinks=structuredClone(template01.defaults.socialLinks);
@@ -112,7 +113,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.15.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.17.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -235,8 +236,8 @@ function extraInspector(collection,index,item){
      '<div class="reference-panel"><b>关联活动</b><div class="linked-summary">'+(related.length?related.map(a=>'<span>'+esc(a.time+' '+a.title)+'</span>').join(''):'<span>暂未关联活动</span>')+'</div></div>';
  }
  if(collection==='booths'){
-   const points=state.venueMap?.points||[],products=item.products||[];
-   return '<div class="reference-panel"><b>地图关联</b><label><span>摊位点位</span><select data-ref="pointId">'+optionsHtml(points,item.pointId,x=>x.label+' · '+x.kind)+'</select></label></div>'+
+   const products=item.products||[],logo=item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>';
+   return '<div class="item-media"><span>社团 Logo（可选）</span><div class="item-media-row">'+logo+'<div><button data-media-path="booths.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="booths.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>'+
      '<div class="product-editor"><div class="product-editor-head"><b>制品</b><button type="button" data-product-op="add">＋ 添加制品</button></div>'+
      products.map((p,j)=>'<div class="product-edit-card" data-product-row="'+j+'><div class="product-edit-media">'+(p.image?'<img src="'+esc(p.image)+'" alt="">':'<div>＋</div>')+'<button type="button" data-product-image="'+j+'">图片</button></div><div class="product-edit-fields"><input data-product-key="name" data-product-index="'+j+'" value="'+esc(p.name||'')+'" placeholder="制品名称"><input data-product-key="price" data-product-index="'+j+'" value="'+esc(p.price||'')+'" placeholder="价格"><input data-product-key="note" data-product-index="'+j+'" value="'+esc(p.note||'')+'" placeholder="说明"></div><button type="button" class="product-remove" data-product-op="remove" data-product-index="'+j+'">×</button></div>').join('')+
      '</div>';
@@ -296,7 +297,7 @@ function mutateItem(collection,index,op){
      collection==='highlights'?{id:uid('h'),stamp:'STAMP '+String(arr.length+1).padStart(2,'0'),title:'新企划',text:'',tone:'#ffe45c'}:
      collection==='guide'?{id:uid('gd'),title:'新指南内容',text:''}:
      collection==='guests'?{id:uid('g'),name:'新嘉宾',role:'Guest',works:'',intro:'',image:'',socialLabel:'',socialUrl:'',appearance:''}:
-     collection==='booths'?{id:uid('b'),no:'',name:'新摊位',type:'',intro:'',pointId:'',products:[{id:uid('p'),name:'新制品',price:'',note:'',image:''}]}:
+     collection==='booths'?{id:uid('b'),no:'',name:'新摊位',logo:'',type:'',intro:'',products:[{id:uid('p'),name:'新制品',price:'',note:'',image:''}]}:
      collection==='mapPoints'?{id:uid('mp'),kind:'other',label:'新点位',x:50,y:50,boothId:''}:
      collection==='updates'?{id:uid('u'),date:'',title:'新更新',target:'top'}:
      collection==='socialLinks'?{id:uid('sl'),label:'新社群入口',note:'',url:'',image:''}:
@@ -311,7 +312,8 @@ function imageSlotConfig(path){
  if(/^tickets\.\d+\.image$/.test(path))return {label:'票务赠品图',ratio:1,ratioLabel:'赠品图 · 1:1',width:900,height:900};
  if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾图片',ratio:.8,ratioLabel:'嘉宾图 · 4:5',width:960,height:1200};
  if(/^booths\.\d+\.products\.\d+\.image$/.test(path))return {label:'制品图片',ratio:1,ratioLabel:'制品图 · 1:1',width:1000,height:1000};
- if(path==='venueMap.image')return {label:'场地图',ratio:1.5,ratioLabel:'地图 · 3:2',width:1500,height:1000};
+ if(path==='venueMap.image')return {label:'场地图',ratio:1,ratioLabel:'原图比例',width:1800,height:1800,preserve:true};
+ if(/^booths\.\d+\.logo$/.test(path))return {label:'社团 Logo',ratio:1,ratioLabel:'Logo · 1:1',width:700,height:700};
  if(/^socialLinks\.\d+\.image$/.test(path))return {label:'二维码 / 社群图片',ratio:1,ratioLabel:'社群图 · 1:1',width:900,height:900};
  if(/^sponsors\.\d+\.logo$/.test(path))return {label:'赞助商 Logo',ratio:1.8,ratioLabel:'Logo · 9:5',width:1080,height:600};
  return {label:'图片',ratio:1,ratioLabel:'1:1',width:1200,height:1200};
@@ -386,7 +388,8 @@ $('#imageInput').addEventListener('change',e=>{
  e.target.value='';delete e.target.dataset.returnCollection;delete e.target.dataset.returnIndex;
  if(!file||!path)return;
  const r=new FileReader();
- r.onload=()=>openImageCropper(r.result,path,returnCollection,returnIndex);
+ r.onload=()=>{
+   if(path==='venueMap.image'){const image=new Image();image.onload=()=>{const max=1800,scale=Math.min(1,max/Math.max(image.naturalWidth,image.naturalHeight)),w=Math.max(1,Math.round(image.naturalWidth*scale)),h=Math.max(1,Math.round(image.naturalHeight*scale)),cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(image,0,0,w,h);const data=cv.toDataURL('image/webp',.9);checkpoint();setDeep(path,data);send({type:'OE_REPLACE_STATE',state});toast('场地图已上传')};image.src=r.result;return}openImageCropper(r.result,path,returnCollection,returnIndex)};
  r.readAsDataURL(file);
 });
 function setDevice(mode){
