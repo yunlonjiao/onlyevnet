@@ -33,10 +33,10 @@ export const template01 = {
     ],
     modules:{ribbon:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
     participation:[
-      {id:'pa1',title:'舞台互动',meta:'主舞台 · 13:30',text:'参与主题问答、互动游戏与现场抽选。',target:'schedule-home',url:''},
-      {id:'pa2',title:'主题合影',meta:'主舞台 · 15:00',text:'到指定区域参加本届主题合影活动。',target:'schedule-home',url:''},
-      {id:'pa3',title:'应援留言墙',meta:'企划区 · 全天',text:'留下角色应援与周年留言，现场统一展示。',target:'participation',url:''},
-      {id:'pa4',title:'COS / 自由行',meta:'活动区域 · 指定时段',text:'查看本届自由行参与方式、规则与集合信息。',target:'freewalk',url:''}
+      {id:'pa1',preset:'stage',title:'舞台活动',meta:'主舞台 · 时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'schedule-home',url:''},
+      {id:'pa2',preset:'stamp',title:'集章 / 打卡',meta:'活动区域 · 全天',text:'填写集章点、打卡规则、兑换方式或完成奖励。',target:'participation',url:''},
+      {id:'pa3',preset:'photo',title:'主题合影',meta:'集合区域 · 时间待定',text:'填写集合时间、地点和参与方式。',target:'participation',url:''},
+      {id:'pa4',preset:'game',title:'互动游戏 / 抽选',meta:'活动区域 · 时间待定',text:'填写互动游戏、抽选或现场挑战的参与规则。',target:'participation',url:''}
     ],
     venueMap:{
       image:'',
@@ -80,10 +80,12 @@ export const template01 = {
       {id:'u2',date:'09/28',title:'当天日程已更新',target:'schedule-home'}
     ],
     socialLinks:[
-      {id:'sl1',label:'QQ群',note:'游客群与活动通知',url:'',image:''},
-      {id:'sl2',label:'微信群',note:'现场交流与临时通知',url:'',image:''},
-      {id:'sl3',label:'B站',note:'PV、嘉宾公开、节目预告',url:'',image:''},
-      {id:'sl4',label:'小红书',note:'返图、攻略与活动内容',url:'',image:''}
+      {id:'sl1',label:'游客群',note:'游客交流、现场问答与活动信息',url:'',image:''},
+      {id:'sl2',label:'摊主群',note:'摊主沟通与布撤展信息',url:'',image:''},
+      {id:'sl3',label:'COS / 自由行群',note:'自由行、COS 集合与摄影交流',url:'',image:''},
+      {id:'sl4',label:'节目 / 活动报名',note:'节目、舞台或互动活动报名入口',url:'',image:''},
+      {id:'sl5',label:'B站',note:'PV、嘉宾公开与节目预告',url:'',image:''},
+      {id:'sl6',label:'小红书',note:'宣发、返图与观展攻略',url:'',image:''}
     ],
     sponsors:[
       {id:'sp1',name:'合作伙伴',level:'合作伙伴',url:'',logo:''}
@@ -91,10 +93,11 @@ export const template01 = {
     guide:{
       homeCount:2,
       items:[
-        {id:'gd1',title:'交通与入场',text:'交通方式、入场时间、排队与检票说明。'},
-        {id:'gd2',title:'现场规则',text:'摄影、寄存、禁止事项与现场参与注意事项。'},
-        {id:'gd3',title:'更衣与摄影',text:'更衣室位置、开放时间与摄影区域说明。'},
-        {id:'gd4',title:'场馆服务',text:'寄存、失物、服务台、餐饮与其他现场服务。'}
+        {id:'gd1',preset:'traffic',title:'交通到达',text:'填写场馆地址、地铁 / 公交、自驾 / 网约车、入口位置。可以上传主办自己画的路线图或入口示意图。',image:''},
+        {id:'gd2',preset:'admission',title:'入场须知',text:'填写入场时间、检票方式、排队、现场购票、二次入场、禁止夜排等说明。',image:''},
+        {id:'gd3',preset:'facilities',title:'场馆设施',text:'填写卫生间、更衣室、寄存、餐饮、医疗点、休息区、充电或无障碍信息。',image:''},
+        {id:'gd4',preset:'cosplay',title:'COS / 道具规则',text:'填写更衣、摄影、道具尺寸、仿真武器、妆造和现场拍摄规则。',image:''},
+        {id:'gd5',preset:'safety',title:'安全与禁止事项',text:'填写禁止携带物品、禁止行为、紧急情况处理和 Staff 联系方式。',image:''}
       ]
     },
     freewalk:{
