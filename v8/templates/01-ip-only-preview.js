@@ -75,7 +75,7 @@ export const previewBody = `<div class="loader" id="loader"><div class="gate"><d
 <section class="section" id="sponsors"><div class="wrap"><div class="head"><div><span class="ey">SUPPORT</span><h2>赞助支持</h2></div><span class="section-no">SECTION 07</span></div><div class="sponsors"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div></section>
 </main>
 <nav class="scroll-progress" aria-label="章节进度"><a href="#top" class="active" data-sec="top"></a><a href="#tickets" data-sec="tickets"></a><a href="#highlights" data-sec="highlights"></a><a href="#passport" data-sec="passport"></a><a href="#map-home" data-sec="map-home"></a><a href="#schedule-home" data-sec="schedule-home"></a></nav>
-<nav class="mobile-dock"><a href="#tickets">票务</a><a href="#booths" data-target-mode="page" data-page-link="booths">摊位</a><a href="#map-home">地图</a><a href="#schedule-home">日程</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav>
+<nav class="mobile-dock"><a href="#home" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">摊位</a><a href="#activities" data-target-mode="page" data-page-link="activities">活动</a><a href="#guests" data-target-mode="page" data-page-link="guests">嘉宾</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
 <!-- preview-sync-v7.23.0-20260930 -->
 <!-- ip-polish-4steps -->
