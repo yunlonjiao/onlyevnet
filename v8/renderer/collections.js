@@ -160,13 +160,15 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
 
   function renderSponsors(){
     const state=getState(),box=$('.sponsors');if(!box)return;
-    box.innerHTML=(state.sponsors||[]).map((x,i)=>{
+    const items=(state.sponsors||[]).map((item,index)=>({item,index})).filter(({item})=>String(item?.name||'').trim()||String(item?.logo||'').trim()||String(item?.url||'').trim());
+    box.innerHTML=items.map(({item:x,index:i})=>{
       const logo=x.logo?'<button class="sponsor-logo" data-product-lightbox="'+esc(x.logo)+'" data-oe-image="sponsors.'+i+'.logo" type="button"><img src="'+esc(x.logo)+'" alt="'+esc(x.name||'赞助商')+'"></button>':'<button class="sponsor-logo empty" data-oe-image="sponsors.'+i+'.logo" type="button">＋ Logo</button>';
       const name=field('sponsors.'+i+'.name',x.name||'','b');
       const level=field('sponsors.'+i+'.level',x.level||'','small');
       const action=x.url?'<a class="sponsor-link" href="'+esc(x.url)+'" target="_blank" rel="noopener">访问 ↗</a>':'';
       return '<article class="sponsor-card" data-oe-item="sponsors" data-oe-index="'+i+'">'+logo+'<div class="sponsor-copy">'+name+level+'</div>'+action+'</article>';
     }).join('');
+    $('#sponsors')?.classList.toggle('oe-page-hidden',items.length===0);
   }
 
   function renderOptionalPages(){
