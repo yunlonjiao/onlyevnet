@@ -397,23 +397,10 @@ function imageSlotConfig(path){
 function openImageInspector(path){
  const current=getDeep(path);
  if(path==='venueMap.image'){
-   const links=state.venueMap?.links||[];
-   const targets=[['tickets','票务'],['participation','活动参与'],['booths','摊位'],['schedule-home','当天日程'],['activities','活动详情'],['guide','观展指南'],['community','社群'],['freewalk','COS / 自由行'],['itasha','痛车展示'],['guests','嘉宾']];
-   const rows=links.map((item,i)=>'<div class="map-link-setting-row"><span class="map-link-setting-index">'+String(i+1).padStart(2,'0')+'</span><div class="map-link-setting-fields"><input data-map-link-label="'+i+'" value="'+esc(item.label||'')+'" placeholder="标签名称"><select data-map-link-target="'+i+'">'+targets.map(x=>'<option value="'+x[0]+'" '+(item.target===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select></div><div class="map-link-setting-actions"><button type="button" data-map-link-op="up" data-map-link-index="'+i+'" '+(i===0?'disabled':'')+'>↑</button><button type="button" data-map-link-op="down" data-map-link-index="'+i+'" '+(i===links.length-1?'disabled':'')+'>↓</button><button type="button" data-map-link-op="delete" data-map-link-index="'+i+'">×</button></div></div>').join('');
-   setInspector('场地图','地图与快捷标签',
-     '<div class="map-image-actions"><button id="replaceImage" type="button">'+(current?'替换场地图':'上传场地图')+'</button>'+(current?'<button id="removeImage" type="button" class="danger ghost">删除场地图</button>':'')+'</div>'+
-     '<p class="inspector-note">上传或替换后会先进入裁剪；场地图使用自由比例，横图和竖图都可以按实际内容调整。游客可点击查看大图。</p>'+
-     '<div class="reference-panel map-link-settings"><div class="product-editor-head"><b>地图旁快捷标签</b><button type="button" data-map-link-add>＋ 添加标签</button></div>'+rows+'<p class="inspector-note">标签只负责带游客前往已有内容，例如主舞台→当天日程、摊位→摊位页、COS区→活动参与。</p></div>');
+   setInspector('场地图','场地图',
+     '<div class="map-image-actions"><button id="replaceImage" type="button">'+(current?'替换场地图':'上传场地图')+'</button>'+(current?'<button id="removeImage" type="button" class="danger ghost">删除场地图</button>':'')+'</div>');
    $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()};
-   $('#removeImage')?.addEventListener('click',()=>{checkpoint();setDeep(path,'');save();send({type:'OE_REPLACE_STATE',state});toast('已删除场地图');openImageInspector(path)});
-   inspector.querySelectorAll('[data-map-link-label]').forEach(input=>{
-     let started=false;
-     input.addEventListener('input',e=>{const i=Number(e.target.dataset.mapLinkLabel);if(!state.venueMap?.links?.[i])return;if(!started){checkpoint();started=true}state.venueMap.links[i].label=e.target.value;save();send({type:'OE_PATCH_FIELD',path:'venueMap.links.'+i+'.label',value:e.target.value})});
-     input.addEventListener('blur',e=>{const i=Number(e.target.dataset.mapLinkLabel);if(!state.venueMap?.links?.[i])return;const v=cleanValue(e.target.value);state.venueMap.links[i].label=v;e.target.value=v;save();send({type:'OE_REPLACE_STATE',state})});
-   });
-   inspector.querySelectorAll('[data-map-link-target]').forEach(select=>select.addEventListener('change',e=>{const i=Number(e.target.dataset.mapLinkTarget);if(!state.venueMap?.links?.[i])return;checkpoint();state.venueMap.links[i].target=e.target.value;save();send({type:'OE_REPLACE_STATE',state})}));
-   inspector.querySelector('[data-map-link-add]')?.addEventListener('click',()=>{checkpoint();state.venueMap.links.push({id:uid('ml'),label:'新标签',target:'participation'});save();send({type:'OE_REPLACE_STATE',state});openImageInspector(path)});
-   inspector.querySelectorAll('[data-map-link-op]').forEach(btn=>btn.addEventListener('click',()=>{const i=Number(btn.dataset.mapLinkIndex),op=btn.dataset.mapLinkOp,arr=state.venueMap.links;if(!arr?.[i])return;checkpoint();if(op==='delete')arr.splice(i,1);if(op==='up'&&i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]];if(op==='down'&&i<arr.length-1)[arr[i+1],arr[i]]=[arr[i],arr[i+1]];save();send({type:'OE_REPLACE_STATE',state});openImageInspector(path)}));
+   $('#removeImage')?.addEventListener('click',()=>{checkpoint();setDeep(path,'');save();send({type:'OE_REPLACE_STATE',state});openImageInspector(path)});
    return;
  }
  setInspector('媒体','图片','<p class="inspector-path">'+esc(path)+'</p><div class="row"><button id="replaceImage" type="button">替换图片</button>'+(current?'<button id="cropCurrentImage" type="button">裁剪当前图片</button><button id="removeImage" type="button" class="danger ghost">移除图片</button>':'')+'</div>');
