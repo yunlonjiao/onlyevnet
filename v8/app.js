@@ -300,18 +300,6 @@ function openAddressInspector(){
  $('#testNavigation').onclick=()=>{const url=String(state.navigationUrl||'').trim();if(url.startsWith('https://')||url.startsWith('http://'))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
 }
 
-function openRibbonInspector(){
- const items=state.ribbonItems||[];
- const rows=items.map((item,i)=>'<div class="ribbon-setting-row"><span class="ribbon-setting-index">'+String(i+1).padStart(2,'0')+'</span><input data-ribbon-text="'+i+'" value="'+esc(item.text||'')+'" placeholder="滚动信息"><div class="ribbon-setting-actions"><button type="button" data-ribbon-op="up" data-ribbon-index="'+i+'" '+(i===0?'disabled':'')+'>↑</button><button type="button" data-ribbon-op="down" data-ribbon-index="'+i+'" '+(i===items.length-1?'disabled':'')+'>↓</button><button type="button" data-ribbon-op="delete" data-ribbon-index="'+i+'" '+(items.length<=1?'disabled':'')+'>×</button></div></div>').join('');
- setInspector('首页','滚动公告','<div class="ribbon-setting-list">'+rows+'</div><button type="button" class="collection-add" data-ribbon-add '+(items.length>=12?'disabled':'')+'>＋ 添加一条滚动信息</button><p class="inspector-note">当前 '+items.length+' 条。整组内容会原样循环：4 条就按 4 条循环，5 条就按 5 条循环；系统只复制整组来做无缝衔接，不会插入空白。</p>');
- inspector.querySelectorAll('[data-ribbon-text]').forEach(input=>{
-   let started=false;
-   input.addEventListener('input',e=>{const i=Number(e.target.dataset.ribbonText);if(!state.ribbonItems?.[i])return;if(!started){checkpoint();started=true}state.ribbonItems[i].text=e.target.value;save();send({type:'OE_PATCH_FIELD',path:'ribbonItems.'+i+'.text',value:e.target.value})});
-   input.addEventListener('blur',e=>{const i=Number(e.target.dataset.ribbonText),cleaned=cleanValue(e.target.value);if(!state.ribbonItems?.[i])return;if(cleaned!==e.target.value)e.target.value=cleaned;state.ribbonItems[i].text=cleaned;save();send({type:'OE_REPLACE_STATE',state})});
- });
- inspector.querySelector('[data-ribbon-add]')?.addEventListener('click',()=>{if(state.ribbonItems.length>=12){toast('滚动信息最多 12 条');return}checkpoint();state.ribbonItems.push({id:uid('rb'),text:'新滚动信息'});save();send({type:'OE_REPLACE_STATE',state});openRibbonInspector()});
- inspector.querySelectorAll('[data-ribbon-op]').forEach(btn=>btn.addEventListener('click',()=>{const i=Number(btn.dataset.ribbonIndex),op=btn.dataset.ribbonOp;if(!state.ribbonItems?.[i])return;checkpoint();if(op==='delete'&&state.ribbonItems.length>1)state.ribbonItems.splice(i,1);if(op==='up'&&i>0)[state.ribbonItems[i-1],state.ribbonItems[i]]=[state.ribbonItems[i],state.ribbonItems[i-1]];if(op==='down'&&i<state.ribbonItems.length-1)[state.ribbonItems[i+1],state.ribbonItems[i]]=[state.ribbonItems[i],state.ribbonItems[i+1]];save();send({type:'OE_REPLACE_STATE',state});openRibbonInspector()}));
-}
 function openTicketSettingsInspector(){
  setInspector('票务','购票平台','<div class="item-fields">'+
    '<label><span>按钮文字</span><input id="ticketLinkLabelInput" value="'+esc(state.ticketLinkLabel||'前往官方售票平台')+'"></label>'+
@@ -466,7 +454,7 @@ function mutateItem(collection,index,op){
      collection==='participation'?{id:uid('pa'),preset:'custom',title:'新活动',meta:'时间 / 地点待定',text:'',target:'participation',url:''}:
      collection==='socialLinks'?{id:uid('sl'),label:'新社群入口',note:'',url:'',image:''}:
      collection==='sponsors'?{id:uid('sp'),name:'新赞助商',level:'合作伙伴',url:'',logo:''}:
-     {id:uid('s'),time:'12:00',title:'新活动',stage:'MAIN STAGE',detail:'',locationId:'',guestIds:[],registrationUrl:''};
+     {id:uid('s'),time:'12:00',title:'新活动',stage:'MAIN STAGE',detail:'',guestIds:[],registrationUrl:''};
    arr.splice(index+1,0,fresh);index++;
  }
  save();send({type:'OE_REPLACE_STATE',state});syncContentCounts();openCollectionManager(collection,index);openItemInspector(collection,index);
