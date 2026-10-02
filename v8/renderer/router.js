@@ -22,7 +22,6 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation})
       ['tickets','tickets','票务与特典','查看票种 →','home'],
       ['booths','booths','摊位与制品','查看摊位 →','page'],
       ['activities','activities','活动','查看活动 →','page'],
-      ['guests','guests','嘉宾','查看嘉宾 →','page'],
       ['guide','guide','观展指南','查看指南 →','page'],
       ['map','map-home','场地图','查看场地 →','home']
     ].filter(x=>moduleOn(x[0]));
