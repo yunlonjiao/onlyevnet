@@ -57,7 +57,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     const detail=$('#activities .activity-detail-list');
     if(detail)detail.innerHTML=items.map((x,i)=>{
       const guests=(x.guestIds||[]).map(getGuest).filter(Boolean);
-      const guestHtml=guests.length?'<div class="activity-related"><b>出席嘉宾</b><div class="chip-row">'+guests.map(g=>'<a href="#guests" data-target-mode="home" data-page-link="guests">'+esc(g.name)+'</a>').join('')+'</div></div>':'';
+      const guestHtml=guests.length?'<div class="activity-related"><b>出席嘉宾</b><div class="chip-row">'+guests.map(g=>'<a href="#guests" data-target-mode="page" data-page-link="guests" data-guest-id="'+esc(g.id)+'">'+esc(g.name)+'</a>').join('')+'</div></div>':'';
       const reg=x.registrationUrl?'<a class="activity-register" href="'+esc(x.registrationUrl)+'" target="_blank" rel="noopener">报名 / 查看外部页面 ↗</a>':'';
       return '<article class="activity-detail" id="schedule-'+esc(x.id||String(i))+'" data-activity-index="'+i+'" data-oe-item="schedule" data-oe-index="'+i+'"><span>'+esc(x.time||'')+' · '+esc(x.stage||'')+'</span>'+field('schedule.'+i+'.title',x.title,'h3')+field('schedule.'+i+'.detail',x.detail||'','p')+guestHtml+reg+'</article>';
     }).join('');
@@ -77,7 +77,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     const state=getState(),map=state.venueMap||{},box=$('#venueMap'),rail=$('.map-link-rail'),list=$('.map-link-list');if(!box)return;
     box.dataset.oeImage='venueMap.image';box.classList.toggle('has-map',!!map.image);
     box.innerHTML=map.image?'<button class="map-image-view" type="button" data-product-lightbox="'+esc(map.image)+'" aria-label="查看场地图大图"><img src="'+esc(map.image)+'" alt="活动场地图"><span>查看大图 ↗</span></button>':'<div class="map-static-placeholder"><b>场地图</b><span>主办方暂未上传场地图</span></div>';
-    const firstLevelPages=new Set(['booths','activities','guide','freewalk','itasha']);
+    const firstLevelPages=new Set(['booths','activities','guests','guide']);
     const links=(map.links||[]).map((item,index)=>({item,index})).filter(({item})=>{
       if(!String(item?.label||'').trim()||!firstLevelPages.has(item.target))return false;
       if(state.modules?.[item.target]===false&&getMode()!=='edit')return false;
@@ -133,12 +133,15 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
   function renderGuests(){
     const state=getState(),box=$('#guests .guest-grid');if(!box)return;
     box.innerHTML=(state.guests||[]).map((g,i)=>{
-      const activities=(state.schedule||[]).filter(a=>(a.guestIds||[]).includes(g.id));
+      const plans=(state.participation||[]).filter(a=>(a.guestIds||[]).includes(g.id));
+      const schedules=(state.schedule||[]).filter(a=>(a.guestIds||[]).includes(g.id));
       const img=g.image?'<button class="guest-image" data-product-lightbox="'+esc(g.image)+'" data-oe-image="guests.'+i+'.image" type="button"><img src="'+esc(g.image)+'" alt="'+esc(g.name||'嘉宾')+'"></button>':'<button class="guest-image empty" type="button" data-oe-image="guests.'+i+'.image">＋ 嘉宾图</button>';
-      const schedule=activities.length?'<div class="guest-appearances">'+activities.map(a=>'<a href="#activities" data-target-mode="page" data-page-link="activities" data-activity-index="'+Math.max(0,(state.schedule||[]).indexOf(a))+'">'+esc(a.time)+' '+esc(a.title)+'</a>').join('')+'</div>':'';
+      const planLinks=plans.map(a=>'<a href="#activities" data-target-mode="page" data-page-link="activities" data-activity-plan-id="'+esc(a.id)+'">'+esc(a.title)+'</a>');
+      const scheduleLinks=schedules.map(a=>'<a href="#activities" data-target-mode="page" data-page-link="activities" data-activity-index="'+Math.max(0,(state.schedule||[]).indexOf(a))+'">'+esc((a.time?a.time+' ':'')+a.title)+'</a>');
+      const related=(planLinks.length||scheduleLinks.length)?'<div class="guest-appearances">'+[...planLinks,...scheduleLinks].join('')+'</div>':'';
       const appearance=g.appearance?'<div class="guest-note"><b>签售 / 舞台</b>'+field('guests.'+i+'.appearance',g.appearance,'span')+'</div>':'';
       const social=g.socialUrl?'<a class="guest-social" href="'+esc(g.socialUrl)+'" target="_blank" rel="noopener">'+esc(g.socialLabel||'社交平台')+' ↗</a>':'';
-      return '<article class="guest-card guest-rich" id="guest-'+esc(g.id)+'" data-oe-item="guests" data-oe-index="'+i+'">'+img+'<div class="guest-copy">'+field('guests.'+i+'.name',g.name,'b')+field('guests.'+i+'.role',g.role||'','small')+field('guests.'+i+'.works',g.works||'','span','guest-works')+field('guests.'+i+'.intro',g.intro||'','p')+appearance+schedule+social+'</div></article>';
+      return '<article class="guest-card guest-rich" id="guest-'+esc(g.id)+'" data-oe-item="guests" data-oe-index="'+i+'">'+img+'<div class="guest-copy">'+field('guests.'+i+'.name',g.name,'b')+field('guests.'+i+'.role',g.role||'','small')+field('guests.'+i+'.works',g.works||'','span','guest-works')+field('guests.'+i+'.intro',g.intro||'','p')+appearance+related+social+'</div></article>';
     }).join('');
   }
 
@@ -186,10 +189,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     const link=(href,label,mode='home')=>'<a href="#'+href+'" data-target-mode="'+mode+'" data-page-link="'+href+'">'+esc(label)+'</a>';
     const brand=$('.footer-brand');if(brand)brand.innerHTML='<h2>'+esc(state.eventName||'OnlyEvent')+'</h2><p>'+esc(state.date||'')+' · '+esc(state.edition||state.location||'')+'</p>';
     const participate=$('.footer-participate');if(participate){
-      const links=[link('booths','摊位','page'),link('activities','活动','page')];
-      if(on('guests'))links.push(link('guests','嘉宾'));
-      if(on('freewalk'))links.push(link('freewalk','COS / 自由行','page'));
-      if(on('itasha'))links.push(link('itasha','痛车','page'));
+      const links=[link('booths','摊位','page'),link('activities','活动','page'),link('guests','嘉宾','page')];
       participate.innerHTML='<b>参与</b><nav>'+links.join('')+'</nav>';
     }
     const visit=$('.footer-visit');if(visit)visit.innerHTML='<b>观展</b><nav>'+[link('tickets','票务'),link('map-home','场地图'),link('guide','观展指南','page')].join('')+'</nav>';
