@@ -22,29 +22,12 @@ export const template01 = {
     ribbon2:'特典票限量',
     ribbon3:'COS 自由行开放',
     ribbon4:'舞台企划更新',
-    modules:{ribbon:true,highlights:true,passport:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
-    passport:{
-      required:3,
-      reward:'完成 3 个印章可领取限定纪念物',
-      tasks:[
-        {id:'a',name:'同人摊位街区',location:'A区',code:'A',target:'booths'},
-        {id:'b',name:'主舞台',location:'舞台区',code:'B',target:'activities'},
-        {id:'c',name:'COS 合影',location:'COS区',code:'C',target:'freewalk'},
-        {id:'d',name:'特别企划',location:'企划区',code:'D',target:'highlights'},
-        {id:'e',name:'痛车展示',location:'展示区',code:'E',target:'itasha'}
-      ]
-    },
-    heroImage:'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=84&w=1600',
-    ticketUrl:'https://www.bilibili.com/',
-    tickets:[
-      {id:'t1',name:'普通票',price:'¥68',gift:'入场资格',note:'实际购买与退款规则以售票平台为准',image:''},
-      {id:'t2',name:'特典票',price:'¥128',gift:'入场资格\n限定徽章\n纪念票根',note:'限量发售',image:''},
-      {id:'t3',name:'VIP 票',price:'¥198',gift:'优先入场\n限定礼包\n舞台优先区',note:'赠品内容由主办方填写',image:''}
-    ],
-    highlights:[
-      {id:'h1',stamp:'STAMP 01',title:'集章挑战',text:'在指定摊位完成互动，集齐印章兑换限定纪念物。',tone:'#ffe45c'},
-      {id:'h2',stamp:'STAMP 02',title:'应援留言墙',text:'现场留下角色应援与周年留言，闭幕前公开展示。',tone:'#59d4ff'},
-      {id:'h3',stamp:'STAMP 03',title:'主题合影',text:'指定时段进行 COS / 自由行主题大合影。',tone:'#ff9dbb'}
+    modules:{ribbon:true,highlights:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
+    participation:[
+      {id:'pa1',title:'舞台互动',meta:'主舞台 · 13:30',text:'参与主题问答、互动游戏与现场抽选。',target:'schedule-home',url:''},
+      {id:'pa2',title:'主题合影',meta:'主舞台 · 15:00',text:'到指定区域参加本届主题合影活动。',target:'schedule-home',url:''},
+      {id:'pa3',title:'应援留言墙',meta:'企划区 · 全天',text:'留下角色应援与周年留言，现场统一展示。',target:'highlights',url:''},
+      {id:'pa4',title:'COS / 自由行',meta:'活动区域 · 指定时段',text:'查看本届自由行参与方式、规则与集合信息。',target:'freewalk',url:''}
     ],
     venueMap:{
       image:'',

@@ -1,8 +1,8 @@
-export function createRouter({qs:$,qsa:qa,getState,renderPassport}){
+export function createRouter({qs:$,qsa:qa,getState,renderParticipation}){
   const standalonePages=['booths','activities','guide'];
-  const fixedModules=new Set(['tickets','booths','activities','guide']);
+  const fixedModules=new Set(['tickets','participation','booths','activities','guide']);
   const homeSections=[
-    ['tickets','tickets'],['highlights','highlights'],['passport','passport'],['map-home','booths'],['schedule-home','activities'],['guests','guests'],['guide-home','guide'],['community','community'],['sponsors','sponsors']
+    ['tickets','tickets'],['highlights','highlights'],['participation','participation'],['map-home','booths'],['schedule-home','activities'],['guests','guests'],['guide-home','guide'],['community','community'],['sponsors','sponsors']
   ];
   let currentPage='home';
   function getCurrentPage(){return currentPage}
@@ -12,10 +12,9 @@ export function createRouter({qs:$,qsa:qa,getState,renderPassport}){
   function isStandalonePage(id){return standalonePages.includes(id)}
   function renderQuickAccess(){
     const grid=$('.quick-grid');if(!grid)return;
-    const participationTarget=moduleOn('passport')?'passport':(moduleOn('highlights')?'highlights':'schedule-home');
     const defs=[
       ['tickets','tickets','票务与特典','查看票种 →','home'],
-      ['passport',participationTarget,'活动参与','查看参与内容 →','home'],
+      ['participation','participation','活动参与','查看参与内容 →','home'],
       ['booths','map-home','场地图','查看场地 →','home'],
       ['activities','schedule-home','当天日程','查看日程 →','home'],
       ['guide','guide-home','观展指南','查看指南 →','home']
@@ -28,7 +27,7 @@ export function createRouter({qs:$,qsa:qa,getState,renderPassport}){
     standalonePages.forEach(id=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(id)));
     const navMap={'tickets':'tickets','highlights':'highlights','map-home':'booths','schedule-home':'activities','guide-home':'guide','community':'community'};
     Object.entries(navMap).forEach(([id,key])=>qa('.nav a[href="#'+id+'"],.mobile-dock a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
-    renderQuickAccess();renderPassport();
+    renderQuickAccess();renderParticipation();
   }
   function showPage(page,updateHash=true){
     if(page!=='home'&&!standalonePages.includes(page))page='home';

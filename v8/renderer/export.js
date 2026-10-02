@@ -13,8 +13,8 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
     const stateJson=JSON.stringify(state).replace(/</g,'\\u003c');
     const runtime=`(()=>{
       const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)],S=${stateJson};
-      const mods=S.modules||{},standalone=["booths","activities","guide"],fixed=new Set(["tickets","booths","activities","guide"]);
-      const homeSections=[["tickets","tickets"],["highlights","highlights"],["passport","passport"],["map-home","booths"],["schedule-home","activities"],["guests","guests"],["guide-home","guide"],["community","community"],["sponsors","sponsors"]];
+      const mods=S.modules||{},standalone=["booths","activities","guide"],fixed=new Set(["tickets","participation","booths","activities","guide"]);
+      const homeSections=[["tickets","tickets"],["highlights","highlights"],["participation","participation"],["map-home","booths"],["schedule-home","activities"],["guests","guests"],["guide-home","guide"],["community","community"],["sponsors","sponsors"]];
       const on=k=>fixed.has(k)||mods[k]!==false;
       const wishKey=()=>("oe-wishlist:"+String(S.eventName||"event").toLowerCase().replace(/\s+/g,"-"));
       const readWish=()=>{try{const x=JSON.parse(localStorage.getItem(wishKey())||"{}");return{booths:Array.isArray(x.booths)?x.booths:[],products:Array.isArray(x.products)?x.products:[]}}catch{return{booths:[],products:[]}}};
