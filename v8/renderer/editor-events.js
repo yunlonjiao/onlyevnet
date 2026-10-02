@@ -20,7 +20,7 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
       }
       router.showPage(page);
       if(kind!=='page'&&id)requestAnimationFrame(()=>{
-        const selector=kind==='booth'?'#booth-'+CSS.escape(id):kind==='participation'?'#participation-'+CSS.escape(id):kind==='guide'?'#guide-'+CSS.escape(id):'';
+        const selector=kind==='booth'?'#booth-'+CSS.escape(id):kind==='participation'?'#participation-'+CSS.escape(id):kind==='guest'?'#guest-'+CSS.escape(id):kind==='guide'?'#guide-'+CSS.escape(id):'';
         if(selector)document.querySelector(selector)?.scrollIntoView({behavior:'smooth',block:'start'});
       });
       return
@@ -29,6 +29,8 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
     const productFav=e.target.closest?.('[data-wishlist-product]');if(productFav&&getMode()==='preview'){e.preventDefault();toggleFavorite('product',productFav.dataset.wishlistProduct);return}
     const filter=e.target.closest?.('[data-booth-filter]');if(filter&&getMode()==='preview'){e.preventDefault();qa('[data-booth-filter]').forEach(x=>x.classList.toggle('active',x===filter));document.querySelector('[data-booth-search]')?.dispatchEvent(new Event('input',{bubbles:true}));return}
     const boothJump=e.target.closest?.('a[data-booth-id]');if(boothJump){e.preventDefault();router.showPage('booths');requestAnimationFrame(()=>document.querySelector('#booth-'+CSS.escape(boothJump.dataset.boothId))?.scrollIntoView({behavior:'smooth',block:'start'}));return}
+    const guestJump=e.target.closest?.('a[data-guest-id]');if(guestJump){e.preventDefault();router.showPage('guests');requestAnimationFrame(()=>document.querySelector('#guest-'+CSS.escape(guestJump.dataset.guestId))?.scrollIntoView({behavior:'smooth',block:'start'}));return}
+    const planJump=e.target.closest?.('a[data-activity-plan-id]');if(planJump){e.preventDefault();router.showPage('activities');requestAnimationFrame(()=>document.querySelector('#participation-'+CSS.escape(planJump.dataset.activityPlanId))?.scrollIntoView({behavior:'smooth',block:'start'}));return}
     if(e.target.closest?.('.brand')){e.preventDefault();router.showPage('home');return}
     const venueLink=e.target.closest?.('.venue-nav');
     if(venueLink&&getMode()==='edit'){e.preventDefault();send({type:'OE_SELECT_FIELD',path:'edition'});return}
