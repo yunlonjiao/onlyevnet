@@ -33,10 +33,10 @@ export const template01 = {
     ],
     modules:{ribbon:true,booths:true,activities:true,guide:true,guests:true,freewalk:false,itasha:false,community:true,sponsors:false},
     participation:[
-      {id:'pa1',preset:'stage',title:'舞台活动',meta:'主舞台 · 时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'activities',url:'',guestIds:[]},
-      {id:'pa2',preset:'stamp',title:'集章 / 打卡',meta:'活动区域 · 全天',text:'填写集章点、打卡规则、兑换方式或完成奖励。',target:'activities',url:'',guestIds:[]},
-      {id:'pa3',preset:'photo',title:'主题合影',meta:'集合区域 · 时间待定',text:'填写集合时间、地点和参与方式。',target:'activities',url:'',guestIds:[]},
-      {id:'pa4',preset:'game',title:'互动游戏 / 抽选',meta:'活动区域 · 时间待定',text:'填写互动游戏、抽选或现场挑战的参与规则。',target:'activities',url:'',guestIds:[]}
+      {id:'pa1',preset:'stage',title:'舞台活动',meta:'主舞台 · 12:00—17:00',text:'舞台节目、Talk 与现场互动。',detail:'主舞台将安排主题 Talk、互动节目与特别演出，游客可以按照当天日程自由前往观看。',rules:'请按工作人员指引入场；部分互动环节可能限制人数；摄影与录像规则以现场说明为准。',image:'',target:'activities',url:'',guestIds:[]},
+      {id:'pa2',preset:'stamp',title:'集章 / 打卡',meta:'全场 · 全天',text:'在不同区域完成打卡并兑换纪念奖励。',detail:'游客可以在指定区域领取集章卡，依次完成摊位区、舞台区和主题互动点的打卡任务。',rules:'每人限领一份集章卡；完成指定数量后可兑换奖励；奖品数量有限，兑完即止。',image:'',target:'activities',url:'',guestIds:[]},
+      {id:'pa3',preset:'photo',title:'主题合影',meta:'COS 区 · 15:30',text:'面向现场同好的主题集合与合影。',detail:'按作品或角色主题组织集合，由工作人员协调站位与摄影时间，也欢迎普通游客围观。',rules:'请遵守现场摄影秩序；未经允许不要近距离拍摄个人；大型道具请听从工作人员安排。',image:'',target:'activities',url:'',guestIds:[]},
+      {id:'pa4',preset:'game',title:'互动游戏 / 抽选',meta:'互动区 · 14:00',text:'现场小游戏、问答和幸运抽选。',detail:'通过简单问答、小游戏和现场抽选增加参与感，部分环节会准备限定纪念品。',rules:'按现场排队顺序参与；每人每轮限参加一次；奖品与抽选资格以现场公告为准。',image:'',target:'activities',url:'',guestIds:[]}
     ],
     venueMap:{
       image:'',
@@ -73,7 +73,7 @@ export const template01 = {
     socialLinks:[
       {id:'sl1',label:'游客群',note:'游客交流、现场问答与活动信息',url:'',image:''},
       {id:'sl2',label:'摊主群',note:'摊主沟通与布撤展信息',url:'',image:''},
-      {id:'sl3',label:'COS / 自由行群',note:'自由行、COS 集合与摄影交流',url:'',image:''},
+      {id:'sl3',label:'COS自由行群',note:'自由行、COS 集合与摄影交流',url:'',image:''},
       {id:'sl4',label:'节目 / 活动报名',note:'节目、舞台或互动活动报名入口',url:'',image:''},
       {id:'sl5',label:'B站',note:'PV、嘉宾公开与节目预告',url:'',image:''},
       {id:'sl6',label:'小红书',note:'宣发、返图与观展攻略',url:'',image:''}
@@ -90,7 +90,7 @@ export const template01 = {
       ]
     },
     freewalk:{
-      title:'COS / 自由行',
+      title:'COS自由行',
       text:'自由行报名、集合方式与参与规则由主办方填写。',
       image:''
     },
