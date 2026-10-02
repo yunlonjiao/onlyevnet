@@ -45,6 +45,6 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation})
     }
   }
   function scrollHomeSection(id){showPage('home',false);requestAnimationFrame(()=>$('#'+id)?.scrollIntoView({behavior:'smooth',block:'start'}))}
-  function showActivityDetail(index){showPage('activities',false);requestAnimationFrame(()=>$('#activity-detail-'+Number(index))?.scrollIntoView({behavior:'smooth',block:'start'}))}
+  function showActivityDetail(index){showPage('activities',false);requestAnimationFrame(()=>document.querySelector('#activities [data-activity-index="'+Number(index)+'"]')?.scrollIntoView({behavior:'smooth',block:'start'}))}
   return {applyModules,showPage,scrollHomeSection,showActivityDetail,moduleOn,isHomeModule,isStandalonePage,getCurrentPage,setCurrentPage};
 }
