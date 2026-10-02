@@ -723,3 +723,21 @@ body.previewing .canvas-stage:before{display:none}
 
 .guide-media-add{margin-top:10px}
 .guide-media-add button{width:100%;border-style:dashed!important;color:#777784!important;background:#fafafd!important}
+
+
+/* 8.32.1 bugfix — keep sidebar width stable */
+.sidebar{
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-gutter:stable;
+  min-width:0;
+}
+.page-content-block,
+.page-content-nav,
+.sidebar-content-list,
+.sidebar-content-head,
+.sidebar-content-rows,
+.sidebar-content-row{
+  min-width:0;
+  max-width:100%;
+}
