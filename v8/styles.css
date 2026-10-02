@@ -673,31 +673,53 @@ body.previewing .canvas-stage:before{display:none}
 }
 
 
-/* 8.29 safe page controls + onboarding */
-.workspace-tabs{grid-template-columns:repeat(2,1fr)}
-.page-settings-block{margin:12px 2px 0;padding-top:11px;border-top:1px solid #ececf1}
-.page-settings-title{display:flex;align-items:end;justify-content:space-between;padding:0 7px 7px}
-.page-settings-title b{font-size:9px;color:#666670}.page-settings-title span{font-size:8px;color:#a0a0aa}
-.page-setting-row{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;min-height:34px!important;margin:0!important;padding:0 7px!important;border:0!important;box-shadow:none!important;font-size:10px!important;color:#666670!important}
-.page-setting-row:hover{background:#f2f2f6}
-.page-setting-row input{appearance:none!important;width:30px!important;height:18px!important;border:0!important;border-radius:999px!important;background:#d7d7de!important;padding:0!important;position:relative!important;cursor:pointer!important;box-shadow:none!important}
-.page-setting-row input:after{content:"";position:absolute;width:14px;height:14px;left:2px;top:2px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0003;transition:.15s}
-.page-setting-row input:checked{background:#7c5cff!important}.page-setting-row input:checked:after{translate:12px 0}
-.help-group button{min-width:76px}
-
+/* 8.30 page tree + page content management */
 .preset-add{margin:0 0 10px;padding:10px;border:1px solid #e7e7ec;border-radius:11px;background:#fff}
 .preset-add>span{display:block;margin-bottom:7px;font-size:8px;font-weight:850;color:#8b8b95}
 .preset-add>div{display:flex;flex-wrap:wrap;gap:5px}
 .preset-add button{border:1px solid #ddd9f4!important;background:#f7f5ff!important;color:#6657be!important;border-radius:999px!important;padding:6px 8px!important;font-size:8px!important;font-weight:800!important}
 
-.tutorial-dialog{width:min(720px,calc(100vw - 24px));max-width:none;padding:0;border:0;border-radius:20px;background:#fff;box-shadow:0 28px 90px rgba(20,20,28,.3)}
-.tutorial-dialog::backdrop{background:rgba(18,18,24,.62);backdrop-filter:blur(6px)}
-.tutorial-shell{padding:20px}.tutorial-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
-.tutorial-head>div{display:grid;gap:4px}.tutorial-head span{font-size:8px;font-weight:900;letter-spacing:.14em;color:#7b6adb}.tutorial-head b{font-size:20px}
-.tutorial-head button{width:32px;height:32px;border:1px solid #e0e0e6;background:#fff;border-radius:9px;font-size:17px}
-.tutorial-intro{margin:12px 0 14px;padding:10px 12px;border-radius:11px;background:#f7f6fb;color:#6f6f79;font-size:10px;line-height:1.6}
-.tutorial-steps{display:grid;gap:7px}.tutorial-steps button{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;text-align:left;border:1px solid #e5e5ea;background:#fff;border-radius:12px;padding:10px;cursor:pointer}
-.tutorial-steps button:hover{border-color:#cfc7ff;background:#fbfaff}.tutorial-steps i{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:#efecff;color:#6755cf;font-style:normal;font-size:9px;font-weight:950}
-.tutorial-steps span{display:grid;gap:2px}.tutorial-steps span b{font-size:10px}.tutorial-steps span small{font-size:8.5px;color:#8c8c96}.tutorial-steps em{font-style:normal;font-size:8px;font-weight:850;color:#7463d2}
-.tutorial-auto{display:flex;align-items:center;gap:7px;margin-top:13px;font-size:9px;color:#888892}.tutorial-auto input{width:auto}
-@media(max-width:640px){.tutorial-shell{padding:14px}.tutorial-head b{font-size:16px}.tutorial-steps button{grid-template-columns:30px minmax(0,1fr)}.tutorial-steps em{display:none}}
+.page-workspace{padding-bottom:20px}
+.page-tree{display:grid;gap:4px}
+.page-tree-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  min-height:40px;
+  border-radius:10px;
+  transition:background .15s ease;
+}
+.page-tree-row:hover{background:#f1f1f5}
+.page-tree-row.active{background:#ece8ff}
+.page-tree-row.is-disabled button{opacity:.46}
+.page-tree-row .page-nav button,.page-tree-row>button{min-width:0}
+.page-tree-row>button{background:transparent!important;box-shadow:none!important}
+.page-tree-row.active>button{color:#5e48ca}
+.page-fixed-mark{margin-right:7px;font-size:8px;font-weight:800;color:#a0a0a9}
+.page-inline-switch{width:34px;height:22px;display:grid;place-items:center;margin:0 6px 0 4px;cursor:pointer}
+.page-inline-switch input{position:absolute;opacity:0;pointer-events:none}
+.page-inline-switch i{position:relative;width:29px;height:17px;border-radius:999px;background:#d4d4dc;box-shadow:inset 0 0 0 1px rgba(0,0,0,.04);transition:.16s}
+.page-inline-switch i:after{content:"";position:absolute;width:13px;height:13px;left:2px;top:2px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.24);transition:.16s}
+.page-inline-switch input:checked+i{background:#7c5cff}
+.page-inline-switch input:checked+i:after{translate:12px 0}
+.page-inline-switch:focus-within i{box-shadow:0 0 0 3px rgba(124,92,255,.14)}
+
+.page-content-block{margin:14px 1px 0;padding-top:12px;border-top:1px solid #e9e9ee}
+.page-content-title{display:flex;align-items:center;justify-content:space-between;padding:0 5px 8px}
+.page-content-title b{font-size:9px;color:#666670}
+.page-content-nav{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.page-content-nav button{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;
+  border:1px solid #e3e3e9;background:#fff;border-radius:9px;padding:7px 8px;
+  color:#5b5b65;font-size:9px;font-weight:760;cursor:pointer;
+}
+.page-content-nav button:hover{border-color:#cbc7e8;background:#faf9ff}
+.page-content-nav button.active{border-color:#8d79ff;background:#f1eeff;color:#5d4dc4}
+.page-content-nav button span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.page-content-nav button b{display:grid;place-items:center;min-width:19px;height:19px;border-radius:999px;background:#f0f0f4;color:#777780;font-size:8px}
+.page-content-nav button.active b{background:#fff;color:#6958d8}
+.page-content-block .sidebar-content-list{padding-top:9px}
+.page-content-block .sidebar-content-rows{max-height:calc(100vh - 460px)}
+
+.guide-media-add{margin-top:10px}
+.guide-media-add button{width:100%;border-style:dashed!important;color:#777784!important;background:#fafafd!important}
