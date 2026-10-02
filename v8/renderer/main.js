@@ -1,9 +1,9 @@
-import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.32.1';
+import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.32.3';
 import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.25.0';
-import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.31.0';
+import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.32.3';
 import {createCollections} from '/v8/renderer/collections.js?v=8.32.1';
 import {createParticipation} from '/v8/renderer/participation.js?v=8.31.0';
-import {createRouter} from '/v8/renderer/router.js?v=8.32.2';
+import {createRouter} from '/v8/renderer/router.js?v=8.32.3';
 import {createFields} from '/v8/renderer/fields.js?v=8.25.0';
 import {createRuntime} from '/v8/renderer/runtime.js?v=8.25.0';
 import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.31.0';
