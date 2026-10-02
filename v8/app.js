@@ -62,7 +62,7 @@ function contentThumb(collection,item){
  return '<span class="sidebar-content-thumb '+(src?'has-image':'')+'">'+(src?'<img src="'+esc(src)+'" alt="">':fallback)+'</span>';
 }
 
-const moduleLabels={booths:'摊位详情',activities:'活动详情',guide:'观展指南',freewalk:'COS / 自由行',itasha:'痛车展示'};
+const moduleLabels={booths:'摊位',activities:'活动',guide:'观展指南',freewalk:'COS / 自由行',itasha:'痛车展示'};
 const contentManagerMeta={
  tickets:{title:'票务',empty:'还没有票种',item:(x,i)=>[x.name||('票种 '+(i+1)),x.price||'']},
  booths:{title:'摊位',empty:'还没有摊位',item:(x,i)=>[(x.no?x.no+' · ':'')+(x.name||('摊位 '+(i+1))),String((x.products||[]).length)+' 个制品']},
@@ -84,11 +84,11 @@ const GUIDE_PRESETS={
  safety:{preset:'safety',title:'安全与禁止事项',text:'填写禁止携带物品、禁止行为、紧急情况处理和 Staff 联系方式。',image:''}
 };
 const PARTICIPATION_PRESETS={
- stage:{preset:'stage',title:'舞台活动',meta:'主舞台 · 时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'schedule-home',url:''},
- stamp:{preset:'stamp',title:'集章 / 打卡',meta:'活动区域 · 全天',text:'填写集章点、打卡规则、兑换方式或完成奖励。',target:'participation',url:''},
- photo:{preset:'photo',title:'主题合影',meta:'集合区域 · 时间待定',text:'填写集合时间、地点和参与方式。',target:'participation',url:''},
- game:{preset:'game',title:'互动游戏 / 抽选',meta:'活动区域 · 时间待定',text:'填写互动游戏、抽选或现场挑战的参与规则。',target:'participation',url:''},
- free:{preset:'free',title:'自由交流 / 同好活动',meta:'活动区域 · 时间待定',text:'填写自由交流、同好聚会或临时互动内容。',target:'participation',url:''}
+ stage:{preset:'stage',title:'舞台活动',meta:'主舞台 · 时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'activities',url:''},
+ stamp:{preset:'stamp',title:'集章 / 打卡',meta:'活动区域 · 全天',text:'填写集章点、打卡规则、兑换方式或完成奖励。',target:'activities',url:''},
+ photo:{preset:'photo',title:'主题合影',meta:'集合区域 · 时间待定',text:'填写集合时间、地点和参与方式。',target:'activities',url:''},
+ game:{preset:'game',title:'互动游戏 / 抽选',meta:'活动区域 · 时间待定',text:'填写互动游戏、抽选或现场挑战的参与规则。',target:'activities',url:''},
+ free:{preset:'free',title:'自由交流 / 同好活动',meta:'活动区域 · 时间待定',text:'填写自由交流、同好聚会或临时互动内容。',target:'activities',url:''}
 };
 
 const PAGE_CONTENT_CONFIG={
@@ -403,7 +403,11 @@ function openItemInspector(collection,index){
  const count=arr.length;
  const isLong=k=>['text','gift','note','detail','intro','works','appearance'].includes(k);
  const media=collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='sponsors'?'<div class="item-media"><span>Logo</span><div class="item-media-row">'+(item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="sponsors.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="sponsors.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>':'';
- const guideMedia=collection==='guide'?'<div class="item-media"><span>说明图 / 路线图（可选）</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="guide.items.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="guide.items.'+index+'.image" class="ghost">移除</button>':'')+'</div></div><p class="inspector-note">交通指南可上传路线图或入口示意图；其他指南也可以放主办方已经准备好的说明图。</p></div>':'';
+ const guideMedia=collection==='guide'
+   ?(item.image
+     ?'<div class="item-media"><span>'+(item.preset==='traffic'?'路线图 / 入口示意图':'附图')+'</span><div class="item-media-row"><img src="'+esc(item.image)+'" alt=""><div><button data-media-path="guide.items.'+index+'.image">替换图片</button><button data-remove-media="guide.items.'+index+'.image" class="ghost">移除</button></div></div></div>'
+     :'<div class="guide-media-add"><button type="button" data-media-path="guide.items.'+index+'.image">＋ 添加附图</button></div>')
+   :'';
  const itemTitle=contentManagerMeta[collection]?.item?.(item,index)?.[0]||meta.title;
  setInspector('内容',meta.title+' · '+itemTitle,'<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+guideMedia+extraInspector(collection,index,item)+'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>');
  inspector.querySelectorAll('textarea').forEach(fitTextarea);
@@ -469,12 +473,12 @@ function openImageInspector(path){
  const current=getDeep(path);
  if(path==='venueMap.image'){
    const links=state.venueMap?.links||[];
-   const targets=[['tickets','票务'],['participation','活动参与'],['booths','摊位'],['schedule-home','当天日程'],['activities','活动详情'],['guide','观展指南'],['community','社群'],['freewalk','COS / 自由行'],['itasha','痛车展示'],['guests','嘉宾']];
+   const targets=[['booths','摊位'],['activities','活动'],['guide','观展指南'],['freewalk','COS / 自由行'],['itasha','痛车展示']];
    const rows=links.map((item,i)=>'<div class="map-link-setting-row"><span class="map-link-setting-index">'+String(i+1).padStart(2,'0')+'</span><div class="map-link-setting-fields"><input data-map-link-label="'+i+'" value="'+esc(item.label||'')+'" placeholder="标签名称"><select data-map-link-target="'+i+'">'+targets.map(x=>'<option value="'+x[0]+'" '+(item.target===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select></div><div class="map-link-setting-actions"><button type="button" data-map-link-op="up" data-map-link-index="'+i+'" '+(i===0?'disabled':'')+'>↑</button><button type="button" data-map-link-op="down" data-map-link-index="'+i+'" '+(i===links.length-1?'disabled':'')+'>↓</button><button type="button" data-map-link-op="delete" data-map-link-index="'+i+'">×</button></div></div>').join('');
    setInspector('场地图','地图与快捷标签',
      '<div class="map-image-actions"><button id="replaceImage" type="button">'+(current?'替换场地图':'上传场地图')+'</button>'+(current?'<button id="removeImage" type="button" class="danger ghost">删除场地图</button>':'')+'</div>'+
      '<p class="inspector-note">上传或替换后会先进入裁剪；场地图使用自由比例，横图和竖图都可以按实际内容调整。游客可点击查看大图。</p>'+
-     '<div class="reference-panel map-link-settings"><div class="product-editor-head"><b>地图旁快捷标签</b><button type="button" data-map-link-add>＋ 添加标签</button></div>'+rows+'<p class="inspector-note">标签只负责带游客前往已有内容，例如主舞台→当天日程、摊位→摊位页、COS区→活动参与。</p></div>');
+     '<div class="reference-panel map-link-settings"><div class="product-editor-head"><b>地图旁探索入口</b><button type="button" data-map-link-add>＋ 添加入口</button></div>'+rows+'</div>');
    $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()};
    $('#removeImage')?.addEventListener('click',()=>{checkpoint();setDeep(path,'');save();send({type:'OE_REPLACE_STATE',state});toast('已删除场地图');openImageInspector(path)});
    inspector.querySelectorAll('[data-map-link-label]').forEach(input=>{
@@ -483,7 +487,7 @@ function openImageInspector(path){
      input.addEventListener('blur',e=>{const i=Number(e.target.dataset.mapLinkLabel);if(!state.venueMap?.links?.[i])return;const v=cleanValue(e.target.value);state.venueMap.links[i].label=v;e.target.value=v;save();send({type:'OE_REPLACE_STATE',state})});
    });
    inspector.querySelectorAll('[data-map-link-target]').forEach(select=>select.addEventListener('change',e=>{const i=Number(e.target.dataset.mapLinkTarget);if(!state.venueMap?.links?.[i])return;checkpoint();state.venueMap.links[i].target=e.target.value;save();send({type:'OE_REPLACE_STATE',state})}));
-   inspector.querySelector('[data-map-link-add]')?.addEventListener('click',()=>{checkpoint();state.venueMap.links.push({id:uid('ml'),label:'新标签',target:'participation'});save();send({type:'OE_REPLACE_STATE',state});openImageInspector(path)});
+   inspector.querySelector('[data-map-link-add]')?.addEventListener('click',()=>{checkpoint();state.venueMap.links.push({id:uid('ml'),label:'新入口',target:'activities'});save();send({type:'OE_REPLACE_STATE',state});openImageInspector(path)});
    inspector.querySelectorAll('[data-map-link-op]').forEach(btn=>btn.addEventListener('click',()=>{const i=Number(btn.dataset.mapLinkIndex),op=btn.dataset.mapLinkOp,arr=state.venueMap.links;if(!arr?.[i])return;checkpoint();if(op==='delete')arr.splice(i,1);if(op==='up'&&i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]];if(op==='down'&&i<arr.length-1)[arr[i+1],arr[i]]=[arr[i],arr[i+1]];save();send({type:'OE_REPLACE_STATE',state});openImageInspector(path)}));
    return;
  }
