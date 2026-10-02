@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OnlyEvent Studio v8</title>
-  <link rel="stylesheet" href="/v8/styles.css?v=8.23.0">
+  <link rel="stylesheet" href="/v8/styles.css?v=8.33.0">
 </head>
 <body>
   <header class="studio-topbar">
@@ -49,24 +49,26 @@
       <section class="workspace-panel active" data-workspace-panel="pages">
         <div class="workspace-panel-head"><b>页面</b><small>网站结构</small></div>
         <nav class="page-nav">
-          <button data-page="home" type="button"><span class="nav-icon">⌂</span><span>首页</span></button>
-          <button data-page="booths" data-module-page="booths" type="button"><span class="nav-icon">⌘</span><span>摊位详情</span></button>
-          <button data-page="activities" data-module-page="activities" type="button"><span class="nav-icon">◷</span><span>活动详情</span></button>
-          <button data-page="guide" type="button"><span class="nav-icon">i</span><span>观展指南</span></button>
-          <button data-page="freewalk" data-module-page="freewalk" type="button"><span class="nav-icon">◇</span><span>COS / 自由行</span></button>
-          <button data-page="itasha" data-module-page="itasha" type="button"><span class="nav-icon">◇</span><span>痛车展示</span></button>
+          <div class="page-nav-row fixed"><button data-page="home" type="button"><span class="nav-icon">⌂</span><span>首页</span></button></div>
+          <div class="page-nav-row"><button data-page="booths" type="button"><span class="nav-icon">⌘</span><span>摊位</span></button><label class="page-switch"><input type="checkbox" data-module="booths" aria-label="显示摊位页面"><i></i></label></div>
+          <div class="page-nav-row"><button data-page="activities" type="button"><span class="nav-icon">◷</span><span>活动</span></button><label class="page-switch"><input type="checkbox" data-module="activities" aria-label="显示活动页面"><i></i></label></div>
+          <div class="page-nav-row"><button data-page="guide" type="button"><span class="nav-icon">i</span><span>观展指南</span></button><label class="page-switch"><input type="checkbox" data-module="guide" aria-label="显示观展指南页面"><i></i></label></div>
+          <div class="page-nav-row"><button data-page="freewalk" type="button"><span class="nav-icon">◇</span><span>COS / 自由行</span></button><label class="page-switch"><input type="checkbox" data-module="freewalk" aria-label="显示 COS / 自由行页面"><i></i></label></div>
+          <div class="page-nav-row"><button data-page="itasha" type="button"><span class="nav-icon">◇</span><span>痛车展示</span></button><label class="page-switch"><input type="checkbox" data-module="itasha" aria-label="显示痛车展示页面"><i></i></label></div>
         </nav>
       </section>
 
       <section class="workspace-panel" data-workspace-panel="content" hidden>
         <div class="workspace-panel-head"><b>内容库</b><small>选择内容类型</small></div>
         <div class="content-managers">
+          <button type="button" data-content-manager="ribbonItems"><span>滚动公告</span><b data-content-count="ribbonItems">0</b></button>
           <button type="button" data-content-manager="tickets"><span>票务</span><b data-content-count="tickets">0</b></button>
           <button type="button" data-content-manager="booths"><span>摊位</span><b data-content-count="booths">0</b></button>
           <button type="button" data-content-manager="participation"><span>活动参与</span><b data-content-count="participation">0</b></button>
           <button type="button" data-content-manager="schedule"><span>当天日程</span><b data-content-count="schedule">0</b></button>
           <button type="button" data-content-manager="guests"><span>嘉宾</span><b data-content-count="guests">0</b></button>
                     <button type="button" data-content-manager="guide"><span>观展指南</span><b data-content-count="guide">0</b></button>
+          <button type="button" data-content-manager="explore"><span>继续探索</span><b data-content-count="explore">0</b></button>
           <button type="button" data-content-manager="updates"><span>重要更新</span><b data-content-count="updates">0</b></button>
           <button type="button" data-content-manager="socialLinks"><span>社群入口</span><b data-content-count="socialLinks">0</b></button>
           <button type="button" data-content-manager="sponsors"><span>赞助支持</span><b data-content-count="sponsors">0</b></button>
@@ -81,8 +83,6 @@
         <div class="module-switches">
           <label><span>滚动公告</span><input type="checkbox" data-module="ribbon"></label>
           <label><span>嘉宾</span><input type="checkbox" data-module="guests"></label>
-          <label><span>自由行（活动参与）</span><input type="checkbox" data-module="freewalk"></label>
-          <label><span>痛车（活动参与）</span><input type="checkbox" data-module="itasha"></label>
           <label><span>社群</span><input type="checkbox" data-module="community"></label>
           <label><span>赞助</span><input type="checkbox" data-module="sponsors"></label>
         </div>
@@ -147,6 +147,6 @@
     </div>
   </dialog>
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="/v8/app.js?v=8.27.0"></script>
+  <script type="module" src="/v8/app.js?v=8.33.0"></script>
 </body>
 </html>
