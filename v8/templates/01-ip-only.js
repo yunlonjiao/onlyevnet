@@ -80,9 +80,7 @@ export const template01 = {
       {id:'sl5',label:'B站',note:'PV、嘉宾公开与节目预告',url:'',image:''},
       {id:'sl6',label:'小红书',note:'宣发、返图与观展攻略',url:'',image:''}
     ],
-    sponsors:[
-      {id:'sp1',name:'合作伙伴',level:'合作伙伴',url:'',logo:''}
-    ],
+    sponsors:[],
     guide:{
       homeCount:2,
       items:[
