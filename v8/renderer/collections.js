@@ -54,12 +54,14 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     if(home)home.innerHTML=items.map((x,i)=>{
       return '<a class="event reveal in" href="#activities" data-target-mode="page" data-page-link="activities" data-activity-index="'+i+'" data-oe-item="schedule" data-oe-index="'+i+'">'+field('schedule.'+i+'.time',x.time,'span')+field('schedule.'+i+'.title',x.title,'b')+'<span>'+esc(x.stage||'')+'</span><span>→</span></a>';
     }).join('');
-    const detail=$('#activities .activity-detail-list');
-    if(detail)detail.innerHTML=items.map((x,i)=>{
+
+    const table=$('#activities .activity-timetable');
+    if(table)table.innerHTML=items.map((x,i)=>{
       const guests=(x.guestIds||[]).map(getGuest).filter(Boolean);
-      const guestHtml=guests.length?'<div class="activity-related"><b>出席嘉宾</b><div class="chip-row">'+guests.map(g=>'<a href="#guests" data-target-mode="page" data-page-link="guests" data-guest-id="'+esc(g.id)+'">'+esc(g.name)+'</a>').join('')+'</div></div>':'';
-      const reg=x.registrationUrl?'<a class="activity-register" href="'+esc(x.registrationUrl)+'" target="_blank" rel="noopener">报名 / 查看外部页面 ↗</a>':'';
-      return '<article class="activity-detail" id="schedule-'+esc(x.id||String(i))+'" data-activity-index="'+i+'" data-oe-item="schedule" data-oe-index="'+i+'"><span>'+esc(x.time||'')+' · '+esc(x.stage||'')+'</span>'+field('schedule.'+i+'.title',x.title,'h3')+field('schedule.'+i+'.detail',x.detail||'','p')+guestHtml+reg+'</article>';
+      const guestHtml=guests.length?'<div class="timetable-guests">'+guests.map(g=>'<a href="#guests" data-target-mode="page" data-page-link="guests" data-guest-id="'+esc(g.id)+'">'+esc(g.name)+'</a>').join('')+'</div>':'';
+      const reg=x.registrationUrl?'<a class="timetable-action" href="'+esc(x.registrationUrl)+'" target="_blank" rel="noopener">详情 ↗</a>':'';
+      return '<article class="timetable-row" id="schedule-'+esc(x.id||String(i))+'" data-activity-index="'+i+'" data-oe-item="schedule" data-oe-index="'+i+'>'+
+        '<time>'+esc(x.time||'')+'</time><div class="timetable-main">'+field('schedule.'+i+'.title',x.title,'b')+field('schedule.'+i+'.detail',x.detail||'','p')+guestHtml+'</div><span class="timetable-stage">'+esc(x.stage||'')+'</span>'+reg+'</article>';
     }).join('');
   }
 
