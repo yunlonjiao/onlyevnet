@@ -40,6 +40,12 @@ export const template01 = {
     ],
     venueMap:{
       image:'',
+      links:[
+        {id:'ml1',label:'主舞台',target:'schedule-home'},
+        {id:'ml2',label:'摊位',target:'booths'},
+        {id:'ml3',label:'痛车区',target:'participation'},
+        {id:'ml4',label:'COS 区',target:'participation'}
+      ],
       points:[
         {id:'mp-b1',kind:'booth',label:'A01',x:18,y:24,boothId:'b1'},
         {id:'mp-b2',kind:'booth',label:'A12',x:58,y:38,boothId:'b2'},

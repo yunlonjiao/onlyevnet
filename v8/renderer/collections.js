@@ -74,9 +74,17 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
   }
 
   function renderMap(){
-    const state=getState(),map=state.venueMap||{},box=$('#venueMap');if(!box)return;
+    const state=getState(),map=state.venueMap||{},box=$('#venueMap'),rail=$('.map-link-rail'),list=$('.map-link-list');if(!box)return;
     box.dataset.oeImage='venueMap.image';box.classList.toggle('has-map',!!map.image);
-    box.innerHTML=map.image?'<img src="'+esc(map.image)+'" alt="活动场地图">':'<div class="map-static-placeholder"><b>场地图</b><span>主办方暂未上传场地图</span></div>';
+    box.innerHTML=map.image?'<button class="map-image-view" type="button" data-product-lightbox="'+esc(map.image)+'" aria-label="查看场地图大图"><img src="'+esc(map.image)+'" alt="活动场地图"><span>查看大图 ↗</span></button>':'<div class="map-static-placeholder"><b>场地图</b><span>主办方暂未上传场地图</span></div>';
+    const links=(map.links||[]).filter(x=>String(x?.label||'').trim());
+    if(list){
+      list.innerHTML=links.map((x,i)=>{
+        const target=x.target||'participation',pageTarget=target==='booths'||target==='activities'||target==='guide';
+        return '<a class="map-jump-tag" href="#'+esc(target)+'" data-target-mode="'+(pageTarget?'page':'home')+'" data-page-link="'+esc(target)+'"><span>'+field('venueMap.links.'+i+'.label',x.label,'span')+'</span><i>↗</i></a>';
+      }).join('');
+    }
+    if(rail)rail.hidden=!links.length;
   }
 
   function wishlistKey(){
@@ -162,10 +170,10 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     const link=(href,label,mode='home')=>'<a href="#'+href+'" data-target-mode="'+mode+'" data-page-link="'+href+'">'+esc(label)+'</a>';
     const brand=$('.footer-brand');if(brand)brand.innerHTML='<h2>'+esc(state.eventName||'OnlyEvent')+'</h2><p>'+esc(state.date||'')+' · '+esc(state.edition||state.location||'')+'</p>';
     const participate=$('.footer-participate');if(participate){
-      const links=[link('booths','摊位详情','page'),link('passport','活动参与'),link('activities','活动详情','page')];
+      const links=[link('booths','摊位详情','page'),link('participation','活动参与'),link('activities','活动详情','page')];
       if(on('guests'))links.push(link('guests','嘉宾'));
-      if(on('freewalk'))links.push(link('passport','自由行'));
-      if(on('itasha'))links.push(link('passport','痛车'));
+      if(on('freewalk'))links.push(link('participation','自由行'));
+      if(on('itasha'))links.push(link('participation','痛车'));
       participate.innerHTML='<b>参与</b><nav>'+links.join('')+'</nav>';
     }
     const visit=$('.footer-visit');if(visit)visit.innerHTML='<b>观展</b><nav>'+[link('tickets','票务'),link('map-home','场地图'),link('schedule-home','当天日程'),link('guide','观展指南','page')].join('')+'</nav>';
