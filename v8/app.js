@@ -222,13 +222,16 @@ function syncModuleControls(){
  document.querySelectorAll('[data-module]').forEach(input=>{input.checked=state.modules?.[input.dataset.module]!==false});
  document.querySelectorAll('[data-page-row]').forEach(row=>row.classList.toggle('is-disabled',state.modules?.[row.dataset.pageRow]===false));
 }
-function setStudioPage(page,{openContent=true}={}){
+function syncStudioPageUI(page,{openContent=true}={}){
  currentPage=page||'home';
  document.querySelectorAll('.page-nav [data-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.page===currentPage));
  document.querySelectorAll('[data-page-row]').forEach(row=>row.classList.toggle('active',row.dataset.pageRow===currentPage));
  const title=document.querySelector('.canvas-title b');if(title)title.textContent=currentPage==='home'?'首页':(moduleLabels[currentPage]||'页面');
- send({type:'OE_SHOW_PAGE',page:currentPage});
  if(openContent)renderPageContentNav(currentPage);
+}
+function setStudioPage(page,{openContent=true}={}){
+ syncStudioPageUI(page,{openContent});
+ send({type:'OE_SHOW_PAGE',page:currentPage});
 }
 function bindModuleControls(){
  document.querySelectorAll('[data-module]').forEach(input=>input.addEventListener('change',()=>{
@@ -255,7 +258,7 @@ window.addEventListener('message',e=>{
  if(m.type==='OE_SELECT_IMAGE'){document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.remove('active'));openImageInspector(m.path);return}
  if(m.type==='OE_SELECT_ITEM'){
    const page=COLLECTION_PAGE[m.collection]||currentPage||'home';
-   setWorkspace('pages');setStudioPage(page,{openContent:false});renderPageContentNav(page,{openDefault:false});
+   setWorkspace('pages');syncStudioPageUI(page,{openContent:false});renderPageContentNav(page,{openDefault:false});
    openCollectionManager(m.collection,m.index);openItemInspector(m.collection,m.index);return
  }
 
@@ -316,7 +319,7 @@ function openTicketSettingsInspector(){
 function openFieldInspector(path){
  if(path.startsWith('ribbonItems.')){
    const i=Number(path.split('.')[1])||0;
-   setWorkspace('pages');setStudioPage('home',{openContent:false});renderPageContentNav('home',{openDefault:false});
+   setWorkspace('pages');syncStudioPageUI('home',{openContent:false});renderPageContentNav('home',{openDefault:false});
    openCollectionManager('ribbonItems',i);openItemInspector('ribbonItems',i);return
  }
  if(path==='ticketUrl'||path==='ticketLinkLabel'){openTicketSettingsInspector();return}
