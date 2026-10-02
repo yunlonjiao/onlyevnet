@@ -212,7 +212,8 @@ function addPresetItem(collection,key){
  const arr=collectionArray(collection);if(!Array.isArray(arr))return;
  const source=collection==='guide'?GUIDE_PRESETS[key]:PARTICIPATION_PRESETS[key];
  if(!source)return;
- arr.push({id:uid(collection==='guide'?'gd':'pa'),...structuredClone(source)});
+ const extra=collection==='participation'?{detail:source.text||'',rules:'',image:'',guestIds:[]}:{};
+ arr.push({id:uid(collection==='guide'?'gd':'pa'),...structuredClone(source),...extra});
  save();send({type:'OE_REPLACE_STATE',state});
  openCollectionManager(collection,arr.length-1);openItemInspector(collection,arr.length-1);
 }
