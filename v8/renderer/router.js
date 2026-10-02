@@ -37,7 +37,26 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation})
     standalonePages.forEach(id=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(id)));
     const navMap={'tickets':'tickets','map-home':'map','schedule-home':'activities','guide-home':'guide','community':'community','freewalk':'freewalk','itasha':'itasha'};
     Object.entries(navMap).forEach(([id,key])=>qa('.nav a[href="#'+id+'"],.mobile-dock a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
+    renumberSections();
     renderQuickAccess();renderParticipation();
+  }
+  function renumberSections(){
+    const defs=[
+      ['tickets','tickets'],
+      ['participation','activities'],
+      ['map-home','map'],
+      ['schedule-home','activities'],
+      ['guests','guests'],
+      ['guide-home','guide'],
+      ['community','community'],
+      ['sponsors','sponsors']
+    ];
+    let n=1;
+    defs.forEach(([id,key])=>{
+      const el=$('#'+id),badge=el?.querySelector('.section-no');if(!el||!badge)return;
+      if(!moduleOn(key))return;
+      badge.textContent='SECTION '+String(n++).padStart(2,'0');
+    });
   }
   function showPage(page,updateHash=true){
     if(page!=='home'&&!standalonePages.includes(page))page='home';
