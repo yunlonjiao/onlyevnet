@@ -442,6 +442,26 @@ function keepCropSelectionInsideImage(event){
  const left=r.left-c.left,top=r.top-c.top,right=left+r.width,bottom=top+r.height,eps=.5;
  if(d.x<left-eps||d.y<top-eps||d.x+d.width>right+eps||d.y+d.height>bottom+eps)event.preventDefault();
 }
+let cropPreviewFrame=0,cropPreviewSeq=0;
+function scheduleCropPreview(){
+ cancelAnimationFrame(cropPreviewFrame);
+ cropPreviewFrame=requestAnimationFrame(()=>renderCropPreview());
+}
+async function renderCropPreview(){
+ const selection=activeCropper?.getCropperSelection?.(),canvas=$('#cropPreviewCanvas'),shell=$('#cropPreviewShell');
+ if(!selection||!canvas||!shell||!cropContext)return;
+ const seq=++cropPreviewSeq,ratio=Math.max(.1,Number(selection.width||1)/Math.max(1,Number(selection.height||1)));
+ const maxW=Math.max(220,Math.min(420,shell.clientWidth||360));
+ const width=Math.round(maxW),height=Math.max(120,Math.round(width/ratio));
+ try{
+   const cropped=await selection.$toCanvas({width,height});
+   if(seq!==cropPreviewSeq||!cropContext)return;
+   canvas.width=cropped.width;canvas.height=cropped.height;
+   canvas.style.aspectRatio=cropped.width+' / '+cropped.height;
+   const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(cropped,0,0);
+ }catch(err){console.warn('[OnlyEvent crop preview]',err)}
+}
+
 async function openImageCropper(src,path,returnCollection='',returnIndex='',ownedUrl=''){
  const dlg=$('#imageCropDialog'),stage=$('#cropStage'),img=$('#cropImage'),cfg=imageSlotConfig(path);
  cropContext={path,returnCollection,returnIndex,cfg,src,ownedUrl};
@@ -463,14 +483,15 @@ async function openImageCropper(src,path,returnCollection='',returnIndex='',owne
    const selection=activeCropper.getCropperSelection?.();
    if(selection){
      if(cfg.fixed&&Number.isFinite(cfg.ratio)){selection.aspectRatio=cfg.ratio;selection.initialAspectRatio=cfg.ratio}
-     selection.addEventListener('change',keepCropSelectionInsideImage);
+     selection.addEventListener('change',e=>{keepCropSelectionInsideImage(e);if(!e.defaultPrevented)scheduleCropPreview()});
    }
-   requestAnimationFrame(()=>fitCropSelectionToImage());
+   requestAnimationFrame(()=>{fitCropSelectionToImage();scheduleCropPreview()});
  }catch(err){
    console.error('[OnlyEvent cropper]',err);toast('裁剪器加载失败，可稍后重试');closeImageCropper();
  }finally{stage.classList.remove('loading')}
 }
 function closeImageCropper(){
+ cancelAnimationFrame(cropPreviewFrame);cropPreviewSeq++;
  if(activeCropper?.destroy)activeCropper.destroy();
  activeCropper=null;
  const ownedUrl=cropContext?.ownedUrl||'';
@@ -503,8 +524,8 @@ $('#cropApply').onclick=applyImageCrop;
 $('#cropCancel').onclick=closeImageCropper;
 $('#cropClose').onclick=closeImageCropper;
 $('#imageCropDialog').addEventListener('cancel',e=>{e.preventDefault();closeImageCropper()});
-$('#cropReset').onclick=()=>fitCropSelectionToImage();
-$('#cropRotateLeft').onclick=()=>{activeCropper?.getCropperImage?.()?.$rotate?.('-90deg');requestAnimationFrame(()=>fitCropSelectionToImage())};
+$('#cropReset').onclick=()=>{fitCropSelectionToImage();scheduleCropPreview()};
+$('#cropRotateLeft').onclick=()=>{activeCropper?.getCropperImage?.()?.$rotate?.('-90deg');requestAnimationFrame(()=>{fitCropSelectionToImage();scheduleCropPreview()})};
 
 $('#imageInput').addEventListener('change',async e=>{
  const file=e.target.files?.[0],path=e.target.dataset.path;

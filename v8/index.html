@@ -118,24 +118,35 @@
   <dialog id="imageCropDialog" class="image-crop-dialog">
     <div class="crop-shell">
       <div class="crop-head">
-        <div><b>裁剪图片</b><span id="cropSlotLabel">图片</span></div>
+        <div><b>选择图片的截取位置</b><span id="cropSlotLabel">图片</span></div>
         <button id="cropClose" type="button" aria-label="关闭">×</button>
       </div>
-      <div class="crop-stage" id="cropStage"><img id="cropImage" alt=""></div>
+      <div class="crop-workspace">
+        <section class="crop-pane crop-pane-source">
+          <div class="crop-pane-label">截取展示区域</div>
+          <div class="crop-stage" id="cropStage"><img id="cropImage" alt=""></div>
+        </section>
+        <section class="crop-pane crop-pane-preview">
+          <div class="crop-pane-label">最终展示效果</div>
+          <div class="crop-preview-shell" id="cropPreviewShell">
+            <canvas id="cropPreviewCanvas" aria-label="裁剪效果预览"></canvas>
+          </div>
+          <div class="crop-preview-meta"><b id="cropRatioLabel">推荐比例</b><span>实时预览</span></div>
+        </section>
+      </div>
       <div class="crop-foot">
         <div class="crop-tools">
           <button id="cropRotateLeft" type="button">↶ 90°</button>
           <button id="cropReset" type="button">重置</button>
-          <span id="cropRatioLabel">推荐比例</span>
         </div>
         <div class="crop-actions">
           <button id="cropCancel" type="button">取消</button>
-          <button id="cropApply" type="button" class="primary">应用裁剪</button>
+          <button id="cropApply" type="button" class="primary">确定</button>
         </div>
       </div>
     </div>
   </dialog>
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="/v8/app.js?v=8.26.0"></script>
+  <script type="module" src="/v8/app.js?v=8.27.0"></script>
 </body>
 </html>

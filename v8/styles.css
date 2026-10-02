@@ -645,3 +645,29 @@ body.previewing .canvas-stage:before{display:none}
 /* Studio 8.26 — fixed image, free crop frame */
 .crop-stage cropper-image{pointer-events:none}
 .crop-stage cropper-selection{cursor:move}
+
+/* Studio 8.27 — convention-style crop dialog with live result preview */
+.image-crop-dialog{width:min(1220px,calc(100vw - 28px));border-radius:18px}
+.crop-shell{display:grid;grid-template-rows:auto minmax(430px,72vh) auto;min-height:620px}
+.crop-head{padding:18px 24px}.crop-head>div{display:flex;align-items:baseline;gap:12px}.crop-head b{font-size:18px}.crop-head span{font-size:10px}
+.crop-workspace{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.95fr);gap:18px;padding:18px 24px 20px;min-height:0;background:#fff}
+.crop-pane{min-width:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px}
+.crop-pane-label{font-size:13px;font-weight:800;color:#8b8b95}
+.crop-pane-source{padding-right:18px;border-right:1px solid #ececf1}
+.crop-stage{min-height:0;height:100%;border-radius:12px;background:#3c3c42}
+.crop-pane-preview{align-content:start}
+.crop-preview-shell{width:100%;min-height:220px;display:grid;place-items:start center;overflow:auto;border-radius:12px;background:#f6f6f8;padding:0}
+.crop-preview-shell canvas{display:block;max-width:100%;width:100%;height:auto;background:#fff;border-radius:12px}
+.crop-preview-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;font-size:9px;color:#9a9aa4}.crop-preview-meta b{color:#6f6f79}
+.crop-foot{padding:14px 24px 18px}.crop-actions{gap:12px}.crop-actions button{min-width:128px}.crop-actions .primary{background:#59aee8;border-color:#59aee8}.crop-actions .primary:hover{background:#439edb}
+.crop-tools button{background:#fafafd}
+@media(max-width:820px){
+ .image-crop-dialog{width:calc(100vw - 12px)}
+ .crop-shell{grid-template-rows:auto auto auto;min-height:0;max-height:94vh;overflow:auto}
+ .crop-workspace{grid-template-columns:1fr;padding:14px}
+ .crop-pane-source{padding-right:0;border-right:0}
+ .crop-stage{min-height:360px;height:54vh}
+ .crop-preview-shell{min-height:160px}
+ .crop-head{padding:14px 16px}.crop-head b{font-size:15px}
+ .crop-foot{padding:12px 14px;position:sticky;bottom:0;background:#fff}
+}
