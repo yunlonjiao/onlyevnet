@@ -1,8 +1,8 @@
 export function createRouter({qs:$,qsa:qa,getState,renderParticipation}){
-  const standalonePages=['booths','activities','guide'];
+  const standalonePages=['booths','activities','guide','freewalk','itasha'];
   const fixedModules=new Set(['tickets','participation','booths','activities','guide']);
   const homeSections=[
-    ['tickets','tickets'],['highlights','highlights'],['participation','participation'],['map-home','booths'],['schedule-home','activities'],['guests','guests'],['guide-home','guide'],['community','community'],['sponsors','sponsors']
+    ['tickets','tickets'],['participation','participation'],['map-home','booths'],['schedule-home','activities'],['guests','guests'],['guide-home','guide'],['community','community'],['sponsors','sponsors']
   ];
   let currentPage='home';
   function getCurrentPage(){return currentPage}
@@ -25,7 +25,7 @@ export function createRouter({qs:$,qsa:qa,getState,renderParticipation}){
     $('.ribbon')?.classList.toggle('oe-page-hidden',!moduleOn('ribbon'));
     homeSections.forEach(([id,key])=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(key)));
     standalonePages.forEach(id=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(id)));
-    const navMap={'tickets':'tickets','highlights':'highlights','map-home':'booths','schedule-home':'activities','guide-home':'guide','community':'community'};
+    const navMap={'tickets':'tickets','map-home':'booths','schedule-home':'activities','guide-home':'guide','community':'community','freewalk':'freewalk','itasha':'itasha'};
     Object.entries(navMap).forEach(([id,key])=>qa('.nav a[href="#'+id+'"],.mobile-dock a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
     renderQuickAccess();renderParticipation();
   }

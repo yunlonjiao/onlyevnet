@@ -24,11 +24,6 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     if(path.includes('.')){
       setDeep(path,value);
       const parts=path.split('.'),collection=parts[0],index=Number(parts[1]),key=parts[2];
-      if(collection==='highlights'&&key==='tone'){
-        const card=$('[data-oe-item="highlights"][data-oe-index="'+index+'"]');
-        if(card)card.style.setProperty('--tone',value||'#ffe45c');
-        return;
-      }
       if(collection==='tickets'&&key==='image'){
         renderTickets();
         markEditable();

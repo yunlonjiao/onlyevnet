@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OnlyEvent Studio v8</title>
-  <link rel="stylesheet" href="/v8/styles.css?v=8.21.0">
+  <link rel="stylesheet" href="/v8/styles.css?v=8.22.0">
 </head>
 <body>
   <header class="studio-topbar">
@@ -53,6 +53,8 @@
           <button data-page="booths" data-module-page="booths" type="button"><span class="nav-icon">⌘</span><span>摊位详情</span></button>
           <button data-page="activities" data-module-page="activities" type="button"><span class="nav-icon">◷</span><span>活动详情</span></button>
           <button data-page="guide" type="button"><span class="nav-icon">i</span><span>观展指南</span></button>
+          <button data-page="freewalk" data-module-page="freewalk" type="button"><span class="nav-icon">◇</span><span>COS / 自由行</span></button>
+          <button data-page="itasha" data-module-page="itasha" type="button"><span class="nav-icon">◇</span><span>痛车展示</span></button>
         </nav>
       </section>
 
@@ -60,7 +62,6 @@
         <div class="workspace-panel-head"><b>内容库</b><small>选择内容类型</small></div>
         <div class="content-managers">
           <button type="button" data-content-manager="tickets"><span>票务</span><b data-content-count="tickets">0</b></button>
-          <button type="button" data-content-manager="highlights"><span>特别企划</span><b data-content-count="highlights">0</b></button>
           <button type="button" data-content-manager="booths"><span>摊位</span><b data-content-count="booths">0</b></button>
           <button type="button" data-content-manager="participation"><span>活动参与</span><b data-content-count="participation">0</b></button>
           <button type="button" data-content-manager="schedule"><span>当天日程</span><b data-content-count="schedule">0</b></button>
@@ -79,7 +80,6 @@
         <div class="workspace-panel-head"><b>模块</b><small>控制首页可选内容</small></div>
         <div class="module-switches">
           <label><span>滚动公告</span><input type="checkbox" data-module="ribbon"></label>
-          <label><span>特别企划</span><input type="checkbox" data-module="highlights"></label>
           <label><span>嘉宾</span><input type="checkbox" data-module="guests"></label>
           <label><span>自由行（活动参与）</span><input type="checkbox" data-module="freewalk"></label>
           <label><span>痛车（活动参与）</span><input type="checkbox" data-module="itasha"></label>
@@ -121,14 +121,17 @@
         <div><b>裁剪图片</b><span id="cropSlotLabel">图片</span></div>
         <button id="cropClose" type="button" aria-label="关闭">×</button>
       </div>
-      <div class="crop-stage" id="cropStage"><img id="cropImage" alt=""></div>
+      <div class="crop-stage" id="cropStage"><img id="cropImage" alt=""><div class="crop-tip">拖动图片调整位置 · 滚轮或 ± 缩放</div></div>
       <div class="crop-foot">
         <div class="crop-tools">
+          <button id="cropZoomOut" type="button" title="缩小">−</button>
+          <button id="cropZoomIn" type="button" title="放大">＋</button>
           <button id="cropRotateLeft" type="button">↶ 90°</button>
           <button id="cropReset" type="button">重置</button>
           <span id="cropRatioLabel">推荐比例</span>
         </div>
         <div class="crop-actions">
+          <button id="cropUseOriginal" type="button">使用原图</button>
           <button id="cropCancel" type="button">取消</button>
           <button id="cropApply" type="button" class="primary">应用裁剪</button>
         </div>
@@ -136,6 +139,6 @@
     </div>
   </dialog>
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="/v8/app.js?v=8.21.0"></script>
+  <script type="module" src="/v8/app.js?v=8.22.0"></script>
 </body>
 </html>

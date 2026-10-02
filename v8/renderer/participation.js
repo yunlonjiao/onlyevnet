@@ -1,5 +1,5 @@
 export function createParticipation({qs:$,escapeHtml:esc,getState}){
-  const optionalTargetModule={highlights:'highlights',freewalk:'freewalk',itasha:'itasha',guests:'guests'};
+  const optionalTargetModule={freewalk:'freewalk',itasha:'itasha',guests:'guests'};
   function renderParticipation(){
     const section=$('#participation');if(!section)return;
     const state=getState(),list=section.querySelector('.participation-list');if(!list)return;

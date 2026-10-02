@@ -13,9 +13,9 @@ export const template01 = {
     heroTitleSize:126,
     heroTitleColor:'#17151b',
     heroTitleAccentColor:'#ff5f91',
-    tagline:'围绕单一作品 IP 的粉丝综合活动。主办方负责 KV、活动信息和内容；网站负责把摊位、嘉宾、舞台、地图与特别企划组织成完整官网。',
+    tagline:'围绕单一作品 IP 的粉丝综合活动。主办方负责 KV、活动信息和内容；网站负责把摊位、嘉宾、舞台与地图组织成完整官网。',
     theme:'#ff5f91',
-    sticker1:'限定企划 ✦',
+    sticker1:'主题活动 ✦',
     sticker2:'40+ 社团',
     sticker3:'COS OK!',
     ribbonItems:[
@@ -31,11 +31,11 @@ export const template01 = {
       {id:'t2',name:'特典票',price:'¥128',gift:'入场资格\n限定徽章\n纪念票根',note:'限量发售',image:''},
       {id:'t3',name:'VIP 票',price:'¥198',gift:'优先入场\n限定礼包\n舞台优先区',note:'赠品内容由主办方填写',image:''}
     ],
-    modules:{ribbon:true,highlights:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
+    modules:{ribbon:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
     participation:[
       {id:'pa1',title:'舞台互动',meta:'主舞台 · 13:30',text:'参与主题问答、互动游戏与现场抽选。',target:'schedule-home',url:''},
       {id:'pa2',title:'主题合影',meta:'主舞台 · 15:00',text:'到指定区域参加本届主题合影活动。',target:'schedule-home',url:''},
-      {id:'pa3',title:'应援留言墙',meta:'企划区 · 全天',text:'留下角色应援与周年留言，现场统一展示。',target:'highlights',url:''},
+      {id:'pa3',title:'应援留言墙',meta:'企划区 · 全天',text:'留下角色应援与周年留言，现场统一展示。',target:'participation',url:''},
       {id:'pa4',title:'COS / 自由行',meta:'活动区域 · 指定时段',text:'查看本届自由行参与方式、规则与集合信息。',target:'freewalk',url:''}
     ],
     venueMap:{
@@ -43,8 +43,8 @@ export const template01 = {
       links:[
         {id:'ml1',label:'主舞台',target:'schedule-home'},
         {id:'ml2',label:'摊位',target:'booths'},
-        {id:'ml3',label:'痛车区',target:'participation'},
-        {id:'ml4',label:'COS 区',target:'participation'}
+        {id:'ml3',label:'痛车区',target:'itasha'},
+        {id:'ml4',label:'COS 区',target:'freewalk'}
       ],
       points:[
         {id:'mp-b1',kind:'booth',label:'A01',x:18,y:24,boothId:'b1'},
@@ -98,12 +98,14 @@ export const template01 = {
       ]
     },
     freewalk:{
-      title:'自由行',
-      text:'自由行报名、集合方式与参与规则由主办方填写。'
+      title:'COS / 自由行',
+      text:'自由行报名、集合方式与参与规则由主办方填写。',
+      image:''
     },
     itasha:{
       title:'痛车展示',
-      text:'痛车报名、展示区域与现场规则由主办方填写。'
+      text:'痛车报名、展示区域与现场规则由主办方填写。',
+      image:''
     }
   }
 };

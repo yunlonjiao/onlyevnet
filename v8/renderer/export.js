@@ -13,8 +13,8 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
     const stateJson=JSON.stringify(state).replace(/</g,'\\u003c');
     const runtime=`(()=>{
       const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)],S=${stateJson};
-      const mods=S.modules||{},standalone=["booths","activities","guide"],fixed=new Set(["tickets","participation","booths","activities","guide"]);
-      const homeSections=[["tickets","tickets"],["highlights","highlights"],["participation","participation"],["map-home","booths"],["schedule-home","activities"],["guests","guests"],["guide-home","guide"],["community","community"],["sponsors","sponsors"]];
+      const mods=S.modules||{},standalone=["booths","activities","guide","freewalk","itasha"],fixed=new Set(["tickets","participation","booths","activities","guide"]);
+      const homeSections=[["tickets","tickets"],["participation","participation"],["map-home","booths"],["schedule-home","activities"],["guests","guests"],["guide-home","guide"],["community","community"],["sponsors","sponsors"]];
       const on=k=>fixed.has(k)||mods[k]!==false;
       const wishKey=()=>("oe-wishlist:"+String(S.eventName||"event").toLowerCase().replace(/\s+/g,"-"));
       const readWish=()=>{try{const x=JSON.parse(localStorage.getItem(wishKey())||"{}");return{booths:Array.isArray(x.booths)?x.booths:[],products:Array.isArray(x.products)?x.products:[]}}catch{return{booths:[],products:[]}}};
@@ -39,17 +39,6 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
         show("home");
         requestAnimationFrame(()=>$("#"+id)?.scrollIntoView({behavior:"smooth",block:"start"}));
       }
-
-      function key(){return"oe-passport:"+String(S.eventName||"event").toLowerCase().replace(/\\s+/g,"-")}
-      function hits(){try{return JSON.parse(localStorage.getItem(key())||"[]")}catch{return[]}}
-      function paint(){const h=new Set(hits());qa("[data-pass-code]").forEach(el=>el.classList.toggle("hit",h.has(String(el.dataset.passCode).toUpperCase())))}
-
-      const u=new URL(location.href),code=u.searchParams.get("stamp");
-      if(code&&(S.passport?.tasks||[]).some(t=>String(t.code).toUpperCase()===String(code).toUpperCase())){
-        const h=new Set(hits());h.add(String(code).toUpperCase());localStorage.setItem(key(),JSON.stringify([...h]));
-        u.searchParams.delete("stamp");history.replaceState(null,"",u.pathname+u.search+u.hash);
-      }
-      paint();
 
       document.addEventListener("input",e=>{const d=e.target.closest("[data-directory-search]");if(d){const box=$("#booths .booth-directory-rich");if(box){box.dataset.directoryPage="1";applyDirectory()}return}const booth=e.target.closest("[data-booth-search]");if(booth){const q=booth.value.trim().toLowerCase(),savedOnly=$('[data-booth-filter="saved"]')?.classList.contains("active"),fav=readWish(),bs=new Set(fav.booths),ps=new Set(fav.products);let shown=0;qa(".booth-rich").forEach(card=>{const matches=!q||String(card.dataset.search||"").includes(q),saved=bs.has(card.dataset.boothId)||[...card.querySelectorAll("[data-product-id]")].some(p=>ps.has(p.dataset.productId)),on=matches&&(!savedOnly||saved);card.hidden=!on;if(on)shown++});const empty=$(".booth-no-result");if(empty)empty.hidden=shown>0}const map=e.target.closest("[data-map-search-input]");if(map){const q=map.value.trim().toLowerCase();qa(".map-search-result").forEach(b=>b.hidden=!!q&&!String(b.dataset.mapSearch||"").includes(q))}});
       paintWish();applyDirectory();
