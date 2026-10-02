@@ -24,8 +24,12 @@ if(!Array.isArray(state.venueMap.links))state.venueMap.links=structuredClone(tem
 const FIRST_LEVEL_TARGETS=new Set(['booths','activities','guide','freewalk','itasha']);
 state.venueMap.links=(state.venueMap.links||[]).map((link,i)=>{
  const legacy={participation:'activities','schedule-home':'activities','map-home':'booths','guide-home':'guide'}[link.target];
- const target=FIRST_LEVEL_TARGETS.has(legacy||link.target)?(legacy||link.target):'activities';
- return {id:link.id||('ml'+(i+1)),label:link.label||'继续探索',target,itemType:link.itemType||'page',itemId:link.itemId||''};
+ let target=FIRST_LEVEL_TARGETS.has(legacy||link.target)?(legacy||link.target):'activities';
+ const label=String(link.label||'');
+ if(/痛车/i.test(label))target='itasha';
+ else if(/COS|自由行/i.test(label))target='freewalk';
+ else if(/摊位/i.test(label)&&target==='activities')target='booths';
+ return {id:link.id||('ml'+(i+1)),label:label||'继续探索',target,itemType:link.itemType||'page',itemId:link.itemId||''};
 });
 delete state.venueMap.points;
 state.participation=(state.participation||[]).map(item=>({...item,target:{participation:'activities','schedule-home':'activities','guide-home':'guide'}[item.target]||item.target||'activities'}));
