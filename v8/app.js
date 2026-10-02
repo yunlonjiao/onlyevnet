@@ -226,18 +226,6 @@ function openAddressInspector(){
  $('#testNavigation').onclick=()=>{const url=String(state.navigationUrl||'').trim();if(url.startsWith('https://')||url.startsWith('http://'))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
 }
 
-function openRibbonInspector(){
- const items=state.ribbonItems||[];
- const rows=items.map((item,i)=>'<div class="ribbon-setting-row"><span class="ribbon-setting-index">'+String(i+1).padStart(2,'0')+'</span><input data-ribbon-text="'+i+'" value="'+esc(item.text||'')+'" placeholder="滚动信息"><div class="ribbon-setting-actions"><button type="button" data-ribbon-op="up" data-ribbon-index="'+i+'" '+(i===0?'disabled':'')+'>↑</button><button type="button" data-ribbon-op="down" data-ribbon-index="'+i+'" '+(i===items.length-1?'disabled':'')+'>↓</button><button type="button" data-ribbon-op="delete" data-ribbon-index="'+i+'" '+(items.length<=1?'disabled':'')+'>×</button></div></div>').join('');
- setInspector('首页','滚动公告','<div class="ribbon-setting-list">'+rows+'</div><button type="button" class="collection-add" data-ribbon-add '+(items.length>=12?'disabled':'')+'>＋ 添加一条滚动信息</button><p class="inspector-note">当前 '+items.length+' 条。整组内容会原样循环：4 条就按 4 条循环，5 条就按 5 条循环；系统只复制整组来做无缝衔接，不会插入空白。</p>');
- inspector.querySelectorAll('[data-ribbon-text]').forEach(input=>{
-   let started=false;
-   input.addEventListener('input',e=>{const i=Number(e.target.dataset.ribbonText);if(!state.ribbonItems?.[i])return;if(!started){checkpoint();started=true}state.ribbonItems[i].text=e.target.value;save();send({type:'OE_PATCH_FIELD',path:'ribbonItems.'+i+'.text',value:e.target.value})});
-   input.addEventListener('blur',e=>{const i=Number(e.target.dataset.ribbonText),cleaned=cleanValue(e.target.value);if(!state.ribbonItems?.[i])return;if(cleaned!==e.target.value)e.target.value=cleaned;state.ribbonItems[i].text=cleaned;save();send({type:'OE_REPLACE_STATE',state})});
- });
- inspector.querySelector('[data-ribbon-add]')?.addEventListener('click',()=>{if(state.ribbonItems.length>=12){toast('滚动信息最多 12 条');return}checkpoint();state.ribbonItems.push({id:uid('rb'),text:'新滚动信息'});save();send({type:'OE_REPLACE_STATE',state});openRibbonInspector()});
- inspector.querySelectorAll('[data-ribbon-op]').forEach(btn=>btn.addEventListener('click',()=>{const i=Number(btn.dataset.ribbonIndex),op=btn.dataset.ribbonOp;if(!state.ribbonItems?.[i])return;checkpoint();if(op==='delete'&&state.ribbonItems.length>1)state.ribbonItems.splice(i,1);if(op==='up'&&i>0)[state.ribbonItems[i-1],state.ribbonItems[i]]=[state.ribbonItems[i],state.ribbonItems[i-1]];if(op==='down'&&i<state.ribbonItems.length-1)[state.ribbonItems[i+1],state.ribbonItems[i]]=[state.ribbonItems[i],state.ribbonItems[i+1]];save();send({type:'OE_REPLACE_STATE',state});openRibbonInspector()}));
-}
 function openTicketSettingsInspector(){
  setInspector('票务','购票平台','<div class="item-fields">'+
    '<label><span>按钮文字</span><input id="ticketLinkLabelInput" value="'+esc(state.ticketLinkLabel||'前往官方售票平台')+'"></label>'+
@@ -248,7 +236,10 @@ function openTicketSettingsInspector(){
  $('#testTicketUrl').onclick=()=>{const url=String(state.ticketUrl||'').trim();if(/^https?:\/\//i.test(url))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
 }
 function openFieldInspector(path){
- if(path.startsWith('ribbon')){openRibbonInspector();return}
+ if(path.startsWith('ribbonItems.')){
+   const i=Number(path.split('.')[1])||0;
+   setWorkspace('content');openCollectionManager('ribbonItems',i);openItemInspector('ribbonItems',i);return
+ }
  if(path==='ticketUrl'||path==='ticketLinkLabel'){openTicketSettingsInspector();return}
  if(path==='edition'){openAddressInspector();return}
  if(path.startsWith('heroTitle')){openHeroTitleInspector();return}
@@ -259,13 +250,14 @@ function openFieldInspector(path){
  input.addEventListener('blur',e=>{const cleaned=cleanValue(e.target.value);if(cleaned!==e.target.value){e.target.value=cleaned;setDeep(path,cleaned);send({type:'OE_PATCH_FIELD',path,value:cleaned});fitTextarea(e.target)}});
 }
 const collectionMeta={
+ ribbonItems:{title:'滚动公告',fields:[['text','内容']]},
+ explore:{title:'继续探索',fields:[['label','显示名称']]},
  tickets:{title:'票务',fields:[['name','票名'],['price','价格'],['gift','特典'],['note','备注']]},
- participation:{title:'活动参与',fields:[['title','活动名称'],['meta','时间 / 地点'],['text','参与说明'],['url','外部报名 / 详情链接']]},
+ participation:{title:'活动企划',fields:[['title','活动名称'],['meta','时间 / 地点'],['text','参与说明'],['url','外部报名 / 详情链接']]},
  schedule:{title:'当天日程',fields:[['time','时间'],['title','标题'],['stage','区域名称'],['detail','详情'],['registrationUrl','报名 / 外部链接']]},
  guide:{title:'指南内容',fields:[['title','标题'],['text','说明']]},
  guests:{title:'嘉宾',fields:[['name','姓名 / 名称'],['role','身份'],['works','代表作'],['intro','介绍'],['socialLabel','平台名称'],['socialUrl','平台链接'],['appearance','签售 / 舞台时间']]},
  booths:{title:'摊位',fields:[['no','摊位号'],['name','社团名'],['type','分类'],['intro','简介']]},
- mapPoints:{title:'地图点位',fields:[['label','点位名称']]},
  updates:{title:'重要更新',fields:[['date','日期'],['title','更新内容']]},socialLinks:{title:'社群入口',fields:[['label','名称'],['note','说明'],['url','链接']]},sponsors:{title:'赞助支持',fields:[['name','名称'],['level','级别'],['url','链接']]}
 };
 function uid(prefix){return prefix+Math.random().toString(36).slice(2,8)}
@@ -273,22 +265,32 @@ function fitTextarea(el){if(!el)return;el.style.height='auto';el.style.height=Ma
 function cleanValue(v){return String(v??'').split('\n').map(x=>x.trimEnd()).join('\n').replace(/^\s*\n+/,'').replace(/\n+\s*$/,'').trim()}
 function collectionArray(collection){
  if(collection==='guide')return state.guide?.items;
- if(collection==='mapPoints')return state.venueMap?.points;
+ if(collection==='explore')return state.venueMap?.links;
  return state[collection];
 }
 function collectionPath(collection,index,key){
  if(collection==='guide')return 'guide.items.'+index+'.'+key;
- if(collection==='mapPoints')return 'venueMap.points.'+index+'.'+key;
+ if(collection==='explore')return 'venueMap.links.'+index+'.'+key;
  return collection+'.'+index+'.'+key;
 }
 function optionsHtml(items,value,labelFn=x=>x.label||x.name||x.id){
  return '<option value="">未关联</option>'+items.map(x=>'<option value="'+esc(x.id)+'" '+(x.id===value?'selected':'')+'>'+esc(labelFn(x))+'</option>').join('');
 }
+function exploreDetailOptions(page,itemType='page',itemId=''){
+ const selected=(type,id)=>type===itemType&&String(id||'')===String(itemId||'')?' selected':'';
+ let out='<option value="page:"'+selected('page','')+'>页面顶部</option>';
+ if(page==='booths')out+=(state.booths||[]).map(x=>'<option value="booth:'+esc(x.id)+'"'+selected('booth',x.id)+'>'+esc((x.no?x.no+' · ':'')+(x.name||'摊位'))+'</option>').join('');
+ if(page==='activities'){
+   out+=(state.participation||[]).map(x=>'<option value="participation:'+esc(x.id)+'"'+selected('participation',x.id)+'>企划 · '+esc(x.title||'活动')+'</option>').join('');
+   out+=(state.schedule||[]).map(x=>'<option value="schedule:'+esc(x.id)+'"'+selected('schedule',x.id)+'>日程 · '+esc((x.time?x.time+' ':'')+(x.title||'活动'))+'</option>').join('');
+ }
+ if(page==='guide')out+=(state.guide?.items||[]).map(x=>'<option value="guide:'+esc(x.id)+'"'+selected('guide',x.id)+'>'+esc(x.title||'指南')+'</option>').join('');
+ return out;
+}
 function extraInspector(collection,index,item){
  if(collection==='schedule'){
-   const locations=state.venueMap?.points||[],guests=state.guests||[];
-   return '<div class="reference-panel"><b>内容关联</b><label><span>活动地点</span><select data-ref="locationId">'+optionsHtml(locations,item.locationId,x=>x.label+' · '+x.kind)+'</select></label>'+
-     '<div class="reference-list"><span>出席嘉宾</span>'+guests.map(g=>'<label class="check-row"><input type="checkbox" data-guest-ref="'+esc(g.id)+'" '+((item.guestIds||[]).includes(g.id)?'checked':'')+'><span>'+esc(g.name)+'</span></label>').join('')+'</div></div>';
+   const guests=state.guests||[];
+   return '<div class="reference-panel"><b>内容关联</b><div class="reference-list"><span>出席嘉宾</span>'+guests.map(g=>'<label class="check-row"><input type="checkbox" data-guest-ref="'+esc(g.id)+'" '+((item.guestIds||[]).includes(g.id)?'checked':'')+'><span>'+esc(g.name)+'</span></label>').join('')+'</div></div>';
  }
  if(collection==='guests'){
    const related=(state.schedule||[]).filter(a=>(a.guestIds||[]).includes(item.id));
@@ -303,14 +305,12 @@ function extraInspector(collection,index,item){
      products.map((p,j)=>'<div class="product-edit-card" data-product-row="'+j+'><div class="product-edit-media">'+(p.image?'<img src="'+esc(p.image)+'" alt="">':'<div>＋</div>')+'<button type="button" data-product-image="'+j+'">图片</button></div><div class="product-edit-fields"><input data-product-key="name" data-product-index="'+j+'" value="'+esc(p.name||'')+'" placeholder="制品名称"><input data-product-key="price" data-product-index="'+j+'" value="'+esc(p.price||'')+'" placeholder="价格"><input data-product-key="note" data-product-index="'+j+'" value="'+esc(p.note||'')+'" placeholder="说明"></div><button type="button" class="product-remove" data-product-op="remove" data-product-index="'+j+'">×</button></div>').join('')+
      '</div>';
  }
- if(collection==='mapPoints'){
-   const linked=(state.booths||[]).filter(b=>b.pointId===item.id);
-   const kinds=[['booth','摊位'],['stage','舞台'],['service','服务台'],['restroom','卫生间'],['changing','更衣室'],['entrance','出入口'],['food','餐饮'],['other','其他']];
-   return '<div class="reference-panel"><b>点位类型</b><label><span>类型</span><select data-ref="kind">'+kinds.map(x=>'<option value="'+x[0]+'" '+(item.kind===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select></label></div>'+
-     '<div class="reference-panel"><b>点位使用情况</b><div class="linked-summary">'+(linked.length?linked.map(b=>'<span>'+esc((b.no||'')+' '+b.name)+'</span>').join(''):'<span>暂未关联摊位</span>')+'</div><p class="inspector-note">直接在地图上拖动点位调整位置；摊位关联在摊位编辑器中设置。</p></div>';
+ if(collection==='explore'){
+   const pages=[['booths','摊位'],['activities','活动'],['guide','观展指南'],['freewalk','COS / 自由行'],['itasha','痛车展示']];
+   return '<div class="reference-panel"><b>跳转目标</b><label><span>一级页面</span><select data-explore-page>'+pages.map(x=>'<option value="'+x[0]+'" '+(item.target===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select></label><label><span>页内内容（可选）</span><select data-explore-detail>'+exploreDetailOptions(item.target,item.itemType,item.itemId)+'</select></label></div>';
  }
  if(collection==='participation'){
-   const targets=[['participation','活动参与'],['schedule-home','当天日程'],['highlights','特别企划'],['tickets','票务'],['booths','摊位'],['map-home','场地图'],['guide','观展指南'],['freewalk','自由行'],['itasha','痛车']];
+   const targets=[['activities','活动'],['booths','摊位'],['guide','观展指南'],['freewalk','COS / 自由行'],['itasha','痛车展示']];
    return '<div class="reference-panel"><b>页面关联（可选）</b><label><span>点击后前往</span><select data-ref="target">'+targets.map(x=>'<option value="'+x[0]+'" '+(item.target===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select></label><p class="inspector-note">如果填写外部链接，会优先打开外部报名或详情页面。</p></div>';
  }
  if(collection==='updates'){
@@ -323,9 +323,14 @@ function openItemInspector(collection,index){
  const meta=collectionMeta[collection],arr=collectionArray(collection),item=arr?.[index];if(!meta||!item)return;
  const count=arr.length;
  const isLong=k=>['text','gift','note','detail','intro','works','appearance'].includes(k);
+ const guideMedia=collection==='guide'
+   ?(item.image
+     ?'<div class="item-media"><span>'+(item.preset==='traffic'?'路线图 / 入口示意图':'附图')+'</span><div class="item-media-row"><img src="'+esc(item.image)+'" alt=""><div><button data-media-path="guide.items.'+index+'.image">替换图片</button><button data-remove-media="guide.items.'+index+'.image" class="ghost">移除</button></div></div></div>'
+     :'<div class="guide-media-add"><button type="button" data-media-path="guide.items.'+index+'.image">＋ 添加附图</button></div>')
+   :'';
  const media=collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='sponsors'?'<div class="item-media"><span>Logo</span><div class="item-media-row">'+(item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="sponsors.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="sponsors.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>':'';
  const itemTitle=contentManagerMeta[collection]?.item?.(item,index)?.[0]||meta.title;
- setInspector('内容',meta.title+' · '+itemTitle,'<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+extraInspector(collection,index,item)+'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>');
+ setInspector('内容',meta.title+' · '+itemTitle,'<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+guideMedia+extraInspector(collection,index,item)+'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>');
  inspector.querySelectorAll('textarea').forEach(fitTextarea);
  inspector.querySelectorAll('[data-key]').forEach(input=>{
    let started=false;
@@ -333,17 +338,20 @@ function openItemInspector(collection,index){
      if(!started){checkpoint();started=true}
      const key=e.target.dataset.key;
      let value=e.target.value;
-     if(collection==='mapPoints'&&(key==='x'||key==='y'))value=Math.max(0,Math.min(100,Number(value)||0));
-     item[key]=value;save();if(collection==='mapPoints')send({type:'OE_REPLACE_STATE',state});else send({type:'OE_PATCH_FIELD',path:collectionPath(collection,index,key),value});
+     item[key]=value;save();send({type:'OE_PATCH_FIELD',path:collectionPath(collection,index,key),value});
      if(e.target.tagName==='TEXTAREA')fitTextarea(e.target);
    });
    input.addEventListener('blur',e=>{
      if(e.target.type==='color')return;
      const key=e.target.dataset.key,cleaned=cleanValue(e.target.value);
-     if(cleaned!==e.target.value&&!(collection==='mapPoints'&&(key==='x'||key==='y'))){e.target.value=cleaned;item[key]=cleaned;save();send({type:'OE_PATCH_FIELD',path:collectionPath(collection,index,key),value:cleaned});if(e.target.tagName==='TEXTAREA')fitTextarea(e.target)}
+     if(cleaned!==e.target.value){e.target.value=cleaned;item[key]=cleaned;save();send({type:'OE_PATCH_FIELD',path:collectionPath(collection,index,key),value:cleaned});if(e.target.tagName==='TEXTAREA')fitTextarea(e.target)}
    });
  });
  inspector.querySelectorAll('[data-ref]').forEach(sel=>sel.addEventListener('change',e=>{checkpoint();item[e.target.dataset.ref]=e.target.value;save();send({type:'OE_REPLACE_STATE',state})}));
+ if(collection==='explore'){
+   inspector.querySelector('[data-explore-page]')?.addEventListener('change',e=>{checkpoint();item.target=e.target.value;item.itemType='page';item.itemId='';save();send({type:'OE_REPLACE_STATE',state});openCollectionManager('explore',index);openItemInspector('explore',index)});
+   inspector.querySelector('[data-explore-detail]')?.addEventListener('change',e=>{checkpoint();const [type,id='']=String(e.target.value||'page:').split(':');item.itemType=type||'page';item.itemId=id;save();send({type:'OE_REPLACE_STATE',state})});
+ }
  inspector.querySelectorAll('[data-guest-ref]').forEach(ch=>ch.addEventListener('change',e=>{checkpoint();item.guestIds??=[];item.guestIds=e.target.checked?[...new Set([...item.guestIds,e.target.dataset.guestRef])]:item.guestIds.filter(id=>id!==e.target.dataset.guestRef);save();send({type:'OE_REPLACE_STATE',state})}));
  inspector.querySelectorAll('[data-op]').forEach(btn=>btn.addEventListener('click',()=>mutateItem(collection,index,btn.dataset.op)));
  inspector.querySelectorAll('[data-media-path]').forEach(btn=>btn.addEventListener('click',()=>{$('#imageInput').dataset.path=btn.dataset.mediaPath;$('#imageInput').dataset.returnCollection=collection;$('#imageInput').dataset.returnIndex=String(index);$('#imageInput').click()}));
@@ -358,16 +366,17 @@ function mutateItem(collection,index,op){
  if(op==='down'&&index<arr.length-1){[arr[index+1],arr[index]]=[arr[index],arr[index+1]];index++}
  if(op==='delete'&&arr.length>1){arr.splice(index,1);index=Math.max(0,index-1)}
  if(op==='add'){
-   const fresh=collection==='tickets'?{id:uid('t'),name:'新票种',price:'¥0',gift:'',note:'',image:''}:
-     collection==='guide'?{id:uid('gd'),title:'新指南内容',text:''}:
+   const fresh=collection==='ribbonItems'?{id:uid('rb'),text:'新滚动公告'}:
+     collection==='explore'?{id:uid('ml'),label:'新探索入口',target:'activities',itemType:'page',itemId:''}:
+     collection==='tickets'?{id:uid('t'),name:'新票种',price:'¥0',gift:'',note:'',image:''}:
+     collection==='guide'?{id:uid('gd'),preset:'custom',title:'新指南内容',text:'',image:''}:
      collection==='guests'?{id:uid('g'),name:'新嘉宾',role:'Guest',works:'',intro:'',image:'',socialLabel:'',socialUrl:'',appearance:''}:
      collection==='booths'?{id:uid('b'),no:'',name:'新摊位',logo:'',type:'',intro:'',products:[{id:uid('p'),name:'新制品',price:'',note:'',image:''}]}:
-     collection==='mapPoints'?{id:uid('mp'),kind:'other',label:'新点位',x:50,y:50,boothId:''}:
      collection==='updates'?{id:uid('u'),date:'',title:'新更新',target:'top'}:
-     collection==='participation'?{id:uid('pa'),title:'新参与活动',meta:'',text:'',target:'participation',url:''}:
+     collection==='participation'?{id:uid('pa'),preset:'custom',title:'新活动',meta:'时间 / 地点待定',text:'',target:'activities',url:''}:
      collection==='socialLinks'?{id:uid('sl'),label:'新社群入口',note:'',url:'',image:''}:
      collection==='sponsors'?{id:uid('sp'),name:'新赞助商',level:'合作伙伴',url:'',logo:''}:
-     {id:uid('s'),time:'12:00',title:'新活动',stage:'MAIN STAGE',detail:'',locationId:'',guestIds:[],registrationUrl:''};
+     {id:uid('s'),time:'12:00',title:'新活动',stage:'MAIN STAGE',detail:'',guestIds:[],registrationUrl:''};
    arr.splice(index+1,0,fresh);index++;
  }
  save();send({type:'OE_REPLACE_STATE',state});syncContentCounts();openCollectionManager(collection,index);openItemInspector(collection,index);
@@ -378,6 +387,7 @@ function imageSlotConfig(path){
  if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾图片',ratio:.8,ratioLabel:'裁剪框可移动 · 比例 4:5',width:960,height:1200,fixed:true};
  if(/^booths\.\d+\.products\.\d+\.image$/.test(path))return {label:'制品图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1000,height:1000,fixed:true};
  if(path==='venueMap.image')return {label:'场地图',ratio:null,ratioLabel:'裁剪框自由比例',maxSize:2000,free:true};
+ if(/^guide\.items\.\d+\.image$/.test(path))return {label:'指南附图',ratio:null,ratioLabel:'裁剪框自由比例',maxSize:1800,free:true};
  if(/^(freewalk|itasha)\.image$/.test(path))return {label:'活动图片',ratio:.8,ratioLabel:'裁剪框可移动 · 比例 4:5',width:960,height:1200,fixed:true};
  if(/^booths\.\d+\.logo$/.test(path))return {label:'社团 Logo',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:700,height:700,fixed:true};
  if(/^socialLinks\.\d+\.image$/.test(path))return {label:'二维码 / 社群图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:900,height:900,fixed:true};
