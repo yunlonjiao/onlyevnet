@@ -69,7 +69,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
   function renderGuide(){
     const state=getState(),items=state.guide?.items||[],homeCount=Math.max(0,Math.min(items.length,Number(state.guide?.homeCount??2)));
     const card=(x,i)=>{
-      const image=x.image?'<button class="guide-image" type="button" data-product-lightbox="'+esc(x.image)+'" data-oe-image="guide.items.'+i+'.image"><img src="'+esc(x.image)+'" alt="'+esc(x.title||'观展指南')+'"></button>':(getMode()==='edit'?'<button class="guide-image empty" type="button" data-oe-image="guide.items.'+i+'.image">＋ 路线图 / 说明图</button>':'');
+      const image=x.image?'<button class="guide-image" type="button" data-product-lightbox="'+esc(x.image)+'" data-oe-image="guide.items.'+i+'.image"><img src="'+esc(x.image)+'" alt="'+esc(x.title||'观展指南')+'"></button>':'';
       return '<article data-oe-item="guide" data-oe-index="'+i+'"><div class="guide-copy"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b>'+field('guide.items.'+i+'.text',x.text||'','p')+'</div>'+image+'</article>';
     };
     const home=$('#guide-home .guide-home-grid');if(home)home.innerHTML=items.slice(0,homeCount).map(card).join('');
@@ -80,15 +80,16 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     const state=getState(),map=state.venueMap||{},box=$('#venueMap'),rail=$('.map-link-rail'),list=$('.map-link-list');if(!box)return;
     box.dataset.oeImage='venueMap.image';box.classList.toggle('has-map',!!map.image);
     box.innerHTML=map.image?'<button class="map-image-view" type="button" data-product-lightbox="'+esc(map.image)+'" aria-label="查看场地图大图"><img src="'+esc(map.image)+'" alt="活动场地图"><span>查看大图 ↗</span></button>':'<div class="map-static-placeholder"><b>场地图</b><span>主办方暂未上传场地图</span></div>';
+    const firstLevelPages=new Set(['booths','activities','guide','freewalk','itasha']);
     const links=(map.links||[]).filter(x=>{
-      if(!String(x?.label||'').trim())return false;
-      if((x.target==='freewalk'||x.target==='itasha')&&state.modules?.[x.target]===false)return false;
+      if(!String(x?.label||'').trim()||!firstLevelPages.has(x.target))return false;
+      if(state.modules?.[x.target]===false)return false;
       return true;
     });
     if(list){
       list.innerHTML=links.map((x,i)=>{
-        const target=x.target||'participation',pageTarget=target==='booths'||target==='activities'||target==='guide'||target==='freewalk'||target==='itasha';
-        return '<a class="map-jump-tag" href="#'+esc(target)+'" data-target-mode="'+(pageTarget?'page':'home')+'" data-page-link="'+esc(target)+'"><span>'+field('venueMap.links.'+i+'.label',x.label,'span')+'</span><i>↗</i></a>';
+        const target=x.target||'activities';
+        return '<a class="map-jump-tag" href="#'+esc(target)+'" data-target-mode="page" data-page-link="'+esc(target)+'"><span>'+field('venueMap.links.'+i+'.label',x.label,'span')+'</span><i>↗</i></a>';
       }).join('');
     }
     if(rail)rail.hidden=!links.length;
