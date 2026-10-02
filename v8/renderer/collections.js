@@ -66,12 +66,11 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
   }
 
   function renderGuide(){
-    const state=getState(),items=state.guide?.items||[],homeCount=Math.max(0,Math.min(items.length,Number(state.guide?.homeCount??2)));
+    const state=getState(),items=state.guide?.items||[];
     const card=(x,i)=>{
       const image=x.image?'<button class="guide-image" type="button" data-product-lightbox="'+esc(x.image)+'" data-oe-image="guide.items.'+i+'.image"><img src="'+esc(x.image)+'" alt="'+esc(x.title||'观展指南')+'"></button>':'';
       return '<article id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"><div class="guide-copy"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b>'+field('guide.items.'+i+'.text',x.text||'','p')+'</div>'+image+'</article>';
     };
-    const home=$('#guide-home .guide-home-grid');if(home)home.innerHTML=items.slice(0,homeCount).map(card).join('');
     const detail=$('#guide .guide-detail-grid');if(detail)detail.innerHTML=items.map(card).join('');
   }
 
@@ -178,7 +177,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
 
   function renderOptionalPages(){
     const state=getState();
-    [['freewalk','COS / 自由行'],['itasha','痛车展示']].forEach(([key,fallback])=>{
+    [['freewalk','COS自由行'],['itasha','痛车展示']].forEach(([key,fallback])=>{
       const root=$('[data-optional-page="'+key+'"]');if(!root)return;
       const item=state[key]||{},image=item.image?'<button class="optional-page-image" type="button" data-product-lightbox="'+esc(item.image)+'" data-oe-image="'+key+'.image"><img src="'+esc(item.image)+'" alt="'+esc(item.title||fallback)+'"></button>':(getMode()==='edit'?'<button class="optional-page-image empty" type="button" data-oe-image="'+key+'.image">＋ 上传活动图片</button>':'');
       root.innerHTML='<div class="optional-page-copy">'+field(key+'.title',item.title||fallback,'h3')+field(key+'.text',item.text||'','p')+'</div>'+image;
