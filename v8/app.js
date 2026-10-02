@@ -346,16 +346,16 @@ function mutateItem(collection,index,op){
  save();send({type:'OE_REPLACE_STATE',state});syncContentCounts();openCollectionManager(collection,index);openItemInspector(collection,index);
 }
 function imageSlotConfig(path){
- if(path==='heroImage')return {label:'主视觉 KV',ratio:1,ratioLabel:'KV · 1:1',width:1400,height:1400};
- if(/^tickets\.\d+\.image$/.test(path))return {label:'票务赠品图',ratio:1,ratioLabel:'赠品图 · 1:1',width:900,height:900};
- if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾图片',ratio:.8,ratioLabel:'嘉宾图 · 4:5',width:960,height:1200};
- if(/^booths\.\d+\.products\.\d+\.image$/.test(path))return {label:'制品图片',ratio:1,ratioLabel:'制品图 · 1:1',width:1000,height:1000};
+ if(path==='heroImage')return {label:'主视觉 KV',ratio:1,ratioLabel:'固定比例 · 1:1',width:1400,height:1400,fixed:true};
+ if(/^tickets\.\d+\.image$/.test(path))return {label:'票务赠品图',ratio:1,ratioLabel:'固定比例 · 1:1',width:900,height:900,fixed:true};
+ if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾图片',ratio:.8,ratioLabel:'固定比例 · 4:5',width:960,height:1200,fixed:true};
+ if(/^booths\.\d+\.products\.\d+\.image$/.test(path))return {label:'制品图片',ratio:1,ratioLabel:'固定比例 · 1:1',width:1000,height:1000,fixed:true};
  if(path==='venueMap.image')return {label:'场地图',ratio:null,ratioLabel:'自由裁剪',maxSize:2000,free:true};
- if(/^(freewalk|itasha)\.image$/.test(path))return {label:'活动图片',ratio:.8,ratioLabel:'活动图 · 4:5',width:960,height:1200};
- if(/^booths\.\d+\.logo$/.test(path))return {label:'社团 Logo',ratio:1,ratioLabel:'Logo · 1:1',width:700,height:700};
- if(/^socialLinks\.\d+\.image$/.test(path))return {label:'二维码 / 社群图片',ratio:1,ratioLabel:'社群图 · 1:1',width:900,height:900};
- if(/^sponsors\.\d+\.logo$/.test(path))return {label:'赞助商 Logo',ratio:1.8,ratioLabel:'Logo · 9:5',width:1080,height:600};
- return {label:'图片',ratio:1,ratioLabel:'1:1',width:1200,height:1200};
+ if(/^(freewalk|itasha)\.image$/.test(path))return {label:'活动图片',ratio:.8,ratioLabel:'固定比例 · 4:5',width:960,height:1200,fixed:true};
+ if(/^booths\.\d+\.logo$/.test(path))return {label:'社团 Logo',ratio:1,ratioLabel:'固定比例 · 1:1',width:700,height:700,fixed:true};
+ if(/^socialLinks\.\d+\.image$/.test(path))return {label:'二维码 / 社群图片',ratio:1,ratioLabel:'固定比例 · 1:1',width:900,height:900,fixed:true};
+ if(/^sponsors\.\d+\.logo$/.test(path))return {label:'赞助商 Logo',ratio:1.8,ratioLabel:'固定比例 · 9:5',width:1080,height:600,fixed:true};
+ return {label:'图片',ratio:1,ratioLabel:'固定比例 · 1:1',width:1200,height:1200,fixed:true};
 }
 function openImageInspector(path){
  const current=getDeep(path);
@@ -365,7 +365,7 @@ function openImageInspector(path){
    const rows=links.map((item,i)=>'<div class="map-link-setting-row"><span class="map-link-setting-index">'+String(i+1).padStart(2,'0')+'</span><div class="map-link-setting-fields"><input data-map-link-label="'+i+'" value="'+esc(item.label||'')+'" placeholder="标签名称"><select data-map-link-target="'+i+'">'+targets.map(x=>'<option value="'+x[0]+'" '+(item.target===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select></div><div class="map-link-setting-actions"><button type="button" data-map-link-op="up" data-map-link-index="'+i+'" '+(i===0?'disabled':'')+'>↑</button><button type="button" data-map-link-op="down" data-map-link-index="'+i+'" '+(i===links.length-1?'disabled':'')+'>↓</button><button type="button" data-map-link-op="delete" data-map-link-index="'+i+'">×</button></div></div>').join('');
    setInspector('场地图','地图与快捷标签',
      '<div class="map-image-actions"><button id="replaceImage" type="button">'+(current?'替换场地图':'上传场地图')+'</button>'+(current?'<button id="removeImage" type="button" class="danger ghost">删除场地图</button>':'')+'</div>'+
-     '<p class="inspector-note">上传或替换后会先进入裁剪；场地图使用自由裁剪，也可以直接选择“使用原图”。横图和竖图都会完整适配，游客可点击查看大图。</p>'+
+     '<p class="inspector-note">上传或替换后会先进入裁剪；场地图使用自由比例，横图和竖图都可以按实际内容调整。游客可点击查看大图。</p>'+
      '<div class="reference-panel map-link-settings"><div class="product-editor-head"><b>地图旁快捷标签</b><button type="button" data-map-link-add>＋ 添加标签</button></div>'+rows+'<p class="inspector-note">标签只负责带游客前往已有内容，例如主舞台→当天日程、摊位→摊位页、COS区→活动参与。</p></div>');
    $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()};
    $('#removeImage')?.addEventListener('click',()=>{checkpoint();setDeep(path,'');save();send({type:'OE_REPLACE_STATE',state});toast('已删除场地图');openImageInspector(path)});
@@ -389,25 +389,43 @@ function getCropperModule(){
  if(!cropperModulePromise)cropperModulePromise=import('https://cdn.jsdelivr.net/npm/cropperjs@2.2.0/+esm');
  return cropperModulePromise;
 }
+async function prepareCropSource(src,cfg){
+ try{
+   const img=new Image(),ready=new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject});
+   img.src=src;await ready;
+   const max=cfg.free?2800:2200,long=Math.max(img.naturalWidth,img.naturalHeight);
+   if(!long||long<=max)return src;
+   const scale=max/long,w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale));
+   const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+   canvas.getContext('2d',{alpha:false}).drawImage(img,0,0,w,h);
+   return canvas.toDataURL('image/webp',.92);
+ }catch(err){console.warn('[OnlyEvent crop preview]',err);return src}
+}
+if('requestIdleCallback' in window)requestIdleCallback(()=>getCropperModule(),{timeout:1800});
+else setTimeout(()=>getCropperModule(),900);
 async function openImageCropper(src,path,returnCollection='',returnIndex=''){
  const dlg=$('#imageCropDialog'),stage=$('#cropStage'),img=$('#cropImage'),cfg=imageSlotConfig(path);
  cropContext={path,returnCollection,returnIndex,cfg,src};
  $('#cropSlotLabel').textContent=cfg.label;
  $('#cropRatioLabel').textContent=cfg.ratioLabel;
- img.src=src;
  dlg.showModal();
  stage.classList.add('loading');
  try{
-   const mod=await getCropperModule(),Cropper=mod.default||mod.Cropper;
+   const [mod,workingSrc]=await Promise.all([getCropperModule(),prepareCropSource(src,cfg)]),Cropper=mod.default||mod.Cropper;
    if(activeCropper?.destroy)activeCropper.destroy();
    stage.querySelectorAll('cropper-canvas').forEach(x=>x.remove());
-   const ratioAttr=Number.isFinite(cfg.ratio)&&cfg.ratio>0?' aspect-ratio="'+cfg.ratio+'"':'';
-   const template='<cropper-canvas background><cropper-image rotatable scalable skewable translatable></cropper-image><cropper-shade hidden></cropper-shade><cropper-handle action="move" plain></cropper-handle><cropper-selection initial-coverage="0.88"'+ratioAttr+' movable resizable zoomable outlined><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair><cropper-handle action="move" theme-color="rgba(255,255,255,.35)"></cropper-handle><cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle></cropper-selection></cropper-canvas>';
+   img.src=workingSrc;
+   try{await img.decode()}catch{}
+   const ratioAttr=Number.isFinite(cfg.ratio)&&cfg.ratio>0?' aspect-ratio="'+cfg.ratio+'" initial-aspect-ratio="'+cfg.ratio+'"':'';
+   const resizeHandles=cfg.free
+     ?'<cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle>'
+     :'<cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle>';
+   const template='<cropper-canvas background><cropper-image rotatable scalable skewable translatable></cropper-image><cropper-shade hidden></cropper-shade><cropper-handle action="move" plain></cropper-handle><cropper-selection initial-coverage="0.88"'+ratioAttr+' movable resizable outlined><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair><cropper-handle action="move" theme-color="rgba(255,255,255,.35)"></cropper-handle>'+resizeHandles+'</cropper-selection></cropper-canvas>';
    activeCropper=new Cropper(img,{container:stage,template});
+   const selection=activeCropper.getCropperSelection?.();
+   if(selection&&cfg.fixed&&Number.isFinite(cfg.ratio)){selection.aspectRatio=cfg.ratio;selection.initialAspectRatio=cfg.ratio}
  }catch(err){
-   console.error('[OnlyEvent cropper]',err);
-   toast('裁剪器加载失败，可稍后重试');
-   dlg.close();
+   console.error('[OnlyEvent cropper]',err);toast('裁剪器加载失败，可稍后重试');dlg.close();
  }finally{stage.classList.remove('loading')}
 }
 function closeImageCropper(){
