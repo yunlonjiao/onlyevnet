@@ -2,7 +2,7 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation})
   const standalonePages=['booths','activities','guests','guide'];
   const fixedModules=new Set(['tickets','map','guests']);
   const homeSections=[
-    ['tickets','tickets'],['participation','activities'],['map-home','map'],['schedule-home','activities'],['guide-home','guide'],['community','community'],['sponsors','sponsors']
+    ['tickets','tickets'],['map-home','map'],['participation','activities'],['schedule-home','activities'],['community','community'],['sponsors','sponsors']
   ];
   let currentPage='home';
   function getCurrentPage(){return currentPage}
@@ -31,7 +31,7 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation})
     $('.ribbon')?.classList.toggle('oe-page-hidden',!moduleOn('ribbon'));
     homeSections.forEach(([id,key])=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(key)));
     standalonePages.forEach(id=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(id)));
-    const navMap={'tickets':'tickets','map-home':'map','schedule-home':'activities','guide-home':'guide','community':'community','guests':'guests'};
+    const navMap={'tickets':'tickets','map-home':'map','schedule-home':'activities','community':'community','guests':'guests'};
     Object.entries(navMap).forEach(([id,key])=>qa('.nav a[href="#'+id+'"],.mobile-dock a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
     renumberSections();
     renderQuickAccess();renderParticipation();
@@ -39,10 +39,8 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation})
   function renumberSections(){
     const defs=[
       ['tickets','tickets'],
-      ['participation','activities'],
       ['map-home','map'],
-      ['schedule-home','activities'],
-      ['guide-home','guide'],
+      ['participation','activities'],
       ['community','community'],
       ['sponsors','sponsors']
     ];
