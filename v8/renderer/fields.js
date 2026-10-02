@@ -17,7 +17,7 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     ribbon4:()=>qa('.ribbon-edit')[3],
     heroImage:()=>$('.kv')
   };
-  const extraStatePaths=['heroTitleSize','heroTitleColor','heroTitleAccentColor','navigationUrl'];
+  const extraStatePaths=['heroTitleSize','heroTitleColor','heroTitleAccentColor','navigationUrl','ticketUrl','ticketLinkLabel'];
 
   function safeExternalUrl(value){
     const v=String(value||'').trim();
@@ -60,6 +60,16 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
       if(a)a.href=safeExternalUrl(value);
       return;
     }
+    if(path==='ticketUrl'||path==='ticketLinkLabel'){
+      const stateValue=String(value||'').trim();
+      if(path==='ticketUrl'){
+        const valid=/^https?:\/\//i.test(stateValue);
+        qa('.ticket-purchase-link').forEach(a=>{a.href=valid?stateValue:'#';a.hidden=!valid&&getMode()!=='edit'});
+      }else{
+        qa('.ticket-purchase-link').forEach(a=>{a.textContent=(stateValue||'前往官方售票平台')+' ↗'});
+      }
+      return;
+    }
 
     const el=fieldMap[path]?.();
     if(!el)return;
@@ -68,12 +78,6 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
       el.style.backgroundImage='linear-gradient(180deg,transparent,rgba(0,0,0,.26)),url("'+String(value).replace(/"/g,'%22')+'")';
       return;
     }
-    if(path==='ticketUrl'){
-      const a=$('#tickets .ticket-actions a');
-      if(a)a.href=value||'#';
-      return;
-    }
-
     el.textContent=value??'';
 
     if(path.startsWith('ribbon')){

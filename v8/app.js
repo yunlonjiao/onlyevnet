@@ -1,4 +1,4 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.18.0';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.19.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
@@ -8,6 +8,9 @@ if(!state.edition||state.edition==='首届')state.edition=template01.defaults.ed
 if(!state.navigationUrl)state.navigationUrl=template01.defaults.navigationUrl;
 if(state.modules?.activities===undefined&&state.modules?.stage!==undefined){state.modules.activities=state.modules.stage;delete state.modules.stage}
 if(!state.guide||!Array.isArray(state.guide.items))state.guide=structuredClone(template01.defaults.guide);
+if(!Array.isArray(state.tickets))state.tickets=structuredClone(template01.defaults.tickets);
+if(state.ticketUrl===undefined)state.ticketUrl=template01.defaults.ticketUrl;
+if(state.ticketLinkLabel===undefined)state.ticketLinkLabel=template01.defaults.ticketLinkLabel;
 if(state.modules&&'passport' in state.modules)delete state.modules.passport;
 if(!Array.isArray(state.participation))state.participation=structuredClone(template01.defaults.participation);
 for(const k of ['tickets','booths','activities','guide'])if(state.modules&&k in state.modules)delete state.modules[k];
@@ -115,7 +118,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.18.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.19.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -190,7 +193,27 @@ function openAddressInspector(){
  $('#testNavigation').onclick=()=>{const url=String(state.navigationUrl||'').trim();if(url.startsWith('https://')||url.startsWith('http://'))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
 }
 
+function openRibbonInspector(){
+ setInspector('首页','滚动公告','<div class="item-fields">'+
+   [1,2,3,4].map(i=>'<label><span>第 '+i+' 段</span><input data-ribbon-setting="'+i+'" value="'+esc(state['ribbon'+i]||'')+'"></label>').join('')+
+   '</div><p class="inspector-note">四段文字固定循环展示；后半段只是无缝滚动镜像，会自动同步，不需要重复填写。</p>');
+ inspector.querySelectorAll('[data-ribbon-setting]').forEach(input=>{
+   const path='ribbon'+input.dataset.ribbonSetting;
+   bindInspectorStateInput(input,path,{clean:true});
+ });
+}
+function openTicketSettingsInspector(){
+ setInspector('票务','购票平台','<div class="item-fields">'+
+   '<label><span>按钮文字</span><input id="ticketLinkLabelInput" value="'+esc(state.ticketLinkLabel||'前往官方售票平台')+'"></label>'+
+   '<label><span>外部购票链接</span><input id="ticketUrlInput" type="url" value="'+esc(state.ticketUrl||'')+'" placeholder="https://"></label>'+
+   '</div><div class="row"><button id="testTicketUrl" type="button">打开购票平台 ↗</button></div><p class="inspector-note">这是整场活动统一的购票入口，不需要在每个票种里重复填写。</p>');
+ bindInspectorStateInput($('#ticketLinkLabelInput'),'ticketLinkLabel',{clean:true});
+ bindInspectorStateInput($('#ticketUrlInput'),'ticketUrl',{clean:true});
+ $('#testTicketUrl').onclick=()=>{const url=String(state.ticketUrl||'').trim();if(/^https?:\/\//i.test(url))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
+}
 function openFieldInspector(path){
+ if(path.startsWith('ribbon')){openRibbonInspector();return}
+ if(path==='ticketUrl'||path==='ticketLinkLabel'){openTicketSettingsInspector();return}
  if(path==='edition'){openAddressInspector();return}
  if(path.startsWith('heroTitle')){openHeroTitleInspector();return}
  const value=getDeep(path);

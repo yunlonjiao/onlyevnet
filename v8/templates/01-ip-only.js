@@ -22,6 +22,13 @@ export const template01 = {
     ribbon2:'特典票限量',
     ribbon3:'COS 自由行开放',
     ribbon4:'舞台企划更新',
+    ticketUrl:'',
+    ticketLinkLabel:'前往官方售票平台',
+    tickets:[
+      {id:'t1',name:'普通票',price:'¥68',gift:'入场资格',note:'实际购买与退款规则以售票平台为准',image:''},
+      {id:'t2',name:'特典票',price:'¥128',gift:'入场资格\n限定徽章\n纪念票根',note:'限量发售',image:''},
+      {id:'t3',name:'VIP 票',price:'¥198',gift:'优先入场\n限定礼包\n舞台优先区',note:'赠品内容由主办方填写',image:''}
+    ],
     modules:{ribbon:true,highlights:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
     participation:[
       {id:'pa1',title:'舞台互动',meta:'主舞台 · 13:30',text:'参与主题问答、互动游戏与现场抽选。',target:'schedule-home',url:''},

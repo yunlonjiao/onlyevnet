@@ -44,6 +44,8 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
     if(e.target.closest?.('.brand')){e.preventDefault();router.showPage('home');return}
     const venueLink=e.target.closest?.('.venue-nav');
     if(venueLink&&getMode()==='edit'){e.preventDefault();send({type:'OE_SELECT_FIELD',path:'edition'});return}
+    const ticketLink=e.target.closest?.('[data-ticket-settings]');
+    if(ticketLink&&getMode()==='edit'){e.preventDefault();send({type:'OE_SELECT_FIELD',path:'ticketUrl'});return}
     const giftImage=e.target.closest?.('[data-ticket-image]');
     if(giftImage){const i=Number(giftImage.dataset.ticketImage);if(getMode()==='preview'){e.preventDefault();openGiftLightbox(getState().tickets?.[i]?.image);return}else{e.preventDefault();send({type:'OE_SELECT_ITEM',collection:'tickets',index:i});return}}
     const richImage=e.target.closest?.('[data-product-lightbox]');

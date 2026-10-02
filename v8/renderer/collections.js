@@ -8,14 +8,24 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     document.body.appendChild(dlg);dlg.querySelector('button').onclick=()=>dlg.close();dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});return dlg;
   }
   function openGiftLightbox(src){if(!src)return;const dlg=ensureLightbox();dlg.querySelector('img').src=src;dlg.showModal()}
-  function cleanupTicketShell(){$('#tickets .section-no')?.remove();$('#tickets .ticket-actions')?.remove();$('.nav .btn')?.remove()}
-
   function renderTickets(){
-    cleanupTicketShell();const box=$('#tickets .ticket-grid');if(!box)return;const state=getState();
+    const box=$('#tickets .ticket-grid');if(!box)return;const state=getState();
     box.innerHTML=(state.tickets||[]).map((x,i)=>{
       const image=x.image?'<button class="ticket-gift-image" type="button" data-ticket-image="'+i+'" aria-label="查看赠品图片"><img src="'+esc(x.image)+'" alt="'+esc(x.name||'')+' 赠品"></button>':'';
       return '<article class="ticket cut-ticket reveal in" data-oe-item="tickets" data-oe-index="'+i+'"><div class="ticket-top"><div class="ticket-copy">'+field('tickets.'+i+'.name',x.name,'h3')+'<div class="price" data-oe-field="tickets.'+i+'.price" contenteditable="'+(getMode()==='edit')+'" spellcheck="false">'+esc(x.price)+'</div></div>'+image+'</div><div class="gift"><b>包含 / 特典</b>\n'+field('tickets.'+i+'.gift',x.gift,'span')+'</div>'+field('tickets.'+i+'.note',x.note||'','small')+'</article>';
     }).join('');
+    const raw=String(state.ticketUrl||'').trim(),valid=/^https?:\/\//i.test(raw),label=String(state.ticketLinkLabel||'前往官方售票平台').trim()||'前往官方售票平台';
+    const ticketWrap=$('#tickets .ticket-actions');
+    if(ticketWrap){
+      ticketWrap.innerHTML='<a class="btn ticket-purchase-link" data-ticket-settings href="'+(valid?esc(raw):'#')+'" target="_blank" rel="noopener">'+esc(valid?label+' ↗':'设置购票平台链接')+'</a>';
+      ticketWrap.hidden=!valid&&getMode()!=='edit';
+    }
+    const navLink=$('.nav .btn');
+    if(navLink){
+      navLink.classList.add('ticket-purchase-link');navLink.dataset.ticketSettings='1';
+      navLink.href=valid?raw:'#';navLink.textContent=valid?label+' ↗':'设置购票链接';
+      navLink.hidden=!valid&&getMode()!=='edit';
+    }
   }
 
   function renderHighlights(){
