@@ -65,9 +65,7 @@ export const template01 = {
       {id:'s3',time:'15:00',title:'COS 特别舞台',stage:'MAIN STAGE',detail:'COS 舞台展示与主题合影活动。',guestIds:['g1'],registrationUrl:''},
       {id:'s4',time:'17:30',title:'幸运抽选 & 闭幕',stage:'MAIN STAGE',detail:'幸运抽选、闭幕致谢与活动结束提醒。',guestIds:[],registrationUrl:''}
     ],
-    guests:[
-      {id:'g1',name:'特邀嘉宾',role:'Guest / Creator',intro:'嘉宾介绍与作品信息由主办方填写。',works:'代表作 / 参与作品',image:'',socialLabel:'B站',socialUrl:'',appearance:'13:30 主题问答 · 15:00 COS 特别舞台'}
-    ],
+    guests:[],
     updates:[
       {id:'u1',date:'10/01',title:'场地图已公开',target:'map-home'},
       {id:'u2',date:'09/28',title:'当天日程已更新',target:'schedule-home'}
