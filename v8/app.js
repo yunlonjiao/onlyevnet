@@ -21,6 +21,13 @@ if(state.modules&&'passport' in state.modules)delete state.modules.passport;
 if(!Array.isArray(state.participation))state.participation=structuredClone(template01.defaults.participation);
 if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
 if(!Array.isArray(state.venueMap.links))state.venueMap.links=structuredClone(template01.defaults.venueMap.links);
+const FIRST_LEVEL_TARGETS=new Set(['booths','activities','guide','freewalk','itasha']);
+state.venueMap.links=(state.venueMap.links||[]).map(link=>{
+ const legacy={participation:'activities','schedule-home':'activities','map-home':'booths','guide-home':'guide'}[link.target];
+ const target=legacy||link.target;
+ return {...link,target:FIRST_LEVEL_TARGETS.has(target)?target:'activities'};
+});
+state.participation=(state.participation||[]).map(item=>({...item,target:{participation:'activities','schedule-home':'activities','guide-home':'guide'}[item.target]||item.target||'activities'}));
 state.modules??={};
 for(const k of ['booths','activities','guide','freewalk','itasha','ribbon','guests','community','sponsors']){
  if(state.modules[k]===undefined)state.modules[k]=template01.defaults.modules?.[k]!==false;
