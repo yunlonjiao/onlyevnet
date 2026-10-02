@@ -3,7 +3,7 @@ import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/rende
 import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.29.0';
 import {createCollections} from '/v8/renderer/collections.js?v=8.29.0';
 import {createParticipation} from '/v8/renderer/participation.js?v=8.25.0';
-import {createRouter} from '/v8/renderer/router.js?v=8.25.0';
+import {createRouter} from '/v8/renderer/router.js?v=8.30.0';
 import {createFields} from '/v8/renderer/fields.js?v=8.25.0';
 import {createRuntime} from '/v8/renderer/runtime.js?v=8.25.0';
 import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.25.0';
@@ -28,7 +28,7 @@ const setDeep=(path,value)=>setByPath(state,path,value);
 
 const collections=createCollections({qs:$,escapeHtml:esc,getState:()=>state,getMode:()=>mode});
 const participation=createParticipation({qs:$,escapeHtml:esc,getState:()=>state});
-const router=createRouter({qs:$,qsa:qa,getState:()=>state,renderParticipation:participation.renderParticipation});
+const router=createRouter({qs:$,qsa:qa,getState:()=>state,getMode:()=>mode,renderParticipation:participation.renderParticipation});
 const fields=createFields({qs:$,qsa:qa,getMode:()=>mode,setModeState:next=>{mode=next},setDeep,renderTickets:collections.renderTickets});
 const runtime=createRuntime({qs:$,qsa:qa});
 const buildStandaloneHtml=createStandaloneExporter({getState:()=>state,previewStyle,runtimeExtraStyle,escapeHtml:esc});
