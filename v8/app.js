@@ -1,4 +1,4 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.22.0';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.33.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
@@ -8,6 +8,7 @@ if(!state.edition||state.edition==='首届')state.edition=template01.defaults.ed
 if(!state.navigationUrl)state.navigationUrl=template01.defaults.navigationUrl;
 if(state.modules?.activities===undefined&&state.modules?.stage!==undefined){state.modules.activities=state.modules.stage;delete state.modules.stage}
 if(!state.guide||!Array.isArray(state.guide.items))state.guide=structuredClone(template01.defaults.guide);
+state.guide.items=(state.guide.items||[]).map((x,i)=>({image:'',preset:x.preset||template01.defaults.guide.items[i]?.preset||'custom',...x}));
 if(!Array.isArray(state.tickets))state.tickets=structuredClone(template01.defaults.tickets);
 if(state.ticketUrl===undefined)state.ticketUrl=template01.defaults.ticketUrl;
 if(state.ticketLinkLabel===undefined)state.ticketLinkLabel=template01.defaults.ticketLinkLabel;
@@ -20,14 +21,27 @@ if(state.modules&&'passport' in state.modules)delete state.modules.passport;
 if(!Array.isArray(state.participation))state.participation=structuredClone(template01.defaults.participation);
 if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
 if(!Array.isArray(state.venueMap.links))state.venueMap.links=structuredClone(template01.defaults.venueMap.links);
-for(const k of ['tickets','booths','activities','guide'])if(state.modules&&k in state.modules)delete state.modules[k];
-if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
+const FIRST_LEVEL_TARGETS=new Set(['booths','activities','guide','freewalk','itasha']);
+state.venueMap.links=(state.venueMap.links||[]).map((link,i)=>{
+ const legacy={participation:'activities','schedule-home':'activities','map-home':'booths','guide-home':'guide'}[link.target];
+ let target=FIRST_LEVEL_TARGETS.has(legacy||link.target)?(legacy||link.target):'activities';
+ const label=String(link.label||'');
+ if(/痛车/i.test(label))target='itasha';
+ else if(/COS|自由行/i.test(label))target='freewalk';
+ else if(/摊位/i.test(label)&&target==='activities')target='booths';
+ return {id:link.id||('ml'+(i+1)),label:label||'继续探索',target,itemType:link.itemType||'page',itemId:link.itemId||''};
+});
+delete state.venueMap.points;
+state.modules??={};
+for(const k of ['booths','activities','guide','freewalk','itasha','ribbon','guests','community','sponsors']){
+ if(state.modules[k]===undefined)state.modules[k]=template01.defaults.modules?.[k]!==false;
+}
 if(!Array.isArray(state.updates))state.updates=structuredClone(template01.defaults.updates);
 if(!Array.isArray(state.socialLinks))state.socialLinks=structuredClone(template01.defaults.socialLinks);
 if(!Array.isArray(state.sponsors))state.sponsors=structuredClone(template01.defaults.sponsors);
-state.booths=(state.booths||[]).map((b,i)=>({...structuredClone(template01.defaults.booths[i]||{products:[]}),...b,products:Array.isArray(b.products)?b.products:structuredClone(template01.defaults.booths[i]?.products||[])}));
+state.booths=(state.booths||[]).map((b,i)=>{const next={...structuredClone(template01.defaults.booths[i]||{products:[]}),...b,products:Array.isArray(b.products)?b.products:structuredClone(template01.defaults.booths[i]?.products||[])};delete next.pointId;return next});
 state.guests=(state.guests||[]).map((g,i)=>({...structuredClone(template01.defaults.guests[i]||{}),...g}));
-state.schedule=(state.schedule||[]).map((a,i)=>({...structuredClone(template01.defaults.schedule[i]||{guestIds:[]}),...a,guestIds:Array.isArray(a.guestIds)?a.guestIds:[]}));
+state.schedule=(state.schedule||[]).map((a,i)=>{const next={...structuredClone(template01.defaults.schedule[i]||{guestIds:[]}),...a,guestIds:Array.isArray(a.guestIds)?a.guestIds:[]};delete next.locationId;return next});
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(t){toastEl.textContent=t;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),1400)}
 function save(){saveState.textContent='保存中…';syncContentCounts();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));saveState.textContent='已保存'},180)}
@@ -53,23 +67,46 @@ function contentThumb(collection,item){
  if(collection==='tickets')src=item.image||'';
  if(collection==='socialLinks')src=item.image||'';
  if(collection==='sponsors')src=item.logo||'';
- const fallback={tickets:'票',participation:'参',booths:'摊',schedule:'时',guests:'嘉',mapPoints:'点',guide:'指',updates:'更',socialLinks:'社',sponsors:'赞'}[collection]||'•';
+ const fallback={ribbonItems:'告',tickets:'票',explore:'↗',participation:'参',booths:'摊',schedule:'时',guests:'嘉',guide:'指',updates:'更',socialLinks:'社',sponsors:'赞'}[collection]||'•';
  return '<span class="sidebar-content-thumb '+(src?'has-image':'')+'">'+(src?'<img src="'+esc(src)+'" alt="">':fallback)+'</span>';
 }
 
-const moduleLabels={booths:'摊位详情',activities:'活动详情',guide:'观展指南',freewalk:'COS / 自由行',itasha:'痛车展示'};
+const moduleLabels={booths:'摊位',activities:'活动',guide:'观展指南',freewalk:'COS / 自由行',itasha:'痛车展示'};
 const contentManagerMeta={
+ ribbonItems:{title:'滚动公告',empty:'还没有滚动公告',item:(x,i)=>[x.text||('公告 '+(i+1)),'']},
+ explore:{title:'继续探索',empty:'还没有探索入口',item:(x,i)=>[x.label||('入口 '+(i+1)),moduleLabels[x.target]||'页面']},
  tickets:{title:'票务',empty:'还没有票种',item:(x,i)=>[x.name||('票种 '+(i+1)),x.price||'']},
  booths:{title:'摊位',empty:'还没有摊位',item:(x,i)=>[(x.no?x.no+' · ':'')+(x.name||('摊位 '+(i+1))),String((x.products||[]).length)+' 个制品']},
- participation:{title:'活动参与',empty:'还没有参与活动',item:(x,i)=>[x.title||('参与活动 '+(i+1)),x.meta||'']},
+ participation:{title:'活动企划',empty:'还没有活动企划',item:(x,i)=>[x.title||('活动 '+(i+1)),x.meta||'']},
  schedule:{title:'当天日程',empty:'还没有日程',item:(x,i)=>[(x.time?x.time+' · ':'')+(x.title||('日程 '+(i+1))),x.stage||'']},
  guests:{title:'嘉宾',empty:'还没有嘉宾',item:(x,i)=>[x.name||('嘉宾 '+(i+1)),x.role||'']},
- mapPoints:{title:'地图点位',empty:'还没有点位',item:(x,i)=>[x.label||('点位 '+(i+1)),x.kind||'']},
  guide:{title:'观展指南',empty:'还没有指南内容',item:(x,i)=>[x.title||('指南 '+(i+1)),(x.text||'').slice(0,24)]},
  updates:{title:'重要更新',empty:'还没有重要更新',item:(x,i)=>[x.title||('更新 '+(i+1)),x.date||'']},
  socialLinks:{title:'社群入口',empty:'还没有社群入口',item:(x,i)=>[x.label||('入口 '+(i+1)),x.url?'已设置链接':'未设置链接']},
  sponsors:{title:'赞助支持',empty:'还没有赞助信息',item:(x,i)=>[x.name||('赞助 '+(i+1)),x.level||'']}
 };
+const GUIDE_PRESETS={
+ traffic:{preset:'traffic',title:'交通到达',text:'填写场馆地址、公共交通、自驾 / 网约车、入口位置等信息。',image:''},
+ admission:{preset:'admission',title:'入场须知',text:'填写入场时间、检票、排队、二次入场等说明。',image:''},
+ facilities:{preset:'facilities',title:'场馆设施',text:'填写卫生间、更衣室、寄存、餐饮、医疗点、休息区等信息。',image:''},
+ cosplay:{preset:'cosplay',title:'COS / 道具规则',text:'填写更衣、摄影、道具尺寸和现场拍摄规则。',image:''},
+ safety:{preset:'safety',title:'安全与禁止事项',text:'填写禁止携带物品、禁止行为和紧急情况处理。',image:''}
+};
+const PARTICIPATION_PRESETS={
+ stage:{preset:'stage',title:'舞台活动',meta:'主舞台 · 时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'activities',url:''},
+ stamp:{preset:'stamp',title:'集章 / 打卡',meta:'活动区域 · 全天',text:'填写集章点、打卡规则和兑换方式。',target:'activities',url:''},
+ photo:{preset:'photo',title:'主题合影',meta:'集合区域 · 时间待定',text:'填写集合时间、地点和参与方式。',target:'activities',url:''},
+ game:{preset:'game',title:'互动游戏 / 抽选',meta:'活动区域 · 时间待定',text:'填写互动游戏、抽选或现场挑战规则。',target:'activities',url:''},
+ free:{preset:'free',title:'自由交流 / 同好活动',meta:'活动区域 · 时间待定',text:'填写自由交流或同好聚会内容。',target:'activities',url:''}
+};
+function addPresetItem(collection,key){
+ checkpoint();
+ const arr=collectionArray(collection);if(!Array.isArray(arr))return;
+ const source=collection==='guide'?GUIDE_PRESETS[key]:PARTICIPATION_PRESETS[key];if(!source)return;
+ arr.push({id:uid(collection==='guide'?'gd':'pa'),...structuredClone(source)});
+ save();send({type:'OE_REPLACE_STATE',state});syncContentCounts();
+ openCollectionManager(collection,arr.length-1);openItemInspector(collection,arr.length-1);
+}
 function syncContentCounts(){
  document.querySelectorAll('[data-content-count]').forEach(el=>{
    const arr=collectionArray(el.dataset.contentCount);
@@ -83,8 +120,11 @@ function openCollectionManager(collection,selectedIndex=-1){
    const [title,sub]=meta.item(item,i),search=(title+' '+sub).toLowerCase();
    return '<button type="button" class="sidebar-content-row '+(i===selectedIndex?'active':'')+'" data-open-item="'+i+'" data-search="'+esc(search)+'">'+contentThumb(collection,item)+'<span class="sidebar-content-copy"><b>'+esc(title)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</span><i>›</i></button>';
  }).join('');
- panel.innerHTML='<div class="sidebar-content-head"><div><b>'+esc(meta.title)+'</b><span>'+arr.length+' 项</span></div>'+(arr.length>6?'<label class="sidebar-content-search"><span>⌕</span><input type="search" placeholder="搜索'+esc(meta.title)+'" data-sidebar-content-search></label>':'')+'</div><div class="sidebar-content-rows">'+(rows||'<div class="sidebar-content-empty">'+esc(meta.empty)+'</div>')+'</div><button type="button" class="sidebar-content-add" data-sidebar-content-add>＋ 添加'+esc(meta.title)+'</button>';
+ const presets=collection==='guide'?GUIDE_PRESETS:collection==='participation'?PARTICIPATION_PRESETS:null;
+ const presetHtml=presets?'<div class="preset-add"><span>常用预设</span><div>'+Object.entries(presets).map(([key,x])=>'<button type="button" data-add-preset="'+key+'">'+esc(x.title)+'</button>').join('')+'</div></div>':'';
+ panel.innerHTML='<div class="sidebar-content-head"><div><b>'+esc(meta.title)+'</b><span>'+arr.length+' 项</span></div>'+(arr.length>6?'<label class="sidebar-content-search"><span>⌕</span><input type="search" placeholder="搜索'+esc(meta.title)+'" data-sidebar-content-search></label>':'')+'</div>'+presetHtml+'<div class="sidebar-content-rows">'+(rows||'<div class="sidebar-content-empty">'+esc(meta.empty)+'</div>')+'</div><button type="button" class="sidebar-content-add" data-sidebar-content-add>＋ 添加'+esc(meta.title)+'</button>';
  panel.querySelectorAll('[data-open-item]').forEach(btn=>btn.onclick=()=>{const i=Number(btn.dataset.openItem);panel.querySelectorAll('[data-open-item]').forEach(x=>x.classList.toggle('active',x===btn));openItemInspector(collection,i)});
+ panel.querySelectorAll('[data-add-preset]').forEach(btn=>btn.onclick=()=>addPresetItem(collection,btn.dataset.addPreset));
  panel.querySelector('[data-sidebar-content-add]')?.addEventListener('click',()=>mutateItem(collection,arr.length-1,'add'));
  panel.querySelector('[data-sidebar-content-search]')?.addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();panel.querySelectorAll('[data-open-item]').forEach(row=>row.hidden=!!q&&!String(row.dataset.search||'').includes(q))});
 }
@@ -108,7 +148,7 @@ function openGuideInspector(){
 }
 function syncModuleControls(){
  document.querySelectorAll('[data-module]').forEach(input=>{input.checked=state.modules?.[input.dataset.module]!==false});
- document.querySelectorAll('[data-module-page]').forEach(btn=>{btn.hidden=state.modules?.[btn.dataset.modulePage]===false});
+ document.querySelectorAll('.page-nav-row').forEach(row=>{const key=row.querySelector('[data-module]')?.dataset.module;if(key)row.classList.toggle('disabled',state.modules?.[key]===false)});
 }
 function setStudioPage(page){
  currentPage=page||'home';
@@ -124,7 +164,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.25.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.33.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -140,20 +180,7 @@ window.addEventListener('message',e=>{
 }
  if(m.type==='OE_SELECT_IMAGE'){document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.remove('active'));openImageInspector(m.path);return}
  if(m.type==='OE_SELECT_ITEM'){setWorkspace('content');openCollectionManager(m.collection,m.index);openItemInspector(m.collection,m.index);return}
- if(m.type==='OE_MAP_POINT_MOVE'){
-   const p=state.venueMap?.points?.[m.index];if(!p)return;
-   checkpoint();p.x=m.x;p.y=m.y;save();
-   const x=inspector.querySelector('[data-key="x"]'),y=inspector.querySelector('[data-key="y"]');if(x)x.value=m.x;if(y)y.value=m.y;
-   return
- }
- if(m.type==='OE_MAP_POINT_ADD'){
-   checkpoint();state.venueMap??={image:'',points:[]};state.venueMap.points??=[];
-   state.venueMap.points.push({id:uid('mp'),kind:'booth',label:'新点位',x:m.x,y:m.y});
-   save();send({type:'OE_REPLACE_STATE',state});
-   setWorkspace('content');openCollectionManager('mapPoints',state.venueMap.points.length-1);
-   openItemInspector('mapPoints',state.venueMap.points.length-1);
-   return
- }
+
  if(m.type==='OE_EXPORT_HTML_RESULT'){downloadPublishedHtml(m.html);return}
 });
 function downloadPublishedHtml(html){
