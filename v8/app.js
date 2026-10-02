@@ -1,4 +1,4 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.29.0';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.30.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
@@ -21,7 +21,10 @@ if(state.modules&&'passport' in state.modules)delete state.modules.passport;
 if(!Array.isArray(state.participation))state.participation=structuredClone(template01.defaults.participation);
 if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
 if(!Array.isArray(state.venueMap.links))state.venueMap.links=structuredClone(template01.defaults.venueMap.links);
-for(const k of ['tickets','booths','activities','guide'])if(state.modules&&k in state.modules)delete state.modules[k];
+state.modules??={};
+for(const k of ['booths','activities','guide','freewalk','itasha','ribbon','guests','community','sponsors']){
+ if(state.modules[k]===undefined)state.modules[k]=template01.defaults.modules?.[k]!==false;
+}
 if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
 if(!Array.isArray(state.updates))state.updates=structuredClone(template01.defaults.updates);
 if(!Array.isArray(state.socialLinks))state.socialLinks=structuredClone(template01.defaults.socialLinks);
@@ -44,8 +47,9 @@ function showInspectorEmpty(){
  setInspector('属性','未选择内容','<div class="inspector-empty"><div class="empty-visual"><span></span><span></span><span></span></div><b>从画布或左侧内容库选择内容</b></div>');
 }
 function setWorkspace(name){
- document.querySelectorAll('[data-workspace]').forEach(b=>b.classList.toggle('active',b.dataset.workspace===name));
- document.querySelectorAll('[data-workspace-panel]').forEach(p=>{const on=p.dataset.workspacePanel===name;p.hidden=!on;p.classList.toggle('active',on)});
+ const target=document.querySelector('[data-workspace-panel="'+name+'"]')?name:'pages';
+ document.querySelectorAll('[data-workspace]').forEach(b=>b.classList.toggle('active',b.dataset.workspace===target));
+ document.querySelectorAll('[data-workspace-panel]').forEach(p=>{const on=p.dataset.workspacePanel===target;p.hidden=!on;p.classList.toggle('active',on)});
 }
 function contentThumb(collection,item){
  let src='';
@@ -86,6 +90,73 @@ const PARTICIPATION_PRESETS={
  game:{preset:'game',title:'互动游戏 / 抽选',meta:'活动区域 · 时间待定',text:'填写互动游戏、抽选或现场挑战的参与规则。',target:'participation',url:''},
  free:{preset:'free',title:'自由交流 / 同好活动',meta:'活动区域 · 时间待定',text:'填写自由交流、同好聚会或临时互动内容。',target:'participation',url:''}
 };
+
+const PAGE_CONTENT_CONFIG={
+ home:[
+   {tool:'basic',label:'基本信息'},
+   {tool:'hero',label:'主视觉'},
+   {tool:'ribbon',label:'滚动公告'},
+   {collection:'tickets',label:'票务'},
+   {tool:'map',label:'场地图'},
+   {collection:'mapPoints',label:'地图点位'},
+   {collection:'updates',label:'重要更新'},
+   {collection:'guests',label:'嘉宾'},
+   {collection:'socialLinks',label:'社群'},
+   {collection:'sponsors',label:'赞助'}
+ ],
+ booths:[{collection:'booths',label:'摊位与制品'}],
+ activities:[{collection:'participation',label:'活动企划'},{collection:'schedule',label:'当天日程'}],
+ guide:[{collection:'guide',label:'指南内容'}],
+ freewalk:[{tool:'freewalk',label:'页面内容'}],
+ itasha:[{tool:'itasha',label:'页面内容'}]
+};
+const COLLECTION_PAGE={
+ tickets:'home',mapPoints:'home',updates:'home',guests:'home',socialLinks:'home',sponsors:'home',
+ booths:'booths',participation:'activities',schedule:'activities',guide:'guide'
+};
+function openOptionalPageInspector(key){
+ const page=state[key]||{},label=key==='freewalk'?'COS / 自由行':'痛车展示';
+ setInspector('页面内容',label,
+   '<div class="item-fields">'+
+   '<label><span>页面标题</span><input data-optional-field="title" value="'+esc(page.title||label)+'"></label>'+
+   '<label><span>正文</span><textarea data-optional-field="text" rows="6">'+esc(page.text||'')+'</textarea></label>'+
+   '</div>'+
+   '<div class="item-media"><span>页面图片</span><div class="item-media-row">'+
+   (page.image?'<img src="'+esc(page.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+
+   '<div><button type="button" data-optional-image>选择 / 裁剪</button>'+
+   (page.image?'<button type="button" class="ghost" data-optional-image-remove>移除</button>':'')+
+   '</div></div></div>');
+ inspector.querySelectorAll('[data-optional-field]').forEach(input=>bindInspectorStateInput(input,key+'.'+input.dataset.optionalField,{clean:true}));
+ inspector.querySelector('[data-optional-image]')?.addEventListener('click',()=>{$('#imageInput').dataset.path=key+'.image';$('#imageInput').click()});
+ inspector.querySelector('[data-optional-image-remove]')?.addEventListener('click',()=>{checkpoint();setDeep(key+'.image','');send({type:'OE_REPLACE_STATE',state});openOptionalPageInspector(key)});
+}
+function openPageTool(tool){
+ document.querySelectorAll('[data-page-content-manager],[data-page-tool]').forEach(x=>x.classList.toggle('active',x.dataset.pageTool===tool));
+ const panel=$('#contentListPanel');if(panel)panel.innerHTML='';
+ if(tool==='basic'){openAddressInspector();return}
+ if(tool==='hero'){openHeroTitleInspector();return}
+ if(tool==='ribbon'){openRibbonInspector();return}
+ if(tool==='map'){openImageInspector('venueMap.image');return}
+ if(tool==='freewalk'||tool==='itasha'){openOptionalPageInspector(tool);return}
+ showInspectorEmpty();
+}
+function renderPageContentNav(page,{openDefault=true}={}){
+ const items=PAGE_CONTENT_CONFIG[page]||[],nav=$('#pageContentNav'),title=$('#pageContentTitle'),panel=$('#contentListPanel');
+ if(title)title.textContent=(moduleLabels[page]||'首页')+'内容';
+ if(!nav)return;
+ nav.innerHTML=items.map(x=>x.collection
+   ?'<button type="button" data-page-content-manager="'+x.collection+'"><span>'+esc(x.label)+'</span><b data-content-count="'+x.collection+'">0</b></button>'
+   :'<button type="button" data-page-tool="'+x.tool+'"><span>'+esc(x.label)+'</span></button>'
+ ).join('');
+ syncContentCounts();
+ nav.querySelectorAll('[data-page-content-manager]').forEach(btn=>btn.addEventListener('click',()=>openCollectionManager(btn.dataset.pageContentManager)));
+ nav.querySelectorAll('[data-page-tool]').forEach(btn=>btn.addEventListener('click',()=>openPageTool(btn.dataset.pageTool)));
+ if(panel)panel.innerHTML='<div class="sidebar-content-empty">选择上方内容进行管理。</div>';
+ if(openDefault&&items[0]){
+   if(items[0].collection)openCollectionManager(items[0].collection);
+   else openPageTool(items[0].tool);
+ }
+}
 function addPresetItem(collection,key){
  checkpoint();
  const arr=collectionArray(collection);if(!Array.isArray(arr))return;
@@ -103,7 +174,7 @@ function syncContentCounts(){
 }
 function openCollectionManager(collection,selectedIndex=-1){
  const meta=contentManagerMeta[collection],arr=collectionArray(collection),panel=$('#contentListPanel');if(!meta||!Array.isArray(arr)||!panel)return;
- document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.toggle('active',x.dataset.contentManager===collection));
+ document.querySelectorAll('[data-content-manager],[data-page-content-manager]').forEach(x=>x.classList.toggle('active',(x.dataset.contentManager||x.dataset.pageContentManager)===collection));
  const rows=arr.map((item,i)=>{
    const [title,sub]=meta.item(item,i),search=(title+' '+sub).toLowerCase();
    return '<button type="button" class="sidebar-content-row '+(i===selectedIndex?'active':'')+'" data-open-item="'+i+'" data-search="'+esc(search)+'">'+contentThumb(collection,item)+'<span class="sidebar-content-copy"><b>'+esc(title)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</span><i>›</i></button>';
@@ -137,13 +208,15 @@ function openGuideInspector(){
 }
 function syncModuleControls(){
  document.querySelectorAll('[data-module]').forEach(input=>{input.checked=state.modules?.[input.dataset.module]!==false});
- document.querySelectorAll('[data-module-page]').forEach(btn=>{btn.hidden=state.modules?.[btn.dataset.modulePage]===false});
+ document.querySelectorAll('[data-page-row]').forEach(row=>row.classList.toggle('is-disabled',state.modules?.[row.dataset.pageRow]===false));
 }
-function setStudioPage(page){
+function setStudioPage(page,{openContent=true}={}){
  currentPage=page||'home';
  document.querySelectorAll('.page-nav [data-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.page===currentPage));
+ document.querySelectorAll('[data-page-row]').forEach(row=>row.classList.toggle('active',row.dataset.pageRow===currentPage));
  const title=document.querySelector('.canvas-title b');if(title)title.textContent=currentPage==='home'?'首页':(moduleLabels[currentPage]||'页面');
  send({type:'OE_SHOW_PAGE',page:currentPage});
+ if(openContent)renderPageContentNav(currentPage);
 }
 function bindModuleControls(){
  document.querySelectorAll('[data-module]').forEach(input=>input.addEventListener('change',()=>{
@@ -153,7 +226,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.29.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.30.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -168,7 +241,11 @@ window.addEventListener('message',e=>{
  return
 }
  if(m.type==='OE_SELECT_IMAGE'){document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.remove('active'));openImageInspector(m.path);return}
- if(m.type==='OE_SELECT_ITEM'){setWorkspace('content');openCollectionManager(m.collection,m.index);openItemInspector(m.collection,m.index);return}
+ if(m.type==='OE_SELECT_ITEM'){
+   const page=COLLECTION_PAGE[m.collection]||currentPage||'home';
+   setWorkspace('pages');setStudioPage(page,{openContent:false});renderPageContentNav(page,{openDefault:false});
+   openCollectionManager(m.collection,m.index);openItemInspector(m.collection,m.index);return
+ }
  if(m.type==='OE_MAP_POINT_MOVE'){
    const p=state.venueMap?.points?.[m.index];if(!p)return;
    checkpoint();p.x=m.x;p.y=m.y;save();
@@ -179,7 +256,7 @@ window.addEventListener('message',e=>{
    checkpoint();state.venueMap??={image:'',points:[]};state.venueMap.points??=[];
    state.venueMap.points.push({id:uid('mp'),kind:'booth',label:'新点位',x:m.x,y:m.y});
    save();send({type:'OE_REPLACE_STATE',state});
-   setWorkspace('content');openCollectionManager('mapPoints',state.venueMap.points.length-1);
+   setWorkspace('pages');setStudioPage('home',{openContent:false});renderPageContentNav('home',{openDefault:false});openCollectionManager('mapPoints',state.venueMap.points.length-1);
    openItemInspector('mapPoints',state.venueMap.points.length-1);
    return
  }
@@ -585,30 +662,11 @@ function setPreview(next){
 }
 $('#previewBtn').onclick=()=>setPreview(!preview);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&preview)setPreview(false)});
-document.querySelector('.workspace-tabs')?.addEventListener('click',e=>{const b=e.target.closest('[data-workspace]');if(!b)return;setWorkspace(b.dataset.workspace)});
-$('.page-nav')?.addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(!b)return;setWorkspace('pages');setStudioPage(b.dataset.page);if(b.dataset.page==='guide')openGuideInspector()});
-document.querySelector('.content-managers')?.addEventListener('click',e=>{const b=e.target.closest('[data-content-manager]');if(!b)return;setWorkspace('content');openCollectionManager(b.dataset.contentManager)});
+$('.page-nav')?.addEventListener('click',e=>{
+ const b=e.target.closest('[data-page]');if(!b)return;
+ setWorkspace('pages');setStudioPage(b.dataset.page);
+});
 $('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts()};
 $('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts()};
 $('#publishBtn').onclick=()=>send({type:'OE_EXPORT_HTML'});
-const TUTORIAL_KEY='onlyevent-studio-v8:tutorial-v2-dismissed';
-function closeTutorial(){
- if($('#tutorialNoAuto')?.checked)localStorage.setItem(TUTORIAL_KEY,'1');
- const dlg=$('#tutorialDialog');if(dlg?.open)dlg.close();
-}
-function openTutorial(){const dlg=$('#tutorialDialog');if(dlg&&!dlg.open)dlg.showModal()}
-$('#tutorialBtn')?.addEventListener('click',openTutorial);
-$('#tutorialClose')?.addEventListener('click',closeTutorial);
-$('#tutorialDialog')?.addEventListener('cancel',e=>{e.preventDefault();closeTutorial()});
-document.querySelectorAll('[data-tutorial-step]').forEach(btn=>btn.addEventListener('click',()=>{
- const step=btn.dataset.tutorialStep;closeTutorial();
- if(step==='basic'){setWorkspace('pages');setStudioPage('home');openAddressInspector();return}
- if(step==='kv'){setWorkspace('pages');setStudioPage('home');openImageInspector('heroImage');return}
- if(step==='pages'){setWorkspace('pages');setStudioPage('home');showInspectorEmpty();return}
- if(step==='content'){setWorkspace('content');openCollectionManager('tickets');return}
- if(step==='guide'){setWorkspace('content');openCollectionManager('guide');return}
- if(step==='preview'){setPreview(true);return}
-}));
-
-syncModuleControls();syncContentCounts();setWorkspace('pages');showInspectorEmpty();bindModuleControls();mountFrame();syncHistory();
-if(!localStorage.getItem(TUTORIAL_KEY))setTimeout(openTutorial,500);
+syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
