@@ -18,10 +18,12 @@ export const template01 = {
     sticker1:'限定企划 ✦',
     sticker2:'40+ 社团',
     sticker3:'COS OK!',
-    ribbon1:'摊位公开中',
-    ribbon2:'特典票限量',
-    ribbon3:'COS 自由行开放',
-    ribbon4:'舞台企划更新',
+    ribbonItems:[
+      {id:'rb1',text:'摊位公开中'},
+      {id:'rb2',text:'特典票限量'},
+      {id:'rb3',text:'COS 自由行开放'},
+      {id:'rb4',text:'舞台企划更新'}
+    ],
     ticketUrl:'',
     ticketLinkLabel:'前往官方售票平台',
     tickets:[

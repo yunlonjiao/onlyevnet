@@ -1,4 +1,4 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.19.0';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.20.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
@@ -11,6 +11,11 @@ if(!state.guide||!Array.isArray(state.guide.items))state.guide=structuredClone(t
 if(!Array.isArray(state.tickets))state.tickets=structuredClone(template01.defaults.tickets);
 if(state.ticketUrl===undefined)state.ticketUrl=template01.defaults.ticketUrl;
 if(state.ticketLinkLabel===undefined)state.ticketLinkLabel=template01.defaults.ticketLinkLabel;
+if(!Array.isArray(state.ribbonItems)||!state.ribbonItems.length){
+ const legacy=[state.ribbon1,state.ribbon2,state.ribbon3,state.ribbon4].map(x=>String(x||'').trim()).filter(Boolean);
+ state.ribbonItems=(legacy.length?legacy:template01.defaults.ribbonItems.map(x=>x.text)).map((text,i)=>({id:'rb'+(i+1),text}));
+}
+delete state.ribbon1;delete state.ribbon2;delete state.ribbon3;delete state.ribbon4;
 if(state.modules&&'passport' in state.modules)delete state.modules.passport;
 if(!Array.isArray(state.participation))state.participation=structuredClone(template01.defaults.participation);
 for(const k of ['tickets','booths','activities','guide'])if(state.modules&&k in state.modules)delete state.modules[k];
@@ -118,7 +123,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.19.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.20.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -194,13 +199,16 @@ function openAddressInspector(){
 }
 
 function openRibbonInspector(){
- setInspector('首页','滚动公告','<div class="item-fields">'+
-   [1,2,3,4].map(i=>'<label><span>第 '+i+' 段</span><input data-ribbon-setting="'+i+'" value="'+esc(state['ribbon'+i]||'')+'"></label>').join('')+
-   '</div><p class="inspector-note">四段文字固定循环展示；后半段只是无缝滚动镜像，会自动同步，不需要重复填写。</p>');
- inspector.querySelectorAll('[data-ribbon-setting]').forEach(input=>{
-   const path='ribbon'+input.dataset.ribbonSetting;
-   bindInspectorStateInput(input,path,{clean:true});
+ const items=state.ribbonItems||[];
+ const rows=items.map((item,i)=>'<div class="ribbon-setting-row"><span class="ribbon-setting-index">'+String(i+1).padStart(2,'0')+'</span><input data-ribbon-text="'+i+'" value="'+esc(item.text||'')+'" placeholder="滚动信息"><div class="ribbon-setting-actions"><button type="button" data-ribbon-op="up" data-ribbon-index="'+i+'" '+(i===0?'disabled':'')+'>↑</button><button type="button" data-ribbon-op="down" data-ribbon-index="'+i+'" '+(i===items.length-1?'disabled':'')+'>↓</button><button type="button" data-ribbon-op="delete" data-ribbon-index="'+i+'" '+(items.length<=1?'disabled':'')+'>×</button></div></div>').join('');
+ setInspector('首页','滚动公告','<div class="ribbon-setting-list">'+rows+'</div><button type="button" class="collection-add" data-ribbon-add '+(items.length>=12?'disabled':'')+'>＋ 添加一条滚动信息</button><p class="inspector-note">当前 '+items.length+' 条。整组内容会原样循环：4 条就按 4 条循环，5 条就按 5 条循环；系统只复制整组来做无缝衔接，不会插入空白。</p>');
+ inspector.querySelectorAll('[data-ribbon-text]').forEach(input=>{
+   let started=false;
+   input.addEventListener('input',e=>{const i=Number(e.target.dataset.ribbonText);if(!state.ribbonItems?.[i])return;if(!started){checkpoint();started=true}state.ribbonItems[i].text=e.target.value;save();send({type:'OE_PATCH_FIELD',path:'ribbonItems.'+i+'.text',value:e.target.value})});
+   input.addEventListener('blur',e=>{const i=Number(e.target.dataset.ribbonText),cleaned=cleanValue(e.target.value);if(!state.ribbonItems?.[i])return;if(cleaned!==e.target.value)e.target.value=cleaned;state.ribbonItems[i].text=cleaned;save();send({type:'OE_REPLACE_STATE',state})});
  });
+ inspector.querySelector('[data-ribbon-add]')?.addEventListener('click',()=>{if(state.ribbonItems.length>=12){toast('滚动信息最多 12 条');return}checkpoint();state.ribbonItems.push({id:uid('rb'),text:'新滚动信息'});save();send({type:'OE_REPLACE_STATE',state});openRibbonInspector()});
+ inspector.querySelectorAll('[data-ribbon-op]').forEach(btn=>btn.addEventListener('click',()=>{const i=Number(btn.dataset.ribbonIndex),op=btn.dataset.ribbonOp;if(!state.ribbonItems?.[i])return;checkpoint();if(op==='delete'&&state.ribbonItems.length>1)state.ribbonItems.splice(i,1);if(op==='up'&&i>0)[state.ribbonItems[i-1],state.ribbonItems[i]]=[state.ribbonItems[i],state.ribbonItems[i-1]];if(op==='down'&&i<state.ribbonItems.length-1)[state.ribbonItems[i+1],state.ribbonItems[i]]=[state.ribbonItems[i],state.ribbonItems[i+1]];save();send({type:'OE_REPLACE_STATE',state});openRibbonInspector()}));
 }
 function openTicketSettingsInspector(){
  setInspector('票务','购票平台','<div class="item-fields">'+

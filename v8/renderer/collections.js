@@ -2,6 +2,18 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
   function field(path,value,tag='span',cls=''){
     return '<'+tag+(cls?' class="'+cls+'"':'')+' data-oe-field="'+path+'" contenteditable="'+(getMode()==='edit')+'" spellcheck="false">'+esc(value??'')+'</'+tag+'>';
   }
+  function renderRibbon(){
+    const state=getState(),ribbon=$('.ribbon'),track=$('.ribbon-track');if(!ribbon||!track)return;
+    const items=(state.ribbonItems||[]).filter(x=>String(x?.text||'').trim());
+    if(!items.length){track.innerHTML='';ribbon.hidden=getMode()!=='edit';return}
+    ribbon.hidden=false;
+    const sequence=items.map((x,i)=>field('ribbonItems.'+i+'.text',x.text,'span','ribbon-edit')).join('');
+    track.innerHTML='<div class="ribbon-sequence">'+sequence+'</div><div class="ribbon-sequence" aria-hidden="true">'+sequence+'</div>';
+    ribbon.setAttribute('role','marquee');
+    ribbon.setAttribute('aria-label',items.map(x=>x.text).join(' · '));
+    requestAnimationFrame(()=>{const seq=track.querySelector('.ribbon-sequence');if(!seq)return;const seconds=Math.max(16,Math.min(42,seq.scrollWidth/72));track.style.setProperty('--ribbon-duration',seconds.toFixed(2)+'s')});
+  }
+
   function ensureLightbox(){
     let dlg=$('#giftLightbox');if(dlg)return dlg;
     dlg=document.createElement('dialog');dlg.id='giftLightbox';dlg.className='gift-lightbox';dlg.innerHTML='<button type="button" aria-label="关闭">×</button><img alt="图片预览">';
@@ -164,7 +176,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
   }
 
   function renderCollections(){
-    renderTickets();renderHighlights();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderUpdates();renderCommunity();renderSponsors();renderFooter();
+    renderRibbon();renderTickets();renderHighlights();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderUpdates();renderCommunity();renderSponsors();renderFooter();
   }
-  return {openGiftLightbox,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderUpdates,renderCommunity,renderSponsors,renderFooter,renderCollections};
+  return {openGiftLightbox,renderRibbon,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderUpdates,renderCommunity,renderSponsors,renderFooter,renderCollections};
 }

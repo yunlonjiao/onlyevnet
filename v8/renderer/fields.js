@@ -11,10 +11,6 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     sticker1:()=>qa('.sticker .editable-copy')[0],
     sticker2:()=>qa('.sticker .editable-copy')[1],
     sticker3:()=>qa('.sticker .editable-copy')[2],
-    ribbon1:()=>qa('.ribbon-edit')[0],
-    ribbon2:()=>qa('.ribbon-edit')[1],
-    ribbon3:()=>qa('.ribbon-edit')[2],
-    ribbon4:()=>qa('.ribbon-edit')[3],
     heroImage:()=>$('.kv')
   };
   const extraStatePaths=['heroTitleSize','heroTitleColor','heroTitleAccentColor','navigationUrl','ticketUrl','ticketLinkLabel'];
