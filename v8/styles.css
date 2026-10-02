@@ -671,3 +671,23 @@ body.previewing .canvas-stage:before{display:none}
  .crop-head{padding:14px 16px}.crop-head b{font-size:15px}
  .crop-foot{padding:12px 14px;position:sticky;bottom:0;background:#fff}
 }
+
+
+/* 8.33 — preserve v8.27 workspace structure */
+.page-nav-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px;border-radius:10px}
+.page-nav-row:hover{background:#f1f1f5}
+.page-nav-row.disabled>button{opacity:.46}
+.page-nav-row>button{background:transparent!important}
+.page-nav-row>button.active{background:#ece8ff!important}
+.page-switch{width:34px;height:22px;display:grid;place-items:center;margin-right:5px;cursor:pointer}
+.page-switch input{position:absolute;opacity:0;pointer-events:none}
+.page-switch i{position:relative;width:29px;height:17px;border-radius:999px;background:#d4d4dc;transition:.16s}
+.page-switch i:after{content:"";position:absolute;width:13px;height:13px;left:2px;top:2px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.24);transition:.16s}
+.page-switch input:checked+i{background:#7c5cff}
+.page-switch input:checked+i:after{translate:12px 0}
+.page-switch:focus-within i{box-shadow:0 0 0 3px rgba(124,92,255,.14)}
+.preset-add{margin:0 0 9px;padding:9px;border:1px solid #e7e7ec;border-radius:10px;background:#fff}
+.preset-add>span{display:block;margin-bottom:6px;font-size:8px;font-weight:850;color:#8b8b95}
+.preset-add>div{display:flex;flex-wrap:wrap;gap:5px}
+.preset-add button{border:1px solid #ddd9f4;background:#f7f5ff;color:#6657be;border-radius:999px;padding:5px 7px;font-size:8px;font-weight:800;cursor:pointer}
+.guide-media-add{margin-top:10px}.guide-media-add button{width:100%;border:1px dashed #d7d7df;background:#fafafd;border-radius:10px;padding:9px;color:#777784;font-size:9px;font-weight:800;cursor:pointer}
