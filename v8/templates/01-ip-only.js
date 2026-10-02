@@ -31,12 +31,12 @@ export const template01 = {
       {id:'t2',name:'特典票',price:'¥128',gift:'入场资格\n限定徽章\n纪念票根',note:'限量发售',image:''},
       {id:'t3',name:'VIP 票',price:'¥198',gift:'优先入场\n限定礼包\n舞台优先区',note:'赠品内容由主办方填写',image:''}
     ],
-    modules:{ribbon:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
+    modules:{ribbon:true,booths:true,activities:true,guide:true,guests:false,freewalk:false,itasha:false,community:true,sponsors:false},
     participation:[
-      {id:'pa1',preset:'stage',title:'舞台活动',meta:'主舞台 · 时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'schedule-home',url:''},
-      {id:'pa2',preset:'stamp',title:'集章 / 打卡',meta:'活动区域 · 全天',text:'填写集章点、打卡规则、兑换方式或完成奖励。',target:'participation',url:''},
-      {id:'pa3',preset:'photo',title:'主题合影',meta:'集合区域 · 时间待定',text:'填写集合时间、地点和参与方式。',target:'participation',url:''},
-      {id:'pa4',preset:'game',title:'互动游戏 / 抽选',meta:'活动区域 · 时间待定',text:'填写互动游戏、抽选或现场挑战的参与规则。',target:'participation',url:''}
+      {id:'pa1',preset:'stage',title:'舞台活动',meta:'主舞台 · 时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'activities',url:''},
+      {id:'pa2',preset:'stamp',title:'集章 / 打卡',meta:'活动区域 · 全天',text:'填写集章点、打卡规则、兑换方式或完成奖励。',target:'activities',url:''},
+      {id:'pa3',preset:'photo',title:'主题合影',meta:'集合区域 · 时间待定',text:'填写集合时间、地点和参与方式。',target:'activities',url:''},
+      {id:'pa4',preset:'game',title:'互动游戏 / 抽选',meta:'活动区域 · 时间待定',text:'填写互动游戏、抽选或现场挑战的参与规则。',target:'activities',url:''}
     ],
     venueMap:{
       image:'',
