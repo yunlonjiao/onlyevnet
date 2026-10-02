@@ -124,7 +124,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.22.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.25.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -389,32 +389,49 @@ function getCropperModule(){
  if(!cropperModulePromise)cropperModulePromise=import('https://cdn.jsdelivr.net/npm/cropperjs@2.2.0/+esm');
  return cropperModulePromise;
 }
-async function prepareCropSource(src,cfg){
+function canvasToBlob(canvas,type='image/webp',quality=.9){
+ return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('图片编码失败')),type,quality));
+}
+function blobToDataUrl(blob){
+ return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob)});
+}
+async function prepareCropFile(file,cfg){
+ // Old-CMS fast path: most files enter the cropper immediately without re-encoding.
+ const directLimit=10*1024*1024;
+ if(file.size<=directLimit)return {url:URL.createObjectURL(file),optimized:false};
  try{
-   const img=new Image(),ready=new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject});
-   img.src=src;await ready;
-   const max=cfg.free?2800:2200,long=Math.max(img.naturalWidth,img.naturalHeight);
-   if(!long||long<=max)return src;
-   const scale=max/long,w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale));
+   const bitmap=await createImageBitmap(file);
+   const long=Math.max(bitmap.width,bitmap.height),max=cfg.free?3600:3200;
+   if(!long||long<=max){
+     bitmap.close?.();
+     return {url:URL.createObjectURL(file),optimized:false};
+   }
+   const scale=max/long,w=Math.max(1,Math.round(bitmap.width*scale)),h=Math.max(1,Math.round(bitmap.height*scale));
    const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
-   canvas.getContext('2d',{alpha:false}).drawImage(img,0,0,w,h);
-   return canvas.toDataURL('image/webp',.92);
- }catch(err){console.warn('[OnlyEvent crop preview]',err);return src}
+   canvas.getContext('2d',{alpha:false}).drawImage(bitmap,0,0,w,h);
+   bitmap.close?.();
+   const blob=await canvasToBlob(canvas,'image/webp',.92);
+   return {url:URL.createObjectURL(blob),optimized:true};
+ }catch(err){
+   console.warn('[OnlyEvent large crop preview]',err);
+   return {url:URL.createObjectURL(file),optimized:false};
+ }
 }
 if('requestIdleCallback' in window)requestIdleCallback(()=>getCropperModule(),{timeout:1800});
 else setTimeout(()=>getCropperModule(),900);
-async function openImageCropper(src,path,returnCollection='',returnIndex=''){
+async function openImageCropper(src,path,returnCollection='',returnIndex='',ownedUrl=''){
  const dlg=$('#imageCropDialog'),stage=$('#cropStage'),img=$('#cropImage'),cfg=imageSlotConfig(path);
- cropContext={path,returnCollection,returnIndex,cfg,src};
+ cropContext={path,returnCollection,returnIndex,cfg,src,ownedUrl};
  $('#cropSlotLabel').textContent=cfg.label;
  $('#cropRatioLabel').textContent=cfg.ratioLabel;
+ img.src=src;
  dlg.showModal();
+ send({type:'OE_CROP_ACTIVE',active:true});
  stage.classList.add('loading');
  try{
-   const [mod,workingSrc]=await Promise.all([getCropperModule(),prepareCropSource(src,cfg)]),Cropper=mod.default||mod.Cropper;
+   const mod=await getCropperModule(),Cropper=mod.default||mod.Cropper;
    if(activeCropper?.destroy)activeCropper.destroy();
    stage.querySelectorAll('cropper-canvas').forEach(x=>x.remove());
-   img.src=workingSrc;
    try{await img.decode()}catch{}
    const ratioAttr=Number.isFinite(cfg.ratio)&&cfg.ratio>0?' aspect-ratio="'+cfg.ratio+'" initial-aspect-ratio="'+cfg.ratio+'"':'';
    const resizeHandles=cfg.free
@@ -425,13 +442,17 @@ async function openImageCropper(src,path,returnCollection='',returnIndex=''){
    const selection=activeCropper.getCropperSelection?.();
    if(selection&&cfg.fixed&&Number.isFinite(cfg.ratio)){selection.aspectRatio=cfg.ratio;selection.initialAspectRatio=cfg.ratio}
  }catch(err){
-   console.error('[OnlyEvent cropper]',err);toast('裁剪器加载失败，可稍后重试');dlg.close();
+   console.error('[OnlyEvent cropper]',err);toast('裁剪器加载失败，可稍后重试');closeImageCropper();
  }finally{stage.classList.remove('loading')}
 }
 function closeImageCropper(){
  if(activeCropper?.destroy)activeCropper.destroy();
- activeCropper=null;cropContext=null;
- $('#imageCropDialog').close();
+ activeCropper=null;
+ const ownedUrl=cropContext?.ownedUrl||'';
+ cropContext=null;
+ if(ownedUrl)URL.revokeObjectURL(ownedUrl);
+ send({type:'OE_CROP_ACTIVE',active:false});
+ const dlg=$('#imageCropDialog');if(dlg.open)dlg.close();
 }
 async function applyImageCrop(){
  if(!activeCropper||!cropContext)return;
@@ -444,7 +465,8 @@ async function applyImageCrop(){
      if(ratio>=1){width=max;height=Math.max(1,Math.round(max/ratio))}else{height=max;width=Math.max(1,Math.round(max*ratio))}
    }
    const canvas=await selection.$toCanvas({width,height});
-   const data=canvas.toDataURL('image/webp',.9);
+   const blob=await canvasToBlob(canvas,'image/webp',.9);
+   const data=await blobToDataUrl(blob);
    checkpoint();setDeep(cropContext.path,data);
    if(/^tickets\.\d+\.image$/.test(cropContext.path))send({type:'OE_PATCH_FIELD',path:cropContext.path,value:data});else send({type:'OE_REPLACE_STATE',state});
    toast('图片已应用');
@@ -459,14 +481,17 @@ $('#imageCropDialog').addEventListener('cancel',e=>{e.preventDefault();closeImag
 $('#cropReset').onclick=()=>activeCropper?.getCropperSelection?.()?.$reset?.();
 $('#cropRotateLeft').onclick=()=>activeCropper?.getCropperImage?.()?.$rotate?.('-90deg');
 
-$('#imageInput').addEventListener('change',e=>{
+$('#imageInput').addEventListener('change',async e=>{
  const file=e.target.files?.[0],path=e.target.dataset.path;
  const returnCollection=e.target.dataset.returnCollection||'',returnIndex=e.target.dataset.returnIndex||'';
  e.target.value='';delete e.target.dataset.returnCollection;delete e.target.dataset.returnIndex;
  if(!file||!path)return;
- const r=new FileReader();
- r.onload=()=>openImageCropper(r.result,path,returnCollection,returnIndex);
- r.readAsDataURL(file);
+ const cfg=imageSlotConfig(path);
+ try{
+   if(file.size>10*1024*1024)toast('正在准备超大图片…');
+   const prepared=await prepareCropFile(file,cfg);
+   openImageCropper(prepared.url,path,returnCollection,returnIndex,prepared.url);
+ }catch(err){console.error('[OnlyEvent image input]',err);toast('图片读取失败')}
 });
 function setDevice(mode){
  const mobile=mode==='mobile';canvas.classList.toggle('mobile',mobile);
