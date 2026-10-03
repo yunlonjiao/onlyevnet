@@ -15,6 +15,10 @@ on:
       - 'quality/**'
       - '.github/workflows/onlyevent-quality.yml'
 
+concurrency:
+  group: onlyevent-renderer-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   renderer-quality:
     runs-on: ubuntu-latest
