@@ -191,7 +191,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
       }).join('');
       section.innerHTML='<div class="wrap"><div class="head" data-oe-custom-page-settings="'+esc(page.id)+'"><div><span class="ey">'+esc(page.eyebrow||'SPECIAL')+'</span><h2>'+esc(page.title||'专题页面')+'</h2></div><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></div>'+
         (page.intro?'<p class="custom-page-intro" data-oe-custom-page-settings="'+esc(page.id)+'">'+esc(page.intro)+'</p>':'')+
-        '<div class="custom-page-grid custom-page-grid-'+esc(preset)+'">'+(items||(getMode()==='edit'?'<div class="custom-page-empty" data-oe-custom-page-settings="'+esc(page.id)+'">还没有展示内容，点击这里开始编辑。</div>':''))+'</div></div>';
+        '<div class="custom-page-grid custom-page-grid-'+esc(preset)+'" style="--custom-image-ratio:'+esc(Number(page.ratio)||1.333333)+'">'+(items||(getMode()==='edit'?'<div class="custom-page-empty" data-oe-custom-page-settings="'+esc(page.id)+'">还没有展示内容，点击这里开始编辑。</div>':''))+'</div></div>';
       if(before?.parentNode)before.parentNode.insertBefore(section,before);else main.appendChild(section);
     });
   }
