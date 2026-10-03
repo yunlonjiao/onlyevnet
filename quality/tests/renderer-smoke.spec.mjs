@@ -18,11 +18,11 @@ test('editor renderer initializes and keeps standalone pages out of home',async(
   await expect(frame.locator('#guests')).toBeHidden();
   await expect(frame.locator('#guide')).toBeHidden();
 
-  await frame.locator('a[data-page-link="booths"]').first().click();
+  await frame.locator('.quick a[data-page-link="booths"]').click();
   await expect(frame.locator('#booths')).toBeVisible();
   await expect(frame.locator('.hero')).toBeHidden();
 
-  await frame.locator('a[data-page-link="home"]').first().click();
+  await frame.locator('#booths .section-back').click();
   await expect(frame.locator('.hero')).toBeVisible();
   await expect(frame.locator('#booths')).toBeHidden();
 
