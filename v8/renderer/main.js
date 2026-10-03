@@ -8,6 +8,7 @@ import {createFields} from '/v8/renderer/fields.js?v=8.25.0';
 import {createRuntime} from '/v8/renderer/runtime.js?v=8.25.0';
 import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.33.9';
 import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.33.9';
+import {validateRendererContext} from '/v8/renderer/context.js?v=8.33.11';
 
 const ORIGIN=location.origin;
 let state={},mode='edit';
@@ -26,11 +27,20 @@ $('.scroll-progress')?.remove();
 const getDeep=path=>getByPath(state,path);
 const setDeep=(path,value)=>setByPath(state,path,value);
 
-const collections=createCollections({qs:$,qsa:qa,escapeHtml:esc,getState:()=>state,getMode:()=>mode});
-const participation=createParticipation({qs:$,escapeHtml:esc,getState:()=>state});
-const router=createRouter({qs:$,qsa:qa,getState:()=>state,getMode:()=>mode,renderParticipation:participation.renderParticipation});
-const fields=createFields({qs:$,qsa:qa,getMode:()=>mode,setModeState:next=>{mode=next},setDeep,renderTickets:collections.renderTickets});
-const runtime=createRuntime({qs:$,qsa:qa});
+/** @type {import('./context.js').RendererContext} */
+const rendererContext=validateRendererContext({
+  qs:$,
+  qsa:qa,
+  escapeHtml:esc,
+  getState:()=>state,
+  getMode:()=>mode
+});
+
+const collections=createCollections(rendererContext);
+const participation=createParticipation(rendererContext);
+const router=createRouter({...rendererContext,renderParticipation:participation.renderParticipation});
+const fields=createFields({...rendererContext,setModeState:next=>{mode=next},setDeep,renderTickets:collections.renderTickets});
+const runtime=createRuntime(rendererContext);
 const buildStandaloneHtml=createStandaloneExporter({getState:()=>state,previewStyle,runtimeExtraStyle,escapeHtml:esc});
 
 function applyState(next){
