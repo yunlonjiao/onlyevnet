@@ -5,6 +5,7 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
     clone.querySelectorAll('[data-oe-field]').forEach(el=>{el.removeAttribute('data-oe-field');el.removeAttribute('contenteditable');el.removeAttribute('spellcheck')});
     clone.querySelectorAll('[data-oe-item]').forEach(el=>{el.removeAttribute('data-oe-item');el.removeAttribute('data-oe-index')});
     clone.querySelectorAll('[data-oe-image]').forEach(el=>el.removeAttribute('data-oe-image'));
+    clone.querySelectorAll('[data-oe-custom-page],[data-oe-custom-index],[data-oe-custom-page-settings],[data-custom-page-root]').forEach(el=>{el.removeAttribute('data-oe-custom-page');el.removeAttribute('data-oe-custom-index');el.removeAttribute('data-oe-custom-page-settings');el.removeAttribute('data-custom-page-root')});
     clone.querySelectorAll('[data-favorite-booth]').forEach(el=>{el.classList.remove('active');el.setAttribute('aria-pressed','false');el.textContent='♡ 收藏社团'});
     clone.querySelectorAll('[data-wishlist-product]').forEach(el=>{el.classList.remove('active');el.setAttribute('aria-pressed','false');el.textContent='☆ 心愿'});
     clone.querySelectorAll('[data-wishlist-count]').forEach(el=>el.textContent='0');
@@ -13,7 +14,7 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
     const stateJson=JSON.stringify(state).replace(/</g,'\\u003c');
     const runtime=`(()=>{
       const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)],S=${stateJson};
-      const mods=S.modules||{},standalone=["booths","activities","guide","freewalk","itasha"],fixed=new Set(["tickets","participation","booths","activities","guide"]);
+      const mods=S.modules||{},standalone=["booths","activities","guests","guide",...(S.customPages||[]).map(p=>"custom-"+p.id)],fixed=new Set(["tickets","map"]);
       const homeSections=[["tickets","tickets"],["participation","participation"],["map-home","booths"],["schedule-home","activities"],["guests","guests"],["guide-home","guide"],["community","community"],["sponsors","sponsors"]];
       const on=k=>fixed.has(k)||mods[k]!==false;
       const wishKey=()=>("oe-wishlist:"+String(S.eventName||"event").toLowerCase().replace(/\s+/g,"-"));
