@@ -58,7 +58,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     if(detail)detail.innerHTML=items.map((x,i)=>{
       const guests=(x.guestIds||[]).map(getGuest).filter(Boolean);
       const plan=(state.participation||[]).find(p=>p.id===x.participationId);
-      const category=String(plan?.category||'').trim(),area=String(plan?.area||x.stage||'').trim();
+      const category=String(plan?.category||'').trim(),area=String(x.stage||plan?.area||'').trim();
       const guestHtml=guests.length?'<div class="timetable-guests">'+guests.map(g=>'<a href="#guests" data-target-mode="page" data-page-link="guests" data-guest-id="'+esc(g.id)+'">'+esc(g.name)+'</a>').join('')+'</div>':'';
       const planLink=plan?'<a class="timetable-plan-link" href="#activities" data-activity-plan-id="'+esc(plan.id)+'">活动详情 →</a>':'';
       const reg=x.registrationUrl?'<a class="timetable-action" href="'+esc(x.registrationUrl)+'" target="_blank" rel="noopener">外部详情 ↗</a>':'';
