@@ -379,7 +379,11 @@ function addPresetItem(collection,key){
  const arr=collectionArray(collection);if(!Array.isArray(arr))return;
  const source=collection==='guide'?GUIDE_PRESETS[key]:PARTICIPATION_PRESETS[key];
  if(!source)return;
- const extra=collection==='participation'?{detail:source.text||'',rules:'',image:'',guestIds:[]}:{};
+ const extra=collection==='participation'?{
+  detail:source.text||'',rules:'',image:'',guestIds:[],
+  category:source.category||({stage:'舞台',guest:'嘉宾互动',signing:'签售',cosplay:'COS',itasha:'痛车',stamp:'集章',photo:'合影',game:'互动游戏',free:'自由交流'}[source.preset]||'其他'),
+  area:source.area||String(source.meta||'').split('·')[0].trim()||'活动区域'
+ }:{};
  arr.push({id:uid(collection==='guide'?'gd':'pa'),...structuredClone(source),...extra});
  save();send({type:'OE_REPLACE_STATE',state});
  openCollectionManager(collection,arr.length-1);openItemInspector(collection,arr.length-1);
@@ -594,8 +598,9 @@ function exploreDetailOptions(page,itemType='page',itemId=''){
 }
 function extraInspector(collection,index,item){
  if(collection==='schedule'){
-   const guests=state.guests||[];
-   return '<div class="reference-panel"><b>内容关联</b><div class="reference-list"><span>出席嘉宾</span>'+guests.map(g=>'<label class="check-row"><input type="checkbox" data-guest-ref="'+esc(g.id)+'" '+((item.guestIds||[]).includes(g.id)?'checked':'')+'><span>'+esc(g.name)+'</span></label>').join('')+'</div></div>';
+   const guests=state.guests||[],plans=state.participation||[];
+   return '<div class="reference-panel"><b>关联活动企划</b><label><span>对应活动</span><select data-schedule-plan><option value="">不关联</option>'+plans.map(p=>'<option value="'+esc(p.id)+'" '+(item.participationId===p.id?'selected':'')+'>'+esc(p.title||'活动')+'</option>').join('')+'</select></label></div>'+ 
+     '<div class="reference-panel"><b>内容关联</b><div class="reference-list"><span>出席嘉宾</span>'+guests.map(g=>'<label class="check-row"><input type="checkbox" data-guest-ref="'+esc(g.id)+'" '+((item.guestIds||[]).includes(g.id)?'checked':'')+'><span>'+esc(g.name)+'</span></label>').join('')+'</div></div>';
  }
  if(collection==='guests'){
    const plans=(state.participation||[]).filter(a=>(a.guestIds||[]).includes(item.id));
@@ -620,8 +625,10 @@ function extraInspector(collection,index,item){
      '<label><span>页内内容（可选）</span><select data-explore-detail>'+detailOptions+'</select></label></div>';
  }
  if(collection==='participation'){
-   const guests=state.guests||[];
-   return '<div class="reference-panel"><b>关联嘉宾</b><div class="reference-list"><span>参加这个活动的嘉宾</span>'+guests.map(g=>'<label class="check-row"><input type="checkbox" data-guest-ref="'+esc(g.id)+'" '+((item.guestIds||[]).includes(g.id)?'checked':'')+'><span>'+esc(g.name)+'</span></label>').join('')+'</div><p class="inspector-note">如填写报名 / 外部链接，会在活动详情中显示对应按钮。</p></div>';
+   const guests=state.guests||[],linked=(state.schedule||[]).filter(x=>x.participationId===item.id);
+   return '<div class="reference-panel"><b>关联嘉宾</b><div class="reference-list"><span>参加这个活动的嘉宾</span>'+guests.map(g=>'<label class="check-row"><input type="checkbox" data-guest-ref="'+esc(g.id)+'" '+((item.guestIds||[]).includes(g.id)?'checked':'')+'><span>'+esc(g.name)+'</span></label>').join('')+'</div></div>'+ 
+     '<div class="reference-panel"><b>关联日程</b><div class="linked-summary">'+(linked.length?linked.map(x=>'<span>'+esc((x.time?x.time+' ':'')+(x.title||'日程'))+'</span>').join(''):'<span>暂未关联日程</span>')+'</div></div>'+ 
+     '<p class="inspector-note">如填写报名 / 外部链接，会在活动详情中显示对应按钮。</p>';
  }
  if(collection==='updates'){
    const targets=[['top','首页顶部'],['tickets','票务'],['passport','活动参与'],['map-home','场地图'],['schedule-home','当天日程'],['guests','嘉宾'],['guide-home','观展指南'],['community','社群']];
@@ -664,6 +671,7 @@ function openItemInspector(collection,index){
    inspector.querySelector('[data-explore-page]')?.addEventListener('change',e=>{checkpoint();item.target=e.target.value;item.itemType='page';item.itemId='';save();send({type:'OE_REPLACE_STATE',state});openCollectionManager('explore',index);openItemInspector('explore',index)});
    inspector.querySelector('[data-explore-detail]')?.addEventListener('change',e=>{checkpoint();const [type,id='']=String(e.target.value||'page:').split(':');item.itemType=type||'page';item.itemId=id;save();send({type:'OE_REPLACE_STATE',state})});
  }
+ inspector.querySelector('[data-schedule-plan]')?.addEventListener('change',e=>{checkpoint();item.participationId=e.target.value;save();send({type:'OE_REPLACE_STATE',state});openItemInspector('schedule',index)});
  inspector.querySelectorAll('[data-guest-ref]').forEach(ch=>ch.addEventListener('change',e=>{checkpoint();item.guestIds??=[];item.guestIds=e.target.checked?[...new Set([...item.guestIds,e.target.dataset.guestRef])]:item.guestIds.filter(id=>id!==e.target.dataset.guestRef);save();send({type:'OE_REPLACE_STATE',state})}));
  inspector.querySelectorAll('[data-op]').forEach(btn=>btn.addEventListener('click',()=>mutateItem(collection,index,btn.dataset.op)));
  inspector.querySelectorAll('[data-media-path]').forEach(btn=>btn.addEventListener('click',()=>{$('#imageInput').dataset.path=btn.dataset.mediaPath;$('#imageInput').dataset.returnCollection=collection;$('#imageInput').dataset.returnIndex=String(index);$('#imageInput').click()}));
