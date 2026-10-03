@@ -66,7 +66,8 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     if(!el)return;
 
     if(path==='heroImage'){
-      el.style.backgroundImage='linear-gradient(180deg,transparent,rgba(0,0,0,.26)),url("'+String(value).replace(/"/g,'%22')+'")';
+      const src=String(value||'').trim();
+      el.style.backgroundImage=src?'linear-gradient(180deg,transparent,rgba(0,0,0,.26)),url("'+src.replace(/"/g,'%22')+'")':'';
       return;
     }
     el.textContent=value??'';
