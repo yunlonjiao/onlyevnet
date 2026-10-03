@@ -20,15 +20,19 @@ delete state.ribbon1;delete state.ribbon2;delete state.ribbon3;delete state.ribb
 if(state.modules&&'passport' in state.modules)delete state.modules.passport;
 if(!Array.isArray(state.participation))state.participation=structuredClone(template01.defaults.participation);
 if(!Array.isArray(state.customPages))state.customPages=structuredClone(template01.defaults.customPages||[]);
-state.customPages=(state.customPages||[]).map((p,i)=>({
- id:p.id||('cp'+(i+1)),
- preset:p.preset||'custom',
- title:p.title||'自定义页面',
- eyebrow:p.eyebrow||'SPECIAL',
- intro:p.intro||'',
- items:Array.isArray(p.items)?p.items:[],
- ...p
-}));
+state.customPages=(state.customPages||[]).map((p,i)=>{
+ const legacyPreset={photoStudio:'custom',brandZone:'brand',ocExpo:'exhibition',craftExpo:'exhibition',gameDemo:'experience',themeStreet:'custom',freebie:'custom',checkin:'custom',tabletop:'experience'}[p.preset]||p.preset||'custom';
+ return {
+   id:p.id||('cp'+(i+1)),
+   preset:legacyPreset,
+   title:p.title||'自定义页面',
+   eyebrow:p.eyebrow||'SPECIAL',
+   intro:p.intro||'',
+   items:Array.isArray(p.items)?p.items:[],
+   ...p,
+   preset:legacyPreset
+ };
+});
 if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
 if(!Array.isArray(state.venueMap.links))state.venueMap.links=structuredClone(template01.defaults.venueMap.links);
 const FIRST_LEVEL_TARGETS=new Set(['booths','activities','guests','guide',...(state.customPages||[]).map(p=>'custom-'+p.id)]);
@@ -138,23 +142,17 @@ const PARTICIPATION_PRESETS={
 };
 
 const CUSTOM_PAGE_PRESETS={
- cosplay:{title:'COS自由行',eyebrow:'COSPLAY',intro:'展示参加自由行的 Coser 阵容、角色与作品信息。',itemTitle:'Coser',titleLabel:'CN / 昵称',metaLabel:'角色 / 作品',textLabel:'简介 / 出席信息',ratio:.8},
- photographer:{title:'摄影自由行',eyebrow:'PHOTOGRAPHER',intro:'展示摄影师阵容、拍摄风格、约拍说明与出席时段。',itemTitle:'摄影师',titleLabel:'CN / 昵称',metaLabel:'拍摄风格 / 方向',textLabel:'简介 / 约拍与出席信息',ratio:.8},
- itasha:{title:'痛车展示',eyebrow:'ITASHA',intro:'集中展示参加活动的痛车、车主与主题信息。',itemTitle:'车辆',titleLabel:'车主 / 展示名',metaLabel:'IP / 角色主题',textLabel:'车辆介绍 / 展示信息',ratio:1.5},
- photoStudio:{title:'摄影棚 / 拍摄场景',eyebrow:'PHOTO SPOT',intro:'集中展示现场摄影棚、布景、位置、开放时间与拍摄说明。',itemTitle:'场景',titleLabel:'场景名称',metaLabel:'位置 / 开放时间',textLabel:'布景介绍 / 拍摄规则',ratio:1.777778},
- food:{title:'餐饮指南',eyebrow:'FOOD & DRINK',intro:'展示场内或合作餐饮、位置、价格与推荐内容。',itemTitle:'餐饮',titleLabel:'店铺 / 餐饮名',metaLabel:'位置 / 价格',textLabel:'介绍 / 推荐内容',ratio:1.333333},
- officialShop:{title:'官方物贩',eyebrow:'OFFICIAL SHOP',intro:'展示官方周边、限定商品、售价、领取位置与售罄信息。',itemTitle:'商品',titleLabel:'商品名称',metaLabel:'价格 / 销售位置',textLabel:'商品说明 / 购买限制',ratio:1},
- brandZone:{title:'品牌 / 企业展区',eyebrow:'BRAND ZONE',intro:'集中展示合作品牌、企业展商、展位位置与现场内容。',itemTitle:'展商',titleLabel:'品牌 / 展商名',metaLabel:'展位 / 合作内容',textLabel:'品牌介绍 / 现场展示',ratio:1.333333},
- ocExpo:{title:'原创 OC / 作品展',eyebrow:'CREATOR EXPO',intro:'展示原创角色、插画、漫画、小说等作品与创作者信息。',itemTitle:'作品',titleLabel:'作品 / 作者',metaLabel:'类型 / 展示位置',textLabel:'作品介绍 / 创作者说明',ratio:.8},
- craftExpo:{title:'手作 / 模型展示',eyebrow:'CRAFT & MODEL',intro:'展示模型、手作、盔甲、道具及其他实体创作。',itemTitle:'作品',titleLabel:'作品名称',metaLabel:'作者 / 类型',textLabel:'制作介绍 / 展示信息',ratio:1},
- gameDemo:{title:'游戏试玩区',eyebrow:'GAME DEMO',intro:'展示独立游戏、电子游戏试玩项目、平台与现场试玩方式。',itemTitle:'游戏',titleLabel:'游戏名称',metaLabel:'类型 / 试玩位置',textLabel:'玩法介绍 / 试玩说明',ratio:1.777778},
- themeStreet:{title:'主题街区 / 同人专区',eyebrow:'THEME STREET',intro:'用于作品街道、角色中心街道、CP 向街道或主题同人专区。',itemTitle:'专区',titleLabel:'专区 / 街区名',metaLabel:'主题 / 所在区域',textLabel:'专区介绍 / 包含内容',ratio:1.777778},
- freebie:{title:'无料 / 交换专区',eyebrow:'FREEBIE & SWAP',intro:'集中展示无料领取、交换物、领取条件与交换规则。',itemTitle:'无料 / 交换物',titleLabel:'名称',metaLabel:'位置 / 领取条件',textLabel:'领取 / 交换说明',ratio:1},
- support:{title:'应援 / 生贺企划',eyebrow:'FAN PROJECT',intro:'用于生日应援、痛楼、角色纪念、留言墙等大型同好企划。',itemTitle:'企划',titleLabel:'企划名称',metaLabel:'角色 / 展示位置',textLabel:'企划介绍 / 参与方式',ratio:.8},
- checkin:{title:'打卡装置 / 主题场景',eyebrow:'CHECK-IN SPOT',intro:'展示大型装置、主题布景、打卡点和推荐拍摄位置。',itemTitle:'打卡点',titleLabel:'场景 / 装置名',metaLabel:'位置 / 开放时间',textLabel:'场景介绍 / 拍摄提示',ratio:1.5},
- tabletop:{title:'桌游 / 卡牌专区',eyebrow:'TABLETOP',intro:'展示桌游、卡牌、桌台安排、人数限制与预约方式。',itemTitle:'游戏 / 桌台',titleLabel:'游戏 / 桌台名称',metaLabel:'位置 / 人数',textLabel:'规则 / 预约与参与说明',ratio:1.333333},
- custom:{title:'自定义展示页',eyebrow:'SPECIAL',intro:'用于其他信息量较大、需要独立浏览的专题展示内容。',itemTitle:'内容',titleLabel:'标题',metaLabel:'副标题 / 位置',textLabel:'介绍',ratio:1.333333}
-};
+ custom:{title:'自定义展示页',eyebrow:'SPECIAL',intro:'用于其他信息量较大、需要独立浏览的专题内容。',itemTitle:'内容',titleLabel:'标题',metaLabel:'副标题或位置',textLabel:'介绍',ratio:1.333333},
+ cosplay:{title:'COS自由行',eyebrow:'COSPLAY',intro:'展示参加自由行的 Coser 阵容、角色、作品和出席信息。',itemTitle:'Coser',titleLabel:'CN或昵称',metaLabel:'角色与作品',textLabel:'简介与出席信息',ratio:.8},
+ photographer:{title:'摄影师阵容',eyebrow:'PHOTOGRAPHER',intro:'展示摄影师阵容、拍摄风格、约拍说明和出席时段。',itemTitle:'摄影师',titleLabel:'CN或昵称',metaLabel:'拍摄风格',textLabel:'简介与约拍信息',ratio:.8},
+ itasha:{title:'痛车展示',eyebrow:'ITASHA',intro:'集中展示参加活动的痛车、车主、主题和车辆信息。',itemTitle:'车辆',titleLabel:'车主或展示名',metaLabel:'IP与角色主题',textLabel:'车辆介绍与展示信息',ratio:1.5},
+ food:{title:'餐饮指南',eyebrow:'FOOD & DRINK',intro:'展示场内或合作餐饮、菜单、价格、位置和推荐内容。',itemTitle:'餐饮',titleLabel:'店铺或餐饮名',metaLabel:'位置与价格',textLabel:'介绍与推荐内容',ratio:1.333333},
+ officialShop:{title:'官方物贩',eyebrow:'OFFICIAL SHOP',intro:'展示官方周边、限定商品、售价、销售位置和购买限制。',itemTitle:'商品',titleLabel:'商品名称',metaLabel:'价格与销售位置',textLabel:'商品说明与购买限制',ratio:1},
+ brand:{title:'品牌展商',eyebrow:'BRAND',intro:'集中展示合作品牌、企业展商、展位信息和现场展示内容。',itemTitle:'展商',titleLabel:'品牌或展商名',metaLabel:'展位与合作内容',textLabel:'品牌介绍与现场展示',ratio:1.333333},
+ exhibition:{title:'作品展览',eyebrow:'EXHIBITION',intro:'展示原创角色、插画、漫画、小说、手作、模型和其他创作成果。',itemTitle:'作品',titleLabel:'作品名称',metaLabel:'作者与类型',textLabel:'作品介绍与展示信息',ratio:1},
+ experience:{title:'试玩体验',eyebrow:'EXPERIENCE',intro:'展示电子游戏、独立游戏、桌游、卡牌等可现场体验的项目。',itemTitle:'体验项目',titleLabel:'项目名称',metaLabel:'类型与位置',textLabel:'玩法、人数和参与说明',ratio:1.333333},
+ support:{title:'应援企划',eyebrow:'FAN PROJECT',intro:'用于生日应援、角色纪念、痛楼、留言墙等内容量较大的同好企划。',itemTitle:'企划',titleLabel:'企划名称',metaLabel:'角色与展示位置',textLabel:'企划介绍与参与方式',ratio:.8}
+}
 const PAGE_CONTENT_CONFIG={
  home:[
    {tool:'basic',label:'基本信息'},
