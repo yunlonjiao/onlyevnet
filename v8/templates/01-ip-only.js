@@ -79,6 +79,7 @@ export const template01 = {
       {id:'sl6',label:'小红书',note:'宣发、返图与观展攻略',url:'',image:''}
     ],
     sponsors:[],
+    customPages:[],
     guide:{
       homeCount:2,
       items:[
