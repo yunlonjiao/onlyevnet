@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- v8.33.1 requested homepage/activity adjustments -->
+<!-- v8.33.2 page switches sync top navigation -->
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
@@ -55,8 +55,9 @@
             <button data-page="activities" type="button"><span class="nav-icon">◷</span><span>活动</span></button>
             <label class="page-inline-switch" title="显示活动页面"><input type="checkbox" data-module="activities" aria-label="显示活动页面"><i></i></label>
           </div>
-          <div class="page-tree-row is-fixed" data-page-row="guests">
+          <div class="page-tree-row" data-page-row="guests">
             <button data-page="guests" type="button"><span class="nav-icon">☆</span><span>嘉宾</span></button>
+            <label class="page-inline-switch" title="显示嘉宾页面"><input type="checkbox" data-module="guests" aria-label="显示嘉宾页面"><i></i></label>
           </div>
           <div class="page-tree-row" data-page-row="guide">
             <button data-page="guide" type="button"><span class="nav-icon">i</span><span>观展指南</span></button>
@@ -133,7 +134,7 @@
     </div>
   </dialog>
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="/v8/app.js?v=8.33.1"></script>
-<!-- v8.33.1 preview trigger -->
+  <script type="module" src="/v8/app.js?v=8.33.2"></script>
+<!-- v8.33.2 preview trigger -->
 </body>
 </html>
