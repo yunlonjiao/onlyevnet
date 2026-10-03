@@ -1,10 +1,12 @@
 export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation}){
-  const standalonePages=['booths','activities','guests','guide'];
+  const baseStandalonePages=['booths','activities','guests','guide'];
   const fixedModules=new Set(['tickets','map']);
   const homeSections=[
     ['tickets','tickets'],['map-home','map'],['participation','activities'],['schedule-home','activities'],['community','community'],['sponsors','sponsors']
   ];
   let currentPage='home';
+  const customPageIds=()=> (getState().customPages||[]).map(p=>'custom-'+p.id);
+  const standalonePages=()=>[...baseStandalonePages,...customPageIds()];
   function getCurrentPage(){return currentPage}
   function setCurrentPage(page){currentPage=page||'home'}
   function hasSponsors(){
@@ -12,10 +14,11 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation})
   }
   function moduleOn(key){
     if(key==='sponsors')return hasSponsors();
+    if(String(key).startsWith('custom-'))return customPageIds().includes(key);
     return fixedModules.has(key)||getState().modules?.[key]!==false;
   }
   function isHomeModule(id){return homeSections.some(([section])=>section===id)}
-  function isStandalonePage(id){return standalonePages.includes(id)}
+  function isStandalonePage(id){return standalonePages().includes(id)}
   function renderQuickAccess(){
     const grid=$('.quick-grid');if(!grid)return;
     const defs=[
@@ -27,12 +30,22 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation})
     ].filter(x=>moduleOn(x[0]));
     grid.innerHTML=defs.map((x,i)=>'<a class="quick-card reveal in" href="#'+x[1]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[1]+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
   }
+  function renderCustomNav(){
+    const pages=getState().customPages||[],desktop=$('.nav .links'),mobile=$('.mobile-dock');
+    qa('[data-custom-nav]').forEach(x=>x.remove());
+    pages.forEach(page=>{
+      const key='custom-'+page.id,label=page.title||'专题页面';
+      if(desktop)desktop.insertAdjacentHTML('beforeend','<a href="#'+key+'" data-target-mode="page" data-page-link="'+key+'" data-custom-nav="1">'+label+'</a>');
+      if(mobile)mobile.insertAdjacentHTML('beforeend','<a href="#'+key+'" data-target-mode="page" data-page-link="'+key+'" data-custom-nav="1">'+label+'</a>');
+    });
+  }
   function applyModules(){
     $('.ribbon')?.classList.toggle('oe-page-hidden',!moduleOn('ribbon'));
     homeSections.forEach(([id,key])=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(key)));
-    standalonePages.forEach(id=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(id)));
+    standalonePages().forEach(id=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(id)));
     const navMap={'tickets':'tickets','map-home':'map','schedule-home':'activities','community':'community','booths':'booths','activities':'activities','guests':'guests','guide':'guide'};
     Object.entries(navMap).forEach(([id,key])=>qa('.nav a[href="#'+id+'"],.mobile-dock a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
+    renderCustomNav();
     renumberSections();
     renderQuickAccess();renderParticipation();
   }
@@ -52,13 +65,13 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation})
     });
   }
   function showPage(page,updateHash=true){
-    if(page!=='home'&&!standalonePages.includes(page))page='home';
+    if(page!=='home'&&!isStandalonePage(page))page='home';
     if(page!=='home'&&!moduleOn(page)&&getMode?.()!=='edit')page='home';
     currentPage=page;
     [$('.hero'),$('.quick')].filter(Boolean).forEach(el=>el.classList.toggle('oe-page-hidden',page!=='home'));
     $('.ribbon')?.classList.toggle('oe-page-hidden',page!=='home'||!moduleOn('ribbon'));
     homeSections.forEach(([id,key])=>{const el=$('#'+id);if(el)el.classList.toggle('oe-page-hidden',page!=='home'||!moduleOn(key))});
-    standalonePages.forEach(id=>{const el=$('#'+id);if(el)el.classList.toggle('oe-page-hidden',page!==id||(!moduleOn(id)&&getMode?.()!=='edit'))});
+    standalonePages().forEach(id=>{const el=$('#'+id);if(el)el.classList.toggle('oe-page-hidden',page!==id||(!moduleOn(id)&&getMode?.()!=='edit'))});
     $('.footer')?.classList.toggle('oe-page-hidden',false);
     if(updateHash){
       const hash=page==='home'?'#home':'#'+page;
