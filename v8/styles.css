@@ -741,3 +741,26 @@ body.previewing .canvas-stage:before{display:none}
   min-width:0;
   max-width:100%;
 }
+
+
+/* custom first-level pages */
+#createCustomPageBtn.create-custom-page{
+  margin-top:6px;
+  min-height:34px;
+  border:1px dashed #d8d6e2;
+  background:#faf9fd;
+  color:#6f6878;
+}
+#createCustomPageBtn.create-custom-page:hover{border-color:#8e73ff;background:#f4f0ff;color:#5e43c5}
+#createCustomPageBtn.create-custom-page span:first-child{font-size:15px;line-height:1}
+#customPageRows{display:grid;gap:2px}
+.custom-page-preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.custom-page-preset{
+  border:1px solid #e4e1e9;background:#fff;border-radius:12px;padding:12px;text-align:left;cursor:pointer;
+}
+.custom-page-preset:hover{border-color:#8c72ff;background:#faf8ff}
+.custom-page-preset b{display:block;font-size:11px;margin-bottom:4px}
+.custom-page-preset small{display:block;font-size:9px;line-height:1.45;color:#83808a}
+.custom-page-row .custom-page-type{font-size:8px;color:#9a96a2;margin-left:auto}
+.custom-page-settings-actions{display:flex;gap:7px;margin-top:12px}
+.custom-page-settings-actions button{flex:1}
