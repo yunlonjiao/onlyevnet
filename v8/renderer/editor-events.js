@@ -6,10 +6,33 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
   function writeFavorites(x){localStorage.setItem(favoriteKey(),JSON.stringify(x))}
   function paintFavorites(){const x=readFavorites(),bs=new Set(x.booths),ps=new Set(x.products);qa('[data-favorite-booth]').forEach(b=>{const on=bs.has(b.dataset.favoriteBooth);b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));b.textContent=on?'♥ 已收藏':'♡ 收藏社团'});qa('[data-wishlist-product]').forEach(b=>{const on=ps.has(b.dataset.wishlistProduct);b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));b.textContent=on?'★ 已加入':'☆ 心愿'});qa('[data-wishlist-count]').forEach(el=>el.textContent=String(new Set([...x.booths,...x.products]).size))}
   function toggleFavorite(kind,id){const x=readFavorites(),key=kind==='booth'?'booths':'products',set=new Set(x[key]);set.has(id)?set.delete(id):set.add(id);x[key]=[...set];writeFavorites(x);paintFavorites()}
+  function applyActivityFilters(){
+    const root=document.querySelector('#activities');if(!root)return;
+    const category=root.querySelector('[data-activity-filter-value].active')?.dataset.activityFilterValue||'';
+    const area=root.querySelector('[data-activity-area-filter]')?.value||'';
+    let shown=0;
+    qa('#activities .activity-program-detail').forEach(card=>{
+      const on=(!category||card.dataset.activityCategory===category)&&(!area||card.dataset.activityArea===area);
+      card.hidden=!on;if(on)shown++;
+    });
+    qa('#activities .timetable-row').forEach(row=>{
+      const on=(!category||row.dataset.activityCategory===category)&&(!area||row.dataset.activityArea===area);
+      row.hidden=!on;
+    });
+    const count=root.querySelector('[data-activity-filter-count]');if(count)count.textContent='显示 '+shown+' 个活动';
+  }
   document.addEventListener('input',e=>{
     const boothSearch=e.target.closest?.('[data-booth-search]');if(boothSearch){const q=boothSearch.value.trim().toLowerCase(),savedOnly=document.querySelector('[data-booth-filter="saved"]')?.classList.contains('active'),fav=readFavorites(),bs=new Set(fav.booths),ps=new Set(fav.products);let shown=0;qa('.booth-rich').forEach(card=>{const matches=!q||String(card.dataset.search||'').includes(q),saved=bs.has(card.dataset.boothId)||[...card.querySelectorAll('[data-product-id]')].some(p=>ps.has(p.dataset.productId)),on=matches&&(!savedOnly||saved);card.hidden=!on;if(on)shown++});const empty=document.querySelector('.booth-no-result');if(empty)empty.hidden=shown>0}
   });
+  document.addEventListener('change',e=>{
+    const area=e.target.closest?.('[data-activity-area-filter]');
+    if(area&&getMode()==='preview'){applyActivityFilters()}
+  });
   document.addEventListener('click',e=>{
+    const activityFilter=e.target.closest?.('[data-activity-filter-value]');
+    if(activityFilter&&getMode()==='preview'){
+      e.preventDefault();qa('#activities [data-activity-filter-value]').forEach(x=>x.classList.toggle('active',x===activityFilter));applyActivityFilters();return
+    }
     const explore=e.target.closest?.('[data-explore-link]');
     if(explore&&getMode()==='preview'){
       e.preventDefault();
