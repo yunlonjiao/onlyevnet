@@ -310,9 +310,18 @@ function openPageTool(tool){
  showInspectorEmpty();
 }
 function renderPageContentNav(page,{openDefault=true}={}){
- const items=PAGE_CONTENT_CONFIG[page]||[],nav=$('#pageContentNav'),title=$('#pageContentTitle'),panel=$('#contentListPanel');
- if(title)title.textContent=(moduleLabels[page]||'首页')+'内容';
+ const nav=$('#pageContentNav'),title=$('#pageContentTitle'),panel=$('#contentListPanel'),custom=customPageByKey(page);
+ if(title)title.textContent=pageLabel(page)+'内容';
  if(!nav)return;
+ if(custom){
+   nav.innerHTML='<button type="button" data-custom-page-nav="settings"><span>页面设置</span></button><button type="button" data-custom-page-nav="items"><span>展示内容</span><b>'+String((custom.items||[]).length)+'</b></button>';
+   nav.querySelector('[data-custom-page-nav="settings"]')?.addEventListener('click',()=>{nav.querySelectorAll('[data-custom-page-nav]').forEach(x=>x.classList.toggle('active',x.dataset.customPageNav==='settings'));if(panel)panel.innerHTML='';openCustomPageSettings(custom.id)});
+   nav.querySelector('[data-custom-page-nav="items"]')?.addEventListener('click',()=>{nav.querySelectorAll('[data-custom-page-nav]').forEach(x=>x.classList.toggle('active',x.dataset.customPageNav==='items'));openCustomPageItemsManager(custom.id)});
+   if(panel)panel.innerHTML='<div class="sidebar-content-empty">选择页面设置或展示内容。</div>';
+   if(openDefault){nav.querySelector('[data-custom-page-nav="items"]')?.classList.add('active');openCustomPageItemsManager(custom.id)}
+   return;
+ }
+ const items=PAGE_CONTENT_CONFIG[page]||[];
  nav.innerHTML=items.map(x=>x.collection
    ?'<button type="button" data-page-content-manager="'+x.collection+'"><span>'+esc(x.label)+'</span><b data-content-count="'+x.collection+'">0</b></button>'
    :'<button type="button" data-page-tool="'+x.tool+'"><span>'+esc(x.label)+'</span></button>'
@@ -385,7 +394,7 @@ function syncStudioPageUI(page,{openContent=true}={}){
  currentPage=page||'home';
  document.querySelectorAll('.page-nav [data-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.page===currentPage));
  document.querySelectorAll('[data-page-row]').forEach(row=>row.classList.toggle('active',row.dataset.pageRow===currentPage));
- const title=document.querySelector('.canvas-title b');if(title)title.textContent=currentPage==='home'?'首页':(moduleLabels[currentPage]||'页面');
+ const title=document.querySelector('.canvas-title b');if(title)title.textContent=pageLabel(currentPage);
  if(openContent)renderPageContentNav(currentPage);
 }
 function setStudioPage(page,{openContent=true}={}){
@@ -415,6 +424,14 @@ window.addEventListener('message',e=>{
  return
 }
  if(m.type==='OE_SELECT_IMAGE'){document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.remove('active'));syncCanvasSelection(m.path);openImageInspector(m.path);return}
+ if(m.type==='OE_SELECT_CUSTOM_PAGE'){
+   const key=customPageKey(m.pageId);setWorkspace('pages');syncStudioPageUI(key,{openContent:false});renderPageContentNav(key,{openDefault:false});openCustomPageSettings(m.pageId);return
+ }
+ if(m.type==='OE_SELECT_CUSTOM_ITEM'){
+   const key=customPageKey(m.pageId);setWorkspace('pages');syncStudioPageUI(key,{openContent:false});renderPageContentNav(key,{openDefault:false});
+   const nav=$('#pageContentNav');nav?.querySelector('[data-custom-page-nav="items"]')?.classList.add('active');
+   openCustomPageItemsManager(m.pageId,m.index);openCustomPageItemInspector(m.pageId,m.index);return
+ }
  if(m.type==='OE_SELECT_COLLECTION'){
    const page=COLLECTION_PAGE[m.collection]||currentPage||'home';
    setWorkspace('pages');syncStudioPageUI(page,{openContent:false});renderPageContentNav(page,{openDefault:false});
@@ -532,6 +549,8 @@ function exploreDetailOptions(page,itemType='page',itemId=''){
  }
  if(page==='guests')out+=(state.guests||[]).map(x=>'<option value="guest:'+esc(x.id)+'"'+selected('guest',x.id)+'>'+esc(x.name||'嘉宾')+'</option>').join('');
  if(page==='guide')out+=(state.guide?.items||[]).map(x=>'<option value="guide:'+esc(x.id)+'"'+selected('guide',x.id)+'>'+esc(x.title||'指南')+'</option>').join('');
+ const custom=customPageByKey(page);
+ if(custom)out+=(custom.items||[]).map(x=>'<option value="customitem:'+esc(x.id)+'"'+selected('customitem',x.id)+'>'+esc(x.title||'展示内容')+'</option>').join('');
  return out;
 }
 function extraInspector(collection,index,item){
@@ -555,7 +574,7 @@ function extraInspector(collection,index,item){
      '</div>';
  }
  if(collection==='explore'){
-   const pages=[['booths','摊位'],['activities','活动'],['guests','嘉宾'],['guide','观展指南']];
+   const pages=[['booths','摊位'],['activities','活动'],['guests','嘉宾'],['guide','观展指南'],...(state.customPages||[]).map(p=>[customPageKey(p.id),p.title||'专题页面'])];
    const detailOptions=exploreDetailOptions(item.target,item.itemType,item.itemId);
    return '<div class="reference-panel explore-link-settings"><b>跳转目标</b>'+
      '<label><span>一级页面</span><select data-explore-page>'+pages.map(x=>'<option value="'+x[0]+'" '+(item.target===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select></label>'+
@@ -651,6 +670,11 @@ function imageSlotConfig(path){
  if(/^booths\.\d+\.logo$/.test(path))return {label:'社团 Logo',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:700,height:700,fixed:true};
  if(/^socialLinks\.\d+\.image$/.test(path))return {label:'二维码 / 社群图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:900,height:900,fixed:true};
  if(/^sponsors\.\d+\.logo$/.test(path))return {label:'赞助商 Logo',ratio:1.8,ratioLabel:'裁剪框可移动 · 比例 9:5',width:1080,height:600,fixed:true};
+ const cm=path.match(/^customPages\.(\d+)\.items\.\d+\.image$/);
+ if(cm){
+   const page=state.customPages?.[Number(cm[1])],preset=CUSTOM_PAGE_PRESETS[page?.preset]||CUSTOM_PAGE_PRESETS.custom,ratio=preset.ratio||1.333333;
+   return {label:(preset.itemTitle||'展示内容')+'图片',ratio,ratioLabel:'裁剪框可移动 · 页面预设比例',width:ratio<1?960:1200,height:ratio<1?1200:Math.round(1200/ratio),fixed:true};
+ }
  return {label:'图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1200,height:1200,fixed:true};
 }
 function openImageInspector(path){
@@ -799,7 +823,8 @@ async function applyImageCrop(){
    checkpoint();setDeep(cropContext.path,data);
    if(/^tickets\.\d+\.image$/.test(cropContext.path))send({type:'OE_PATCH_FIELD',path:cropContext.path,value:data});else send({type:'OE_REPLACE_STATE',state});
    toast('图片已应用');
-   const c=cropContext.returnCollection,i=Number(cropContext.returnIndex);closeImageCropper();if(c&&Number.isInteger(i))openItemInspector(c,i);
+   const c=cropContext.returnCollection,i=Number(cropContext.returnIndex);closeImageCropper();
+   if(c&&Number.isInteger(i)){if(c.startsWith('custom:'))openCustomPageItemInspector(c.slice(7),i);else openItemInspector(c,i)}
  }catch(err){console.error('[OnlyEvent crop apply]',err);toast('裁剪失败，请重试')}
  finally{const b=$('#cropApply');if(b)b.disabled=false}
 }
