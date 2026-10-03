@@ -1,13 +1,13 @@
-import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.33.3';
+import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.33.8';
 import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.25.0';
-import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.33.5';
-import {createCollections} from '/v8/renderer/collections.js?v=8.33.5';
-import {createParticipation} from '/v8/renderer/participation.js?v=8.33.1';
+import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.33.8';
+import {createCollections} from '/v8/renderer/collections.js?v=8.33.8';
+import {createParticipation} from '/v8/renderer/participation.js?v=8.33.8';
 import {createRouter} from '/v8/renderer/router.js?v=8.33.4';
 import {createFields} from '/v8/renderer/fields.js?v=8.25.0';
 import {createRuntime} from '/v8/renderer/runtime.js?v=8.25.0';
-import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.33.4';
-import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.33.4';
+import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.33.8';
+import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.33.8';
 
 const ORIGIN=location.origin;
 let state={},mode='edit';
