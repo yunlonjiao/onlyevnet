@@ -19,15 +19,28 @@ if(!Array.isArray(state.ribbonItems)||!state.ribbonItems.length){
 delete state.ribbon1;delete state.ribbon2;delete state.ribbon3;delete state.ribbon4;
 if(state.modules&&'passport' in state.modules)delete state.modules.passport;
 if(!Array.isArray(state.participation))state.participation=structuredClone(template01.defaults.participation);
+if(!Array.isArray(state.customPages))state.customPages=structuredClone(template01.defaults.customPages||[]);
+state.customPages=(state.customPages||[]).map((p,i)=>({
+ id:p.id||('cp'+(i+1)),
+ preset:p.preset||'custom',
+ title:p.title||'自定义页面',
+ eyebrow:p.eyebrow||'SPECIAL',
+ intro:p.intro||'',
+ items:Array.isArray(p.items)?p.items:[],
+ ...p
+}));
 if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
 if(!Array.isArray(state.venueMap.links))state.venueMap.links=structuredClone(template01.defaults.venueMap.links);
-const FIRST_LEVEL_TARGETS=new Set(['booths','activities','guests','guide']);
+const FIRST_LEVEL_TARGETS=new Set(['booths','activities','guests','guide',...(state.customPages||[]).map(p=>'custom-'+p.id)]);
 state.venueMap.links=(state.venueMap.links||[]).map((link,i)=>{
  const legacy={participation:'activities','schedule-home':'activities','map-home':'booths','guide-home':'guide',freewalk:'activities',itasha:'activities'}[link.target];
- let target=FIRST_LEVEL_TARGETS.has(legacy||link.target)?(legacy||link.target):'activities';
+ const requested=legacy||link.target;
+ let target=FIRST_LEVEL_TARGETS.has(requested)?requested:'activities';
  const label=String(link.label||'');
- if(/痛车|COS|自由行/i.test(label))target='activities';
- else if(/摊位/i.test(label)&&target==='activities')target='booths';
+ if(!FIRST_LEVEL_TARGETS.has(requested)){
+   if(/摊位/i.test(label))target='booths';
+   else target='activities';
+ }
  return {id:link.id||('ml'+(i+1)),label:label||'继续探索',target,itemType:link.itemType||'page',itemId:link.itemId||''};
 });
 delete state.venueMap.points;
@@ -86,9 +99,14 @@ function contentThumb(collection,item){
 }
 
 const moduleLabels={booths:'摊位',activities:'活动',guests:'嘉宾',guide:'观展指南'};
+function customPageKey(id){return 'custom-'+id}
+function customPageByKey(key){return (state.customPages||[]).find(p=>customPageKey(p.id)===key)}
+function pageLabel(key){return moduleLabels[key]||customPageByKey(key)?.title||(key==='home'?'首页':'页面')}
+function customPageIndex(id){return (state.customPages||[]).findIndex(p=>String(p.id)===String(id))}
+
 const contentManagerMeta={
  ribbonItems:{title:'滚动公告',empty:'还没有滚动公告',item:(x,i)=>[x.text||('公告 '+(i+1)),'']},
- explore:{title:'继续探索',empty:'还没有探索入口',item:(x,i)=>[x.label||('入口 '+(i+1)),moduleLabels[x.target]||'页面']},
+ explore:{title:'继续探索',empty:'还没有探索入口',item:(x,i)=>[x.label||('入口 '+(i+1)),pageLabel(x.target)]},
  tickets:{title:'票务',empty:'还没有票种',item:(x,i)=>[x.name||('票种 '+(i+1)),x.price||'']},
  booths:{title:'摊位',empty:'还没有摊位',item:(x,i)=>[(x.no?x.no+' · ':'')+(x.name||('摊位 '+(i+1))),String((x.products||[]).length)+' 个制品']},
  participation:{title:'活动',empty:'还没有活动',item:(x,i)=>[x.title||('活动 '+(i+1)),x.meta||'']},
@@ -119,6 +137,12 @@ const PARTICIPATION_PRESETS={
  free:{preset:'free',title:'自由交流 / 同好活动',meta:'活动区域 · 时间待定',text:'填写自由交流、同好聚会或临时互动内容。',target:'activities',url:'',guestIds:[]}
 };
 
+const CUSTOM_PAGE_PRESETS={
+ cosplay:{title:'COS自由行',eyebrow:'COSPLAY',intro:'展示参加自由行的 Coser 阵容、角色与作品信息。',itemTitle:'Coser',titleLabel:'CN / 昵称',metaLabel:'角色 / 作品',textLabel:'简介 / 出席信息',ratio:.8},
+ itasha:{title:'痛车展示',eyebrow:'ITASHA',intro:'集中展示参加活动的痛车、车主与主题信息。',itemTitle:'车辆',titleLabel:'车主 / 展示名',metaLabel:'IP / 角色主题',textLabel:'车辆介绍 / 展示信息',ratio:1.5},
+ food:{title:'餐饮指南',eyebrow:'FOOD & DRINK',intro:'展示场内或合作餐饮、位置、价格与推荐内容。',itemTitle:'餐饮',titleLabel:'店铺 / 餐饮名',metaLabel:'位置 / 价格',textLabel:'介绍 / 推荐内容',ratio:1.333333},
+ custom:{title:'自定义展示页',eyebrow:'SPECIAL',intro:'用于摄影区、企业展区、官方物贩、主题展览等需要独立展示的内容。',itemTitle:'内容',titleLabel:'标题',metaLabel:'副标题 / 位置',textLabel:'介绍',ratio:1.333333}
+};
 const PAGE_CONTENT_CONFIG={
  home:[
    {tool:'basic',label:'基本信息'},
