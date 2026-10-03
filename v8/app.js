@@ -296,6 +296,11 @@ window.addEventListener('message',e=>{
  return
 }
  if(m.type==='OE_SELECT_IMAGE'){document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.remove('active'));syncCanvasSelection(m.path);openImageInspector(m.path);return}
+ if(m.type==='OE_SELECT_COLLECTION'){
+   const page=COLLECTION_PAGE[m.collection]||currentPage||'home';
+   setWorkspace('pages');syncStudioPageUI(page,{openContent:false});renderPageContentNav(page,{openDefault:false});
+   openCollectionManager(m.collection);setPageContentActive({collection:m.collection});showInspectorEmpty();return
+ }
  if(m.type==='OE_SELECT_ITEM'){
    const page=COLLECTION_PAGE[m.collection]||currentPage||'home';
    setWorkspace('pages');syncStudioPageUI(page,{openContent:false});renderPageContentNav(page,{openDefault:false});
