@@ -7,7 +7,7 @@ import {createRouter} from '/v8/renderer/router.js?v=8.33.4';
 import {createFields} from '/v8/renderer/fields.js?v=8.25.0';
 import {createRuntime} from '/v8/renderer/runtime.js?v=8.25.0';
 import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.33.4';
-import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.25.0';
+import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.33.4';
 
 const ORIGIN=location.origin;
 let state={},mode='edit';
