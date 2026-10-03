@@ -175,7 +175,24 @@ const CUSTOM_PAGE_PRESETS={
  freebie:{title:'无料交换',eyebrow:'FREEBIE',intro:'展示无料、交换物、领取条件、交换规则和作者信息。',itemTitle:'无料或交换物',titleLabel:'名称',metaLabel:'作者与领取位置',textLabel:'领取条件与交换说明',ratio:1},
  support:{title:'应援企划',eyebrow:'FAN PROJECT',intro:'用于生日应援、角色纪念、痛楼、留言墙等内容量较大的同好企划。',itemTitle:'企划',titleLabel:'企划名称',metaLabel:'角色与展示位置',textLabel:'企划介绍与参与方式',ratio:.8},
  exhibition:{title:'主题展览',eyebrow:'EXHIBITION',intro:'用于原画展、设定展、历史回顾、纪念展等独立主题内容。',itemTitle:'展项',titleLabel:'展项名称',metaLabel:'主题与位置',textLabel:'展项介绍与展示说明',ratio:1.333333}
-}
+};
+const PAGE_CONTENT_CONFIG={
+ home:[
+   {tool:'basic',label:'基本信息'},
+   {tool:'hero',label:'主视觉'},
+   {collection:'ribbonItems',label:'滚动公告'},
+   {collection:'tickets',label:'票务'},
+   {tool:'map',label:'场地图'},
+   {collection:'explore',label:'继续探索'},
+   {collection:'updates',label:'重要更新'},
+   {collection:'socialLinks',label:'社群'},
+   {collection:'sponsors',label:'赞助'}
+ ],
+ booths:[{collection:'booths',label:'摊位与制品'}],
+ activities:[{collection:'participation',label:'活动企划'},{collection:'schedule',label:'当天日程'}],
+ guests:[{collection:'guests',label:'嘉宾'}],
+ guide:[{collection:'guide',label:'指南内容'}]
+};
 const COLLECTION_PAGE={
  ribbonItems:'home',tickets:'home',explore:'home',updates:'home',socialLinks:'home',sponsors:'home',
  booths:'booths',participation:'activities',schedule:'activities',guests:'guests',guide:'guide'
