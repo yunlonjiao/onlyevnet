@@ -20,7 +20,7 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
       }
       router.showPage(page);
       if(kind!=='page'&&id)requestAnimationFrame(()=>{
-        const selector=kind==='booth'?'#booth-'+CSS.escape(id):kind==='participation'?'#participation-'+CSS.escape(id):kind==='guest'?'#guest-'+CSS.escape(id):kind==='guide'?'#guide-'+CSS.escape(id):'';
+        const selector=kind==='booth'?'#booth-'+CSS.escape(id):kind==='participation'?'#participation-'+CSS.escape(id):kind==='guest'?'#guest-'+CSS.escape(id):kind==='guide'?'#guide-'+CSS.escape(id):kind==='customitem'?'#customitem-'+CSS.escape(id):'';
         if(selector)document.querySelector(selector)?.scrollIntoView({behavior:'smooth',block:'start'});
       });
       return
@@ -40,6 +40,14 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
     if(venueLink&&getMode()==='edit'){e.preventDefault();send({type:'OE_SELECT_FIELD',path:'edition'});return}
     const ticketLink=e.target.closest?.('[data-ticket-settings]');
     if(ticketLink&&getMode()==='edit'){e.preventDefault();send({type:'OE_SELECT_FIELD',path:'ticketUrl'});return}
+    const customItem=e.target.closest?.('[data-oe-custom-page]');
+    if(customItem&&getMode()==='edit'){
+      e.preventDefault();send({type:'OE_SELECT_CUSTOM_ITEM',pageId:customItem.dataset.oeCustomPage,index:Number(customItem.dataset.oeCustomIndex)});return
+    }
+    const customPageSettings=e.target.closest?.('[data-oe-custom-page-settings]');
+    if(customPageSettings&&getMode()==='edit'){
+      e.preventDefault();send({type:'OE_SELECT_CUSTOM_PAGE',pageId:customPageSettings.dataset.oeCustomPageSettings});return
+    }
     const giftImage=e.target.closest?.('[data-ticket-image]');
     if(giftImage){const i=Number(giftImage.dataset.ticketImage);if(getMode()==='preview'){e.preventDefault();openGiftLightbox(getState().tickets?.[i]?.image);return}else{e.preventDefault();send({type:'OE_SELECT_ITEM',collection:'tickets',index:i});return}}
     const richImage=e.target.closest?.('[data-product-lightbox]');
