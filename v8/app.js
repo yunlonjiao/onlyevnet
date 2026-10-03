@@ -861,12 +861,13 @@ function setPreview(next){
  send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});toast(preview?'预览模式 · 页面交互已启用':'已返回编辑');
 }
 $('#previewBtn').onclick=()=>setPreview(!preview);
+$('#createCustomPageBtn').onclick=openCustomPageCreator;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&preview)setPreview(false)});
 $('.page-nav')?.addEventListener('click',e=>{
  const b=e.target.closest('[data-page]');if(!b)return;
  setWorkspace('pages');setStudioPage(b.dataset.page);
 });
-$('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts()};
-$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts()};
+$('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts()};
+$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts()};
 $('#publishBtn').onclick=()=>send({type:'OE_EXPORT_HTML'});
-syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
+renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
