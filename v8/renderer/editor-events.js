@@ -15,11 +15,12 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
       const on=(!category||card.dataset.activityCategory===category)&&(!area||card.dataset.activityArea===area);
       card.hidden=!on;if(on)shown++;
     });
-    qa('#activities .timetable-row').forEach(row=>{
-      const on=(!category||row.dataset.activityCategory===category)&&(!area||row.dataset.activityArea===area);
-      row.hidden=!on;
-    });
     const count=root.querySelector('[data-activity-filter-count]');if(count)count.textContent='显示 '+shown+' 个活动';
+  }
+  function resetActivityFilters(){
+    qa('#activities [data-activity-filter-value]').forEach((x,i)=>x.classList.toggle('active',i===0));
+    const area=document.querySelector('#activities [data-activity-area-filter]');if(area)area.value='';
+    applyActivityFilters();
   }
   document.addEventListener('input',e=>{
     const boothSearch=e.target.closest?.('[data-booth-search]');if(boothSearch){const q=boothSearch.value.trim().toLowerCase(),savedOnly=document.querySelector('[data-booth-filter="saved"]')?.classList.contains('active'),fav=readFavorites(),bs=new Set(fav.booths),ps=new Set(fav.products);let shown=0;qa('.booth-rich').forEach(card=>{const matches=!q||String(card.dataset.search||'').includes(q),saved=bs.has(card.dataset.boothId)||[...card.querySelectorAll('[data-product-id]')].some(p=>ps.has(p.dataset.productId)),on=matches&&(!savedOnly||saved);card.hidden=!on;if(on)shown++});const empty=document.querySelector('.booth-no-result');if(empty)empty.hidden=shown>0}
@@ -42,6 +43,7 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
         if(index>=0){router.showActivityDetail(index);return}
       }
       router.showPage(page);
+      if(page==='activities'&&kind==='participation')resetActivityFilters();
       if(kind!=='page'&&id)requestAnimationFrame(()=>{
         const selector=kind==='booth'?'#booth-'+CSS.escape(id):kind==='participation'?'#participation-'+CSS.escape(id):kind==='guest'?'#guest-'+CSS.escape(id):kind==='guide'?'#guide-'+CSS.escape(id):kind==='customitem'?'#customitem-'+CSS.escape(id):'';
         if(selector)document.querySelector(selector)?.scrollIntoView({behavior:'smooth',block:'start'});
@@ -57,7 +59,7 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
     const filter=e.target.closest?.('[data-booth-filter]');if(filter&&getMode()==='preview'){e.preventDefault();qa('[data-booth-filter]').forEach(x=>x.classList.toggle('active',x===filter));document.querySelector('[data-booth-search]')?.dispatchEvent(new Event('input',{bubbles:true}));return}
     const boothJump=e.target.closest?.('a[data-booth-id]');if(boothJump){e.preventDefault();router.showPage('booths');requestAnimationFrame(()=>document.querySelector('#booth-'+CSS.escape(boothJump.dataset.boothId))?.scrollIntoView({behavior:'smooth',block:'start'}));return}
     const guestJump=e.target.closest?.('a[data-guest-id]');if(guestJump){e.preventDefault();router.showPage('guests');requestAnimationFrame(()=>document.querySelector('#guest-'+CSS.escape(guestJump.dataset.guestId))?.scrollIntoView({behavior:'smooth',block:'start'}));return}
-    const planJump=e.target.closest?.('a[data-activity-plan-id]');if(planJump&&getMode()==='preview'){e.preventDefault();router.showPage('activities');requestAnimationFrame(()=>document.querySelector('#participation-'+CSS.escape(planJump.dataset.activityPlanId))?.scrollIntoView({behavior:'smooth',block:'start'}));return}
+    const planJump=e.target.closest?.('a[data-activity-plan-id]');if(planJump&&getMode()==='preview'){e.preventDefault();router.showPage('activities');resetActivityFilters();requestAnimationFrame(()=>document.querySelector('#participation-'+CSS.escape(planJump.dataset.activityPlanId))?.scrollIntoView({behavior:'smooth',block:'start'}));return}
     if(e.target.closest?.('.brand')){e.preventDefault();router.showPage('home');return}
     const venueLink=e.target.closest?.('.venue-nav');
     if(venueLink&&getMode()==='edit'){e.preventDefault();send({type:'OE_SELECT_FIELD',path:'edition'});return}
