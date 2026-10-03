@@ -58,7 +58,10 @@ state.venueMap.links=(state.venueMap.links||[]).map((link,i)=>{
 delete state.venueMap.points;
 state.participation=(state.participation||[]).map(item=>{
  const category=item.category||({stage:'舞台',guest:'嘉宾互动',signing:'签售',cosplay:'COS',itasha:'痛车',stamp:'集章',photo:'合影',game:'互动游戏',free:'自由交流'}[item.preset]||'其他');
- const area=item.area||String(item.meta||'').split('·')[0].trim()||'活动区域';
+ const rawMeta=String(item.meta||'').trim(),parts=rawMeta.split(/\s*·\s*/).filter(Boolean);
+ const inferredArea=!item.area&&parts.length>1?parts[0]:'';
+ const area=item.area||inferredArea||'活动区域';
+ const meta=rawMeta.startsWith(area+' · ')?rawMeta.slice(area.length+3).trim():(inferredArea?parts.slice(1).join(' · '):rawMeta);
  return {
    image:item.image||'',
    detail:item.detail||item.text||'',
@@ -66,6 +69,7 @@ state.participation=(state.participation||[]).map(item=>{
    ...item,
    category,
    area,
+   meta,
    target:'activities',
    guestIds:Array.isArray(item.guestIds)?item.guestIds:[]
  };
@@ -379,11 +383,15 @@ function addPresetItem(collection,key){
  const arr=collectionArray(collection);if(!Array.isArray(arr))return;
  const source=collection==='guide'?GUIDE_PRESETS[key]:PARTICIPATION_PRESETS[key];
  if(!source)return;
- const extra=collection==='participation'?{
-  detail:source.text||'',rules:'',image:'',guestIds:[],
-  category:source.category||({stage:'舞台',guest:'嘉宾互动',signing:'签售',cosplay:'COS',itasha:'痛车',stamp:'集章',photo:'合影',game:'互动游戏',free:'自由交流'}[source.preset]||'其他'),
-  area:source.area||String(source.meta||'').split('·')[0].trim()||'活动区域'
- }:{};
+ const extra=collection==='participation'?(()=>{
+  const rawMeta=String(source.meta||'').trim(),parts=rawMeta.split(/\s*·\s*/).filter(Boolean);
+  return {
+   detail:source.text||'',rules:'',image:'',guestIds:[],
+   category:source.category||({stage:'舞台',guest:'嘉宾互动',signing:'签售',cosplay:'COS',itasha:'痛车',stamp:'集章',photo:'合影',game:'互动游戏',free:'自由交流'}[source.preset]||'其他'),
+   area:source.area||(parts.length>1?parts[0]:'活动区域'),
+   meta:parts.length>1?parts.slice(1).join(' · '):rawMeta
+  };
+ })():{};
  arr.push({id:uid(collection==='guide'?'gd':'pa'),...structuredClone(source),...extra});
  save();send({type:'OE_REPLACE_STATE',state});
  openCollectionManager(collection,arr.length-1);openItemInspector(collection,arr.length-1);
