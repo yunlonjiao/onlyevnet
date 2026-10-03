@@ -56,14 +56,20 @@ state.venueMap.links=(state.venueMap.links||[]).map((link,i)=>{
  return {id:link.id||('ml'+(i+1)),label:label||'继续探索',target,itemType:link.itemType||'page',itemId:link.itemId||''};
 });
 delete state.venueMap.points;
-state.participation=(state.participation||[]).map(item=>({
- image:item.image||'',
- detail:item.detail||item.text||'',
- rules:item.rules||'',
- ...item,
- target:'activities',
- guestIds:Array.isArray(item.guestIds)?item.guestIds:[]
-}));
+state.participation=(state.participation||[]).map(item=>{
+ const category=item.category||({stage:'舞台',guest:'嘉宾互动',signing:'签售',cosplay:'COS',itasha:'痛车',stamp:'集章',photo:'合影',game:'互动游戏',free:'自由交流'}[item.preset]||'其他');
+ const area=item.area||String(item.meta||'').split('·')[0].trim()||'活动区域';
+ return {
+   image:item.image||'',
+   detail:item.detail||item.text||'',
+   rules:item.rules||'',
+   ...item,
+   category,
+   area,
+   target:'activities',
+   guestIds:Array.isArray(item.guestIds)?item.guestIds:[]
+ };
+});
 state.modules??={};
 for(const k of ['booths','activities','guide','freewalk','itasha','ribbon','guests','community','sponsors']){
  if(state.modules[k]===undefined)state.modules[k]=template01.defaults.modules?.[k]!==false;
@@ -78,7 +84,7 @@ if(state.sponsors.length===1){
 }
 state.booths=(state.booths||[]).map((b,i)=>{const next={...structuredClone(template01.defaults.booths[i]||{products:[]}),...b,products:Array.isArray(b.products)?b.products:structuredClone(template01.defaults.booths[i]?.products||[])};delete next.pointId;return next});
 state.guests=(state.guests||[]).map((g,i)=>({...structuredClone(template01.defaults.guests[i]||{}),...g}));
-state.schedule=(state.schedule||[]).map((a,i)=>{const next={...structuredClone(template01.defaults.schedule[i]||{guestIds:[]}),...a,guestIds:Array.isArray(a.guestIds)?a.guestIds:[]};delete next.locationId;return next});
+state.schedule=(state.schedule||[]).map((a,i)=>{const next={...structuredClone(template01.defaults.schedule[i]||{guestIds:[],participationId:''}),...a,guestIds:Array.isArray(a.guestIds)?a.guestIds:[],participationId:a.participationId||''};delete next.locationId;return next});
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(t){toastEl.textContent=t;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),1400)}
 function save(){saveState.textContent='保存中…';syncContentCounts();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));saveState.textContent='已保存'},180)}
@@ -121,7 +127,7 @@ const contentManagerMeta={
  explore:{title:'继续探索',empty:'还没有探索入口',item:(x,i)=>[x.label||('入口 '+(i+1)),pageLabel(x.target)]},
  tickets:{title:'票务',empty:'还没有票种',item:(x,i)=>[x.name||('票种 '+(i+1)),x.price||'']},
  booths:{title:'摊位',empty:'还没有摊位',item:(x,i)=>[(x.no?x.no+' · ':'')+(x.name||('摊位 '+(i+1))),String((x.products||[]).length)+' 个制品']},
- participation:{title:'活动',empty:'还没有活动',item:(x,i)=>[x.title||('活动 '+(i+1)),x.meta||'']},
+ participation:{title:'活动',empty:'还没有活动',item:(x,i)=>[x.title||('活动 '+(i+1)),[x.category,x.area].filter(Boolean).join(' · ')||x.meta||'']},
  schedule:{title:'当天日程',empty:'还没有日程',item:(x,i)=>[(x.time?x.time+' · ':'')+(x.title||('日程 '+(i+1))),x.stage||'']},
  guests:{title:'嘉宾',empty:'还没有嘉宾',item:(x,i)=>[x.name||('嘉宾 '+(i+1)),x.role||'']},
  guide:{title:'观展指南',empty:'还没有指南内容',item:(x,i)=>[x.title||('指南 '+(i+1)),(x.text||'').slice(0,24)]},
@@ -549,7 +555,7 @@ const collectionMeta={
  ribbonItems:{title:'滚动公告',fields:[['text','内容']]},
  explore:{title:'继续探索',fields:[['label','显示名称']]},
  tickets:{title:'票务',fields:[['name','票名'],['price','价格'],['gift','特典'],['note','备注']]},
- participation:{title:'活动参与',fields:[['title','活动名称'],['meta','时间 / 地点'],['text','首页简介'],['detail','活动内容'],['rules','参与规则'],['url','报名 / 外部链接']]},
+ participation:{title:'活动参与',fields:[['title','活动名称'],['category','活动分类'],['area','所在区域'],['meta','时间 / 简要信息'],['text','首页简介'],['detail','活动内容'],['rules','参与规则'],['url','报名 / 外部链接']]},
  schedule:{title:'当天日程',fields:[['time','时间'],['title','标题'],['stage','区域名称'],['detail','详情'],['registrationUrl','报名 / 外部链接']]},
  guide:{title:'指南内容',fields:[['title','标题'],['text','说明']]},
  guests:{title:'嘉宾',fields:[['name','姓名 / 名称'],['role','身份'],['works','代表作'],['intro','介绍'],['socialLabel','平台名称'],['socialUrl','平台链接'],['appearance','签售 / 舞台时间']]},
@@ -683,10 +689,10 @@ function mutateItem(collection,index,op){
      collection==='guests'?{id:uid('g'),name:'新嘉宾',role:'Guest',works:'',intro:'',image:'',socialLabel:'',socialUrl:'',appearance:''}:
      collection==='booths'?{id:uid('b'),no:'',name:'新摊位',logo:'',type:'',intro:'',products:[{id:uid('p'),name:'新制品',price:'',note:'',image:''}]}:
      collection==='updates'?{id:uid('u'),date:'',title:'新更新',target:'top'}:
-     collection==='participation'?{id:uid('pa'),preset:'custom',title:'新活动',meta:'时间 / 地点待定',text:'',detail:'',rules:'',image:'',target:'activities',url:'',guestIds:[]}:
+     collection==='participation'?{id:uid('pa'),preset:'custom',title:'新活动',category:'其他',area:'活动区域',meta:'时间待定',text:'',detail:'',rules:'',image:'',target:'activities',url:'',guestIds:[]}:
      collection==='socialLinks'?{id:uid('sl'),label:'新社群入口',note:'',url:'',image:''}:
      collection==='sponsors'?{id:uid('sp'),name:'新赞助商',level:'合作伙伴',url:'',logo:''}:
-     {id:uid('s'),time:'12:00',title:'新活动',stage:'MAIN STAGE',detail:'',guestIds:[],registrationUrl:''};
+     {id:uid('s'),time:'12:00',title:'新活动',stage:'MAIN STAGE',detail:'',participationId:'',guestIds:[],registrationUrl:''};
    arr.splice(index+1,0,fresh);index++;
  }
  save();send({type:'OE_REPLACE_STATE',state});syncContentCounts();openCollectionManager(collection,index);openItemInspector(collection,index);
