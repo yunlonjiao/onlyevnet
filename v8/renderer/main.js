@@ -1,13 +1,25 @@
+// @ts-check
+// @ts-ignore -- browser cache-busted absolute ESM URL
 import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.33.9';
+// @ts-ignore -- browser cache-busted absolute ESM URL
 import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.25.0';
+// @ts-ignore -- browser cache-busted absolute ESM URL
 import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.33.9';
+// @ts-ignore -- browser cache-busted absolute ESM URL
 import {createCollections} from '/v8/renderer/collections.js?v=8.33.9';
+// @ts-ignore -- browser cache-busted absolute ESM URL
 import {createParticipation} from '/v8/renderer/participation.js?v=8.33.9';
+// @ts-ignore -- browser cache-busted absolute ESM URL
 import {createRouter} from '/v8/renderer/router.js?v=8.33.4';
+// @ts-ignore -- browser cache-busted absolute ESM URL
 import {createFields} from '/v8/renderer/fields.js?v=8.25.0';
+// @ts-ignore -- browser cache-busted absolute ESM URL
 import {createRuntime} from '/v8/renderer/runtime.js?v=8.25.0';
+// @ts-ignore -- browser cache-busted absolute ESM URL
 import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.33.9';
+// @ts-ignore -- browser cache-busted absolute ESM URL
 import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.33.9';
+// @ts-ignore -- browser cache-busted absolute ESM URL
 import {validateRendererContext} from '/v8/renderer/context.js?v=8.33.11';
 
 const ORIGIN=location.origin;
