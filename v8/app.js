@@ -164,6 +164,101 @@ const COLLECTION_PAGE={
  ribbonItems:'home',tickets:'home',explore:'home',updates:'home',socialLinks:'home',sponsors:'home',
  booths:'booths',participation:'activities',schedule:'activities',guests:'guests',guide:'guide'
 };
+
+function renderCustomPageRows(){
+ const box=$('#customPageRows');if(!box)return;
+ box.innerHTML=(state.customPages||[]).map(page=>{
+   const key=customPageKey(page.id),preset=CUSTOM_PAGE_PRESETS[page.preset]||CUSTOM_PAGE_PRESETS.custom;
+   return '<div class="page-tree-row custom-page-row" data-page-row="'+esc(key)+'"><button data-page="'+esc(key)+'" type="button"><span class="nav-icon">◇</span><span>'+esc(page.title||preset.title)+'</span><small class="custom-page-type">'+esc(preset.title)+'</small></button></div>';
+ }).join('');
+}
+function openCustomPageCreator(){
+ setInspector('创建页面','选择页面预设',
+   '<div class="custom-page-preset-grid">'+Object.entries(CUSTOM_PAGE_PRESETS).map(([key,p])=>
+     '<button type="button" class="custom-page-preset" data-custom-page-preset="'+key+'"><b>'+esc(p.title)+'</b><small>'+esc(p.intro)+'</small></button>'
+   ).join('')+'</div><p class="inspector-note">创建后会作为一级页面出现在游客导航，也可以被「继续探索」直接关联。</p>');
+ inspector.querySelectorAll('[data-custom-page-preset]').forEach(btn=>btn.addEventListener('click',()=>createCustomPage(btn.dataset.customPagePreset)));
+}
+function createCustomPage(presetKey){
+ const preset=CUSTOM_PAGE_PRESETS[presetKey]||CUSTOM_PAGE_PRESETS.custom;
+ checkpoint();
+ const page={id:uid('cp'),preset:presetKey,title:preset.title,eyebrow:preset.eyebrow,intro:preset.intro,items:[]};
+ state.customPages??=[];state.customPages.push(page);save();renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});
+ setStudioPage(customPageKey(page.id));
+}
+function customPageFieldLabels(page){
+ const preset=CUSTOM_PAGE_PRESETS[page?.preset]||CUSTOM_PAGE_PRESETS.custom;
+ return preset;
+}
+function openCustomPageSettings(pageId){
+ const i=customPageIndex(pageId),page=state.customPages?.[i];if(i<0||!page)return;
+ setInspector('专题页面',page.title,
+   '<div class="item-fields">'+
+   '<label><span>页面标题</span><input data-custom-page-field="title" value="'+esc(page.title||'')+'"></label>'+
+   '<label><span>英文小标题</span><input data-custom-page-field="eyebrow" value="'+esc(page.eyebrow||'SPECIAL')+'"></label>'+
+   '<label><span>页面介绍</span><textarea data-custom-page-field="intro" rows="4">'+esc(page.intro||'')+'</textarea></label>'+
+   '</div><div class="reference-panel"><b>页面预设</b><p class="inspector-note">'+esc((CUSTOM_PAGE_PRESETS[page.preset]||CUSTOM_PAGE_PRESETS.custom).title)+' · 页面已按该内容类型配置展示结构。</p></div>'+
+   '<div class="custom-page-settings-actions"><button type="button" class="danger ghost" data-delete-custom-page>删除此页面</button></div>');
+ inspector.querySelectorAll('[data-custom-page-field]').forEach(input=>{
+   let started=false;
+   input.addEventListener('input',e=>{
+     if(!started){checkpoint();started=true}
+     page[e.target.dataset.customPageField]=e.target.value;save();renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});
+     const title=document.querySelector('.canvas-title b');if(title&&currentPage===customPageKey(page.id))title.textContent=page.title||'专题页面';
+   });
+ });
+ inspector.querySelector('[data-delete-custom-page]')?.addEventListener('click',()=>{
+   checkpoint();const key=customPageKey(page.id);
+   state.customPages.splice(i,1);
+   (state.venueMap?.links||[]).forEach(link=>{if(link.target===key){link.target='activities';link.itemType='page';link.itemId=''}});
+   save();renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});setStudioPage('home');
+ });
+}
+function openCustomPageItemsManager(pageId,selectedIndex=-1){
+ const page=state.customPages?.[customPageIndex(pageId)],panel=$('#contentListPanel');if(!page||!panel)return;
+ const preset=customPageFieldLabels(page),items=page.items||[];
+ const rows=items.map((item,i)=>'<button type="button" class="sidebar-content-row '+(i===selectedIndex?'active':'')+'" data-custom-item-index="'+i+'">'+
+   '<span class="sidebar-content-thumb '+(item.image?'has-image':'')+'">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'◇')+'</span>'+
+   '<span class="sidebar-content-copy"><b>'+esc(item.title||preset.itemTitle+' '+(i+1))+'</b>'+(item.meta?'<small>'+esc(item.meta)+'</small>':'')+'</span><i>›</i></button>').join('');
+ panel.innerHTML='<div class="sidebar-content-head"><div><b>'+esc(preset.itemTitle+'展示')+'</b><span>'+items.length+' 项</span></div></div>'+
+   '<div class="sidebar-content-rows">'+(rows||'<div class="sidebar-content-empty">还没有'+esc(preset.itemTitle)+'内容</div>')+'</div>'+
+   '<button type="button" class="sidebar-content-add" data-add-custom-item>＋ 添加'+esc(preset.itemTitle)+'</button>';
+ panel.querySelectorAll('[data-custom-item-index]').forEach(btn=>btn.onclick=()=>openCustomPageItemInspector(pageId,Number(btn.dataset.customItemIndex)));
+ panel.querySelector('[data-add-custom-item]')?.addEventListener('click',()=>mutateCustomPageItem(pageId,items.length-1,'add'));
+}
+function openCustomPageItemInspector(pageId,index){
+ const pi=customPageIndex(pageId),page=state.customPages?.[pi],item=page?.items?.[index];if(pi<0||!page||!item)return;
+ const preset=customPageFieldLabels(page),path='customPages.'+pi+'.items.'+index;
+ const image=item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>';
+ setInspector('专题内容',preset.itemTitle+' · '+(item.title||String(index+1)),
+   '<div class="item-inspector-head"><div><span>'+esc(page.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(page.items.length).padStart(2,'0')+'</b></div><div class="item-tools"><button data-custom-item-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-custom-item-op="down" '+(index===page.items.length-1?'disabled':'')+'>↓</button></div></div>'+
+   '<div class="item-fields">'+
+   '<label><span>'+esc(preset.titleLabel)+'</span><input data-custom-item-field="title" value="'+esc(item.title||'')+'"></label>'+
+   '<label><span>'+esc(preset.metaLabel)+'</span><input data-custom-item-field="meta" value="'+esc(item.meta||'')+'"></label>'+
+   '<label><span>'+esc(preset.textLabel)+'</span><textarea data-custom-item-field="text" rows="4">'+esc(item.text||'')+'</textarea></label>'+
+   '<label><span>外部链接（可选）</span><input data-custom-item-field="url" value="'+esc(item.url||'')+'"></label>'+
+   '</div><div class="item-media"><span>展示图片</span><div class="item-media-row">'+image+'<div><button type="button" data-custom-item-image>选择 / 裁剪</button>'+(item.image?'<button type="button" class="ghost" data-custom-item-image-remove>移除</button>':'')+'</div></div></div>'+
+   '<div class="item-actions"><button data-custom-item-op="add">＋ 添加</button><button data-custom-item-op="delete" class="danger">删除</button></div>');
+ inspector.querySelectorAll('[data-custom-item-field]').forEach(input=>{
+   let started=false;
+   input.addEventListener('input',e=>{if(!started){checkpoint();started=true}item[e.target.dataset.customItemField]=e.target.value;save();send({type:'OE_REPLACE_STATE',state});openCustomPageItemsManager(pageId,index)});
+ });
+ inspector.querySelectorAll('[data-custom-item-op]').forEach(btn=>btn.addEventListener('click',()=>mutateCustomPageItem(pageId,index,btn.dataset.customItemOp)));
+ inspector.querySelector('[data-custom-item-image]')?.addEventListener('click',()=>{
+   const input=$('#imageInput');input.dataset.path=path+'.image';input.dataset.returnCollection='custom:'+pageId;input.dataset.returnIndex=String(index);input.click();
+ });
+ inspector.querySelector('[data-custom-item-image-remove]')?.addEventListener('click',()=>{checkpoint();item.image='';save();send({type:'OE_REPLACE_STATE',state});openCustomPageItemInspector(pageId,index)});
+}
+function mutateCustomPageItem(pageId,index,op){
+ const page=state.customPages?.[customPageIndex(pageId)];if(!page)return;page.items??=[];checkpoint();
+ if(op==='up'&&index>0){[page.items[index-1],page.items[index]]=[page.items[index],page.items[index-1]];index--}
+ if(op==='down'&&index<page.items.length-1){[page.items[index+1],page.items[index]]=[page.items[index],page.items[index+1]];index++}
+ if(op==='delete'){page.items.splice(index,1);index=Math.min(index,page.items.length-1)}
+ if(op==='add'){page.items.splice(index+1,0,{id:uid('ci'),title:'',meta:'',text:'',image:'',url:''});index++}
+ save();send({type:'OE_REPLACE_STATE',state});openCustomPageItemsManager(pageId,index);
+ if(index>=0&&page.items[index])openCustomPageItemInspector(pageId,index);else showInspectorEmpty();
+}
+
 function openOptionalPageInspector(key){
  const page=state[key]||{},label=key==='freewalk'?'COS自由行':'痛车展示';
  setInspector('页面内容',label,
