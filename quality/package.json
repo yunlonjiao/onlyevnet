@@ -1,0 +1,13 @@
+{
+  "name": "onlyevent-quality",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "contract": "node ./check-renderer-contract.mjs",
+    "smoke": "playwright test",
+    "check": "npm run contract && npm run smoke"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.55.0"
+  }
+}
