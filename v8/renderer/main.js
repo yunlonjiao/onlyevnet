@@ -25,7 +25,8 @@ import {validateRendererContext} from '/v8/renderer/context.js?v=8.33.11';
 const ORIGIN=location.origin;
 let state={},mode='edit';
 const send=m=>parent.postMessage(m,ORIGIN);
-window.__oeRenderLoadId=(window.__oeRenderLoadId||0)+1;
+const runtimeWindow=/** @type {Window & typeof globalThis & {__oeRenderLoadId?:number}} */(window);
+runtimeWindow.__oeRenderLoadId=(runtimeWindow.__oeRenderLoadId||0)+1;
 
 const runtimeStyle=document.createElement('style');
 runtimeStyle.dataset.oeRuntime='1';
