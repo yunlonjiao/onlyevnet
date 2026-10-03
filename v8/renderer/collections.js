@@ -78,7 +78,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     const state=getState(),map=state.venueMap||{},box=$('#venueMap'),rail=$('.map-link-rail'),list=$('.map-link-list');if(!box)return;
     box.dataset.oeImage='venueMap.image';box.classList.toggle('has-map',!!map.image);
     box.innerHTML=map.image?'<button class="map-image-view" type="button" data-product-lightbox="'+esc(map.image)+'" aria-label="查看场地图大图"><img src="'+esc(map.image)+'" alt="活动场地图"><span>查看大图 ↗</span></button>':'<div class="map-static-placeholder"><b>场地图</b><span>主办方暂未上传场地图</span></div>';
-    const firstLevelPages=new Set(['booths','activities','guests','guide']);
+    const firstLevelPages=new Set(['booths','activities','guests','guide',...(state.customPages||[]).map(p=>'custom-'+p.id)]);
     const links=(map.links||[]).map((item,index)=>({item,index})).filter(({item})=>{
       if(!String(item?.label||'').trim()||!firstLevelPages.has(item.target))return false;
       if(state.modules?.[item.target]===false&&getMode()!=='edit')return false;
@@ -175,6 +175,27 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     $('#sponsors')?.classList.toggle('oe-page-hidden',items.length===0);
   }
 
+  function renderCustomPages(){
+    const state=getState(),main=$('#top');if(!main)return;
+    qa('[data-custom-page-root]').forEach(x=>x.remove());
+    const before=$('#community')||$('.footer');
+    (state.customPages||[]).forEach((page,pi)=>{
+      const key='custom-'+page.id,preset=page.preset||'custom';
+      const section=document.createElement('section');
+      section.className='section oe-page-view custom-page-view custom-page-'+preset;
+      section.id=key;section.dataset.customPageRoot=page.id;
+      const items=(page.items||[]).map((item,ii)=>{
+        const image=item.image?'<button class="custom-page-image" type="button" data-product-lightbox="'+esc(item.image)+'"><img src="'+esc(item.image)+'" alt="'+esc(item.title||page.title||'展示内容')+'"></button>':'<div class="custom-page-image empty">＋ 图片</div>';
+        const action=item.url?'<a class="custom-page-action" href="'+esc(item.url)+'" target="_blank" rel="noopener">查看详情 ↗</a>':'';
+        return '<article class="custom-page-card" id="customitem-'+esc(item.id||String(ii))+'" data-oe-custom-page="'+esc(page.id)+'" data-oe-custom-index="'+ii+'">'+image+'<div class="custom-page-card-copy"><b>'+esc(item.title||'未命名内容')+'</b>'+(item.meta?'<small>'+esc(item.meta)+'</small>':'')+(item.text?'<p>'+esc(item.text)+'</p>':'')+action+'</div></article>';
+      }).join('');
+      section.innerHTML='<div class="wrap"><div class="head" data-oe-custom-page-settings="'+esc(page.id)+'"><div><span class="ey">'+esc(page.eyebrow||'SPECIAL')+'</span><h2>'+esc(page.title||'专题页面')+'</h2></div><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></div>'+
+        (page.intro?'<p class="custom-page-intro" data-oe-custom-page-settings="'+esc(page.id)+'">'+esc(page.intro)+'</p>':'')+
+        '<div class="custom-page-grid custom-page-grid-'+esc(preset)+'">'+(items||(getMode()==='edit'?'<div class="custom-page-empty" data-oe-custom-page-settings="'+esc(page.id)+'">还没有展示内容，点击这里开始编辑。</div>':''))+'</div></div>';
+      if(before?.parentNode)before.parentNode.insertBefore(section,before);else main.appendChild(section);
+    });
+  }
+
   function renderOptionalPages(){
     const state=getState();
     [['freewalk','COS自由行'],['itasha','痛车展示']].forEach(([key,fallback])=>{
@@ -201,7 +222,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
   }
 
   function renderCollections(){
-    renderRibbon();renderTickets();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderUpdates();renderCommunity();renderSponsors();renderOptionalPages();renderFooter();
+    renderRibbon();renderTickets();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderUpdates();renderCommunity();renderSponsors();renderCustomPages();renderOptionalPages();renderFooter();
   }
-  return {openGiftLightbox,renderRibbon,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderUpdates,renderCommunity,renderSponsors,renderOptionalPages,renderFooter,renderCollections};
+  return {openGiftLightbox,renderRibbon,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderUpdates,renderCommunity,renderSponsors,renderCustomPages,renderOptionalPages,renderFooter,renderCollections};
 }
