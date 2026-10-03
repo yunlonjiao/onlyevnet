@@ -21,7 +21,15 @@ if(state.modules&&'passport' in state.modules)delete state.modules.passport;
 if(!Array.isArray(state.participation))state.participation=structuredClone(template01.defaults.participation);
 if(!Array.isArray(state.customPages))state.customPages=structuredClone(template01.defaults.customPages||[]);
 state.customPages=(state.customPages||[]).map((p,i)=>{
- const legacyPreset={photoStudio:'custom',brandZone:'brand',ocExpo:'exhibition',craftExpo:'exhibition',gameDemo:'experience',themeStreet:'custom',freebie:'custom',checkin:'custom',tabletop:'experience'}[p.preset]||p.preset||'custom';
+ const legacyPreset={
+   photoStudio:'custom',
+   brandZone:'brand',
+   ocExpo:'oc',
+   craftExpo:'craft',
+   experience:'gameDemo',
+   themeStreet:'custom',
+   checkin:'custom'
+ }[p.preset]||p.preset||'custom';
  return {
    id:p.id||('cp'+(i+1)),
    preset:legacyPreset,
@@ -143,33 +151,31 @@ const PARTICIPATION_PRESETS={
 
 const CUSTOM_PAGE_PRESETS={
  custom:{title:'自定义展示页',eyebrow:'SPECIAL',intro:'用于其他信息量较大、需要独立浏览的专题内容。',itemTitle:'内容',titleLabel:'标题',metaLabel:'副标题或位置',textLabel:'介绍',ratio:1.333333},
+
  cosplay:{title:'COS自由行',eyebrow:'COSPLAY',intro:'展示参加自由行的 Coser 阵容、角色、作品和出席信息。',itemTitle:'Coser',titleLabel:'CN或昵称',metaLabel:'角色与作品',textLabel:'简介与出席信息',ratio:.8},
  photographer:{title:'摄影师阵容',eyebrow:'PHOTOGRAPHER',intro:'展示摄影师阵容、拍摄风格、约拍说明和出席时段。',itemTitle:'摄影师',titleLabel:'CN或昵称',metaLabel:'拍摄风格',textLabel:'简介与约拍信息',ratio:.8},
  itasha:{title:'痛车展示',eyebrow:'ITASHA',intro:'集中展示参加活动的痛车、车主、主题和车辆信息。',itemTitle:'车辆',titleLabel:'车主或展示名',metaLabel:'IP与角色主题',textLabel:'车辆介绍与展示信息',ratio:1.5},
+
  food:{title:'餐饮指南',eyebrow:'FOOD & DRINK',intro:'展示场内或合作餐饮、菜单、价格、位置和推荐内容。',itemTitle:'餐饮',titleLabel:'店铺或餐饮名',metaLabel:'位置与价格',textLabel:'介绍与推荐内容',ratio:1.333333},
  officialShop:{title:'官方物贩',eyebrow:'OFFICIAL SHOP',intro:'展示官方周边、限定商品、售价、销售位置和购买限制。',itemTitle:'商品',titleLabel:'商品名称',metaLabel:'价格与销售位置',textLabel:'商品说明与购买限制',ratio:1},
  brand:{title:'品牌展商',eyebrow:'BRAND',intro:'集中展示合作品牌、企业展商、展位信息和现场展示内容。',itemTitle:'展商',titleLabel:'品牌或展商名',metaLabel:'展位与合作内容',textLabel:'品牌介绍与现场展示',ratio:1.333333},
- exhibition:{title:'作品展览',eyebrow:'EXHIBITION',intro:'展示原创角色、插画、漫画、小说、手作、模型和其他创作成果。',itemTitle:'作品',titleLabel:'作品名称',metaLabel:'作者与类型',textLabel:'作品介绍与展示信息',ratio:1},
- experience:{title:'试玩体验',eyebrow:'EXPERIENCE',intro:'展示电子游戏、独立游戏、桌游、卡牌等可现场体验的项目。',itemTitle:'体验项目',titleLabel:'项目名称',metaLabel:'类型与位置',textLabel:'玩法、人数和参与说明',ratio:1.333333},
- support:{title:'应援企划',eyebrow:'FAN PROJECT',intro:'用于生日应援、角色纪念、痛楼、留言墙等内容量较大的同好企划。',itemTitle:'企划',titleLabel:'企划名称',metaLabel:'角色与展示位置',textLabel:'企划介绍与参与方式',ratio:.8}
+
+ oc:{title:'原创OC展',eyebrow:'ORIGINAL CHARACTER',intro:'集中展示原创角色设定、世界观、立绘、设定图和创作者信息。',itemTitle:'OC',titleLabel:'角色或作品名',metaLabel:'作者与作品类型',textLabel:'角色设定与作品介绍',ratio:.8},
+ illustration:{title:'插画作品展',eyebrow:'ILLUSTRATION',intro:'展示插画、原画、视觉设计等平面作品与作者信息。',itemTitle:'作品',titleLabel:'作品名称',metaLabel:'作者与类型',textLabel:'作品介绍与创作说明',ratio:1.333333},
+ comic:{title:'漫画作品展',eyebrow:'COMIC',intro:'展示漫画、短篇、四格、连载作品和作者信息。',itemTitle:'作品',titleLabel:'漫画名称',metaLabel:'作者与类型',textLabel:'作品简介与阅读说明',ratio:.75},
+ novel:{title:'小说作品展',eyebrow:'NOVEL',intro:'展示同人小说、原创小说、短篇文本和作者信息。',itemTitle:'作品',titleLabel:'作品名称',metaLabel:'作者与题材',textLabel:'作品简介与阅读说明',ratio:.75},
+ craft:{title:'手作展示',eyebrow:'HANDCRAFT',intro:'展示饰品、布艺、黏土、手工制品等实体创作。',itemTitle:'作品',titleLabel:'作品名称',metaLabel:'作者与材料',textLabel:'制作介绍与展示信息',ratio:1},
+ model:{title:'模型展示',eyebrow:'MODEL',intro:'展示模型、GK、手办改造、场景模型等实体作品。',itemTitle:'模型',titleLabel:'作品名称',metaLabel:'作者与类型',textLabel:'制作介绍与展示信息',ratio:1.333333},
+ prop:{title:'道具展示',eyebrow:'PROP',intro:'展示武器道具、盔甲、服装道具和大型制作物。',itemTitle:'道具',titleLabel:'作品名称',metaLabel:'作者与作品来源',textLabel:'制作介绍与展示说明',ratio:1.5},
+
+ gameDemo:{title:'游戏试玩',eyebrow:'GAME DEMO',intro:'展示电子游戏、独立游戏和现场试玩项目。',itemTitle:'游戏',titleLabel:'游戏名称',metaLabel:'类型与试玩位置',textLabel:'玩法介绍与试玩说明',ratio:1.777778},
+ tabletop:{title:'桌游专区',eyebrow:'TABLETOP',intro:'展示桌游项目、桌台安排、参与人数和预约信息。',itemTitle:'桌游',titleLabel:'游戏名称',metaLabel:'位置与人数',textLabel:'规则与参与说明',ratio:1.333333},
+ cardGame:{title:'卡牌专区',eyebrow:'CARD GAME',intro:'展示集换式卡牌、牌桌活动、赛制和参与说明。',itemTitle:'卡牌项目',titleLabel:'项目名称',metaLabel:'位置与赛制',textLabel:'规则与参与说明',ratio:1.333333},
+
+ freebie:{title:'无料交换',eyebrow:'FREEBIE',intro:'展示无料、交换物、领取条件、交换规则和作者信息。',itemTitle:'无料或交换物',titleLabel:'名称',metaLabel:'作者与领取位置',textLabel:'领取条件与交换说明',ratio:1},
+ support:{title:'应援企划',eyebrow:'FAN PROJECT',intro:'用于生日应援、角色纪念、痛楼、留言墙等内容量较大的同好企划。',itemTitle:'企划',titleLabel:'企划名称',metaLabel:'角色与展示位置',textLabel:'企划介绍与参与方式',ratio:.8},
+ exhibition:{title:'主题展览',eyebrow:'EXHIBITION',intro:'用于原画展、设定展、历史回顾、纪念展等独立主题内容。',itemTitle:'展项',titleLabel:'展项名称',metaLabel:'主题与位置',textLabel:'展项介绍与展示说明',ratio:1.333333}
 }
-const PAGE_CONTENT_CONFIG={
- home:[
-   {tool:'basic',label:'基本信息'},
-   {tool:'hero',label:'主视觉'},
-   {collection:'ribbonItems',label:'滚动公告'},
-   {collection:'tickets',label:'票务'},
-   {tool:'map',label:'场地图'},
-   {collection:'explore',label:'继续探索'},
-   {collection:'updates',label:'重要更新'},
-   {collection:'socialLinks',label:'社群'},
-   {collection:'sponsors',label:'赞助'}
- ],
- booths:[{collection:'booths',label:'摊位与制品'}],
- activities:[{collection:'participation',label:'活动企划'},{collection:'schedule',label:'当天日程'}],
- guests:[{collection:'guests',label:'嘉宾'}],
- guide:[{collection:'guide',label:'指南内容'}]
-};
 const COLLECTION_PAGE={
  ribbonItems:'home',tickets:'home',explore:'home',updates:'home',socialLinks:'home',sponsors:'home',
  booths:'booths',participation:'activities',schedule:'activities',guests:'guests',guide:'guide'
