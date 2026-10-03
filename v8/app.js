@@ -186,6 +186,113 @@ const CUSTOM_PAGE_PRESETS={
  support:{title:'应援企划',eyebrow:'FAN PROJECT',intro:'用于生日应援、角色纪念、痛楼、留言墙等内容量较大的同好企划。',itemTitle:'企划',titleLabel:'企划名称',metaLabel:'角色与展示位置',textLabel:'企划介绍与参与方式',ratio:.8},
  exhibition:{title:'主题展览',eyebrow:'EXHIBITION',intro:'用于原画展、设定展、历史回顾、纪念展等独立主题内容。',itemTitle:'展项',titleLabel:'展项名称',metaLabel:'主题与位置',textLabel:'展项介绍与展示说明',ratio:1.333333}
 };
+
+const CUSTOM_PAGE_STARTERS={
+ custom:[
+  ['专题内容 01','时间 · 地点','核心介绍 · 参与方式 · 注意事项'],
+  ['专题内容 02','区域 · 时段','补充内容 · 现场信息 · 关联说明'],
+  ['专题内容 03','状态 · 标签','扩展介绍 · 外部链接 · 更新信息']
+ ],
+ cosplay:[
+  ['参展 Coser 01','角色名 · 作品名','出席时段 · 集合信息 · 社交平台说明'],
+  ['参展 Coser 02','角色名 · 作品名','出席时段 · 集合信息 · 摄影说明'],
+  ['参展 Coser 03','角色名 · 作品名','出席时段 · 互动信息 · 注意事项']
+ ],
+ photographer:[
+  ['摄影师 01','人像 · 场照','出席时段 · 约拍方式 · 返图说明'],
+  ['摄影师 02','舞台 · 抓拍','活动区域 · 拍摄偏好 · 联系方式'],
+  ['摄影师 03','胶片 · 氛围','出席时间 · 预约方式 · 作品平台']
+ ],
+ itasha:[
+  ['痛车 01','作品名 · 角色名','车型 · 车主 · 展示时段 · 展示区域'],
+  ['痛车 02','作品名 · 角色名','车型 · 改装主题 · 展示信息'],
+  ['痛车 03','作品名 · 角色名','车辆亮点 · 拍摄说明 · 现场位置']
+ ],
+ food:[
+  ['推荐餐饮 01','场馆内 · ¥--','主打餐品 · 营业时间 · 位置说明'],
+  ['推荐餐饮 02','场馆周边 · ¥--','推荐菜单 · 距离 · 营业时段'],
+  ['补给点 03','饮品 · 轻食','价格区间 · 排队提示 · 位置说明']
+ ],
+ officialShop:[
+  ['限定商品 01','¥-- · 官方物贩区','规格 · 限购数量 · 销售时段'],
+  ['限定商品 02','¥-- · 官方物贩区','商品内容 · 购买限制 · 库存提示'],
+  ['会场特典 03','消费条件 · 领取处','领取条件 · 数量限制 · 发放时间']
+ ],
+ brand:[
+  ['品牌展商 01','展位号待填 · 合作内容','品牌简介 · 现场展示 · 互动内容'],
+  ['品牌展商 02','展位号待填 · 展示主题','产品体验 · 领取活动 · 现场说明'],
+  ['品牌展商 03','展位号待填 · 联动企划','合作信息 · 展示内容 · 外部平台']
+ ],
+ oc:[
+  ['原创角色 01','创作者 · 世界观','角色设定 · 性格 · 背景故事'],
+  ['原创角色 02','创作者 · 世界观','角色关系 · 设定亮点 · 展示内容'],
+  ['原创角色 03','创作者 · 企划名','视觉设定 · 创作说明 · 作者信息']
+ ],
+ illustration:[
+  ['插画作品 01','作者 · 原创 / 同人','作品主题 · 创作说明 · 展示信息'],
+  ['插画作品 02','作者 · 系列名','画面主题 · 创作时间 · 作者平台'],
+  ['插画作品 03','作者 · 作品类型','作品简介 · 使用媒介 · 展示说明']
+ ],
+ comic:[
+  ['漫画作品 01','作者 · 短篇 / 连载','作品简介 · 话数 · 阅读说明'],
+  ['漫画作品 02','作者 · 四格 / 故事','题材 · 角色 · 展示范围'],
+  ['漫画作品 03','作者 · 系列名','故事梗概 · 更新状态 · 阅读入口']
+ ],
+ novel:[
+  ['小说作品 01','作者 · 题材','作品简介 · 篇幅 · 阅读说明'],
+  ['小说作品 02','作者 · 短篇 / 连载','题材标签 · 角色 · 更新状态'],
+  ['小说作品 03','作者 · 系列名','故事梗概 · 篇幅 · 阅读入口']
+ ],
+ craft:[
+  ['手作作品 01','作者 · 材料','制作工艺 · 尺寸 · 展示说明'],
+  ['手作作品 02','作者 · 材料','制作时间 · 作品亮点 · 现场信息'],
+  ['手作作品 03','作者 · 系列名','材质 · 工艺 · 创作说明']
+ ],
+ model:[
+  ['模型作品 01','作者 · GK / 改造','比例 · 材料 · 制作说明'],
+  ['模型作品 02','作者 · 场景模型','比例 · 制作周期 · 展示亮点'],
+  ['模型作品 03','作者 · 手办改造','原型 · 涂装 · 制作说明']
+ ],
+ prop:[
+  ['道具作品 01','作者 · 作品来源','尺寸 · 材料 · 制作说明'],
+  ['道具作品 02','作者 · 角色来源','结构 · 工艺 · 展示注意事项'],
+  ['道具作品 03','作者 · 大型制作','材料 · 制作周期 · 展示方式']
+ ],
+ gameDemo:[
+  ['试玩项目 01','独立游戏 · 试玩区','平台 · 核心玩法 · 单次试玩时长'],
+  ['试玩项目 02','动作 / 解谜 · 试玩区','操作方式 · 排队提示 · 试玩内容'],
+  ['试玩项目 03','多人游戏 · 试玩区','支持人数 · 试玩规则 · 开放时段']
+ ],
+ tabletop:[
+  ['桌游项目 01','4 人 · 60 分钟','适合人数 · 单局时长 · 报名方式'],
+  ['桌游项目 02','2–6 人 · 桌游区','规则难度 · 开桌时间 · 参与说明'],
+  ['桌游项目 03','组队体验 · 桌游区','推荐人数 · 游戏时长 · 预约信息']
+ ],
+ cardGame:[
+  ['卡牌活动 01','对战区 · 赛制待填','报名方式 · 轮次 · 奖励说明'],
+  ['卡牌活动 02','自由对战 · 卡牌区','开放时段 · 卡组要求 · 参与规则'],
+  ['卡牌活动 03','教学体验 · 卡牌区','参与对象 · 教学时段 · 现场规则']
+ ],
+ freebie:[
+  ['无料 01','作者 · 领取点','数量 · 领取条件 · 发放时段'],
+  ['交换物 02','作者 · 交换区','交换条件 · 数量 · 注意事项'],
+  ['无料 03','作者 · 展位 / 区域','领取规则 · 限量说明 · 补充信息']
+ ],
+ support:[
+  ['应援企划 01','角色名 · 展示区','企划主题 · 参与方式 · 开放时段'],
+  ['留言企划 02','角色名 · 留言区','参与规则 · 留言方式 · 展示说明'],
+  ['纪念企划 03','纪念主题 · 展示区','企划内容 · 互动方式 · 注意事项']
+ ],
+ exhibition:[
+  ['展项 01','主题 · 展区','展项介绍 · 展示内容 · 观看说明'],
+  ['展项 02','主题 · 展区','历史背景 · 作品信息 · 展示重点'],
+  ['展项 03','主题 · 展区','关联内容 · 展示方式 · 观看提示']
+ ]
+};
+function buildCustomPageStarterItems(presetKey){
+ const rows=CUSTOM_PAGE_STARTERS[presetKey]||CUSTOM_PAGE_STARTERS.custom;
+ return rows.map(([title,meta,text])=>({id:uid('ci'),title,meta,text,image:'',url:''}));
+}
 const PAGE_CONTENT_CONFIG={
  home:[
    {tool:'basic',label:'基本信息'},
@@ -212,8 +319,9 @@ function renderCustomPageRows(){
  const box=$('#customPageRows');if(!box)return;
  box.innerHTML=(state.customPages||[]).map(page=>{
    const key=customPageKey(page.id),preset=CUSTOM_PAGE_PRESETS[page.preset]||CUSTOM_PAGE_PRESETS.custom;
-   return '<div class="page-tree-row custom-page-row" data-page-row="'+esc(key)+'"><button data-page="'+esc(key)+'" type="button"><span class="nav-icon">◇</span><span>'+esc(page.title||preset.title)+'</span><small class="custom-page-type">'+esc(preset.title)+'</small></button></div>';
+   return '<div class="page-tree-row custom-page-row" data-page-row="'+esc(key)+'"><button data-page="'+esc(key)+'" type="button"><span class="nav-icon">◇</span><span>'+esc(page.title||preset.title)+'</span><small class="custom-page-type">'+esc(preset.title)+'</small></button><button type="button" class="custom-page-row-delete" data-delete-custom-page-row="'+esc(page.id)+'" title="删除页面" aria-label="删除 '+esc(page.title||preset.title)+'">×</button></div>';
  }).join('');
+ box.querySelectorAll('[data-delete-custom-page-row]').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();removeCustomPage(btn.dataset.deleteCustomPageRow)}));
 }
 function openCustomPageCreator(){
  setInspector('创建页面','选择页面预设',
@@ -225,13 +333,23 @@ function openCustomPageCreator(){
 function createCustomPage(presetKey){
  const preset=CUSTOM_PAGE_PRESETS[presetKey]||CUSTOM_PAGE_PRESETS.custom;
  checkpoint();
- const page={id:uid('cp'),preset:presetKey,title:preset.title,eyebrow:preset.eyebrow,intro:preset.intro,ratio:preset.ratio||1.333333,items:[]};
+ const page={id:uid('cp'),preset:presetKey,title:preset.title,eyebrow:preset.eyebrow,intro:preset.intro,ratio:preset.ratio||1.333333,items:buildCustomPageStarterItems(presetKey)};
  state.customPages??=[];state.customPages.push(page);save();renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});
  setStudioPage(customPageKey(page.id));
 }
 function customPageFieldLabels(page){
  const preset=CUSTOM_PAGE_PRESETS[page?.preset]||CUSTOM_PAGE_PRESETS.custom;
  return preset;
+}
+function removeCustomPage(pageId){
+ const i=customPageIndex(pageId),page=state.customPages?.[i];if(i<0||!page)return;
+ checkpoint();
+ const key=customPageKey(page.id);
+ state.customPages.splice(i,1);
+ (state.venueMap?.links||[]).forEach(link=>{if(link.target===key){link.target='activities';link.itemType='page';link.itemId=''}});
+ save();renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});syncContentCounts();
+ if(currentPage===key)setStudioPage('home');
+ toast('页面已删除，可使用撤销恢复');
 }
 function openCustomPageSettings(pageId){
  const i=customPageIndex(pageId),page=state.customPages?.[i];if(i<0||!page)return;
@@ -250,12 +368,7 @@ function openCustomPageSettings(pageId){
      const title=document.querySelector('.canvas-title b');if(title&&currentPage===customPageKey(page.id))title.textContent=page.title||'专题页面';
    });
  });
- inspector.querySelector('[data-delete-custom-page]')?.addEventListener('click',()=>{
-   checkpoint();const key=customPageKey(page.id);
-   state.customPages.splice(i,1);
-   (state.venueMap?.links||[]).forEach(link=>{if(link.target===key){link.target='activities';link.itemType='page';link.itemId=''}});
-   save();renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});setStudioPage('home');
- });
+ inspector.querySelector('[data-delete-custom-page]')?.addEventListener('click',()=>removeCustomPage(page.id));
 }
 function openCustomPageItemsManager(pageId,selectedIndex=-1){
  const page=state.customPages?.[customPageIndex(pageId)],panel=$('#contentListPanel');if(!page||!panel)return;
@@ -922,7 +1035,11 @@ $('.page-nav')?.addEventListener('click',e=>{
  const b=e.target.closest('[data-page]');if(!b)return;
  setWorkspace('pages');setStudioPage(b.dataset.page);
 });
-$('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts()};
-$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts()};
+function reconcilePageAfterHistory(){
+ if(String(currentPage).startsWith('custom-')&&!customPageByKey(currentPage)){setStudioPage('home');return}
+ if(String(currentPage).startsWith('custom-'))renderPageContentNav(currentPage,{openDefault:false});
+}
+$('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
+$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
 $('#publishBtn').onclick=()=>send({type:'OE_EXPORT_HTML'});
 renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
