@@ -26,7 +26,7 @@ $('.scroll-progress')?.remove();
 const getDeep=path=>getByPath(state,path);
 const setDeep=(path,value)=>setByPath(state,path,value);
 
-const collections=createCollections({qs:$,escapeHtml:esc,getState:()=>state,getMode:()=>mode});
+const collections=createCollections({qs:$,qsa:qa,escapeHtml:esc,getState:()=>state,getMode:()=>mode});
 const participation=createParticipation({qs:$,escapeHtml:esc,getState:()=>state});
 const router=createRouter({qs:$,qsa:qa,getState:()=>state,getMode:()=>mode,renderParticipation:participation.renderParticipation});
 const fields=createFields({qs:$,qsa:qa,getMode:()=>mode,setModeState:next=>{mode=next},setDeep,renderTickets:collections.renderTickets});
