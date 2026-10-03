@@ -25,6 +25,10 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
       });
       return
     }
+    const collectionPick=e.target.closest?.('[data-oe-collection]');
+    if(collectionPick&&getMode()==='edit'&&!e.target.closest?.('[data-oe-item]')&&!e.target.closest?.('[data-oe-field]')){
+      e.preventDefault();send({type:'OE_SELECT_COLLECTION',collection:collectionPick.dataset.oeCollection});return
+    }
     const boothFav=e.target.closest?.('[data-favorite-booth]');if(boothFav&&getMode()==='preview'){e.preventDefault();toggleFavorite('booth',boothFav.dataset.favoriteBooth);return}
     const productFav=e.target.closest?.('[data-wishlist-product]');if(productFav&&getMode()==='preview'){e.preventDefault();toggleFavorite('product',productFav.dataset.wishlistProduct);return}
     const filter=e.target.closest?.('[data-booth-filter]');if(filter&&getMode()==='preview'){e.preventDefault();qa('[data-booth-filter]').forEach(x=>x.classList.toggle('active',x===filter));document.querySelector('[data-booth-search]')?.dispatchEvent(new Event('input',{bubbles:true}));return}
