@@ -764,5 +764,13 @@ body.previewing .canvas-stage:before{display:none}
 .custom-page-preset b{display:block;width:100%;font-size:11px;line-height:1.35;margin-bottom:5px}
 .custom-page-preset small{display:-webkit-box;width:100%;font-size:9px;line-height:1.45;color:#83808a;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
 .custom-page-row .custom-page-type{font-size:8px;color:#9a96a2;margin-left:auto}
+.page-nav .custom-page-row-delete{
+  width:28px!important;min-width:28px!important;min-height:28px!important;height:28px!important;
+  margin-right:6px!important;padding:0!important;display:grid!important;place-items:center!important;
+  border-radius:8px!important;color:#aaa6b0!important;font-size:15px!important;font-weight:700!important;
+  opacity:.38;transform:none!important
+}
+.custom-page-row:hover .custom-page-row-delete{opacity:1}
+.page-nav .custom-page-row-delete:hover{background:#fff0f0!important;color:#c43d3d!important}
 .custom-page-settings-actions{display:flex;gap:7px;margin-top:12px}
 .custom-page-settings-actions button{flex:1}
