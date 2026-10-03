@@ -33,10 +33,10 @@ export const template01 = {
     ],
     modules:{ribbon:true,booths:true,activities:true,guide:true,guests:true,freewalk:false,itasha:false,community:true,sponsors:false},
     participation:[
-      {id:'pa1',preset:'stage',title:'舞台活动',meta:'主舞台 · 时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'activities',url:'',guestIds:[]},
-      {id:'pa2',preset:'stamp',title:'集章 / 打卡',meta:'活动区域 · 全天',text:'填写集章点、打卡规则、兑换方式或完成奖励。',target:'activities',url:'',guestIds:[]},
-      {id:'pa3',preset:'photo',title:'主题合影',meta:'集合区域 · 时间待定',text:'填写集合时间、地点和参与方式。',target:'activities',url:'',guestIds:[]},
-      {id:'pa4',preset:'game',title:'互动游戏 / 抽选',meta:'活动区域 · 时间待定',text:'填写互动游戏、抽选或现场挑战的参与规则。',target:'activities',url:'',guestIds:[]}
+      {id:'pa1',preset:'stage',title:'舞台活动',category:'舞台',area:'主舞台',meta:'时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'activities',url:'',guestIds:[]},
+      {id:'pa2',preset:'stamp',title:'集章 / 打卡',category:'集章',area:'活动区域',meta:'全天',text:'填写集章点、打卡规则、兑换方式或完成奖励。',target:'activities',url:'',guestIds:[]},
+      {id:'pa3',preset:'photo',title:'主题合影',category:'合影',area:'集合区域',meta:'时间待定',text:'填写集合时间、地点和参与方式。',target:'activities',url:'',guestIds:[]},
+      {id:'pa4',preset:'game',title:'互动游戏 / 抽选',category:'互动游戏',area:'活动区域',meta:'时间待定',text:'填写互动游戏、抽选或现场挑战的参与规则。',target:'activities',url:'',guestIds:[]}
     ],
     venueMap:{
       image:'',
@@ -60,10 +60,10 @@ export const template01 = {
       ]}
     ],
     schedule:[
-      {id:'s1',time:'11:00',title:'开场 & 社群合影',stage:'MAIN STAGE',detail:'活动开场与全体社群合影。',guestIds:[],registrationUrl:''},
-      {id:'s2',time:'13:30',title:'主题问答 / 互动游戏',stage:'TALK',detail:'主题问答、观众互动与现场小游戏。',guestIds:[],registrationUrl:''},
-      {id:'s3',time:'15:00',title:'COS 特别舞台',stage:'MAIN STAGE',detail:'COS 舞台展示与主题合影活动。',guestIds:[],registrationUrl:''},
-      {id:'s4',time:'17:30',title:'幸运抽选 & 闭幕',stage:'MAIN STAGE',detail:'幸运抽选、闭幕致谢与活动结束提醒。',guestIds:[],registrationUrl:''}
+      {id:'s1',time:'11:00',title:'开场 & 社群合影',stage:'主舞台',detail:'活动开场与全体社群合影。',participationId:'pa1',guestIds:[],registrationUrl:''},
+      {id:'s2',time:'13:30',title:'主题问答 / 互动游戏',stage:'活动区域',detail:'主题问答、观众互动与现场小游戏。',participationId:'pa4',guestIds:[],registrationUrl:''},
+      {id:'s3',time:'15:00',title:'COS 特别舞台',stage:'主舞台',detail:'COS 舞台展示与主题合影活动。',participationId:'pa3',guestIds:[],registrationUrl:''},
+      {id:'s4',time:'17:30',title:'幸运抽选 & 闭幕',stage:'主舞台',detail:'幸运抽选、闭幕致谢与活动结束提醒。',participationId:'pa1',guestIds:[],registrationUrl:''}
     ],
     guests:[],
     updates:[
