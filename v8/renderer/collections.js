@@ -57,10 +57,13 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     const detail=$('#activities .activity-detail-list');
     if(detail)detail.innerHTML=items.map((x,i)=>{
       const guests=(x.guestIds||[]).map(getGuest).filter(Boolean);
+      const plan=(state.participation||[]).find(p=>p.id===x.participationId);
+      const category=String(plan?.category||'').trim(),area=String(plan?.area||x.stage||'').trim();
       const guestHtml=guests.length?'<div class="timetable-guests">'+guests.map(g=>'<a href="#guests" data-target-mode="page" data-page-link="guests" data-guest-id="'+esc(g.id)+'">'+esc(g.name)+'</a>').join('')+'</div>':'';
-      const reg=x.registrationUrl?'<a class="timetable-action" href="'+esc(x.registrationUrl)+'" target="_blank" rel="noopener">详情 ↗</a>':'';
-      return '<article class="timetable-row" id="schedule-'+esc(x.id||String(i))+'" data-activity-index="'+i+'" data-oe-item="schedule" data-oe-index="'+i+'>'+
-        '<time>'+esc(x.time||'')+'</time><div class="timetable-main">'+field('schedule.'+i+'.title',x.title,'b')+field('schedule.'+i+'.detail',x.detail||'','p')+guestHtml+'</div><span class="timetable-stage">'+esc(x.stage||'')+'</span>'+reg+'</article>';
+      const planLink=plan?'<a class="timetable-plan-link" href="#activities" data-activity-plan-id="'+esc(plan.id)+'">活动详情 →</a>':'';
+      const reg=x.registrationUrl?'<a class="timetable-action" href="'+esc(x.registrationUrl)+'" target="_blank" rel="noopener">外部详情 ↗</a>':'';
+      return '<article class="timetable-row" id="schedule-'+esc(x.id||String(i))+'" data-activity-index="'+i+'" data-activity-category="'+esc(category)+'" data-activity-area="'+esc(area)+'" data-oe-item="schedule" data-oe-index="'+i+'>'+
+        '<time>'+esc(x.time||'')+'</time><div class="timetable-main">'+field('schedule.'+i+'.title',x.title,'b')+field('schedule.'+i+'.detail',x.detail||'','p')+guestHtml+'</div><span class="timetable-stage">'+esc(x.stage||'')+'</span><div class="timetable-links">'+planLink+reg+'</div></article>';
     }).join('');
   }
 
