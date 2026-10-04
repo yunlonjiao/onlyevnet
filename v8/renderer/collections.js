@@ -68,12 +68,15 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
 
   function renderGuide(){
     const state=getState(),items=state.guide?.items||[],homeCount=Math.max(0,Math.min(items.length,Number(state.guide?.homeCount??2)));
-    const card=(x,i)=>{
-      const image=x.image?'<button class="guide-image" type="button" data-product-lightbox="'+esc(x.image)+'" data-oe-image="guide.items.'+i+'.image"><img src="'+esc(x.image)+'" alt="'+esc(x.title||'观展指南')+'"></button>':(getMode()==='edit'?'<button class="guide-image empty" type="button" data-oe-image="guide.items.'+i+'.image">＋ 路线图 / 说明图</button>':'');
-      return '<article data-oe-item="guide" data-oe-index="'+i+'"><div class="guide-copy"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b>'+field('guide.items.'+i+'.text',x.text||'','p')+'</div>'+image+'</article>';
+    const kindLabel={traffic:'ACCESS',admission:'ENTRY',facilities:'FACILITY',cosplay:'COSPLAY',safety:'SAFETY'};
+    const card=(x,i,scope)=>{
+      const kind=x.preset||'custom',isTraffic=kind==='traffic',showMedia=scope==='detail'&&isTraffic;
+      const media=showMedia?(x.image?'<button class="guide-image" type="button" data-product-lightbox="'+esc(x.image)+'" data-oe-image="guide.items.'+i+'.image"><img src="'+esc(x.image)+'" alt="'+esc(x.title||'交通到达')+'"></button>':(getMode()==='edit'?'<button class="guide-image empty" type="button" data-oe-image="guide.items.'+i+'.image"><span>＋ 上传路线图 / 入口图</span><small>仅交通到达使用图片</small></button>':'')):'';
+      const cls='guide-entry guide-entry--'+(isTraffic?'traffic':'text')+(media?' has-media':'')+' guide-kind-'+esc(kind);
+      return '<article class="'+cls+'" data-oe-item="guide" data-oe-index="'+i+'"><div class="guide-copy"><div class="guide-heading"><span class="guide-index">'+String(i+1).padStart(2,'0')+'</span><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b><small>'+esc(kindLabel[kind]||'GUIDE')+'</small></div><div class="guide-body">'+field('guide.items.'+i+'.text',x.text||'','p')+'</div></div>'+media+'</article>';
     };
-    const home=$('#guide-home .guide-home-grid');if(home)home.innerHTML=items.slice(0,homeCount).map(card).join('');
-    const detail=$('#guide .guide-detail-grid');if(detail)detail.innerHTML=items.map(card).join('');
+    const home=$('#guide-home .guide-home-grid');if(home)home.innerHTML=items.slice(0,homeCount).map((x,i)=>card(x,i,'home')).join('');
+    const detail=$('#guide .guide-detail-grid');if(detail)detail.innerHTML=items.map((x,i)=>card(x,i,'detail')).join('');
   }
 
   function renderMap(){
