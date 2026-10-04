@@ -1,4 +1,4 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.29.0';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.34.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
@@ -8,7 +8,19 @@ if(!state.edition||state.edition==='首届')state.edition=template01.defaults.ed
 if(!state.navigationUrl)state.navigationUrl=template01.defaults.navigationUrl;
 if(state.modules?.activities===undefined&&state.modules?.stage!==undefined){state.modules.activities=state.modules.stage;delete state.modules.stage}
 if(!state.guide||!Array.isArray(state.guide.items))state.guide=structuredClone(template01.defaults.guide);
-state.guide.items=(state.guide.items||[]).map((x,i)=>({image:'',preset:x.preset||template01.defaults.guide.items[i]?.preset||'custom',...x}));
+const LEGACY_GUIDE_PLACEHOLDERS=new Set([
+ '填写场馆地址、地铁 / 公交、自驾 / 网约车、入口位置。可以上传主办自己画的路线图或入口示意图。',
+ '填写场馆地址、地铁 / 公交、自驾 / 网约车、入口位置。可以上传路线图或入口示意图。',
+ '填写入场时间、检票方式、排队、现场购票、二次入场、禁止夜排等说明。',
+ '填写卫生间、更衣室、寄存、餐饮、医疗点、休息区、充电或无障碍信息。',
+ '填写更衣、摄影、道具尺寸、仿真武器、妆造和现场拍摄规则。',
+ '填写禁止携带物品、禁止行为、紧急情况处理和 Staff 联系方式。'
+]);
+state.guide.items=(state.guide.items||[]).map((x,i)=>{
+ const item={image:'',preset:x.preset||template01.defaults.guide.items[i]?.preset||'custom',...x};
+ if(LEGACY_GUIDE_PLACEHOLDERS.has(String(item.text||'').trim()))item.text='';
+ return item;
+});
 if(!Array.isArray(state.tickets))state.tickets=structuredClone(template01.defaults.tickets);
 if(state.ticketUrl===undefined)state.ticketUrl=template01.defaults.ticketUrl;
 if(state.ticketLinkLabel===undefined)state.ticketLinkLabel=template01.defaults.ticketLinkLabel;
@@ -73,11 +85,11 @@ const contentManagerMeta={
 };
 
 const GUIDE_PRESETS={
- traffic:{preset:'traffic',title:'交通到达',text:'填写场馆地址、地铁 / 公交、自驾 / 网约车、入口位置。可以上传路线图或入口示意图。',image:''},
- admission:{preset:'admission',title:'入场须知',text:'填写入场时间、检票方式、排队、现场购票、二次入场、禁止夜排等说明。',image:''},
- facilities:{preset:'facilities',title:'场馆设施',text:'填写卫生间、更衣室、寄存、餐饮、医疗点、休息区、充电或无障碍信息。',image:''},
- cosplay:{preset:'cosplay',title:'COS / 道具规则',text:'填写更衣、摄影、道具尺寸、仿真武器、妆造和现场拍摄规则。',image:''},
- safety:{preset:'safety',title:'安全与禁止事项',text:'填写禁止携带物品、禁止行为、紧急情况处理和 Staff 联系方式。',image:''}
+ traffic:{preset:'traffic',title:'交通到达',text:'',image:''},
+ admission:{preset:'admission',title:'入场须知',text:'',image:''},
+ facilities:{preset:'facilities',title:'场馆设施',text:'',image:''},
+ cosplay:{preset:'cosplay',title:'COS / 道具规则',text:'',image:''},
+ safety:{preset:'safety',title:'安全与禁止事项',text:'',image:''}
 };
 const PARTICIPATION_PRESETS={
  stage:{preset:'stage',title:'舞台活动',meta:'主舞台 · 时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'schedule-home',url:''},
@@ -326,7 +338,7 @@ function openItemInspector(collection,index){
  const count=arr.length;
  const isLong=k=>['text','gift','note','detail','intro','works','appearance'].includes(k);
  const media=collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='sponsors'?'<div class="item-media"><span>Logo</span><div class="item-media-row">'+(item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="sponsors.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="sponsors.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>':'';
- const guideMedia=collection==='guide'?'<div class="item-media"><span>说明图 / 路线图（可选）</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="guide.items.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="guide.items.'+index+'.image" class="ghost">移除</button>':'')+'</div></div><p class="inspector-note">交通指南可上传路线图或入口示意图；其他指南也可以放主办方已经准备好的说明图。</p></div>':'';
+ const guideMedia=collection==='guide'&&item.preset==='traffic'?'<div class="item-media"><span>路线图 / 入口图（可选）</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="guide.items.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="guide.items.'+index+'.image" class="ghost">移除</button>':'')+'</div></div><p class="inspector-note">只在「交通到达」中使用图片；其他指南保持纯文字排版。</p></div>':'';
  const itemTitle=contentManagerMeta[collection]?.item?.(item,index)?.[0]||meta.title;
  setInspector('内容',meta.title+' · '+itemTitle,'<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+guideMedia+extraInspector(collection,index,item)+'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>');
  inspector.querySelectorAll('textarea').forEach(fitTextarea);
