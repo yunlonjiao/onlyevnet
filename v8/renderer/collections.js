@@ -70,8 +70,10 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
   function renderGuide(){
     const state=getState(),items=state.guide?.items||[],homeCount=Math.max(0,Math.min(items.length,Number(state.guide?.homeCount??2)));
     const card=(x,i)=>{
-      const image=x.image?'<button class="guide-image" type="button" data-product-lightbox="'+esc(x.image)+'" data-oe-image="guide.items.'+i+'.image"><img src="'+esc(x.image)+'" alt="'+esc(x.title||'观展指南')+'"></button>':'';
-      return '<article id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"><div class="guide-copy"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b>'+field('guide.items.'+i+'.text',x.text||'','p')+'</div>'+image+'</article>';
+      const preset=x.preset||'custom',traffic=preset==='traffic';
+      const image=traffic&&x.image?'<button class="guide-image" type="button" data-product-lightbox="'+esc(x.image)+'" data-oe-image="guide.items.'+i+'.image"><img src="'+esc(x.image)+'" alt="'+esc(x.title||'交通路线图')+'"></button>':'';
+      const cls='guide-item guide-item-'+esc(preset)+' '+(traffic?'guide-item-traffic':'guide-item-text');
+      return '<article class="'+cls+'" id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"><div class="guide-copy"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b>'+field('guide.items.'+i+'.text',x.text||'','p')+'</div>'+image+'</article>';
     };
     const home=$('#guide-home .guide-home-grid');if(home)home.innerHTML=items.slice(0,homeCount).map(card).join('');
     const detail=$('#guide .guide-detail-grid');if(detail)detail.innerHTML=items.map(card).join('');
