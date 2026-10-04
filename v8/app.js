@@ -2,6 +2,16 @@ import {template01} from '/v8/templates/01-ip-only.js?v=8.33.9';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
+const CUSTOM_PAGE_LAYOUTS={
+ custom:'gallery',
+ cosplay:'people',photographer:'people',
+ officialShop:'product',freebie:'product',
+ food:'place',
+ itasha:'showcase',model:'showcase',prop:'showcase',brand:'showcase',
+ oc:'gallery',illustration:'gallery',craft:'gallery',exhibition:'gallery',
+ comic:'reading',novel:'reading',
+ gameDemo:'activity',tabletop:'activity',cardGame:'activity',support:'activity'
+};
 let state=structuredClone(template01.defaults),preview=false,history=[],future=[],saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home';
 try{const saved=localStorage.getItem(STORAGE);if(saved)state={...state,...JSON.parse(saved)}}catch{}
 if(!state.edition||state.edition==='首届')state.edition=template01.defaults.edition;
@@ -38,7 +48,8 @@ state.customPages=(state.customPages||[]).map((p,i)=>{
    intro:p.intro||'',
    items:Array.isArray(p.items)?p.items:[],
    ...p,
-   preset:legacyPreset
+   preset:legacyPreset,
+   layout:p.layout||CUSTOM_PAGE_LAYOUTS[legacyPreset]||'gallery'
  };
 });
 if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
@@ -333,7 +344,7 @@ function openCustomPageCreator(){
 function createCustomPage(presetKey){
  const preset=CUSTOM_PAGE_PRESETS[presetKey]||CUSTOM_PAGE_PRESETS.custom;
  checkpoint();
- const page={id:uid('cp'),preset:presetKey,title:preset.title,eyebrow:preset.eyebrow,intro:preset.intro,ratio:preset.ratio||1.333333,items:buildCustomPageStarterItems(presetKey)};
+ const page={id:uid('cp'),preset:presetKey,layout:CUSTOM_PAGE_LAYOUTS[presetKey]||'gallery',title:preset.title,eyebrow:preset.eyebrow,intro:preset.intro,ratio:preset.ratio||1.333333,items:buildCustomPageStarterItems(presetKey)};
  state.customPages??=[];state.customPages.push(page);save();renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});
  setStudioPage(customPageKey(page.id));
 }
