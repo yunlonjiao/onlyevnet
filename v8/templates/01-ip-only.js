@@ -93,11 +93,11 @@ export const template01 = {
     guide:{
       homeCount:2,
       items:[
-        {id:'gd1',preset:'traffic',title:'交通到达',text:'填写场馆地址、地铁 / 公交、自驾 / 网约车、入口位置。可以上传主办自己画的路线图或入口示意图。',image:''},
-        {id:'gd2',preset:'admission',title:'入场须知',text:'填写入场时间、检票方式、排队、现场购票、二次入场、禁止夜排等说明。',image:''},
-        {id:'gd3',preset:'facilities',title:'场馆设施',text:'填写卫生间、更衣室、寄存、餐饮、医疗点、休息区、充电或无障碍信息。',image:''},
-        {id:'gd4',preset:'cosplay',title:'COS / 道具规则',text:'填写更衣、摄影、道具尺寸、仿真武器、妆造和现场拍摄规则。',image:''},
-        {id:'gd5',preset:'safety',title:'安全与禁止事项',text:'填写禁止携带物品、禁止行为、紧急情况处理和 Staff 联系方式。',image:''}
+        {id:'gd1',preset:'traffic',title:'交通到达',text:'',image:''},
+        {id:'gd2',preset:'admission',title:'入场须知',text:'',image:''},
+        {id:'gd3',preset:'facilities',title:'场馆设施',text:'',image:''},
+        {id:'gd4',preset:'cosplay',title:'COS / 道具规则',text:'',image:''},
+        {id:'gd5',preset:'safety',title:'安全与禁止事项',text:'',image:''}
       ]
     },
     freewalk:{
