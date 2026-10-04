@@ -1,4 +1,4 @@
-export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode}){
+export function createCollections({qs:$,escapeHtml:esc,getState,getMode}){
   function field(path,value,tag='span',cls=''){
     return '<'+tag+(cls?' class="'+cls+'"':'')+' data-oe-field="'+path+'" contenteditable="'+(getMode()==='edit')+'" spellcheck="false">'+esc(value??'')+'</'+tag+'>';
   }
