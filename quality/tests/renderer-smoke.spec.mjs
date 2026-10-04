@@ -67,3 +67,38 @@ test('custom preset pages start with templates and can be removed by undo or del
 
   expect(runtimeErrors,'custom page lifecycle must not produce runtime errors').toEqual([]);
 });
+
+
+test('custom page presets automatically use content-aware layout families',async({page})=>{
+  const runtimeErrors=[];
+  page.on('pageerror',err=>runtimeErrors.push(err.message));
+  page.on('console',msg=>{if(msg.type()==='error')runtimeErrors.push(msg.text())});
+
+  await page.goto('/v8/');
+  const frame=page.frameLocator('#liveFrame');
+  await expect(frame.locator('.hero h1')).toBeVisible();
+
+  const cases=[
+    ['cosplay','people'],
+    ['officialShop','product'],
+    ['food','place'],
+    ['itasha','showcase'],
+    ['illustration','gallery'],
+    ['novel','reading'],
+    ['tabletop','activity']
+  ];
+
+  for(const [preset,layout] of cases){
+    await page.locator('#createCustomPageBtn').click();
+    await page.locator('[data-custom-page-preset="'+preset+'"]').click();
+    const section=frame.locator('[data-custom-page-root]');
+    await expect(section).toHaveAttribute('data-custom-page-layout',layout);
+    await expect(section).toHaveClass(new RegExp('custom-page-layout-'+layout));
+    await expect(section.locator('.custom-page-card')).toHaveCount(3);
+    if(layout==='product')await expect(section.locator('.custom-page-meta .is-price').first()).toBeVisible();
+    await page.locator('#customPageRows [data-delete-custom-page-row]').click();
+    await expect(frame.locator('[data-custom-page-root]')).toHaveCount(0);
+  }
+
+  expect(runtimeErrors,'all content-aware layouts must render without runtime errors').toEqual([]);
+});
