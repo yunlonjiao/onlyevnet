@@ -178,23 +178,45 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
     $('#sponsors')?.classList.toggle('oe-page-hidden',items.length===0);
   }
 
+  const CUSTOM_PAGE_LAYOUTS={
+    custom:'gallery',
+    cosplay:'people',photographer:'people',
+    officialShop:'product',freebie:'product',
+    food:'place',
+    itasha:'showcase',model:'showcase',prop:'showcase',brand:'showcase',
+    oc:'gallery',illustration:'gallery',craft:'gallery',exhibition:'gallery',
+    comic:'reading',novel:'reading',
+    gameDemo:'activity',tabletop:'activity',cardGame:'activity',support:'activity'
+  };
+  function customPageLayout(page){
+    return page?.layout||CUSTOM_PAGE_LAYOUTS[page?.preset]||'gallery';
+  }
+  function customPageMeta(meta,layout){
+    const parts=String(meta||'').split(/\s*·\s*/).map(x=>x.trim()).filter(Boolean);
+    if(!parts.length)return '';
+    return '<div class="custom-page-meta custom-page-meta-'+esc(layout)+'">'+parts.map((part,index)=>{
+      const price=layout==='product'&&index===0&&/(?:¥|￥|元|免费|交换|领取)/.test(part);
+      return '<span'+(price?' class="is-price"':'')+'>'+esc(part)+'</span>';
+    }).join('')+'</div>';
+  }
   function renderCustomPages(){
     const state=getState(),main=$('#top');if(!main)return;
     qa('[data-custom-page-root]').forEach(x=>x.remove());
     const before=$('#community')||$('.footer');
     (state.customPages||[]).forEach((page,pi)=>{
-      const key='custom-'+page.id,preset=page.preset||'custom';
+      const key='custom-'+page.id,preset=page.preset||'custom',layout=customPageLayout(page);
       const section=document.createElement('section');
-      section.className='section oe-page-view custom-page-view custom-page-'+preset;
-      section.id=key;section.dataset.customPageRoot=page.id;
+      section.className='section oe-page-view custom-page-view custom-page-'+preset+' custom-page-layout-'+layout;
+      section.id=key;section.dataset.customPageRoot=page.id;section.dataset.customPageLayout=layout;
       const items=(page.items||[]).map((item,ii)=>{
         const image=item.image?'<button class="custom-page-image" type="button" data-product-lightbox="'+esc(item.image)+'"><img src="'+esc(item.image)+'" alt="'+esc(item.title||page.title||'展示内容')+'"></button>':'<div class="custom-page-image empty">＋ 图片</div>';
         const action=item.url?'<a class="custom-page-action" href="'+esc(item.url)+'" target="_blank" rel="noopener">查看详情 ↗</a>':'';
-        return '<article class="custom-page-card" id="customitem-'+esc(item.id||String(ii))+'" data-oe-custom-page="'+esc(page.id)+'" data-oe-custom-index="'+ii+'">'+image+'<div class="custom-page-card-copy"><b>'+esc(item.title||'未命名内容')+'</b>'+(item.meta?'<small>'+esc(item.meta)+'</small>':'')+(item.text?'<p>'+esc(item.text)+'</p>':'')+action+'</div></article>';
+        const meta=customPageMeta(item.meta,layout);
+        return '<article class="custom-page-card custom-page-card-'+esc(layout)+'" id="customitem-'+esc(item.id||String(ii))+'" data-oe-custom-page="'+esc(page.id)+'" data-oe-custom-index="'+ii+'">'+image+'<div class="custom-page-card-copy"><b>'+esc(item.title||'未命名内容')+'</b>'+meta+(item.text?'<p>'+esc(item.text)+'</p>':'')+action+'</div></article>';
       }).join('');
       section.innerHTML='<div class="wrap"><div class="head" data-oe-custom-page-settings="'+esc(page.id)+'"><div><span class="ey">'+esc(page.eyebrow||'SPECIAL')+'</span><h2>'+esc(page.title||'专题页面')+'</h2></div><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></div>'+
         (page.intro?'<p class="custom-page-intro" data-oe-custom-page-settings="'+esc(page.id)+'">'+esc(page.intro)+'</p>':'')+
-        '<div class="custom-page-grid custom-page-grid-'+esc(preset)+'" style="--custom-image-ratio:'+esc(Number(page.ratio)||1.333333)+'">'+(items||(getMode()==='edit'?'<div class="custom-page-empty" data-oe-custom-page-settings="'+esc(page.id)+'">还没有展示内容，点击这里开始编辑。</div>':''))+'</div></div>';
+        '<div class="custom-page-grid custom-page-grid-'+esc(preset)+' custom-page-grid-layout-'+esc(layout)+'" style="--custom-image-ratio:'+esc(Number(page.ratio)||1.333333)+'">'+(items||(getMode()==='edit'?'<div class="custom-page-empty" data-oe-custom-page-settings="'+esc(page.id)+'">还没有展示内容，点击这里开始编辑。</div>':''))+'</div></div>';
       if(before?.parentNode)before.parentNode.insertBefore(section,before);else main.appendChild(section);
     });
   }
