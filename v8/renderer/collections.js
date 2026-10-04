@@ -69,14 +69,17 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode})
 
   function renderGuide(){
     const state=getState(),items=state.guide?.items||[],homeCount=Math.max(0,Math.min(items.length,Number(state.guide?.homeCount??2)));
-    const card=(x,i)=>{
+    const kindLabel={traffic:'ACCESS',admission:'ENTRY',facilities:'FACILITY',cosplay:'COSPLAY',safety:'SAFETY'};
+    const card=(x,i,scope)=>{
       const preset=x.preset||'custom',traffic=preset==='traffic';
-      const image=traffic&&x.image?'<button class="guide-image" type="button" data-product-lightbox="'+esc(x.image)+'" data-oe-image="guide.items.'+i+'.image"><img src="'+esc(x.image)+'" alt="'+esc(x.title||'交通路线图')+'"></button>':'';
-      const cls='guide-item guide-item-'+esc(preset)+' '+(traffic?'guide-item-traffic':'guide-item-text');
-      return '<article class="'+cls+'" id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"><div class="guide-copy"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b>'+field('guide.items.'+i+'.text',x.text||'','p')+'</div>'+image+'</article>';
+      if(scope==='detail'&&traffic){
+        const image=x.image?'<button class="guide-access-media" type="button" data-product-lightbox="'+esc(x.image)+'" data-oe-image="guide.items.'+i+'.image"><img src="'+esc(x.image)+'" alt="'+esc(x.title||'交通路线图')+'"></button>':'';
+        return '<article class="guide-access'+(image?' has-media':'')+'" id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"><div class="guide-access-copy"><div class="guide-access-kicker"><span>ACCESS</span><i>VISITOR GUIDE</i></div><div class="guide-access-title"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b><span>'+String(i+1).padStart(2,'0')+'</span></div><div class="guide-access-rule"></div><div class="guide-body">'+field('guide.items.'+i+'.text',x.text||'','p')+'</div></div>'+image+'</article>';
+      }
+      return '<article class="guide-chapter guide-kind-'+esc(preset)+'" id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"><span class="guide-chapter-no">'+String(i+1).padStart(2,'0')+'</span><div class="guide-chapter-main"><div class="guide-chapter-head"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b><small>'+esc(kindLabel[preset]||'GUIDE')+'</small></div><div class="guide-body">'+field('guide.items.'+i+'.text',x.text||'','p')+'</div></div></article>';
     };
-    const home=$('#guide-home .guide-home-grid');if(home)home.innerHTML=items.slice(0,homeCount).map(card).join('');
-    const detail=$('#guide .guide-detail-grid');if(detail)detail.innerHTML=items.map(card).join('');
+    const home=$('#guide-home .guide-home-grid');if(home)home.innerHTML=items.slice(0,homeCount).map((x,i)=>card(x,i,'home')).join('');
+    const detail=$('#guide .guide-detail-grid');if(detail)detail.innerHTML=items.map((x,i)=>card(x,i,'detail')).join('');
   }
 
   function renderMap(){
