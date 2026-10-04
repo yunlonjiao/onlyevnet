@@ -102,3 +102,33 @@ test('custom page presets automatically use content-aware layout families',async
 
   expect(runtimeErrors,'all content-aware layouts must render without runtime errors').toEqual([]);
 });
+
+
+test('guide keeps traffic visual and other guide sections text only',async({page})=>{
+  const runtimeErrors=[];
+  page.on('pageerror',err=>runtimeErrors.push(err.message));
+  page.on('console',msg=>{if(msg.type()==='error')runtimeErrors.push(msg.text())});
+
+  await page.goto('/v8/');
+  const frame=page.frameLocator('#liveFrame');
+  await expect(frame.locator('.hero h1')).toBeVisible();
+
+  await page.locator('[data-page="guide"]').click();
+  await expect(frame.locator('#guide')).toBeVisible();
+  await expect(frame.locator('#guide .guide-item-traffic')).toHaveCount(1);
+  await expect(frame.locator('#guide .guide-item-text')).toHaveCount(4);
+  await expect(frame.locator('#guide .guide-item-traffic')).toContainText('地铁：');
+  await expect(frame.locator('#guide .guide-item-admission')).toContainText('开放时间');
+  await expect(frame.locator('#guide .guide-item-cosplay')).toContainText('拍摄');
+
+  await page.locator('[data-page-content-manager="guide"]').click();
+  await page.locator('#contentListPanel [data-open-item="0"]').click();
+  await expect(page.locator('[data-media-path="guide.items.0.image"]')).toHaveCount(1);
+  await expect(page.locator('[data-guide-template-reset]')).toHaveCount(1);
+
+  await page.locator('#contentListPanel [data-open-item="1"]').click();
+  await expect(page.locator('[data-media-path="guide.items.1.image"]')).toHaveCount(0);
+  await expect(page.locator('[data-guide-template-reset]')).toHaveCount(1);
+
+  expect(runtimeErrors,'guide render/edit flow must not produce runtime errors').toEqual([]);
+});
