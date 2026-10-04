@@ -2,6 +2,8 @@ import {template01} from '/v8/templates/01-ip-only.js?v=8.33.9';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
+const GUIDE_TEMPLATE_TEXT={"traffic":"活动地点：【场馆名称】（【详细地址】）\n地铁：乘坐【线路】至【站名】【出口】出站，步行约【X】分钟到达【入口】。\n公交：可乘【线路】至【站点】，下车后按现场指引前往。\n网约车 / 出租车：建议在【推荐下客点】下车，避免在消防通道或主入口排队区长时间停靠。\n自驾：导航至【停车场 / 车辆入口】，停车位及开放入口以场馆当日安排为准。\n请以主办方最终发布的路线图、入口示意图及现场工作人员指引为准。","admission":"开放时间：【HH:MM–HH:MM】，建议至少提前【30】分钟到场并预留排队、安检时间。\n入场时请提前准备电子票 / 核验二维码，以及售票规则要求的有效身份证件；请按对应票种、日期和时段排队入场。\n现场将进行检票与安全检查，请配合工作人员指引，不要拥堵入口及消防通道。\n现场购票：【开放 / 不开放，请按实际修改】。\n二次入场：【允许 / 不允许；如允许请填写核验方式】。\n为避免影响场馆秩序，请勿提前一晚夜排；最早排队时间以主办方通知为准。\n票务退改、实名核验等规则以官方售票平台及主办方最终公告为准，请勿购买来源不明的票证。","facilities":"卫生间：【填写楼层 / 区域】。\n更衣区：【填写位置、开放时间及使用要求】；请在指定区域更衣，不要长期占用卫生间或公共通道。\n寄存 / 行李：【填写是否提供寄存及位置】；贵重物品请随身保管。\n餐饮 / 饮水：【填写场内餐饮、自动售货机或饮水点位置】。\n医疗 / 失物招领：【填写服务台、医疗点或 Staff 联系位置】。\n充电 / 无障碍设施：【填写充电点、电梯、无障碍通道或其他设施】。\n设施开放情况可能根据场馆当日运营调整，如有疑问请优先咨询现场 Staff。","cosplay":"请在主办方或场馆指定的更衣区域完成换装，不要占用卫生间、消防通道、出入口或摊位通道长时间整理服装。\n拍摄他人、Coser、摊位或作品前请先征得同意；请勿偷拍、强行合影、追拍或因拍摄阻碍正常通行。\n禁止携带开刃、尖锐、可发射、易燃易爆或其他可能造成伤害的道具；大型道具、灯架、背景架等设备如需报备，请按主办方公布的尺寸和流程提前申请。\n道具尺寸上限：【填写】；允许材质 / 特殊限制：【填写】。\n使用长柄或大型道具时请注意周围人员和展品，移动时尽量收起或保持安全距离。\n现场如有争议，以安检、场馆规定及工作人员现场判断为准。","safety":"禁止携带枪支、管制刀具、易燃易爆品、有毒危险品及其他法律法规或场馆明确禁止的物品入场；其他禁带物请以活动当天安检要求为准。\n请勿堵塞消防通道、紧急出口和主要通行区域，不攀爬场馆设施，不进行可能影响他人安全的追逐、抛掷或危险动作。\n请妥善保管手机、钱包、证件、相机等个人物品；发现遗失物可交至【服务台 / 失物招领处】。\n如发生身体不适、人员走失、物品遗失或其他紧急情况，请及时联系附近 Staff 或前往【医疗点 / 服务台】。\n遇到疏散或临时管控时，请听从工作人员和场馆广播指引有序移动，不要逆行、聚集或围观。\n紧急联系电话 / Staff 联系方式：【填写】。"};
+const GUIDE_OLD_PLACEHOLDER_TEXT={"traffic":"填写场馆地址、地铁 / 公交、自驾 / 网约车、入口位置。可以上传路线图或入口示意图。","admission":"填写入场时间、检票方式、排队、现场购票、二次入场、禁止夜排等说明。","facilities":"填写卫生间、更衣室、寄存、餐饮、医疗点、休息区、充电或无障碍信息。","cosplay":"填写更衣、摄影、道具尺寸、仿真武器、妆造和现场拍摄规则。","safety":"填写禁止携带物品、禁止行为、紧急情况处理和 Staff 联系方式。"};
 const CUSTOM_PAGE_LAYOUTS={
  custom:'gallery',
  cosplay:'people',photographer:'people',
@@ -18,7 +20,13 @@ if(!state.edition||state.edition==='首届')state.edition=template01.defaults.ed
 if(!state.navigationUrl)state.navigationUrl=template01.defaults.navigationUrl;
 if(state.modules?.activities===undefined&&state.modules?.stage!==undefined){state.modules.activities=state.modules.stage;delete state.modules.stage}
 if(!state.guide||!Array.isArray(state.guide.items))state.guide=structuredClone(template01.defaults.guide);
-state.guide.items=(state.guide.items||[]).map((x,i)=>({image:'',preset:x.preset||template01.defaults.guide.items[i]?.preset||'custom',...x}));
+state.guide.items=(state.guide.items||[]).map((x,i)=>{
+ const preset=x.preset||template01.defaults.guide.items[i]?.preset||'custom';
+ const item={image:'',preset,...x};
+ const oldText=GUIDE_OLD_PLACEHOLDER_TEXT[preset];
+ if(oldText&&String(item.text||'').trim()===oldText)item.text=GUIDE_TEMPLATE_TEXT[preset]||item.text;
+ return item;
+});
 if(!Array.isArray(state.tickets))state.tickets=structuredClone(template01.defaults.tickets);
 if(state.ticketUrl===undefined)state.ticketUrl=template01.defaults.ticketUrl;
 if(state.ticketLinkLabel===undefined)state.ticketLinkLabel=template01.defaults.ticketLinkLabel;
@@ -152,11 +160,11 @@ const contentManagerMeta={
 };
 
 const GUIDE_PRESETS={
- traffic:{preset:'traffic',title:'交通到达',text:'填写场馆地址、地铁 / 公交、自驾 / 网约车、入口位置。可以上传路线图或入口示意图。',image:''},
- admission:{preset:'admission',title:'入场须知',text:'填写入场时间、检票方式、排队、现场购票、二次入场、禁止夜排等说明。',image:''},
- facilities:{preset:'facilities',title:'场馆设施',text:'填写卫生间、更衣室、寄存、餐饮、医疗点、休息区、充电或无障碍信息。',image:''},
- cosplay:{preset:'cosplay',title:'COS / 道具规则',text:'填写更衣、摄影、道具尺寸、仿真武器、妆造和现场拍摄规则。',image:''},
- safety:{preset:'safety',title:'安全与禁止事项',text:'填写禁止携带物品、禁止行为、紧急情况处理和 Staff 联系方式。',image:''}
+ traffic:{preset:'traffic',title:'交通到达',text:GUIDE_TEMPLATE_TEXT.traffic,image:''},
+ admission:{preset:'admission',title:'入场须知',text:GUIDE_TEMPLATE_TEXT.admission},
+ facilities:{preset:'facilities',title:'场馆设施',text:GUIDE_TEMPLATE_TEXT.facilities},
+ cosplay:{preset:'cosplay',title:'COS / 道具规则',text:GUIDE_TEMPLATE_TEXT.cosplay},
+ safety:{preset:'safety',title:'安全与禁止事项',text:GUIDE_TEMPLATE_TEXT.safety}
 };
 const PARTICIPATION_PRESETS={
  stage:{preset:'stage',title:'舞台活动',meta:'主舞台 · 时间待定',text:'填写节目、Talk、表演或舞台互动内容。',target:'activities',url:'',guestIds:[]},
@@ -762,6 +770,9 @@ function extraInspector(collection,index,item){
      '<div class="reference-panel"><b>关联日程</b><div class="linked-summary">'+(linked.length?linked.map(x=>'<span>'+esc((x.time?x.time+' ':'')+(x.title||'日程'))+'</span>').join(''):'<span>暂未关联日程</span>')+'</div></div>'+ 
      '<p class="inspector-note">如填写报名 / 外部链接，会在活动详情中显示对应按钮。</p>';
  }
+ if(collection==='guide'&&GUIDE_TEMPLATE_TEXT[item.preset]){
+   return '<div class="reference-panel"><b>预设模板文字</b><p class="inspector-note">当前内容可自由修改；需要重新开始时可一键恢复该类型的模板文字。</p><button type="button" data-guide-template-reset>重新套用模板文字</button></div>';
+ }
  if(collection==='updates'){
    const targets=[['top','首页顶部'],['tickets','票务'],['passport','活动参与'],['map-home','场地图'],['schedule-home','当天日程'],['guests','嘉宾'],['guide-home','观展指南'],['community','社群']];
    return '<div class="reference-panel"><b>跳转位置</b><label><span>点击后前往</span><select data-ref="target">'+targets.map(x=>'<option value="'+x[0]+'" '+(item.target===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select></label></div>';
@@ -775,10 +786,10 @@ function openItemInspector(collection,index){
  const media=collection==='participation'
    ?'<div class="item-media"><span>活动宣传图</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="participation.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="participation.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>'
    :collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='sponsors'?'<div class="item-media"><span>Logo</span><div class="item-media-row">'+(item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="sponsors.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="sponsors.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>':'';
- const guideMedia=collection==='guide'
+ const guideMedia=collection==='guide'&&item.preset==='traffic'
    ?(item.image
-     ?'<div class="item-media"><span>'+(item.preset==='traffic'?'路线图 / 入口示意图':'附图')+'</span><div class="item-media-row"><img src="'+esc(item.image)+'" alt=""><div><button data-media-path="guide.items.'+index+'.image">替换图片</button><button data-remove-media="guide.items.'+index+'.image" class="ghost">移除</button></div></div></div>'
-     :'<div class="guide-media-add"><button type="button" data-media-path="guide.items.'+index+'.image">＋ 添加附图</button></div>')
+     ?'<div class="item-media"><span>路线图 / 入口示意图</span><div class="item-media-row"><img src="'+esc(item.image)+'" alt=""><div><button data-media-path="guide.items.'+index+'.image">替换图片</button><button data-remove-media="guide.items.'+index+'.image" class="ghost">移除</button></div></div></div>'
+     :'<div class="guide-media-add"><button type="button" data-media-path="guide.items.'+index+'.image">＋ 上传路线图 / 入口示意图</button></div>')
    :'';
  const itemTitle=contentManagerMeta[collection]?.item?.(item,index)?.[0]||meta.title;
  setInspector('内容',meta.title+' · '+itemTitle,'<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+meta.fields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+guideMedia+extraInspector(collection,index,item)+'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>');
@@ -808,6 +819,7 @@ function openItemInspector(collection,index){
  inspector.querySelectorAll('[data-op]').forEach(btn=>btn.addEventListener('click',()=>mutateItem(collection,index,btn.dataset.op)));
  inspector.querySelectorAll('[data-media-path]').forEach(btn=>btn.addEventListener('click',()=>{$('#imageInput').dataset.path=btn.dataset.mediaPath;$('#imageInput').dataset.returnCollection=collection;$('#imageInput').dataset.returnIndex=String(index);$('#imageInput').click()}));
  inspector.querySelectorAll('[data-remove-media]').forEach(btn=>btn.addEventListener('click',()=>{checkpoint();setDeep(btn.dataset.removeMedia,'');save();send({type:'OE_REPLACE_STATE',state});openItemInspector(collection,index)}));
+ inspector.querySelector('[data-guide-template-reset]')?.addEventListener('click',()=>{const text=GUIDE_TEMPLATE_TEXT[item.preset];if(!text)return;checkpoint();item.text=text;save();send({type:'OE_PATCH_FIELD',path:collectionPath(collection,index,'text'),value:text});openItemInspector(collection,index);toast('已重新套用指南模板文字')});
  inspector.querySelectorAll('[data-product-key]').forEach(input=>input.addEventListener('input',e=>{const j=Number(e.target.dataset.productIndex),key=e.target.dataset.productKey;item.products[j][key]=e.target.value;save();send({type:'OE_REPLACE_STATE',state})}));
  inspector.querySelectorAll('[data-product-image]').forEach(btn=>btn.addEventListener('click',e=>{const j=Number(e.target.dataset.productImage),path='booths.'+index+'.products.'+j+'.image';$('#imageInput').dataset.path=path;$('#imageInput').dataset.returnCollection='booths';$('#imageInput').dataset.returnIndex=String(index);$('#imageInput').click()}));
  inspector.querySelectorAll('[data-product-op]').forEach(btn=>btn.addEventListener('click',e=>{checkpoint();item.products??=[];if(btn.dataset.productOp==='add')item.products.push({id:uid('p'),name:'新制品',price:'',note:'',image:''});if(btn.dataset.productOp==='remove'&&item.products.length>1)item.products.splice(Number(btn.dataset.productIndex),1);save();send({type:'OE_REPLACE_STATE',state});openItemInspector('booths',index)}));
@@ -825,7 +837,7 @@ function mutateItem(collection,index,op){
    const fresh=collection==='ribbonItems'?{id:uid('rb'),text:'新滚动公告'}:
      collection==='explore'?{id:uid('ml'),label:'新探索入口',target:'activities',itemType:'page',itemId:''}:
      collection==='tickets'?{id:uid('t'),name:'新票种',price:'¥0',gift:'',note:'',image:''}:
-     collection==='guide'?{id:uid('gd'),preset:'custom',title:'新指南内容',text:'',image:''}:
+     collection==='guide'?{id:uid('gd'),preset:'custom',title:'新指南内容',text:''}:
      collection==='guests'?{id:uid('g'),name:'新嘉宾',role:'Guest',works:'',intro:'',image:'',socialLabel:'',socialUrl:'',appearance:''}:
      collection==='booths'?{id:uid('b'),no:'',name:'新摊位',logo:'',type:'',intro:'',products:[{id:uid('p'),name:'新制品',price:'',note:'',image:''}]}:
      collection==='updates'?{id:uid('u'),date:'',title:'新更新',target:'top'}:
@@ -844,7 +856,7 @@ function imageSlotConfig(path){
  if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾图片',ratio:.8,ratioLabel:'裁剪框可移动 · 比例 4:5',width:960,height:1200,fixed:true};
  if(/^booths\.\d+\.products\.\d+\.image$/.test(path))return {label:'制品图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1000,height:1000,fixed:true};
  if(path==='venueMap.image')return {label:'场地图',ratio:null,ratioLabel:'裁剪框自由比例',maxSize:2000,free:true};
- if(/^guide\.items\.\d+\.image$/.test(path))return {label:'指南说明图',ratio:null,ratioLabel:'裁剪框自由比例',maxSize:1800,free:true};
+ if(/^guide\.items\.\d+\.image$/.test(path)){const i=Number(path.match(/^guide\.items\.(\d+)\.image$/)?.[1]||-1),item=state.guide?.items?.[i];return {label:item?.preset==='traffic'?'交通路线图 / 入口示意图':'指南图片',ratio:null,ratioLabel:'裁剪框自由比例',maxSize:1800,free:true}};
  if(/^(freewalk|itasha)\.image$/.test(path))return {label:'活动图片',ratio:.8,ratioLabel:'裁剪框可移动 · 比例 4:5',width:960,height:1200,fixed:true};
  if(/^booths\.\d+\.logo$/.test(path))return {label:'社团 Logo',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:700,height:700,fixed:true};
  if(/^socialLinks\.\d+\.image$/.test(path))return {label:'二维码 / 社群图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:900,height:900,fixed:true};
