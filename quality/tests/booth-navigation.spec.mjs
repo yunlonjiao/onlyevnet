@@ -135,7 +135,7 @@ test('product card supports inline yellow-box editing and separate full editor',
 test('studio shows the current build version in the toolbar',async({page})=>{
   const badge=page.locator('#studioVersion');
   await expect(badge).toBeVisible();
-  await expect(badge).toHaveText('v8.33.74');
+  await expect(badge).toHaveText('v8.34.45');
 });
 
 test('favorite booth and product wishlist work in preview mode',async({page})=>{
@@ -159,6 +159,6 @@ test('favorite booth and product wishlist work in preview mode',async({page})=>{
   await expect(productFav).toHaveText('★ 已加入');
   await expect(frame.locator('#booths [data-wishlist-count]')).toHaveText('1');
 
-  await frame.locator('#booths [data-directory-saved]').click();
+  await frame.locator('#booths button[data-directory-saved]').click();
   await expect(frame.locator('#booths [data-directory-grid="products"] [data-directory-card]:visible')).toHaveCount(1);
 });
