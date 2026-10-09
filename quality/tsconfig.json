@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM"],
+    "skipLibCheck": true,
+    "noImplicitAny": false
+  },
+  "files": [
+    "../v8/renderer/context.js",
+    "../v8/renderer/main.js"
+  ]
+}
