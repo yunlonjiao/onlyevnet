@@ -1,4 +1,4 @@
-export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTickets}){
+export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTickets,getState}){
   const fieldMap={
     eventName:()=>$('.brand'),
     tagline:()=>$('.hero-copy p'),
@@ -65,8 +65,23 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     const el=fieldMap[path]?.();
     if(!el)return;
 
+    if(path==='eventName'){
+      const footerTitle=$('.footer-brand h2');
+      if(footerTitle)footerTitle.textContent=value??'';
+    }
+    if(path==='date'||path==='edition'||path==='location'){
+      const footerMeta=$('.footer-brand p');
+      if(footerMeta){
+        const currentDate=path==='date'?String(value??''):String(getState?.()?.date??'');
+        const currentEdition=path==='edition'?String(value??''):String(getState?.()?.edition??'');
+        const currentLocation=path==='location'?String(value??''):String(getState?.()?.location??'');
+        footerMeta.textContent=[currentDate,currentEdition||currentLocation].filter(Boolean).join(' · ');
+      }
+    }
+
     if(path==='heroImage'){
-      el.style.backgroundImage='linear-gradient(180deg,transparent,rgba(0,0,0,.26)),url("'+String(value).replace(/"/g,'%22')+'")';
+      const src=String(value||'').trim();
+      el.style.backgroundImage=src?'linear-gradient(180deg,transparent,rgba(0,0,0,.26)),url("'+src.replace(/"/g,'%22')+'")':'';
       return;
     }
     el.textContent=value??'';
