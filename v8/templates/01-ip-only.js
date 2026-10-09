@@ -1,6 +1,9 @@
 export const template01 = {
   id:'01-ip-only',
   name:'01 · IP ONLY',
+  label:'IP ONLY',
+  category:'单 IP / 同好活动',
+  version:'1.0.0',
   defaults:{
     eventName:'STARDUST ONLY 2026',
     date:'2026.11.08',
