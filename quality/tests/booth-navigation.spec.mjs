@@ -135,7 +135,7 @@ test('product card supports inline yellow-box editing and separate full editor',
 test('studio shows the current build version in the toolbar',async({page})=>{
   const badge=page.locator('#studioVersion');
   await expect(badge).toBeVisible();
-  await expect(badge).toHaveText('v8.34.54');
+  await expect(badge).toHaveText('v8.34.55');
 });
 
 test('favorite booth and product wishlist work in preview mode',async({page})=>{
@@ -171,6 +171,7 @@ test('entry animation page previews the event boarding pass',async({page})=>{
   await expect(page.locator('.canvas-title b')).toHaveText('动画页面');
   await expect(page.locator('#previewEntryAnimation')).toBeVisible();
   await expect(frame.locator('#loader')).toBeVisible();
+  await expect(frame.locator('#loader')).toHaveClass(/entry-playing/);
   await expect(frame.locator('.entry-main-title')).toContainText('STARDUST ONLY 2026');
   await expect(frame.locator('.stub-title')).toContainText('ENTRY');
   await page.locator('#previewEntryAnimation').click();
