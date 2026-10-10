@@ -1,0 +1,63 @@
+name: Package OnlyEvent Studio local bundle
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/package-local-studio.yml'
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build local bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="onlyevent-studio-v8.34.47"
+          rm -rf "$OUT"
+          mkdir -p "$OUT"
+          cp -R v8 "$OUT/v8"
+          cp index.html "$OUT/index.html"
+          cat > "$OUT/package.json" <<'JSON'
+          {
+            "name": "onlyevent-studio-local",
+            "private": true,
+            "version": "8.34.47",
+            "scripts": {
+              "dev": "vite --host 127.0.0.1 --port 4173 --open /v8/"
+            },
+            "devDependencies": {
+              "vite": "^7.1.7"
+            }
+          }
+          JSON
+          cat > "$OUT/README.txt" <<'TXT'
+          OnlyEvent Studio v8.34.47
+
+          解压后，在此文件夹上级目录打开 PowerShell / Terminal，依次运行：
+
+          cd onlyevent-studio-v8.34.47
+          npm install
+          npm run dev
+
+          第三个命令会自动打开：
+          http://127.0.0.1:4173/v8/
+
+          注意：
+          - 需要先安装 Node.js 20 或更高版本。
+          - “发布网站”会连接 OnlyEvent Publisher 在线服务。
+          - “导出 HTML”仍可离线生成单 HTML 游客站。
+          TXT
+          zip -r "onlyevent-studio-v8.34.47.zip" "$OUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: onlyevent-studio-v8.34.47
+          path: onlyevent-studio-v8.34.47.zip
+          if-no-files-found: error
+          retention-days: 30
