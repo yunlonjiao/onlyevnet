@@ -1426,4 +1426,4 @@ $('#publishDownload').onclick=()=>{publishIntent='download';send({type:'OE_EXPOR
 $('#publishOpen').onclick=()=>{if(publishRecord?.url)window.open(publishRecord.url,'_blank','noopener')};
 $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navigator.clipboard.writeText(publishRecord.url);toast('链接已复制')}catch{toast('复制失败')}};
 publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});
-syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
+if(projectId!=='default'&&!hasSavedProject){localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject()}\nsyncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
