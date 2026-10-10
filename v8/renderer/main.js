@@ -70,21 +70,22 @@ const buildStandaloneHtml=()=>createStandaloneExporter({getState:()=>state,previ
 function applyEntryState(){
   const a=state.entryAnimation||{},loader=$('#loader');
   if(!loader)return;
-  const title=String(a.title||state.eventName||'ONLYEVENT').trim();
+  const title=String(state.eventName||'ONLYEVENT').trim();
   const date=String(state.date||'').trim(),location=String(state.location||'').trim();
-  const shortDate=date.replace(/^(\d{4})[.\/-]?/,'').replace(/[.\/-]/g,'.');
-  const serialSeed=(title+'|'+date+'|'+location).split('').reduce((n,ch)=>(n*31+ch.charCodeAt(0))>>>0,2166136261);
-  const serial='OE-'+String(serialSeed%10000).padStart(4,'0');
-  loader.style.setProperty('--entry-accent',String(a.accent||state.theme||'#ff5f91'));
+  const ticketKey='oe-memorial-ticket:'+String(state.projectId||title||'default');
+  let ticketNo='';
+  try{ticketNo=localStorage.getItem(ticketKey)||''}catch{}
+  if(ticketNo.length!==6){
+    ticketNo=String(Math.floor(Math.random()*1000000)).padStart(6,'0');
+    try{localStorage.setItem(ticketKey,ticketNo)}catch{}
+  }
+  loader.style.setProperty('--entry-accent',String(state.theme||'#ff5f91'));
   const set=(sel,value)=>{const el=$(sel);if(el)el.textContent=value};
   set('.entry-main-title',title);
-  set('.entry-subtitle',a.subtitle||'SPECIAL EVENT PASS');
   set('.entry-date',date||'DATE TBA');
   set('.entry-location',location||'PLACE TBA');
-  set('.stub-title',a.ticketLabel||'SPECIAL PASS');
   set('.stub-event',title);
-  set('.entry-serial',serial);
-  set('.entry-short-date',shortDate||'DATE');
+  set('.entry-serial','NO. '+ticketNo);
   const skip=$('#skip');if(skip)skip.hidden=a.showSkip===false;
 }
 function previewEntry({play=false}={}){
