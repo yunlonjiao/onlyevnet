@@ -1,30 +1,30 @@
 // @ts-check
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.34.57';
+import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.34.58';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.34.57';
+import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.34.58';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.34.57';
+import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.34.58';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.34.57';
+import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.34.58';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.34.57';
+import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.34.58';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createCollections} from '/v8/renderer/collections.js?v=8.34.57';
+import {createCollections} from '/v8/renderer/collections.js?v=8.34.58';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createParticipation} from '/v8/renderer/participation.js?v=8.34.57';
+import {createParticipation} from '/v8/renderer/participation.js?v=8.34.58';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRouter} from '/v8/renderer/router.js?v=8.34.57';
+import {createRouter} from '/v8/renderer/router.js?v=8.34.58';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createFields} from '/v8/renderer/fields.js?v=8.34.57';
+import {createFields} from '/v8/renderer/fields.js?v=8.34.58';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRuntime} from '/v8/renderer/runtime.js?v=8.34.57';
+import {createRuntime} from '/v8/renderer/runtime.js?v=8.34.58';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.34.57';
+import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.34.58';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.34.57';
+import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.34.58';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {validateRendererContext} from '/v8/renderer/context.js?v=8.34.57';
+import {validateRendererContext} from '/v8/renderer/context.js?v=8.34.58';
 
 const ORIGIN=location.origin;
 let state={},mode='edit',entryPreviewTimer=0;
@@ -73,16 +73,17 @@ function applyEntryState(){
   const title=String(a.title||state.eventName||'ONLYEVENT').trim();
   const date=String(state.date||'').trim(),location=String(state.location||'').trim();
   const shortDate=date.replace(/^(\d{4})[.\/-]?/,'').replace(/[.\/-]/g,'.');
+  const serialSeed=(title+'|'+date+'|'+location).split('').reduce((n,ch)=>(n*31+ch.charCodeAt(0))>>>0,2166136261);
+  const serial='OE-'+String(serialSeed%10000).padStart(4,'0');
   loader.style.setProperty('--entry-accent',String(a.accent||state.theme||'#ff5f91'));
   const set=(sel,value)=>{const el=$(sel);if(el)el.textContent=value};
-  set('.entry-organizer',a.organizer||'ONLYEVENT');
   set('.entry-main-title',title);
-  set('.entry-subtitle',a.subtitle||'ADMIT ONE · OFFICIAL EVENT PASS');
+  set('.entry-subtitle',a.subtitle||'SPECIAL EVENT PASS');
   set('.entry-date',date||'DATE TBA');
-  set('.entry-location',location||'VENUE TBA');
-  set('.stub-title',a.ticketLabel||'ENTRY PASS');
+  set('.entry-location',location||'PLACE TBA');
+  set('.stub-title',a.ticketLabel||'SPECIAL PASS');
   set('.stub-event',title);
-  set('.entry-serial',a.serial||'OE-001');
+  set('.entry-serial',serial);
   set('.entry-short-date',shortDate||'DATE');
   const skip=$('#skip');if(skip)skip.hidden=a.showSkip===false;
 }
