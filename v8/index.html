@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OnlyEvent Studio v8</title>
-  <link rel="stylesheet" href="/v8/styles.css?v=8.34.46">
+  <link rel="stylesheet" href="/v8/styles.css?v=8.34.47">
 </head>
 <body>
   <header class="studio-topbar">
@@ -22,7 +22,7 @@
         <button id="deviceDesktopBtn" class="active" data-device="desktop" type="button" title="桌面画布"><span class="action-icon">▭</span><span>桌面</span></button>
         <button id="deviceMobileBtn" data-device="mobile" type="button" title="手机画布"><span class="action-icon">▯</span><span>手机</span></button>
       </div>
-      <span class="studio-version" id="studioVersion" title="当前 Studio 版本">v8.34.46</span>
+      <span class="studio-version" id="studioVersion" title="当前 Studio 版本">v8.34.47</span>
       <div class="action-group preview-group">
         <button id="previewBtn" type="button" title="查看发布效果"><span class="action-icon">◉</span><span id="previewLabel">预览</span></button>
       </div>
@@ -31,7 +31,7 @@
         <button id="undoBtn" class="icon-button" type="button" disabled title="撤销">↶</button>
         <button id="redoBtn" class="icon-button" type="button" disabled title="重做">↷</button>
       </div>
-      <button id="publishBtn" class="primary" type="button"><span>发布</span><span class="publish-arrow">↗</span></button>
+      <button id="publishBtn" class="primary" type="button"><span id="publishBtnLabel">发布网站</span><span class="publish-arrow">↗</span></button>
     </div>
   </header>
 
@@ -136,8 +136,34 @@
       </div>
     </div>
   </dialog>
+  <dialog id="publishDialog" class="publish-dialog">
+    <div class="publish-shell">
+      <div class="publish-head">
+        <div><span class="publish-kicker">ONLYEVENT PUBLISHER</span><b>发布网站</b></div>
+        <button id="publishClose" type="button" aria-label="关闭">×</button>
+      </div>
+      <div class="publish-body">
+        <section class="publish-site-card">
+          <span>网站地址</span>
+          <div class="publish-domain-input"><span>https://</span><input id="publishSlug" autocomplete="off" spellcheck="false" inputmode="url" aria-label="网站地址前缀"><b id="publishHost">.onlyevent.cn</b></div>
+          <small>发布后会生成独立游客网站。再次发布会更新同一个地址。</small>
+        </section>
+        <div class="publish-status" id="publishStatus">设置网站地址后即可发布。</div>
+        <section class="publish-result" id="publishResult" hidden>
+          <span>线上网站</span>
+          <b id="publishUrl"></b>
+          <div><button id="publishOpen" type="button">打开网站 ↗</button><button id="publishCopy" type="button">复制链接</button></div>
+        </section>
+      </div>
+      <div class="publish-foot">
+        <button id="publishDownload" type="button" class="publish-secondary">导出 HTML</button>
+        <div><button id="publishCancel" type="button">取消</button><button id="publishPrimary" type="button" class="primary">发布网站</button></div>
+      </div>
+    </div>
+  </dialog>
+
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="/v8/app.js?v=8.34.46"></script>
+  <script type="module" src="/v8/app.js?v=8.34.47"></script>
 <!-- v8.33.9 preview trigger -->
 </body>
 </html>
