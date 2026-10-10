@@ -70,9 +70,14 @@ const buildStandaloneHtml=()=>createStandaloneExporter({getState:()=>state,previ
 function applyEntryState(){
   const a=state.entryAnimation||{},loader=$('#loader');
   if(!loader)return;
-  const title=String(state.eventName||'ONLYEVENT').trim();
-  const date=String(state.date||'').trim(),location=String(state.location||'').trim();
-  const ticketKey='oe-memorial-ticket:'+String(state.projectId||title||'default');
+  const linkedTitle=String(state.eventName||'ONLYEVENT').trim();
+  const linkedDate=String(state.date||'').trim();
+  const linkedLocation=String(state.location||'').trim();
+  const title=String(a.titleText||linkedTitle).trim();
+  const date=String(a.dateText||linkedDate).trim();
+  const time=String(a.timeText||'').trim();
+  const location=String(a.locationText||linkedLocation).trim();
+  const ticketKey='oe-memorial-ticket:'+String(state.projectId||linkedTitle||'default');
   let ticketNo='';
   try{ticketNo=localStorage.getItem(ticketKey)||''}catch{}
   if(ticketNo.length!==6){
@@ -81,11 +86,30 @@ function applyEntryState(){
   }
   loader.style.setProperty('--entry-accent',String(state.theme||'#ff5f91'));
   const set=(sel,value)=>{const el=$(sel);if(el)el.textContent=value};
-  set('.entry-main-title',title);
-  set('.entry-date',date||'DATE TBA');
-  set('.entry-location',location||'PLACE TBA');
-  set('.stub-event',title);
-  set('.entry-serial','NO. '+ticketNo);
+  const show=(sel,on)=>{const el=$(sel);if(el)el.hidden=!on};
+  const photo=$('.entry-photo');
+  if(photo){
+    const custom=String(a.image||'').trim();
+    const linked=String(state.heroImage||'').trim();
+    const src=(a.imageMode==='custom'&&custom)?custom:linked||custom;
+    photo.style.backgroundImage=src?'url("'+src.replace(/"/g,'%22')+'")':'';
+    photo.classList.toggle('empty',!src);
+  }
+  set('.entry-ticket-label',String(a.labelText||'MEMORIAL TICKET'));
+  set('.entry-ticket-title',title);
+  set('.entry-ticket-subtitle',String(a.subtitleText||''));
+  set('.entry-ticket-date',date);
+  set('.entry-ticket-time',time);
+  set('.entry-ticket-location',location);
+  set('.entry-serial',String(a.ticketPrefix||'NO.')+' '+ticketNo);
+  show('.entry-ticket-label',a.showLabel!==false);
+  show('.entry-ticket-title',a.showTitle!==false&&!!title);
+  show('.entry-ticket-subtitle',a.showSubtitle===true&&!!String(a.subtitleText||'').trim());
+  show('.entry-ticket-date-wrap',a.showDate!==false&&!!date);
+  show('.entry-ticket-time-wrap',a.showTime===true&&!!time);
+  show('.entry-ticket-location-wrap',a.showLocation!==false&&!!location);
+  show('.stub-barcode',a.showBarcode!==false);
+  show('.stub-code',a.showTicketNumber!==false);
   const skip=$('#skip');if(skip)skip.hidden=a.showSkip===false;
 }
 function previewEntry({play=false}={}){
