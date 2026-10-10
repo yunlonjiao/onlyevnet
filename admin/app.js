@@ -367,6 +367,11 @@ $('#authLogoutBtn')?.addEventListener('click',()=>{
   $('#authLoginPassword').value='';
 });
 
-const initialAuthUser=authCurrentUser();
-if(initialAuthUser)authShowAdmin(initialAuthUser);
-else{authShowGate();authShowPage('login')}
+function authSyncView(){
+  const user=authCurrentUser();
+  if(user)authShowAdmin(user);
+  else{authShowGate();authShowPage('login')}
+}
+authSyncView();
+window.addEventListener('pageshow',()=>authSyncView());
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)authSyncView()});
