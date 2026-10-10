@@ -1,30 +1,30 @@
 // @ts-check
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.34.52';
+import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.34.53';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.34.52';
+import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.34.53';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.34.52';
+import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.34.53';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.34.52';
+import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.34.53';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.34.52';
+import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.34.53';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createCollections} from '/v8/renderer/collections.js?v=8.34.52';
+import {createCollections} from '/v8/renderer/collections.js?v=8.34.53';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createParticipation} from '/v8/renderer/participation.js?v=8.34.52';
+import {createParticipation} from '/v8/renderer/participation.js?v=8.34.53';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRouter} from '/v8/renderer/router.js?v=8.34.52';
+import {createRouter} from '/v8/renderer/router.js?v=8.34.53';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createFields} from '/v8/renderer/fields.js?v=8.34.52';
+import {createFields} from '/v8/renderer/fields.js?v=8.34.53';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRuntime} from '/v8/renderer/runtime.js?v=8.34.52';
+import {createRuntime} from '/v8/renderer/runtime.js?v=8.34.53';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.34.52';
+import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.34.53';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.34.52';
+import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.34.53';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {validateRendererContext} from '/v8/renderer/context.js?v=8.34.52';
+import {validateRendererContext} from '/v8/renderer/context.js?v=8.34.53';
 
 const ORIGIN=location.origin;
 let state={},mode='edit';
@@ -67,10 +67,48 @@ const fields=createFields({...rendererContext,setModeState:next=>{mode=next},set
 const runtime=createRuntime(rendererContext);
 const buildStandaloneHtml=()=>createStandaloneExporter({getState:()=>state,previewStyle:currentPreview.style,runtimeExtraStyle:runtimeExtraStyle+activityLayoutFixStyle,escapeHtml:esc})();
 
+function applyEntryState(){
+  const a=state.entryAnimation||{},loader=$('#loader');
+  if(!loader)return;
+  const title=String(a.title||state.eventName||'ONLYEVENT').trim();
+  const date=String(state.date||'').trim(),location=String(state.location||'').trim();
+  const shortDate=date.replace(/^(\d{4})[.\/-]?/,'').replace(/[.\/-]/g,'.');
+  loader.style.setProperty('--entry-accent',String(a.accent||state.theme||'#ff5f91'));
+  const set=(sel,value)=>{const el=$(sel);if(el)el.textContent=value};
+  set('.entry-organizer',a.organizer||'ONLYEVENT');
+  set('.entry-main-title',title);
+  set('.entry-subtitle',a.subtitle||'ADMIT ONE · OFFICIAL EVENT PASS');
+  set('.entry-date',date||'DATE TBA');
+  set('.entry-location',location||'VENUE TBA');
+  set('.stub-title',a.ticketLabel||'ENTRY PASS');
+  set('.stub-event',title);
+  set('.entry-serial',a.serial||'OE-001');
+  set('.entry-short-date',shortDate||'DATE');
+  const skip=$('#skip');if(skip)skip.hidden=a.showSkip===false;
+}
+function previewEntry({play=false}={}){
+  applyEntryState();
+  const loader=$('#loader');if(!loader)return;
+  document.documentElement.classList.add('oe-entry-preview');
+  loader.classList.remove('hide','entry-playing');
+  if(play){
+    void loader.offsetWidth;
+    loader.classList.add('entry-playing');
+    const delay=Math.max(1100,Number(state.entryAnimation?.duration)||1800);
+    clearTimeout(loader._oeTimer);
+    loader._oeTimer=setTimeout(()=>loader.classList.add('hide'),delay+500);
+  }
+}
+function hideEntryPreview(){
+  document.documentElement.classList.remove('oe-entry-preview');
+  $('#loader')?.classList.remove('entry-playing','hide');
+}
+
 function applyState(next){
   state={...state,...next};
   Object.keys(fields.fieldMap).forEach(k=>fields.applyField(k,state[k]));
   fields.extraStatePaths.forEach(k=>fields.applyField(k,state[k]));
+  applyEntryState();
   collections.renderCollections();
   fields.markEditable();
   router.applyModules();
@@ -107,6 +145,8 @@ window.addEventListener('message',e=>{
     document.getAnimations().forEach(animation=>{try{m.active?animation.pause():animation.play()}catch{}});
     document.documentElement.classList.toggle('oe-crop-active',!!m.active);
   }
+  if(m.type==='OE_PREVIEW_ENTRY')previewEntry({play:!!m.play});
+  if(m.type==='OE_HIDE_ENTRY_PREVIEW')hideEntryPreview();
   if(m.type==='OE_SHOW_PAGE')router.showPage(m.page||'home');
   if(m.type==='OE_EXPORT_HTML')send({type:'OE_EXPORT_HTML_RESULT',html:buildStandaloneHtml()});
 });
