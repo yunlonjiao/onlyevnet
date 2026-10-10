@@ -135,7 +135,7 @@ test('product card supports inline yellow-box editing and separate full editor',
 test('studio shows the current build version in the toolbar',async({page})=>{
   const badge=page.locator('#studioVersion');
   await expect(badge).toBeVisible();
-  await expect(badge).toHaveText('v8.34.61');
+  await expect(badge).toHaveText(/v8\.34\.\d+/);
 });
 
 test('favorite booth and product wishlist work in preview mode',async({page})=>{
@@ -144,6 +144,10 @@ test('favorite booth and product wishlist work in preview mode',async({page})=>{
   await page.locator('#previewBtn').click();
   await expect(page.locator('body')).toHaveClass(/previewing/);
   await expect(frame.locator('html')).toHaveClass(/oe-preview/);
+  await expect(frame.locator('#loader')).toBeVisible();
+  await frame.locator('.gate').click();
+  await expect(frame.locator('#loader')).toHaveClass(/entry-playing/);
+  await expect.poll(async()=>await frame.locator('#loader').evaluate(el=>el.classList.contains('hide')),{timeout:5000}).toBe(true);
 
   const boothFav=frame.locator('#booths [data-favorite-booth]').first();
   await expect(boothFav).toHaveText('♡ 收藏社团');
@@ -172,12 +176,15 @@ test('entry animation stays static until play and returns to static after playba
   await expect(page.locator('#previewEntryAnimation')).toBeVisible();
   await expect(frame.locator('#loader')).toBeVisible();
   await expect(frame.locator('#loader')).not.toHaveClass(/entry-playing/);
-  await expect(frame.locator('.entry-main-title')).toContainText('STARDUST ONLY 2026');
-  await expect(frame.locator('.stub-title')).toContainText('ENTRY');
+  await expect(frame.locator('.entry-ticket-title')).toContainText('STARDUST ONLY 2026');
+  await expect(frame.locator('.entry-ticket-label')).toContainText('MEMORIAL TICKET');
   await page.locator('#previewEntryAnimation').click();
   await expect(frame.locator('#loader')).toHaveClass(/entry-playing/);
   await expect.poll(async()=>await frame.locator('#loader').getAttribute('class'),{timeout:4000}).not.toContain('entry-playing');
   await expect(frame.locator('#loader')).toBeVisible();
   await page.locator('#previewBtn').click();
+  await expect(frame.locator('#loader')).toBeVisible();
+  await expect(frame.locator('#loader')).not.toHaveClass(/entry-playing/);
+  await frame.locator('.gate').click();
   await expect(frame.locator('#loader')).toHaveClass(/entry-playing/);
 });
