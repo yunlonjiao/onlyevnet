@@ -1,30 +1,30 @@
 // @ts-check
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.34.55';
+import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.34.56';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.34.55';
+import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.34.56';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.34.55';
+import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.34.56';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.34.55';
+import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.34.56';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.34.55';
+import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.34.56';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createCollections} from '/v8/renderer/collections.js?v=8.34.55';
+import {createCollections} from '/v8/renderer/collections.js?v=8.34.56';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createParticipation} from '/v8/renderer/participation.js?v=8.34.55';
+import {createParticipation} from '/v8/renderer/participation.js?v=8.34.56';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRouter} from '/v8/renderer/router.js?v=8.34.55';
+import {createRouter} from '/v8/renderer/router.js?v=8.34.56';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createFields} from '/v8/renderer/fields.js?v=8.34.55';
+import {createFields} from '/v8/renderer/fields.js?v=8.34.56';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRuntime} from '/v8/renderer/runtime.js?v=8.34.55';
+import {createRuntime} from '/v8/renderer/runtime.js?v=8.34.56';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.34.55';
+import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.34.56';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.34.55';
+import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.34.56';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {validateRendererContext} from '/v8/renderer/context.js?v=8.34.55';
+import {validateRendererContext} from '/v8/renderer/context.js?v=8.34.56';
 
 const ORIGIN=location.origin;
 let state={},mode='edit',entryPreviewTimer=0;
@@ -90,13 +90,16 @@ function previewEntry({play=false}={}){
   applyEntryState();
   const loader=$('#loader');if(!loader)return;
   document.documentElement.classList.add('oe-entry-preview');
+  clearTimeout(entryPreviewTimer);
   loader.classList.remove('hide','entry-playing');
   if(play){
     void loader.offsetWidth;
     loader.classList.add('entry-playing');
     const delay=Math.max(1100,Number(state.entryAnimation?.duration)||1800);
-    clearTimeout(entryPreviewTimer);
-    entryPreviewTimer=setTimeout(()=>loader.classList.add('hide'),delay+500);
+    entryPreviewTimer=setTimeout(()=>{
+      loader.classList.remove('entry-playing','hide');
+      void loader.offsetWidth;
+    },delay+500);
   }
 }
 function hideEntryPreview(){
