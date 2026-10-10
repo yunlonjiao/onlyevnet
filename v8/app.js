@@ -621,14 +621,9 @@ function openEntryAnimationInspector(){
    '<div class="entry-animation-inspector">'+
    '<div class="item-fields">'+
    '<label class="toggle-field"><span>启用入场动画</span><input type="checkbox" data-entry-field="enabled" '+(a.enabled!==false?'checked':'')+'></label>'+
-   '<label><span>票面活动名称</span><input data-entry-field="title" value="'+esc(a.title||'')+'" placeholder="'+esc(state.eventName||'活动名称')+'"></label>'+
-   '<label><span>票面副标题</span><input data-entry-field="subtitle" value="'+esc(a.subtitle||'')+'" placeholder="SPECIAL EVENT PASS"></label>'+
-   '<label><span>票根标签</span><input data-entry-field="ticketLabel" value="'+esc(a.ticketLabel||'SPECIAL PASS')+'"></label>'+
-   '<label><span>票面强调色</span><input type="color" data-entry-field="accent" value="'+esc(a.accent||state.theme||'#ff5f91')+'"></label>'+
-   '<label class="toggle-field"><span>显示跳过按钮</span><input type="checkbox" data-entry-field="showSkip" '+(a.showSkip!==false?'checked':'')+'></label>'+
    '</div>'+
    '<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button><button type="button" id="resetEntryAnimation">恢复模板默认</button></div>'+
-   '<p class="inspector-note">活动名称留空时自动使用项目名称；日期、地点和票号均自动生成，不需要额外填写。</p>'+
+   '<p class="inspector-note">票面自动使用网站里的活动名称、时间与地点；MEMORIAL TICKET 与每位游客自己的 6 位票号自动生成，无需额外填写。</p>'+
    '</div>');
  inspector.querySelectorAll('[data-entry-field]').forEach(input=>{
    const key=input.dataset.entryField;
@@ -1453,7 +1448,8 @@ function setPreview(next){
  const label=$('#previewLabel');if(label)label.textContent=preview?'退出预览':'预览';
  $('#previewBtn').classList.toggle('active',preview);
  send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});
- if(preview&&currentPage==='animation')setTimeout(()=>send({type:'OE_PREVIEW_ENTRY',state,play:true}),80);
+ if(preview&&state.entryAnimation?.enabled!==false)setTimeout(()=>send({type:'OE_PREVIEW_ENTRY',state,play:false}),80);
+ else if(!preview)setTimeout(()=>send({type:'OE_HIDE_ENTRY_PREVIEW'}),30);
  toast(preview?'预览模式 · 页面交互已启用':'已返回编辑');
 }
 $('#previewBtn').onclick=()=>setPreview(!preview);
