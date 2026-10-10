@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - '.github/workflows/package-local-studio.yml'
+  pull_request:
+    paths:
+      - '.github/workflows/package-local-studio.yml'
   workflow_dispatch:
 
 jobs:
