@@ -162,10 +162,23 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       if(loader){
         if(entry.enabled===false){loader.remove()}
         else{
+          const key="oe-memorial-ticket:"+String(S.projectId||S.eventName||"default");
+          let no="";
+          try{no=localStorage.getItem(key)||""}catch{}
+          if(no.length!==6){
+            no=String(Math.floor(Math.random()*1000000)).padStart(6,"0");
+            try{localStorage.setItem(key,no)}catch{}
+          }
+          const serial=$(".entry-serial");if(serial)serial.textContent="NO. "+no;
           loader.classList.remove("hide","entry-playing");
-          const skip=$("#skip");if(skip){skip.hidden=entry.showSkip===false;skip.addEventListener("click",()=>loader.classList.add("hide"))}
-          requestAnimationFrame(()=>{void loader.offsetWidth;loader.classList.add("entry-playing")});
-          setTimeout(()=>loader.classList.add("hide"),Math.max(1100,Number(entry.duration)||1800)+500);
+          const play=()=>{
+            if(loader.classList.contains("entry-playing"))return;
+            void loader.offsetWidth;loader.classList.add("entry-playing");
+            setTimeout(()=>{loader.classList.remove("entry-playing");loader.classList.add("hide")},Math.max(1100,Number(entry.duration)||1800)+500);
+          };
+          $(".gate")?.addEventListener("click",play);
+          $(".gate")?.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();play()}});
+          const skip=$("#skip");if(skip){skip.hidden=entry.showSkip===false;skip.addEventListener("click",e=>{e.stopPropagation();loader.classList.add("hide")})}
         }
       }
 
