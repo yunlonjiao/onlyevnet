@@ -1,5 +1,5 @@
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.57';
-import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.34.57';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.58';
+import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.34.58';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -26,7 +26,7 @@ try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&activeTem
 if(!hasSavedProject&&initialProjectName)state.eventName=initialProjectName;
 state.templateId=activeTemplate.id;
 state.projectId=projectId;
-if(!state.entryAnimation)state.entryAnimation=structuredClone(activeTemplate.defaults.entryAnimation||{enabled:true,showSkip:true,style:'ticket-tear',title:'',subtitle:'ADMIT ONE · OFFICIAL EVENT PASS',organizer:'ONLYEVENT',ticketLabel:'ENTRY PASS',serial:'OE-001',accent:'#ff5f91',duration:1800});
+if(!state.entryAnimation)state.entryAnimation=structuredClone(activeTemplate.defaults.entryAnimation||{enabled:true,showSkip:true,style:'ticket-tear',title:'',subtitle:'SPECIAL EVENT PASS',ticketLabel:'SPECIAL PASS',accent:'#ff5f91',duration:1800});
 state.entryAnimation={...structuredClone(activeTemplate.defaults.entryAnimation||{}),...state.entryAnimation};
 try{publishRecord=JSON.parse(localStorage.getItem(PUBLISH_STORAGE)||'{}')||{}}catch{publishRecord={}}
 if(state.edition===undefined||state.edition==='首届')state.edition=activeTemplate.defaults.edition;
@@ -620,15 +620,13 @@ function openEntryAnimationInspector(){
    '<div class="item-fields">'+
    '<label class="toggle-field"><span>启用入场动画</span><input type="checkbox" data-entry-field="enabled" '+(a.enabled!==false?'checked':'')+'></label>'+
    '<label><span>票面活动名称</span><input data-entry-field="title" value="'+esc(a.title||'')+'" placeholder="'+esc(state.eventName||'活动名称')+'"></label>'+
-   '<label><span>票面副标题</span><input data-entry-field="subtitle" value="'+esc(a.subtitle||'')+'"></label>'+
-   '<label><span>主办方 / Issuer</span><input data-entry-field="organizer" value="'+esc(a.organizer||'')+'"></label>'+
-   '<label><span>票根标签</span><input data-entry-field="ticketLabel" value="'+esc(a.ticketLabel||'ENTRY PASS')+'"></label>'+
-   '<label><span>票号</span><input data-entry-field="serial" value="'+esc(a.serial||'OE-001')+'"></label>'+
+   '<label><span>票面副标题</span><input data-entry-field="subtitle" value="'+esc(a.subtitle||'')+'" placeholder="SPECIAL EVENT PASS"></label>'+
+   '<label><span>票根标签</span><input data-entry-field="ticketLabel" value="'+esc(a.ticketLabel||'SPECIAL PASS')+'"></label>'+
    '<label><span>票面强调色</span><input type="color" data-entry-field="accent" value="'+esc(a.accent||state.theme||'#ff5f91')+'"></label>'+
    '<label class="toggle-field"><span>显示跳过按钮</span><input type="checkbox" data-entry-field="showSkip" '+(a.showSkip!==false?'checked':'')+'></label>'+
    '</div>'+
    '<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button><button type="button" id="resetEntryAnimation">恢复模板默认</button></div>'+
-   '<p class="inspector-note">活动名称留空时自动使用项目的漫展名称；日期和地点自动读取首页基本信息。</p>'+
+   '<p class="inspector-note">活动名称留空时自动使用项目名称；日期、地点和票号均自动生成，不需要额外填写。</p>'+
    '</div>');
  inspector.querySelectorAll('[data-entry-field]').forEach(input=>{
    const key=input.dataset.entryField;
@@ -785,7 +783,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.57" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.58" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
