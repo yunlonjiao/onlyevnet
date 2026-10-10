@@ -1,4 +1,5 @@
-import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.48';
+import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.51';
+import {deleteSite} from '/v8/publisher.js?v=8.34.51';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -18,6 +19,53 @@ function studioUrl(project){
   const q=new URLSearchParams({template:project.templateId||DEFAULT_TEMPLATE_ID,project:project.id});
   if(project.name)q.set('name',project.name);
   return '/v8/?'+q.toString();
+}
+function publishStorageKey(project){
+  return 'onlyevent-studio-publish:'+(project.templateId||DEFAULT_TEMPLATE_ID)+':'+project.id+':iframe';
+}
+function projectStorageKey(project){
+  return 'onlyevent-studio-v8:'+(project.templateId||DEFAULT_TEMPLATE_ID)+':'+project.id+':iframe';
+}
+function getPublishRecord(project){
+  try{return JSON.parse(localStorage.getItem(publishStorageKey(project))||'{}')||{}}catch{return {}}
+}
+function clearProjectLocalData(project){
+  localStorage.removeItem(projectStorageKey(project));
+  localStorage.removeItem(publishStorageKey(project));
+}
+async function unpublishProject(project){
+  const record=getPublishRecord(project);
+  if(!record.siteId||!record.editToken){
+    alert('这个已发布网站缺少下线凭证，暂时不能安全删除线上站点。');
+    return false;
+  }
+  if(!confirm('确定下线这个游客网站？\n下线后公开链接将不可访问，项目内容仍会保留。'))return false;
+  try{
+    await deleteSite({siteId:record.siteId,editToken:record.editToken});
+    localStorage.removeItem(publishStorageKey(project));
+    writeProjects(projects.map(p=>p.id===project.id?{...p,siteUrl:'',status:'draft',updatedAt:new Date().toISOString()}:p));
+    renderProjects($('#projectSearch').value);
+    return true;
+  }catch(error){
+    alert('下线失败：'+(error?.message||'Publisher 暂未启用删除接口'));
+    return false;
+  }
+}
+async function deleteProject(project){
+  if(project.siteUrl){
+    const ok=confirm('这个项目已经发布。\n\n确定删除项目吗？系统会先下线游客网站，再删除本地项目数据。');
+    if(!ok)return;
+    const record=getPublishRecord(project);
+    if(!record.siteId||!record.editToken){
+      alert('为避免留下无法管理的线上网站，当前不会只删除本地项目。\n请先恢复发布凭证或下线网站。');
+      return;
+    }
+    try{await deleteSite({siteId:record.siteId,editToken:record.editToken})}
+    catch(error){alert('线上网站下线失败，项目未删除：'+(error?.message||'Publisher 暂未启用删除接口'));return}
+  }else if(!confirm('确定删除这个项目？\n项目内容会从当前浏览器中删除。'))return;
+  clearProjectLocalData(project);
+  writeProjects(projects.filter(p=>p.id!==project.id));
+  renderProjects($('#projectSearch').value);
 }
 function migrateLegacyProject(){
   if(projects.length)return;
@@ -65,8 +113,10 @@ function renderProjects(filter=''){
     card.querySelector('.project-time').textContent='更新 '+formatTime(project.updatedAt);
     const st=card.querySelector('.project-status');st.textContent=status==='published'?'已发布':'草稿';st.classList.toggle('published',status==='published');
     card.querySelector('.edit-project').onclick=()=>location.href=studioUrl(project);
-    const open=card.querySelector('.open-site');if(project.siteUrl){open.hidden=false;open.href=project.siteUrl}
-    card.querySelector('.project-menu').onclick=()=>{if(confirm('删除这个项目入口？\n不会删除已经发布的游客网站。')){writeProjects(projects.filter(p=>p.id!==project.id));renderProjects($('#projectSearch').value)}};
+    const open=card.querySelector('.open-site'),unpublish=card.querySelector('.unpublish-site');
+    if(project.siteUrl){open.hidden=false;open.href=project.siteUrl;unpublish.hidden=false}
+    unpublish.onclick=()=>unpublishProject(project);
+    card.querySelector('.delete-project').onclick=()=>deleteProject(project);
     grid.appendChild(frag);
   });
   if(!visible.length&&projects.length){grid.innerHTML='<div class="empty-projects" style="grid-column:1/-1"><b>没有找到匹配项目</b><p>换一个关键词试试。</p></div>'}
