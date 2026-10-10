@@ -169,7 +169,7 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
             no=String(Math.floor(Math.random()*1000000)).padStart(6,"0");
             try{localStorage.setItem(key,no)}catch{}
           }
-          const serial=$(".entry-serial");if(serial)serial.textContent="NO. "+no;
+          const serial=$(".entry-serial");if(serial)serial.textContent=String(entry.ticketPrefix||"NO.")+" "+no;
           loader.classList.remove("hide","entry-playing");
           const play=()=>{
             if(loader.classList.contains("entry-playing"))return;
