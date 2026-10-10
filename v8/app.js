@@ -1,5 +1,5 @@
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.54';
-import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.34.54';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.55';
+import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.34.55';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -617,7 +617,6 @@ function openEntryAnimationInspector(){
  const title=a.title||state.eventName||'';
  setInspector('入场动画','票券撕开',
    '<div class="entry-animation-inspector">'+
-   '<div class="entry-animation-summary"><span>ENTRY ANIMATION</span><b>机票 / 入场票撕票动画</b><p>访客打开网站时先看到活动票券，右侧票根撕开后进入首页。</p></div>'+
    '<div class="item-fields">'+
    '<label class="toggle-field"><span>启用入场动画</span><input type="checkbox" data-entry-field="enabled" '+(a.enabled!==false?'checked':'')+'></label>'+
    '<label><span>票面活动名称</span><input data-entry-field="title" value="'+esc(a.title||'')+'" placeholder="'+esc(state.eventName||'活动名称')+'"></label>'+
@@ -772,7 +771,7 @@ function setStudioPage(page,{openContent=true}={}){
  syncStudioPageUI(page,{openContent});
  if(currentPage==='animation'){
    send({type:'OE_SHOW_PAGE',page:'home'});
-   send({type:'OE_PREVIEW_ENTRY',state,play:false});
+   send({type:'OE_PREVIEW_ENTRY',state,play:true});
  }else{
    send({type:'OE_HIDE_ENTRY_PREVIEW'});
    send({type:'OE_SHOW_PAGE',page:currentPage});
@@ -786,7 +785,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.54" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.55" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1453,7 +1452,9 @@ function setPreview(next){
  preview=!!next;document.body.classList.toggle('previewing',preview);
  const label=$('#previewLabel');if(label)label.textContent=preview?'退出预览':'预览';
  $('#previewBtn').classList.toggle('active',preview);
- send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});toast(preview?'预览模式 · 页面交互已启用':'已返回编辑');
+ send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});
+ if(preview&&currentPage==='animation')send({type:'OE_PREVIEW_ENTRY',state,play:true});
+ toast(preview?'预览模式 · 页面交互已启用':'已返回编辑');
 }
 $('#previewBtn').onclick=()=>setPreview(!preview);
 $('#createCustomPageBtn').onclick=openCustomPageCreator;
