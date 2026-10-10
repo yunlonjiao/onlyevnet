@@ -983,3 +983,125 @@ body.previewing .canvas-stage:before{display:none}
 .entry-animation-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .entry-animation-actions button{min-height:36px}
 #previewEntryAnimation{background:#18181d;color:#fff;border-color:#18181d}
+
+
+/* v8.34.74 compact memorial-ticket inspector — match other right-side editors */
+.entry-animation-inspector{gap:10px}
+.entry-animation-inspector .item-fields{gap:7px;margin-top:0}
+.entry-animation-inspector .item-fields>label,
+.entry-animation-inspector .entry-field-row{
+  min-height:38px;
+  margin:0;
+  padding:8px 10px;
+  border:1px solid #e7e7ec;
+  border-radius:11px;
+  background:#fff;
+}
+.entry-animation-inspector .item-fields>label{
+  display:grid;
+  gap:5px;
+}
+.entry-animation-inspector .item-fields>label>span,
+.entry-animation-inspector .entry-field-row .toggle-field>span{
+  font-size:9px;
+  line-height:1.2;
+  font-weight:800;
+  color:#7b7b85;
+}
+.entry-animation-inspector .entry-field-row{
+  display:grid;
+  grid-template-columns:108px minmax(0,1fr);
+  align-items:center;
+  gap:8px;
+}
+.entry-animation-inspector .entry-field-row .toggle-field{
+  display:flex!important;
+  align-items:center;
+  justify-content:space-between;
+  gap:7px;
+  min-width:0;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+.entry-animation-inspector .toggle-field input[type=checkbox]{
+  appearance:none;
+  width:26px!important;
+  height:16px!important;
+  min-width:26px;
+  margin:0!important;
+  border:0;
+  border-radius:999px;
+  background:#d9d9df;
+  position:relative;
+  cursor:pointer;
+}
+.entry-animation-inspector .toggle-field input[type=checkbox]:after{
+  content:"";
+  position:absolute;
+  width:12px;
+  height:12px;
+  left:2px;
+  top:2px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 1px 3px #0003;
+  transition:.16s;
+}
+.entry-animation-inspector .toggle-field input[type=checkbox]:checked{background:#7c5cff}
+.entry-animation-inspector .toggle-field input[type=checkbox]:checked:after{transform:translateX(10px)}
+.entry-animation-inspector input:not([type=checkbox]),
+.entry-animation-inspector select{
+  width:100%;
+  min-width:0;
+  height:32px;
+  margin:0!important;
+  padding:6px 8px!important;
+  border:1px solid #dedee5;
+  border-radius:9px;
+  background:#fafafd;
+  color:#34343b;
+  font-size:10px!important;
+  line-height:1.2;
+}
+.entry-animation-inspector input::placeholder{
+  color:#aaaab3;
+  font-size:9px;
+}
+.entry-animation-inspector .item-media{
+  margin-top:0;
+  padding:10px;
+}
+.entry-animation-inspector .item-media>span{font-size:9px}
+.entry-animation-inspector .item-media-row{
+  grid-template-columns:58px 1fr;
+  gap:9px;
+}
+.entry-animation-inspector .item-media-row img,
+.entry-animation-inspector .item-media-empty{
+  width:58px;
+  height:58px;
+  border-radius:9px;
+  font-size:13px;
+}
+.entry-animation-inspector .item-media-row button{
+  min-height:32px;
+  padding:7px 9px;
+  font-size:9px;
+}
+.entry-animation-inspector .entry-animation-actions{gap:6px}
+.entry-animation-inspector .entry-animation-actions button{
+  min-height:32px;
+  padding:7px 8px;
+  font-size:9px;
+}
+.entry-animation-inspector .inspector-note{
+  margin-top:2px;
+  font-size:8px;
+  line-height:1.5;
+}
+@media(max-width:1180px){
+  .entry-animation-inspector .entry-field-row{
+    grid-template-columns:96px minmax(0,1fr);
+  }
+}
