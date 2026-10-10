@@ -2,6 +2,6 @@
 (()=>{const origin=location.origin,box=document.getElementById('oeBoot'),host=location.hostname;
 const isPreviewHost=host.startsWith('preview.')||(host.endsWith('.vercel.app')&&host!=='onlyevnet.vercel.app');
 const report=(err,stage)=>{const message=String(err&&err.message||err||'Unknown renderer error');console.error('[OnlyEvent renderer]',stage,err);try{parent.postMessage({type:'OE_RENDER_ERROR',stage,message},origin)}catch(e){};if(box)box.textContent=isPreviewHost?'Renderer failed: '+message:(stage==='fallback'?'Preview recovery failed: '+message:'Preview loading failed. Restoring safe renderer…')};
-import('/v8/renderer/main.js?v=8.34.55').catch(err=>{report(err,'modular')});
+import('/v8/renderer/main.js?v=8.34.56').catch(err=>{report(err,'modular')});
 })();
 </script></body></html>
