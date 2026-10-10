@@ -1,5 +1,5 @@
-import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.51';
-import {deleteSite} from '/v8/publisher.js?v=8.34.51';
+import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.52';
+import {deleteSite} from '/v8/publisher.js?v=8.34.52';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -102,7 +102,7 @@ function renderProjects(filter=''){
   grid.innerHTML='';
   const visible=projects.filter(p=>!term||String(p.name||'').toLocaleLowerCase().includes(term));
   $('#projectCount').textContent=String(projects.length);
-  empty.hidden=visible.length>0||projects.length>0;
+  empty.hidden=projects.length>0;
   visible.sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||''))).forEach(project=>{
     const frag=$('#projectCardTemplate').content.cloneNode(true),card=frag.querySelector('.project-card');
     const status=project.siteUrl?'published':'draft';
@@ -114,7 +114,16 @@ function renderProjects(filter=''){
     const st=card.querySelector('.project-status');st.textContent=status==='published'?'已发布':'草稿';st.classList.toggle('published',status==='published');
     card.querySelector('.edit-project').onclick=()=>location.href=studioUrl(project);
     const open=card.querySelector('.open-site'),unpublish=card.querySelector('.unpublish-site');
-    if(project.siteUrl){open.hidden=false;open.href=project.siteUrl;unpublish.hidden=false}
+    if(project.siteUrl){
+      open.hidden=false;open.href=project.siteUrl;unpublish.hidden=false;
+      open.addEventListener('click',e=>{
+        e.preventDefault();
+        const url=String(project.siteUrl||'').trim();
+        if(!/^https?:\/\//i.test(url)){alert('这个项目没有有效的游客网站地址。');return}
+        const win=window.open(url,'_blank','noopener');
+        if(!win)location.href=url;
+      });
+    }
     unpublish.onclick=()=>unpublishProject(project);
     card.querySelector('.delete-project').onclick=()=>deleteProject(project);
     grid.appendChild(frag);
@@ -139,8 +148,7 @@ function createProject(name){
   location.href=studioUrl(project);
 }
 qa('[data-admin-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.adminPage));
-$('#templateLibraryBtn').onclick=()=>showPage('templates');
-for(const id of ['newProjectBtn','newProjectHeroBtn','emptyCreateBtn'])$('#'+id).onclick=()=>showPage('templates');
+for(const id of ['newProjectHeroBtn','emptyCreateBtn'])$('#'+id).onclick=()=>showPage('templates');
 $('#templateGrid').addEventListener('click',e=>{const b=e.target.closest('[data-template]');if(b)openCreate(b.dataset.template)});
 $('#createCancel').onclick=()=>$('#createDialog').close();
 $('#createForm').addEventListener('submit',e=>{e.preventDefault();createProject($('#createProjectName').value)});
