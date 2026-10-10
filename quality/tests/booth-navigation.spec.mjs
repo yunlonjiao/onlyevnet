@@ -135,7 +135,7 @@ test('product card supports inline yellow-box editing and separate full editor',
 test('studio shows the current build version in the toolbar',async({page})=>{
   const badge=page.locator('#studioVersion');
   await expect(badge).toBeVisible();
-  await expect(badge).toHaveText('v8.34.55');
+  await expect(badge).toHaveText('v8.34.56');
 });
 
 test('favorite booth and product wishlist work in preview mode',async({page})=>{
@@ -163,7 +163,7 @@ test('favorite booth and product wishlist work in preview mode',async({page})=>{
   await expect(frame.locator('#booths [data-directory-grid="products"] [data-directory-card]:visible')).toHaveCount(1);
 });
 
-test('entry animation page previews the event boarding pass',async({page})=>{
+test('entry animation stays static until play and returns to static after playback',async({page})=>{
   const frame=page.frameLocator('#liveFrame');
   await page.goto('/v8/');
   await expect(frame.locator('.hero')).toBeVisible();
@@ -171,9 +171,13 @@ test('entry animation page previews the event boarding pass',async({page})=>{
   await expect(page.locator('.canvas-title b')).toHaveText('动画页面');
   await expect(page.locator('#previewEntryAnimation')).toBeVisible();
   await expect(frame.locator('#loader')).toBeVisible();
-  await expect(frame.locator('#loader')).toHaveClass(/entry-playing/);
+  await expect(frame.locator('#loader')).not.toHaveClass(/entry-playing/);
   await expect(frame.locator('.entry-main-title')).toContainText('STARDUST ONLY 2026');
   await expect(frame.locator('.stub-title')).toContainText('ENTRY');
   await page.locator('#previewEntryAnimation').click();
+  await expect(frame.locator('#loader')).toHaveClass(/entry-playing/);
+  await expect.poll(async()=>await frame.locator('#loader').getAttribute('class'),{timeout:4000}).not.toContain('entry-playing');
+  await expect(frame.locator('#loader')).toBeVisible();
+  await page.locator('#previewBtn').click();
   await expect(frame.locator('#loader')).toHaveClass(/entry-playing/);
 });
