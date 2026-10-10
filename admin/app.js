@@ -26,8 +26,11 @@ function migrateLegacyProject(){
     try{const raw=localStorage.getItem(key);if(raw){state=JSON.parse(raw);break}}catch{}
   }
   if(!state)return;
-  const id='legacy-ip-only';
-  const migrated={id,name:state.eventName||'STARDUST ONLY 2026',templateId:state.templateId||DEFAULT_TEMPLATE_ID,status:'draft',updatedAt:new Date().toISOString(),legacy:true};
+  const id='legacy-ip-only',templateId=state.templateId||DEFAULT_TEMPLATE_ID;
+  const migrated={id,name:state.eventName||'STARDUST ONLY 2026',templateId,status:'draft',updatedAt:new Date().toISOString(),legacy:true};
+  localStorage.setItem('onlyevent-studio-v8:'+templateId+':'+id+':iframe',JSON.stringify({...state,projectId:id,templateId}));
+  const oldPublish=localStorage.getItem('onlyevent-studio-publish:'+templateId+':iframe');
+  if(oldPublish)localStorage.setItem('onlyevent-studio-publish:'+templateId+':'+id+':iframe',oldPublish);
   writeProjects([migrated]);
 }
 migrateLegacyProject();projects=readProjects();
