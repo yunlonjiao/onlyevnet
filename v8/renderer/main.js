@@ -99,14 +99,23 @@ function previewEntry({play=false}={}){
     loader.classList.add('entry-playing');
     const delay=Math.max(1100,Number(state.entryAnimation?.duration)||1800);
     entryPreviewTimer=setTimeout(()=>{
-      loader.classList.remove('entry-playing','hide');
-      void loader.offsetWidth;
+      loader.classList.remove('entry-playing');
+      loader.classList.add('hide');
     },delay+500);
   }
 }
 function hideEntryPreview(){
   document.documentElement.classList.remove('oe-entry-preview');
   $('#loader')?.classList.remove('entry-playing','hide');
+}
+function bindEntryTicket(){
+  const loader=$('#loader'),gate=$('.gate'),skip=$('#skip');
+  if(!loader||!gate||gate.dataset.oeEntryBound==='1')return;
+  gate.dataset.oeEntryBound='1';
+  const play=()=>{if(mode==='preview'&&!loader.classList.contains('entry-playing'))previewEntry({play:true})};
+  gate.addEventListener('click',play);
+  gate.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();play()}});
+  skip?.addEventListener('click',e=>{e.stopPropagation();loader.classList.add('hide')});
 }
 
 function applyState(next){
@@ -115,6 +124,7 @@ function applyState(next){
   fields.extraStatePaths.forEach(k=>fields.applyField(k,state[k]));
   applyEntryState();
   collections.renderCollections();
+  bindEntryTicket();
   fields.markEditable();
   router.applyModules();
   router.showPage(router.getCurrentPage(),false);
@@ -140,6 +150,8 @@ window.addEventListener('message',e=>{
   if(m.type==='OE_REPLACE_STATE'){mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);state=m.state||{};applyState(state);runtime.initRuntime()}
   if(m.type==='OE_SET_MODE'){
     fields.setMode(m.mode);
+    if(m.mode==='preview'&&state.entryAnimation?.enabled!==false)previewEntry({play:false});
+    else if(m.mode!=='preview')hideEntryPreview();
     collections.renderCollections();
     participation.renderParticipation();
     fields.markEditable();
