@@ -135,7 +135,7 @@ test('product card supports inline yellow-box editing and separate full editor',
 test('studio shows the current build version in the toolbar',async({page})=>{
   const badge=page.locator('#studioVersion');
   await expect(badge).toBeVisible();
-  await expect(badge).toHaveText('v8.34.59');
+  await expect(badge).toHaveText('v8.34.60');
 });
 
 test('favorite booth and product wishlist work in preview mode',async({page})=>{
