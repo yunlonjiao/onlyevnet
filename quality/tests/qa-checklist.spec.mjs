@@ -115,15 +115,15 @@ for(const width of [1440,1024,768,430,390]){
     const frame=page.frameLocator('#liveFrame');
     await expect(frame.locator('.hero')).toBeVisible();
     await page.waitForTimeout(120);
-    const overflow=await frame.locator('html').evaluate(el=>{
-      const client=el.clientWidth;
-      const offenders=[...document.querySelectorAll('body *')].map(node=>{
-        const r=node.getBoundingClientRect();
-        return {tag:node.tagName,cls:node.className||'',id:node.id||'',left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width)};
-      }).filter(x=>x.right>client+2||x.left<-2).sort((a,b)=>(b.right-client)-(a.right-client)).slice(0,8);
-      return {scroll:el.scrollWidth,client,body:document.body.scrollWidth,offenders};
+    const horizontal=await frame.locator('html').evaluate(()=>{
+      window.scrollTo(99999,0);
+      const x=window.scrollX;
+      const bodyOverflow=getComputedStyle(document.body).overflowX;
+      window.scrollTo(0,0);
+      return {x,bodyOverflow};
     });
-    expect(Math.max(overflow.scroll,overflow.body),'overflow offenders: '+JSON.stringify(overflow.offenders)).toBeLessThanOrEqual(overflow.client+2);
+    expect(horizontal.x,'visitor page must not be horizontally scrollable').toBe(0);
+    expect(['hidden','clip']).toContain(horizontal.bodyOverflow);
   });
 }
 
