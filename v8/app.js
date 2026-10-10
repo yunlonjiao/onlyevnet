@@ -1,10 +1,14 @@
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.47';
-import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.34.47';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.52';
+import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.34.52';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
-const requestedTemplateId=new URLSearchParams(location.search).get('template')||DEFAULT_TEMPLATE_ID;
+const query=new URLSearchParams(location.search);
+const requestedTemplateId=query.get('template')||DEFAULT_TEMPLATE_ID;
 const activeTemplate=getTemplate(requestedTemplateId);
-const STORAGE=`onlyevent-studio-v8:${activeTemplate.id}:iframe`,LEGACY_STORAGE='onlyevent-studio-v8:01:iframe',PUBLISH_STORAGE=`onlyevent-studio-publish:${activeTemplate.id}:iframe`,ORIGIN=location.origin;
+const projectId=query.get('project')||'default';
+const initialProjectName=String(query.get('name')||'').trim();
+const projectStorageSuffix=projectId==='default'?activeTemplate.id:(activeTemplate.id+':'+projectId);
+const STORAGE=`onlyevent-studio-v8:${projectStorageSuffix}:iframe`,LEGACY_STORAGE='onlyevent-studio-v8:01:iframe',PUBLISH_STORAGE=`onlyevent-studio-publish:${projectStorageSuffix}:iframe`,ADMIN_PROJECTS_KEY='onlyevent-admin-projects-v1',ORIGIN=location.origin;
 const GUIDE_OLD_PLACEHOLDER_TEXT={"traffic":"填写场馆地址、地铁 / 公交、自驾 / 网约车、入口位置。可以上传路线图或入口示意图。","admission":"填写入场时间、检票方式、排队、现场购票、二次入场、禁止夜排等说明。","facilities":"填写卫生间、更衣室、寄存、餐饮、医疗点、休息区、充电或无障碍信息。","cosplay":"填写更衣、摄影、道具尺寸、仿真武器、妆造和现场拍摄规则。","safety":"填写禁止携带物品、禁止行为、紧急情况处理和 Staff 联系方式。"};
 const CUSTOM_PAGE_LAYOUTS={
  custom:'gallery',
@@ -17,8 +21,11 @@ const CUSTOM_PAGE_LAYOUTS={
  gameDemo:'activity',tabletop:'activity',cardGame:'activity',support:'activity'
 };
 let state=structuredClone(activeTemplate.defaults),preview=false,history=[],future=[],saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home',publishIntent='site',publishRecord={};
-try{const saved=localStorage.getItem(STORAGE)||(activeTemplate.id===DEFAULT_TEMPLATE_ID?localStorage.getItem(LEGACY_STORAGE):null);if(saved)state={...state,...JSON.parse(saved)}}catch{}
+let hasSavedProject=false;
+try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&activeTemplate.id===DEFAULT_TEMPLATE_ID?localStorage.getItem(LEGACY_STORAGE):null);if(saved){state={...state,...JSON.parse(saved)};hasSavedProject=true}}catch{}
+if(!hasSavedProject&&initialProjectName)state.eventName=initialProjectName;
 state.templateId=activeTemplate.id;
+state.projectId=projectId;
 try{publishRecord=JSON.parse(localStorage.getItem(PUBLISH_STORAGE)||'{}')||{}}catch{publishRecord={}}
 if(state.edition===undefined||state.edition==='首届')state.edition=activeTemplate.defaults.edition;
 if(state.navigationUrl===undefined)state.navigationUrl=activeTemplate.defaults.navigationUrl;
@@ -201,7 +208,9 @@ async function publishGeneratedHtml(html){
      :await createSite(payload);
    if(!result.siteId)throw new Error('发布服务未返回站点 ID');
    if(!publishRecord?.siteId&&!result.editToken)throw new Error('发布服务未返回编辑凭证');
-   savePublishRecord({siteId:result.siteId,editToken:result.editToken||publishRecord.editToken,slug:result.slug||slug,url:result.url||('https://'+slug+'.onlyevent.cn'),publishedAt:new Date().toISOString()});
+   const publishedUrl=result.url||('https://'+slug+'.onlyevent.cn');
+   savePublishRecord({siteId:result.siteId,editToken:result.editToken||publishRecord.editToken,slug:result.slug||slug,url:publishedUrl,publishedAt:new Date().toISOString()});
+   syncAdminProject({siteUrl:publishedUrl,status:'published'});
    renderPublishDialog();publishStatus.textContent='网站已上线';toast('网站已发布');
  }catch(error){
    publishStatus.textContent=error?.message||'发布失败，请稍后重试';
@@ -209,7 +218,15 @@ async function publishGeneratedHtml(html){
 }
 
 function syncStudioIdentity(){const t=document.querySelector('#workspaceTemplateName');if(t)t.textContent=activeTemplate.name.replace(/^\d+\s*·\s*/,'');const p=document.querySelector('#projectTemplateName');if(p)p.textContent=activeTemplate.name.replace(/^\d+\s*·\s*/,'');const e=document.querySelector('#projectEventName');if(e)e.textContent=state.eventName||'未命名活动'}
-function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));saveState.textContent='已保存'},180)}
+function syncAdminProject(extra={}){
+ if(projectId==='default')return;
+ let rows=[];try{rows=JSON.parse(localStorage.getItem(ADMIN_PROJECTS_KEY)||'[]')||[]}catch{}
+ const i=rows.findIndex(p=>p.id===projectId),base=i>=0?rows[i]:{id:projectId,templateId:activeTemplate.id};
+ const next={...base,name:state.eventName||base.name||'未命名活动',templateId:activeTemplate.id,updatedAt:new Date().toISOString(),...extra};
+ if(i>=0)rows[i]=next;else rows.push(next);
+ localStorage.setItem(ADMIN_PROJECTS_KEY,JSON.stringify(rows));
+}
+function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject();saveState.textContent='已保存'},180)}
 function checkpoint(){history.push(JSON.stringify(state));if(history.length>80)history.shift();future.length=0;syncHistory()}
 function syncHistory(){$('#undoBtn').disabled=!history.length;$('#redoBtn').disabled=!future.length}
 function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a.length-1;i++)o=o[/^\d+$/.test(a[i])?Number(a[i]):a[i]];const k=a.at(-1);o[/^\d+$/.test(k)?Number(k):k]=value;save()}
@@ -719,7 +736,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.47" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.52" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1400,6 +1417,7 @@ function reconcilePageAfterHistory(){
 }
 $('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
 $('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
+$('#backAdminBtn')?.addEventListener('click',()=>{location.href='/admin/'});
 $('#publishBtn').onclick=openPublishDialog;
 $('#publishClose').onclick=()=>publishDialog.close();
 $('#publishCancel').onclick=()=>publishDialog.close();
@@ -1408,4 +1426,5 @@ $('#publishDownload').onclick=()=>{publishIntent='download';send({type:'OE_EXPOR
 $('#publishOpen').onclick=()=>{if(publishRecord?.url)window.open(publishRecord.url,'_blank','noopener')};
 $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navigator.clipboard.writeText(publishRecord.url);toast('链接已复制')}catch{toast('复制失败')}};
 publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});
+if(projectId!=='default'&&!hasSavedProject){localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject()}
 syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
