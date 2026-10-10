@@ -22,10 +22,8 @@ export const template01 = {
       showSkip:true,
       style:'ticket-tear',
       title:'',
-      subtitle:'ADMIT ONE · OFFICIAL EVENT PASS',
-      organizer:'ONLYEVENT',
-      ticketLabel:'ENTRY PASS',
-      serial:'OE-001',
+      subtitle:'SPECIAL EVENT PASS',
+      ticketLabel:'SPECIAL PASS',
       accent:'#ff5f91',
       duration:1800
     },
