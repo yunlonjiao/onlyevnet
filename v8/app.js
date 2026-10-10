@@ -28,6 +28,17 @@ state.templateId=activeTemplate.id;
 state.projectId=projectId;
 if(!state.entryAnimation)state.entryAnimation=structuredClone(activeTemplate.defaults.entryAnimation||{enabled:true,showSkip:true,style:'ticket-tear',title:'',subtitle:'SPECIAL EVENT PASS',ticketLabel:'SPECIAL PASS',accent:'#ff5f91',duration:1800});
 state.entryAnimation={...structuredClone(activeTemplate.defaults.entryAnimation||{}),...state.entryAnimation};
+state.entryAnimation={
+  imageMode:'linked',image:'',
+  showLabel:true,labelText:'MEMORIAL TICKET',
+  showTitle:true,titleText:'',
+  showSubtitle:false,subtitleText:'',
+  showDate:true,dateText:'',
+  showTime:false,timeText:'',
+  showLocation:true,locationText:'',
+  showBarcode:true,showTicketNumber:true,ticketPrefix:'NO.',
+  ...state.entryAnimation
+};
 delete state.entryAnimation.organizer;
 delete state.entryAnimation.serial;
 try{publishRecord=JSON.parse(localStorage.getItem(PUBLISH_STORAGE)||'{}')||{}}catch{publishRecord={}}
@@ -616,14 +627,37 @@ function syncCanvasSelection(path){
 }
 function openEntryAnimationInspector(){
  const a=state.entryAnimation||{};
- const title=a.title||state.eventName||'';
- setInspector('入场动画','票券撕开',
+ const linkedImage=String(state.heroImage||'').trim();
+ const customImage=String(a.image||'').trim();
+ const imageSrc=(a.imageMode==='custom'&&customImage)?customImage:linkedImage||customImage;
+ const row=(key,label,value,placeholder,showKey,shown=true)=>
+   '<div class="entry-field-row">'+
+   '<label class="toggle-field"><span>'+label+'</span><input type="checkbox" data-entry-field="'+showKey+'" '+(shown?'checked':'')+'></label>'+
+   '<input data-entry-field="'+key+'" value="'+esc(value||'')+'" placeholder="'+esc(placeholder||'')+'">'+
+   '</div>';
+ setInspector('入场动画','纪念票设置',
    '<div class="entry-animation-inspector">'+
    '<div class="item-fields">'+
    '<label class="toggle-field"><span>启用入场动画</span><input type="checkbox" data-entry-field="enabled" '+(a.enabled!==false?'checked':'')+'></label>'+
+   '<label><span>左侧 KV</span><select data-entry-field="imageMode"><option value="linked" '+(a.imageMode!=='custom'?'selected':'')+'>联动首页 KV</option><option value="custom" '+(a.imageMode==='custom'?'selected':'')+'>单独上传</option></select></label>'+
+   '</div>'+
+   '<div class="item-media"><span>票根 KV</span><div class="item-media-row">'+
+   (imageSrc?'<img src="'+esc(imageSrc)+'" alt="">':'<div class="item-media-empty">KV</div>')+
+   '<div><button type="button" data-entry-image>选择 / 裁剪</button>'+
+   (customImage?'<button type="button" class="ghost" data-entry-image-remove>移除单独 KV</button>':'')+
+   '</div></div></div>'+
+   '<div class="item-fields">'+
+   row('labelText','顶部标签',a.labelText||'MEMORIAL TICKET','MEMORIAL TICKET','showLabel',a.showLabel!==false)+
+   row('titleText','活动名',a.titleText||'','留空则联动：'+(state.eventName||'活动名称'),'showTitle',a.showTitle!==false)+
+   row('subtitleText','副标题',a.subtitleText||'','可选副标题','showSubtitle',a.showSubtitle===true)+
+   row('dateText','日期',a.dateText||'','留空则联动：'+(state.date||'活动日期'),'showDate',a.showDate!==false)+
+   row('timeText','时间',a.timeText||'','例如 10:30 - 17:00','showTime',a.showTime===true)+
+   row('locationText','地点',a.locationText||'','留空则联动：'+(state.location||'活动地点'),'showLocation',a.showLocation!==false)+
+   '<label class="toggle-field"><span>显示条形码</span><input type="checkbox" data-entry-field="showBarcode" '+(a.showBarcode!==false?'checked':'')+'></label>'+
+   '<div class="entry-field-row"><label class="toggle-field"><span>显示随机票号</span><input type="checkbox" data-entry-field="showTicketNumber" '+(a.showTicketNumber!==false?'checked':'')+'></label><input data-entry-field="ticketPrefix" value="'+esc(a.ticketPrefix||'NO.')+'" placeholder="NO."></div>'+
    '</div>'+
    '<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button><button type="button" id="resetEntryAnimation">恢复模板默认</button></div>'+
-   '<p class="inspector-note">票面自动使用网站里的活动名称、时间与地点；MEMORIAL TICKET 与每位游客自己的 6 位票号自动生成，无需额外填写。</p>'+
+   '<p class="inspector-note">所有右侧信息都可单独显示/隐藏。活动名、日期、地点留空时自动联动网站基础信息；票号由系统为每位游客自动生成。</p>'+
    '</div>');
  inspector.querySelectorAll('[data-entry-field]').forEach(input=>{
    const key=input.dataset.entryField;
@@ -633,17 +667,27 @@ function openEntryAnimationInspector(){
      state.entryAnimation??={};state.entryAnimation[key]=value;save();
      send({type:'OE_REPLACE_STATE',state});
      send({type:'OE_PREVIEW_ENTRY',state,play:false});
+     if(key==='imageMode')openEntryAnimationInspector();
    });
-   if(input.type!=='checkbox'&&input.type!=='color')input.addEventListener('input',e=>{
+   if(input.type!=='checkbox'&&input.tagName!=='SELECT'&&input.type!=='color')input.addEventListener('input',e=>{
      state.entryAnimation??={};state.entryAnimation[key]=e.target.value;save();
      send({type:'OE_REPLACE_STATE',state});
      send({type:'OE_PREVIEW_ENTRY',state,play:false});
    });
  });
+ inspector.querySelector('[data-entry-image]')?.addEventListener('click',()=>{
+   state.entryAnimation.imageMode='custom';save();
+   const input=$('#imageInput');input.dataset.path='entryAnimation.image';input.click();
+ });
+ inspector.querySelector('[data-entry-image-remove]')?.addEventListener('click',()=>{
+   checkpoint();state.entryAnimation.image='';state.entryAnimation.imageMode='linked';save();
+   send({type:'OE_REPLACE_STATE',state});send({type:'OE_PREVIEW_ENTRY',state,play:false});openEntryAnimationInspector();
+ });
  $('#previewEntryAnimation')?.addEventListener('click',()=>send({type:'OE_PREVIEW_ENTRY',state,play:true}));
  $('#resetEntryAnimation')?.addEventListener('click',()=>{
-   checkpoint();state.entryAnimation=structuredClone(activeTemplate.defaults.entryAnimation||{});save();
-   send({type:'OE_REPLACE_STATE',state});send({type:'OE_PREVIEW_ENTRY',state,play:false});openEntryAnimationInspector();
+   checkpoint();
+   state.entryAnimation={enabled:true,imageMode:'linked',image:'',showLabel:true,labelText:'MEMORIAL TICKET',showTitle:true,titleText:'',showSubtitle:false,subtitleText:'',showDate:true,dateText:'',showTime:false,timeText:'',showLocation:true,locationText:'',showBarcode:true,showTicketNumber:true,ticketPrefix:'NO.',showSkip:true,duration:1800};
+   save();send({type:'OE_REPLACE_STATE',state});send({type:'OE_PREVIEW_ENTRY',state,play:false});openEntryAnimationInspector();
  });
 }
 function openPageTool(tool){
