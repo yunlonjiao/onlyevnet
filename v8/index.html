@@ -5,24 +5,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OnlyEvent Studio v8</title>
-  <link rel="stylesheet" href="/v8/styles.css?v=8.34.51">
+  <link rel="stylesheet" href="/v8/styles.css?v=8.34.52">
 </head>
 <body>
   <header class="studio-topbar">
-    <a class="brand-zone" id="adminHomeLink" href="/admin/" title="返回活动管理">
+    <div class="brand-zone">
+      <button id="backAdminBtn" class="back-admin-btn" type="button" title="返回我的活动">← 返回主页</button>
       <div class="brand-mark" aria-hidden="true"><span></span><span></span></div>
       <div class="brand-copy">
         <div class="brand">OnlyEvent <strong>Studio</strong></div>
         <div class="project-meta"><span class="project-dot"></span><b id="projectTemplateName">IP ONLY</b><span id="projectEventName">STARDUST ONLY 2026</span></div>
       </div>
-    </a>
+    </div>
 
     <div class="top-actions">
       <div class="action-group device-group" aria-label="设备预览">
         <button id="deviceDesktopBtn" class="active" data-device="desktop" type="button" title="桌面画布"><span class="action-icon">▭</span><span>桌面</span></button>
         <button id="deviceMobileBtn" data-device="mobile" type="button" title="手机画布"><span class="action-icon">▯</span><span>手机</span></button>
       </div>
-      <span class="studio-version" id="studioVersion" title="当前 Studio 版本">v8.34.51</span>
+      <span class="studio-version" id="studioVersion" title="当前 Studio 版本">v8.34.52</span>
       <div class="action-group preview-group">
         <button id="previewBtn" type="button" title="查看发布效果"><span class="action-icon">◉</span><span id="previewLabel">预览</span></button>
       </div>
@@ -163,7 +164,7 @@
   </dialog>
 
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="/v8/app.js?v=8.34.51"></script>
+  <script type="module" src="/v8/app.js?v=8.34.52"></script>
 <!-- v8.33.9 preview trigger -->
 </body>
 </html>
