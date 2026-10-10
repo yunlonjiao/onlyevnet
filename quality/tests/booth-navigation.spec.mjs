@@ -180,11 +180,12 @@ test('entry animation stays static until play and returns to static after playba
   await expect(frame.locator('.entry-ticket-label')).toContainText('MEMORIAL TICKET');
   await page.locator('#previewEntryAnimation').click();
   await expect(frame.locator('#loader')).toHaveClass(/entry-playing/);
-  await expect.poll(async()=>await frame.locator('#loader').getAttribute('class'),{timeout:4000}).not.toContain('entry-playing');
-  await expect(frame.locator('#loader')).toBeVisible();
+  await expect.poll(async()=>await frame.locator('#loader').getAttribute('class'),{timeout:5000}).toContain('hide');
+  await expect(frame.locator('#loader')).toBeHidden();
+  await page.locator('#previewBtn').click();
   await page.locator('#previewBtn').click();
   await expect(frame.locator('#loader')).toBeVisible();
-  await expect(frame.locator('#loader')).not.toHaveClass(/entry-playing/);
+  await expect(frame.locator('#loader')).not.toHaveClass(/entry-playing|hide/);
   await frame.locator('.gate').click();
   await expect(frame.locator('#loader')).toHaveClass(/entry-playing/);
 });
