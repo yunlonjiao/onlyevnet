@@ -162,3 +162,17 @@ test('favorite booth and product wishlist work in preview mode',async({page})=>{
   await frame.locator('#booths button[data-directory-saved]').click();
   await expect(frame.locator('#booths [data-directory-grid="products"] [data-directory-card]:visible')).toHaveCount(1);
 });
+
+test('entry animation page previews the event boarding pass',async({page})=>{
+  const frame=page.frameLocator('#liveFrame');
+  await page.goto('/v8/');
+  await expect(frame.locator('.hero')).toBeVisible();
+  await page.locator('.page-nav [data-page="animation"]').click();
+  await expect(page.locator('.canvas-title b')).toHaveText('动画页面');
+  await expect(page.locator('#previewEntryAnimation')).toBeVisible();
+  await expect(frame.locator('#loader')).toBeVisible();
+  await expect(frame.locator('.entry-main-title')).toContainText('STARDUST ONLY 2026');
+  await expect(frame.locator('.stub-title')).toContainText('ENTRY');
+  await page.locator('#previewEntryAnimation').click();
+  await expect(frame.locator('#loader')).toHaveClass(/entry-playing/);
+});
