@@ -27,7 +27,7 @@ import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.34.53';
 import {validateRendererContext} from '/v8/renderer/context.js?v=8.34.53';
 
 const ORIGIN=location.origin;
-let state={},mode='edit';
+let state={},mode='edit',entryPreviewTimer=0;
 const send=m=>parent.postMessage(m,ORIGIN);
 const runtimeWindow=/** @type {Window & typeof globalThis & {__oeRenderLoadId?:number}} */(window);
 runtimeWindow.__oeRenderLoadId=(runtimeWindow.__oeRenderLoadId||0)+1;
@@ -95,8 +95,8 @@ function previewEntry({play=false}={}){
     void loader.offsetWidth;
     loader.classList.add('entry-playing');
     const delay=Math.max(1100,Number(state.entryAnimation?.duration)||1800);
-    clearTimeout(loader._oeTimer);
-    loader._oeTimer=setTimeout(()=>loader.classList.add('hide'),delay+500);
+    clearTimeout(entryPreviewTimer);
+    entryPreviewTimer=setTimeout(()=>loader.classList.add('hide'),delay+500);
   }
 }
 function hideEntryPreview(){
