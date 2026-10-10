@@ -23,7 +23,7 @@ test('creating from Template 01 opens a project-scoped Studio and returns to adm
   await expect(page).toHaveURL(/\/v8\/\?template=01-ip-only&project=/);
   await expect(page.frameLocator('#liveFrame').locator('.hero')).toBeVisible();
   await expect(page.locator('#projectEventName')).toHaveText('测试 ONLY 2027');
-  await expect(page.locator('#studioVersion')).toHaveText('v8.34.50');
+  await expect(page.locator('#studioVersion')).toHaveText('v8.34.51');
   await expect(page.locator('.studio-topbar > .brand-zone')).toHaveCount(1);
   await expect(page.locator('.studio-topbar > .top-actions')).toHaveCount(1);
   const shellBox=await page.locator('.studio-shell').boundingBox();
@@ -43,6 +43,19 @@ test('creating from Template 01 opens a project-scoped Studio and returns to adm
   await page.locator('#adminHomeLink').click();
   await expect(page).toHaveURL(/\/admin\/$/);
   await expect(page.locator('#projectGrid .project-card')).toContainText('测试 ONLY 2027');
+});
+
+test('admin exposes explicit project deletion and published-site unpublish controls',async({page})=>{
+  await page.goto('/admin/');
+  await page.evaluate(()=>{
+    const project={id:'published-test',name:'已发布测试',templateId:'01-ip-only',siteUrl:'https://published-test.onlyevent.cn',status:'published',updatedAt:new Date().toISOString()};
+    localStorage.setItem('onlyevent-admin-projects-v1',JSON.stringify([project]));
+    localStorage.setItem('onlyevent-studio-publish:01-ip-only:published-test:iframe',JSON.stringify({siteId:'site-1',editToken:'token-1',url:project.siteUrl,slug:'published-test'}));
+  });
+  await page.reload();
+  await expect(page.locator('.delete-project')).toHaveText('删除项目');
+  await expect(page.locator('.unpublish-site')).toHaveText('下线网站');
+  await expect(page.locator('.project-menu')).toHaveCount(0);
 });
 
 test('root sends organizers to the admin platform',async({page})=>{
