@@ -105,15 +105,22 @@ test('visitor pages contain no internal design explanation copy and renderer has
 
 for(const width of [1440,1024,768,430,390]){
   test('visitor layout has no horizontal overflow at '+width+'px',async({page})=>{
-    await page.setViewportSize({width,height:900});
+    await page.setViewportSize({width:1800,height:1100});
     await page.goto('/v8/');
+    await page.locator('#canvas').evaluate((el,width)=>{
+      el.style.width=width+'px';
+      el.style.maxWidth='none';
+      el.style.flex='0 0 auto';
+    },width);
     const frame=page.frameLocator('#liveFrame');
     await expect(frame.locator('.hero')).toBeVisible();
+    await page.waitForTimeout(120);
     const overflow=await frame.locator('html').evaluate(el=>({
       scroll:el.scrollWidth,
       client:el.clientWidth,
       body:document.body.scrollWidth
     }));
+    expect(overflow.client).toBeGreaterThanOrEqual(width-4);
     expect(Math.max(overflow.scroll,overflow.body)).toBeLessThanOrEqual(overflow.client+2);
   });
 }
