@@ -28,6 +28,8 @@ state.templateId=activeTemplate.id;
 state.projectId=projectId;
 if(!state.entryAnimation)state.entryAnimation=structuredClone(activeTemplate.defaults.entryAnimation||{enabled:true,showSkip:true,style:'ticket-tear',title:'',subtitle:'SPECIAL EVENT PASS',ticketLabel:'SPECIAL PASS',accent:'#ff5f91',duration:1800});
 state.entryAnimation={...structuredClone(activeTemplate.defaults.entryAnimation||{}),...state.entryAnimation};
+delete state.entryAnimation.organizer;
+delete state.entryAnimation.serial;
 try{publishRecord=JSON.parse(localStorage.getItem(PUBLISH_STORAGE)||'{}')||{}}catch{publishRecord={}}
 if(state.edition===undefined||state.edition==='首届')state.edition=activeTemplate.defaults.edition;
 if(state.navigationUrl===undefined)state.navigationUrl=activeTemplate.defaults.navigationUrl;
