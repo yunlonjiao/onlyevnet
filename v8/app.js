@@ -1453,7 +1453,7 @@ function setPreview(next){
  const label=$('#previewLabel');if(label)label.textContent=preview?'退出预览':'预览';
  $('#previewBtn').classList.toggle('active',preview);
  send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});
- if(preview&&currentPage==='animation')requestAnimationFrame(()=>send({type:'OE_PREVIEW_ENTRY',state,play:true}));
+ if(preview&&currentPage==='animation')setTimeout(()=>send({type:'OE_PREVIEW_ENTRY',state,play:true}),80);
  toast(preview?'预览模式 · 页面交互已启用':'已返回编辑');
 }
 $('#previewBtn').onclick=()=>setPreview(!preview);
