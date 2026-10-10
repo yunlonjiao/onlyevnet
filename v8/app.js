@@ -1,9 +1,10 @@
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.46';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.47';
+import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.34.47';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const requestedTemplateId=new URLSearchParams(location.search).get('template')||DEFAULT_TEMPLATE_ID;
 const activeTemplate=getTemplate(requestedTemplateId);
-const STORAGE=`onlyevent-studio-v8:${activeTemplate.id}:iframe`,LEGACY_STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
+const STORAGE=`onlyevent-studio-v8:${activeTemplate.id}:iframe`,LEGACY_STORAGE='onlyevent-studio-v8:01:iframe',PUBLISH_STORAGE=`onlyevent-studio-publish:${activeTemplate.id}:iframe`,ORIGIN=location.origin;
 const GUIDE_OLD_PLACEHOLDER_TEXT={"traffic":"填写场馆地址、地铁 / 公交、自驾 / 网约车、入口位置。可以上传路线图或入口示意图。","admission":"填写入场时间、检票方式、排队、现场购票、二次入场、禁止夜排等说明。","facilities":"填写卫生间、更衣室、寄存、餐饮、医疗点、休息区、充电或无障碍信息。","cosplay":"填写更衣、摄影、道具尺寸、仿真武器、妆造和现场拍摄规则。","safety":"填写禁止携带物品、禁止行为、紧急情况处理和 Staff 联系方式。"};
 const CUSTOM_PAGE_LAYOUTS={
  custom:'gallery',
@@ -15,9 +16,10 @@ const CUSTOM_PAGE_LAYOUTS={
  comic:'reading',novel:'reading',
  gameDemo:'activity',tabletop:'activity',cardGame:'activity',support:'activity'
 };
-let state=structuredClone(activeTemplate.defaults),preview=false,history=[],future=[],saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home';
+let state=structuredClone(activeTemplate.defaults),preview=false,history=[],future=[],saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home',publishIntent='site',publishRecord={};
 try{const saved=localStorage.getItem(STORAGE)||(activeTemplate.id===DEFAULT_TEMPLATE_ID?localStorage.getItem(LEGACY_STORAGE):null);if(saved)state={...state,...JSON.parse(saved)}}catch{}
 state.templateId=activeTemplate.id;
+try{publishRecord=JSON.parse(localStorage.getItem(PUBLISH_STORAGE)||'{}')||{}}catch{publishRecord={}}
 if(state.edition===undefined||state.edition==='首届')state.edition=activeTemplate.defaults.edition;
 if(state.navigationUrl===undefined)state.navigationUrl=activeTemplate.defaults.navigationUrl;
 if(state.modules?.activities===undefined&&state.modules?.stage!==undefined){state.modules.activities=state.modules.stage;delete state.modules.stage}
@@ -164,6 +166,48 @@ state.guests=(state.guests||[]).map(g=>({id:g.id||uid('g'),guestType:g.guestType
 state.schedule=(state.schedule||[]).map(a=>{const next={id:a.id||uid('s'),day:a.day||'DAY 1',time:a.time||'',endTime:a.endTime||'',title:a.title||'',stage:a.stage||'',detail:a.detail||'',category:a.category||'',guestIds:Array.isArray(a.guestIds)?a.guestIds:[],participationId:a.participationId||'',registrationUrl:a.registrationUrl||'',...a};next.guestIds=Array.isArray(a.guestIds)?a.guestIds:[];next.participationId=a.participationId||'';delete next.locationId;return next});
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(t){toastEl.textContent=t;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),1400)}
+const publishDialog=$('#publishDialog'),publishSlug=$('#publishSlug'),publishPrimary=$('#publishPrimary'),publishStatus=$('#publishStatus'),publishResult=$('#publishResult'),publishUrl=$('#publishUrl');
+function syncPublishButton(){
+ const label=$('#publishBtnLabel');if(label)label.textContent=publishRecord?.siteId?'更新网站':'发布网站';
+}
+function savePublishRecord(next){
+ publishRecord={...publishRecord,...next};localStorage.setItem(PUBLISH_STORAGE,JSON.stringify(publishRecord));syncPublishButton();
+}
+function renderPublishDialog(){
+ const hasSite=!!publishRecord?.siteId,slug=cleanSlug(publishRecord?.slug||suggestSlug(state.eventName,state.date));
+ publishSlug.value=slug;publishSlug.readOnly=hasSite;
+ $('#publishHost').textContent='.onlyevent.cn';
+ publishPrimary.textContent=hasSite?'更新网站':'发布网站';
+ publishStatus.textContent=hasSite?'已发布，可将最新修改同步到线上网站。':'设置网站地址后即可发布。';
+ publishResult.hidden=!publishRecord?.url;
+ publishUrl.textContent=publishRecord?.url||'';
+ $('#publishOpen').disabled=!publishRecord?.url;$('#publishCopy').disabled=!publishRecord?.url;
+}
+function openPublishDialog(){
+ renderPublishDialog();publishDialog.showModal();if(!publishRecord?.siteId)setTimeout(()=>publishSlug.select(),0);
+}
+function setPublishBusy(busy,text=''){
+ publishPrimary.disabled=busy;$('#publishDownload').disabled=busy;publishSlug.disabled=busy||!!publishRecord?.siteId;
+ if(text)publishStatus.textContent=text;
+}
+async function publishGeneratedHtml(html){
+ const slug=cleanSlug(publishSlug.value);
+ if(!isValidSlug(slug)){setPublishBusy(false,'地址需为 3–63 位小写字母、数字或连字符。');publishSlug.focus();return}
+ setPublishBusy(true,publishRecord?.siteId?'正在更新网站…':'正在发布网站…');
+ try{
+   const payload={html,title:state.eventName||'OnlyEvent',slug,templateId:state.templateId||activeTemplate.id};
+   const result=publishRecord?.siteId
+     ?await updateSite({...payload,siteId:publishRecord.siteId,editToken:publishRecord.editToken})
+     :await createSite(payload);
+   if(!result.siteId)throw new Error('发布服务未返回站点 ID');
+   if(!publishRecord?.siteId&&!result.editToken)throw new Error('发布服务未返回编辑凭证');
+   savePublishRecord({siteId:result.siteId,editToken:result.editToken||publishRecord.editToken,slug:result.slug||slug,url:result.url||('https://'+slug+'.onlyevent.cn'),publishedAt:new Date().toISOString()});
+   renderPublishDialog();publishStatus.textContent='网站已上线';toast('网站已发布');
+ }catch(error){
+   publishStatus.textContent=error?.message||'发布失败，请稍后重试';
+ }finally{setPublishBusy(false)}
+}
+
 function syncStudioIdentity(){const t=document.querySelector('#workspaceTemplateName');if(t)t.textContent=activeTemplate.name.replace(/^\d+\s*·\s*/,'');const p=document.querySelector('#projectTemplateName');if(p)p.textContent=activeTemplate.name.replace(/^\d+\s*·\s*/,'');const e=document.querySelector('#projectEventName');if(e)e.textContent=state.eventName||'未命名活动'}
 function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));saveState.textContent='已保存'},180)}
 function checkpoint(){history.push(JSON.stringify(state));if(history.length>80)history.shift();future.length=0;syncHistory()}
@@ -675,7 +719,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.46" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.47" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -724,7 +768,7 @@ window.addEventListener('message',e=>{
    return
  }
 
- if(m.type==='OE_EXPORT_HTML_RESULT'){downloadPublishedHtml(m.html);return}
+ if(m.type==='OE_EXPORT_HTML_RESULT'){if(publishIntent==='download'){publishIntent='site';downloadPublishedHtml(m.html)}else publishGeneratedHtml(m.html);return}
 });
 function downloadPublishedHtml(html){
  const blob=new Blob([html],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
@@ -1356,5 +1400,12 @@ function reconcilePageAfterHistory(){
 }
 $('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
 $('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
-$('#publishBtn').onclick=()=>send({type:'OE_EXPORT_HTML'});
-syncStudioIdentity();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
+$('#publishBtn').onclick=openPublishDialog;
+$('#publishClose').onclick=()=>publishDialog.close();
+$('#publishCancel').onclick=()=>publishDialog.close();
+publishPrimary.onclick=()=>{publishIntent='site';send({type:'OE_EXPORT_HTML'})};
+$('#publishDownload').onclick=()=>{publishIntent='download';send({type:'OE_EXPORT_HTML'})};
+$('#publishOpen').onclick=()=>{if(publishRecord?.url)window.open(publishRecord.url,'_blank','noopener')};
+$('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navigator.clipboard.writeText(publishRecord.url);toast('链接已复制')}catch{toast('复制失败')}};
+publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});
+syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
