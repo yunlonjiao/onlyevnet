@@ -7,11 +7,13 @@ on:
       - 'preview/**'
     paths:
       - 'v8/**'
+      - 'admin/**'
       - 'quality/**'
       - '.github/workflows/onlyevent-quality.yml'
   pull_request:
     paths:
       - 'v8/**'
+      - 'admin/**'
       - 'quality/**'
       - '.github/workflows/onlyevent-quality.yml'
 
