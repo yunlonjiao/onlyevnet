@@ -1,5 +1,5 @@
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.52';
-import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.34.52';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.53';
+import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.34.53';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -26,6 +26,8 @@ try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&activeTem
 if(!hasSavedProject&&initialProjectName)state.eventName=initialProjectName;
 state.templateId=activeTemplate.id;
 state.projectId=projectId;
+if(!state.entryAnimation)state.entryAnimation=structuredClone(activeTemplate.defaults.entryAnimation||{enabled:true,showSkip:true,style:'ticket-tear',title:'',subtitle:'ADMIT ONE · OFFICIAL EVENT PASS',organizer:'ONLYEVENT',ticketLabel:'ENTRY PASS',serial:'OE-001',accent:'#ff5f91',duration:1800});
+state.entryAnimation={...structuredClone(activeTemplate.defaults.entryAnimation||{}),...state.entryAnimation};
 try{publishRecord=JSON.parse(localStorage.getItem(PUBLISH_STORAGE)||'{}')||{}}catch{publishRecord={}}
 if(state.edition===undefined||state.edition==='首届')state.edition=activeTemplate.defaults.edition;
 if(state.navigationUrl===undefined)state.navigationUrl=activeTemplate.defaults.navigationUrl;
@@ -259,7 +261,7 @@ function contentThumb(collection,item){
 const moduleLabels={booths:'摊位',activities:'活动',guests:'嘉宾',guide:'观展指南'};
 function customPageKey(id){return 'custom-'+id}
 function customPageByKey(key){return (state.customPages||[]).find(p=>customPageKey(p.id)===key)}
-function pageLabel(key){return moduleLabels[key]||customPageByKey(key)?.title||(key==='home'?'首页':'页面')}
+function pageLabel(key){return moduleLabels[key]||customPageByKey(key)?.title||(key==='home'?'首页':key==='animation'?'动画页面':'页面')}
 function customPageIndex(id){return (state.customPages||[]).findIndex(p=>String(p.id)===String(id))}
 
 const contentManagerMeta={
@@ -433,6 +435,7 @@ function buildCustomPageStarterItems(presetKey){
  return rows.map(([title,meta,text])=>({id:uid('ci'),title,meta,text,image:'',url:''}));
 }
 const PAGE_CONTENT_CONFIG={
+ animation:[{tool:'entryAnimation',label:'入场动画'}],
  home:[
    {tool:'basic',label:'基本信息'},
    {tool:'hero',label:'主视觉'},
@@ -609,9 +612,50 @@ function syncCanvasSelection(path){
  const hit=map.find(([re])=>re.test(path));
  if(hit){syncStudioPageUI(hit[1],{openContent:false});setPageContentActive({collection:hit[2]})}
 }
+function openEntryAnimationInspector(){
+ const a=state.entryAnimation||{};
+ const title=a.title||state.eventName||'';
+ setInspector('入场动画','票券撕开',
+   '<div class="entry-animation-inspector">'+
+   '<div class="entry-animation-summary"><span>ENTRY ANIMATION</span><b>机票 / 入场票撕票动画</b><p>访客打开网站时先看到活动票券，右侧票根撕开后进入首页。</p></div>'+
+   '<div class="item-fields">'+
+   '<label class="toggle-field"><span>启用入场动画</span><input type="checkbox" data-entry-field="enabled" '+(a.enabled!==false?'checked':'')+'></label>'+
+   '<label><span>票面活动名称</span><input data-entry-field="title" value="'+esc(a.title||'')+'" placeholder="'+esc(state.eventName||'活动名称')+'"></label>'+
+   '<label><span>票面副标题</span><input data-entry-field="subtitle" value="'+esc(a.subtitle||'')+'"></label>'+
+   '<label><span>主办方 / Issuer</span><input data-entry-field="organizer" value="'+esc(a.organizer||'')+'"></label>'+
+   '<label><span>票根标签</span><input data-entry-field="ticketLabel" value="'+esc(a.ticketLabel||'ENTRY PASS')+'"></label>'+
+   '<label><span>票号</span><input data-entry-field="serial" value="'+esc(a.serial||'OE-001')+'"></label>'+
+   '<label><span>票面强调色</span><input type="color" data-entry-field="accent" value="'+esc(a.accent||state.theme||'#ff5f91')+'"></label>'+
+   '<label class="toggle-field"><span>显示跳过按钮</span><input type="checkbox" data-entry-field="showSkip" '+(a.showSkip!==false?'checked':'')+'></label>'+
+   '</div>'+
+   '<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button><button type="button" id="resetEntryAnimation">恢复模板默认</button></div>'+
+   '<p class="inspector-note">活动名称留空时自动使用项目的漫展名称；日期和地点自动读取首页基本信息。</p>'+
+   '</div>');
+ inspector.querySelectorAll('[data-entry-field]').forEach(input=>{
+   const key=input.dataset.entryField;
+   input.addEventListener('change',e=>{
+     checkpoint();
+     const value=e.target.type==='checkbox'?e.target.checked:e.target.value;
+     state.entryAnimation??={};state.entryAnimation[key]=value;save();
+     send({type:'OE_REPLACE_STATE',state});
+     send({type:'OE_PREVIEW_ENTRY',state,play:false});
+   });
+   if(input.type!=='checkbox'&&input.type!=='color')input.addEventListener('input',e=>{
+     state.entryAnimation??={};state.entryAnimation[key]=e.target.value;save();
+     send({type:'OE_REPLACE_STATE',state});
+     send({type:'OE_PREVIEW_ENTRY',state,play:false});
+   });
+ });
+ $('#previewEntryAnimation')?.addEventListener('click',()=>send({type:'OE_PREVIEW_ENTRY',state,play:true}));
+ $('#resetEntryAnimation')?.addEventListener('click',()=>{
+   checkpoint();state.entryAnimation=structuredClone(activeTemplate.defaults.entryAnimation||{});save();
+   send({type:'OE_REPLACE_STATE',state});send({type:'OE_PREVIEW_ENTRY',state,play:false});openEntryAnimationInspector();
+ });
+}
 function openPageTool(tool){
  setPageContentActive({tool});
  const panel=$('#contentListPanel');if(panel)panel.innerHTML='';
+ if(tool==='entryAnimation'){openEntryAnimationInspector();return}
  if(tool==='basic'){openAddressInspector();return}
  if(tool==='hero'){openHeroTitleInspector();return}
  if(tool==='map'){openImageInspector('venueMap.image');return}
@@ -726,7 +770,13 @@ function syncStudioPageUI(page,{openContent=true}={}){
 }
 function setStudioPage(page,{openContent=true}={}){
  syncStudioPageUI(page,{openContent});
- send({type:'OE_SHOW_PAGE',page:currentPage});
+ if(currentPage==='animation'){
+   send({type:'OE_SHOW_PAGE',page:'home'});
+   send({type:'OE_PREVIEW_ENTRY',state,play:false});
+ }else{
+   send({type:'OE_HIDE_ENTRY_PREVIEW'});
+   send({type:'OE_SHOW_PAGE',page:currentPage});
+ }
 }
 function bindModuleControls(){
  document.querySelectorAll('[data-module]').forEach(input=>input.addEventListener('change',()=>{
@@ -736,7 +786,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.52" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.53" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -744,6 +794,7 @@ window.addEventListener('message',e=>{
  if(m.type==='OE_RENDER_ERROR'){toast(m.stage==='fallback'?'预览加载失败':'模块加载异常，已自动切换安全渲染');return}
  if(m.type==='OE_PAGE_NAVIGATED'){
    const page=String(m.page||'home');
+   if(currentPage==='animation')return;
    if(page===currentPage)return;
    setWorkspace('pages');syncStudioPageUI(page,{openContent:true});showInspectorEmpty();
    return
