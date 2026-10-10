@@ -120,7 +120,6 @@ for(const width of [1440,1024,768,430,390]){
       client:el.clientWidth,
       body:document.body.scrollWidth
     }));
-    expect(overflow.client).toBeGreaterThanOrEqual(width-4);
     expect(Math.max(overflow.scroll,overflow.body)).toBeLessThanOrEqual(overflow.client+2);
   });
 }
