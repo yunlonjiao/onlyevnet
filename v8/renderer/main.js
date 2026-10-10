@@ -170,7 +170,7 @@ window.addEventListener('message',e=>{
     runtime.initRuntime();
     router.showPage(router.getCurrentPage(),false);
   }
-  if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value)}
+  if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value);applyEntryState()}
   if(m.type==='OE_REPLACE_STATE'){mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);state=m.state||{};applyState(state);runtime.initRuntime()}
   if(m.type==='OE_SET_MODE'){
     fields.setMode(m.mode);
