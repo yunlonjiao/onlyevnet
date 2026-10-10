@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>OnlyEvent Studio</title>
-  <link rel="stylesheet" href="/admin/styles.css?v=1.0.2">
+  <link rel="stylesheet" href="/admin/styles.css?v=1.1.0">
 </head>
 <body>
   <header class="admin-topbar">
@@ -12,9 +12,116 @@
       <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
       <span class="brand-copy"><b>OnlyEvent <strong>Studio</strong></b><small>Organizer Platform</small></span>
     </a>
+    <div class="auth-account-actions" id="authAccountActions" hidden>
+      <span class="auth-user-dot"></span>
+      <div><small>当前主办方</small><b id="authCurrentUser">—</b></div>
+      <button id="authLogoutBtn" class="quiet" type="button">退出</button>
+    </div>
   </header>
 
-  <main class="admin-shell">
+
+  <main class="auth-shell" id="authShell">
+    <section class="auth-visual">
+      <span class="auth-eyebrow">ONLYEVENT ORGANIZER</span>
+      <h1>把活动网站<br><em>交给你自己。</em></h1>
+      <p>创建、编辑并发布 ONLY / 同好活动网站。注册只需要一个主办方名称，也可以绑定邮箱方便以后找回密码。</p>
+      <div class="auth-feature-row"><span>01 创建活动</span><span>02 编辑网站</span><span>03 一键发布</span></div>
+    </section>
+
+    <section class="auth-card" aria-live="polite">
+      <div class="auth-brand-mini"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span><b>OnlyEvent <strong>Studio</strong></b></div>
+
+      <div class="auth-primary-tabs">
+        <button class="active" type="button" data-auth-page="login">登录</button>
+        <button type="button" data-auth-page="register">注册</button>
+      </div>
+
+      <section class="auth-panel active" data-auth-panel="login">
+        <div class="auth-panel-head"><h2>欢迎回来</h2><p>使用主办方名称或邮箱登录。</p></div>
+        <form id="authLoginForm" class="auth-form">
+          <label><span>主办方名称 / 邮箱</span><input id="authLoginAccount" autocomplete="username" placeholder="例如：星尘ONLY执行委员会" required></label>
+          <label><span>密码</span><input id="authLoginPassword" type="password" autocomplete="current-password" placeholder="输入密码" required></label>
+          <div class="auth-form-meta"><label class="auth-check"><input id="authRemember" type="checkbox" checked><span>保持登录</span></label><button class="auth-text-btn" id="authForgotBtn" type="button">忘记密码？</button></div>
+          <button class="primary auth-submit" type="submit">登录</button>
+          <p class="auth-message" id="authLoginMessage"></p>
+        </form>
+      </section>
+
+      <section class="auth-panel" data-auth-panel="register" hidden>
+        <div class="auth-panel-head"><h2>创建主办方账号</h2><p>选择最适合你的注册方式。</p></div>
+        <div class="auth-method-tabs">
+          <button class="active" type="button" data-register-mode="quick"><b>快速注册</b><small>名称 + 密码</small></button>
+          <button type="button" data-register-mode="email"><b>邮箱注册</b><small>方便找回密码</small></button>
+        </div>
+
+        <form id="authQuickRegisterForm" class="auth-form" data-register-panel="quick">
+          <label><span>主办方名称</span><input id="authQuickName" maxlength="40" autocomplete="username" placeholder="作为以后登录账号" required></label>
+          <label><span>密码</span><input id="authQuickPassword" type="password" minlength="6" autocomplete="new-password" placeholder="至少 6 个字符" required></label>
+          <label><span>确认密码</span><input id="authQuickPassword2" type="password" minlength="6" autocomplete="new-password" placeholder="再次输入密码" required></label>
+          <button class="primary auth-submit" type="submit">创建账号</button>
+          <p class="auth-message" id="authQuickMessage"></p>
+        </form>
+
+        <form id="authEmailRegisterForm" class="auth-form" data-register-panel="email" hidden>
+          <label><span>主办方名称</span><input id="authEmailName" maxlength="40" placeholder="显示在后台中的名称" required></label>
+          <label><span>邮箱</span><input id="authEmailAddress" type="email" autocomplete="email" placeholder="name@example.com" required></label>
+          <label><span>密码</span><input id="authEmailPassword" type="password" minlength="6" autocomplete="new-password" placeholder="至少 6 个字符" required></label>
+          <label><span>确认密码</span><input id="authEmailPassword2" type="password" minlength="6" autocomplete="new-password" placeholder="再次输入密码" required></label>
+          <button class="primary auth-submit" type="submit">使用邮箱注册</button>
+          <p class="auth-message" id="authEmailMessage"></p>
+        </form>
+      </section>
+
+      <section class="auth-panel" data-auth-panel="recovery" hidden>
+        <button class="auth-back" id="authRecoveryBack" type="button">← 返回登录</button>
+        <div class="auth-panel-head"><h2>找回密码</h2><p>使用注册时保存的 6 位找回码，或者通过绑定邮箱重设。</p></div>
+        <div class="auth-method-tabs recovery-tabs">
+          <button class="active" type="button" data-recovery-mode="code"><b>6 位找回码</b><small>快速重设</small></button>
+          <button type="button" data-recovery-mode="email"><b>邮箱找回</b><small>发送重置邮件</small></button>
+        </div>
+
+        <form id="authCodeRecoveryForm" class="auth-form" data-recovery-panel="code">
+          <label><span>主办方名称</span><input id="authRecoveryName" autocomplete="username" placeholder="注册时填写的名称" required></label>
+          <label><span>6 位找回码</span><input id="authRecoveryCode" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="000000" required></label>
+          <label><span>新密码</span><input id="authRecoveryPassword" type="password" minlength="6" autocomplete="new-password" placeholder="设置新密码" required></label>
+          <label><span>确认新密码</span><input id="authRecoveryPassword2" type="password" minlength="6" autocomplete="new-password" placeholder="再次输入新密码" required></label>
+          <button class="primary auth-submit" type="submit">重设密码</button>
+          <p class="auth-message" id="authRecoveryMessage"></p>
+        </form>
+
+        <form id="authEmailRecoveryForm" class="auth-form" data-recovery-panel="email" hidden>
+          <label><span>注册邮箱</span><input id="authRecoveryEmail" type="email" autocomplete="email" placeholder="name@example.com" required></label>
+          <button class="primary auth-submit" type="submit">发送重置邮件</button>
+          <p class="auth-message" id="authRecoveryEmailMessage"></p>
+          <div class="auth-demo-mail" id="authDemoMail" hidden>
+            <span>模拟邮件</span><b>OnlyEvent 密码重置</b>
+            <p>正式上线后这里会由邮件中的安全链接完成。当前用于完整体验界面流程。</p>
+            <button id="authOpenDemoReset" class="quiet" type="button">模拟打开邮件中的重置链接 →</button>
+          </div>
+        </form>
+
+        <form id="authEmailResetForm" class="auth-form" hidden>
+          <div class="auth-reset-for"><span>正在为</span><b id="authResetEmailLabel">—</b><span>重设密码</span></div>
+          <label><span>新密码</span><input id="authEmailResetPassword" type="password" minlength="6" autocomplete="new-password" required></label>
+          <label><span>确认新密码</span><input id="authEmailResetPassword2" type="password" minlength="6" autocomplete="new-password" required></label>
+          <button class="primary auth-submit" type="submit">保存新密码</button>
+          <p class="auth-message" id="authEmailResetMessage"></p>
+        </form>
+      </section>
+
+      <section class="auth-panel recovery-success" id="authRecoveryCodeResult" hidden>
+        <span class="auth-success-icon">✓</span>
+        <div class="auth-panel-head"><h2>账号创建完成</h2><p>这是你的 6 位找回码。请截图、抄下来或保存到密码管理器。</p></div>
+        <div class="auth-code-display"><small>RECOVERY CODE</small><strong id="authRecoveryCodeValue">000000</strong></div>
+        <div class="auth-code-warning"><b>只显示这一次</b><span>忘记密码时，输入主办方名称和这 6 位数字即可设置新密码。</span></div>
+        <div class="auth-result-actions"><button id="authCopyRecoveryCode" class="quiet" type="button">复制找回码</button><button id="authEnterAdmin" class="primary" type="button">我已保存，进入后台</button></div>
+      </section>
+
+      <div class="auth-security-note"><span>🔒</span><p><b>模拟流程阶段</b><br>目前账号只保存在当前浏览器，用于把注册、登录和找回体验全部定稿；正式打包 Cloudflare 时再接服务端账号与数据库。</p></div>
+    </section>
+  </main>
+
+  <main class="admin-shell" id="adminShell" hidden>
     <aside class="admin-sidebar">
       <nav>
         <button class="active" data-admin-page="projects" type="button"><span>⌂</span><b>我的活动</b></button>
@@ -102,6 +209,6 @@
     </article>
   </template>
 
-  <script type="module" src="/admin/app.js?v=1.0.2"></script>
+  <script type="module" src="/admin/app.js?v=1.1.0"></script>
 </body>
 </html>
