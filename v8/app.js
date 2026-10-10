@@ -1,5 +1,5 @@
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.55';
-import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.34.55';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.56';
+import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.34.56';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -771,7 +771,7 @@ function setStudioPage(page,{openContent=true}={}){
  syncStudioPageUI(page,{openContent});
  if(currentPage==='animation'){
    send({type:'OE_SHOW_PAGE',page:'home'});
-   send({type:'OE_PREVIEW_ENTRY',state,play:true});
+   send({type:'OE_PREVIEW_ENTRY',state,play:false});
  }else{
    send({type:'OE_HIDE_ENTRY_PREVIEW'});
    send({type:'OE_SHOW_PAGE',page:currentPage});
@@ -785,7 +785,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.55" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.56" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1453,7 +1453,7 @@ function setPreview(next){
  const label=$('#previewLabel');if(label)label.textContent=preview?'退出预览':'预览';
  $('#previewBtn').classList.toggle('active',preview);
  send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});
- if(preview&&currentPage==='animation')send({type:'OE_PREVIEW_ENTRY',state,play:true});
+ if(preview&&currentPage==='animation')requestAnimationFrame(()=>send({type:'OE_PREVIEW_ENTRY',state,play:true}));
  toast(preview?'预览模式 · 页面交互已启用':'已返回编辑');
 }
 $('#previewBtn').onclick=()=>setPreview(!preview);
