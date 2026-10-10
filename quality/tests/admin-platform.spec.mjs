@@ -3,7 +3,7 @@ import {test,expect} from '@playwright/test';
 test.use({viewport:{width:1440,height:900}});
 
 async function signInSim(page,name='QA 主办方'){
-  await signInSim(page);
+  await page.goto('/admin/');
   await page.evaluate(({name})=>{
     const user={id:'qa-organizer',name,email:'',passwordHash:'qa',recoveryHash:'qa',authType:'quick',createdAt:new Date().toISOString()};
     localStorage.setItem('onlyevent-auth-sim-users-v1',JSON.stringify([user]));
