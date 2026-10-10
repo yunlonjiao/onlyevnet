@@ -59,6 +59,17 @@ export async function createSite({html,title,slug,templateId}){
   return normalizeResult(await readJson(response),{slug});
 }
 
+export async function deleteSite({siteId,editToken}){
+  if(!siteId)throw new Error('缺少已发布站点 ID');
+  if(!editToken)throw new Error('缺少站点编辑凭证，无法下线网站');
+  const response=await fetch(PUBLISHER_ORIGIN+'/api/sites/'+encodeURIComponent(siteId),{
+    method:'DELETE',
+    headers:jsonHeaders(editToken),
+    body:JSON.stringify({editToken})
+  });
+  return readJson(response);
+}
+
 export async function updateSite({siteId,editToken,html,title,slug,templateId}){
   if(!siteId)throw new Error('缺少已发布站点 ID');
   if(!editToken)throw new Error('缺少站点编辑凭证，请重新发布为新站点');
