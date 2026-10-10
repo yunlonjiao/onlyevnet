@@ -1,7 +1,9 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.34.45';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.34.46';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
-const STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
+const requestedTemplateId=new URLSearchParams(location.search).get('template')||DEFAULT_TEMPLATE_ID;
+const activeTemplate=getTemplate(requestedTemplateId);
+const STORAGE=`onlyevent-studio-v8:${activeTemplate.id}:iframe`,LEGACY_STORAGE='onlyevent-studio-v8:01:iframe',ORIGIN=location.origin;
 const GUIDE_OLD_PLACEHOLDER_TEXT={"traffic":"填写场馆地址、地铁 / 公交、自驾 / 网约车、入口位置。可以上传路线图或入口示意图。","admission":"填写入场时间、检票方式、排队、现场购票、二次入场、禁止夜排等说明。","facilities":"填写卫生间、更衣室、寄存、餐饮、医疗点、休息区、充电或无障碍信息。","cosplay":"填写更衣、摄影、道具尺寸、仿真武器、妆造和现场拍摄规则。","safety":"填写禁止携带物品、禁止行为、紧急情况处理和 Staff 联系方式。"};
 const CUSTOM_PAGE_LAYOUTS={
  custom:'gallery',
@@ -13,35 +15,36 @@ const CUSTOM_PAGE_LAYOUTS={
  comic:'reading',novel:'reading',
  gameDemo:'activity',tabletop:'activity',cardGame:'activity',support:'activity'
 };
-let state=structuredClone(template01.defaults),preview=false,history=[],future=[],saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home';
-try{const saved=localStorage.getItem(STORAGE);if(saved)state={...state,...JSON.parse(saved)}}catch{}
-if(state.edition===undefined||state.edition==='首届')state.edition=template01.defaults.edition;
-if(state.navigationUrl===undefined)state.navigationUrl=template01.defaults.navigationUrl;
+let state=structuredClone(activeTemplate.defaults),preview=false,history=[],future=[],saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home';
+try{const saved=localStorage.getItem(STORAGE)||(activeTemplate.id===DEFAULT_TEMPLATE_ID?localStorage.getItem(LEGACY_STORAGE):null);if(saved)state={...state,...JSON.parse(saved)}}catch{}
+state.templateId=activeTemplate.id;
+if(state.edition===undefined||state.edition==='首届')state.edition=activeTemplate.defaults.edition;
+if(state.navigationUrl===undefined)state.navigationUrl=activeTemplate.defaults.navigationUrl;
 if(state.modules?.activities===undefined&&state.modules?.stage!==undefined){state.modules.activities=state.modules.stage;delete state.modules.stage}
-if(!state.guide||!Array.isArray(state.guide.items))state.guide=structuredClone(template01.defaults.guide);
+if(!state.guide||!Array.isArray(state.guide.items))state.guide=structuredClone(activeTemplate.defaults.guide);
 const shouldSeedGuide=!state.guideSeedVersion;
 state.guide.items=(state.guide.items||[]).map((x,i)=>{
- const preset=x.preset||template01.defaults.guide.items[i]?.preset||'custom';
+ const preset=x.preset||activeTemplate.defaults.guide.items[i]?.preset||'custom';
  const defaultLabel={traffic:'ACCESS',admission:'ENTRY',facilities:'FACILITY',cosplay:'COSPLAY',safety:'SAFETY'}[preset]||'GUIDE';
  const item={image:'',label:defaultLabel,preset,...x};
  const oldText=GUIDE_OLD_PLACEHOLDER_TEXT[preset],currentText=String(item.text||'').trim();
  if(shouldSeedGuide&&(oldText&&currentText===oldText||!currentText)){
-   const example=template01.defaults.guide.items.find(row=>row.preset===preset)?.text||'';
+   const example=activeTemplate.defaults.guide.items.find(row=>row.preset===preset)?.text||'';
    if(example)item.text=example;
  }
  return item;
 });
 if(shouldSeedGuide)state.guideSeedVersion=1;
-if(!Array.isArray(state.tickets))state.tickets=structuredClone(template01.defaults.tickets);
-if(state.ticketUrl===undefined)state.ticketUrl=template01.defaults.ticketUrl;
-if(state.ticketLinkLabel===undefined)state.ticketLinkLabel=template01.defaults.ticketLinkLabel;
+if(!Array.isArray(state.tickets))state.tickets=structuredClone(activeTemplate.defaults.tickets);
+if(state.ticketUrl===undefined)state.ticketUrl=activeTemplate.defaults.ticketUrl;
+if(state.ticketLinkLabel===undefined)state.ticketLinkLabel=activeTemplate.defaults.ticketLinkLabel;
 if(!Array.isArray(state.ribbonItems)){
  const legacy=[state.ribbon1,state.ribbon2,state.ribbon3,state.ribbon4].map(x=>String(x||'').trim()).filter(Boolean);
- state.ribbonItems=(legacy.length?legacy:template01.defaults.ribbonItems.map(x=>x.text)).map((text,i)=>({id:'rb'+(i+1),text}));
+ state.ribbonItems=(legacy.length?legacy:activeTemplate.defaults.ribbonItems.map(x=>x.text)).map((text,i)=>({id:'rb'+(i+1),text}));
 }
 delete state.ribbon1;delete state.ribbon2;delete state.ribbon3;delete state.ribbon4;
 if(state.modules&&'passport' in state.modules)delete state.modules.passport;
-if(!Array.isArray(state.participation))state.participation=structuredClone(template01.defaults.participation);
+if(!Array.isArray(state.participation))state.participation=structuredClone(activeTemplate.defaults.participation);
 if(!Array.isArray(state.guests))state.guests=[];
 if(!state.guestSeedVersion){
  // New projects already inherit template defaults before saved state is merged.
@@ -51,7 +54,7 @@ if(!state.guestSeedVersion){
 if(!state.guestTypeVersion){
  const oldNames=['星野 澪','林 夏','KUROHA','Aoi'];
  const isOldSample=(state.guests||[]).length===4&&(state.guests||[]).every((g,i)=>g?.name===oldNames[i]&&!g?.guestType);
- if(isOldSample)state.guests=structuredClone(template01.defaults.guests||[]);
+ if(isOldSample)state.guests=structuredClone(activeTemplate.defaults.guests||[]);
  else state.guests=(state.guests||[]).map(g=>({guestType:g.guestType||'person',members:g.members||'',attendanceNote:g.attendanceNote||'',...g}));
  state.guestTypeVersion=1;
 }
@@ -63,7 +66,7 @@ state.guests=(state.guests||[]).map(g=>{
  delete next.socialLabel;delete next.socialUrl;
  return next;
 });
-if(!Array.isArray(state.customPages))state.customPages=structuredClone(template01.defaults.customPages||[]);
+if(!Array.isArray(state.customPages))state.customPages=structuredClone(activeTemplate.defaults.customPages||[]);
 state.customPages=(state.customPages||[]).map((p,i)=>{
  const legacyPreset={
    photoStudio:'custom',
@@ -86,8 +89,8 @@ state.customPages=(state.customPages||[]).map((p,i)=>{
    layout:p.layout||CUSTOM_PAGE_LAYOUTS[legacyPreset]||'gallery'
  };
 });
-if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
-if(!Array.isArray(state.venueMap.links))state.venueMap.links=structuredClone(template01.defaults.venueMap.links);
+if(!state.venueMap)state.venueMap=structuredClone(activeTemplate.defaults.venueMap);
+if(!Array.isArray(state.venueMap.links))state.venueMap.links=structuredClone(activeTemplate.defaults.venueMap.links);
 const FIRST_LEVEL_TARGETS=new Set(['booths','activities','guests','guide',...(state.customPages||[]).map(p=>'custom-'+p.id)]);
 state.venueMap.links=(state.venueMap.links||[]).map((link,i)=>{
  const legacy={participation:'activities','schedule-home':'activities','map-home':'booths','guide-home':'guide',freewalk:'activities',itasha:'activities'}[link.target];
@@ -145,13 +148,13 @@ if(!Array.isArray(state.featuredActivities)||state.featuredActivities.length!==3
 }
 state.modules??={};
 for(const k of ['booths','activities','guide','freewalk','itasha','ribbon','guests','community','sponsors']){
- if(state.modules[k]===undefined)state.modules[k]=template01.defaults.modules?.[k]!==false;
+ if(state.modules[k]===undefined)state.modules[k]=activeTemplate.defaults.modules?.[k]!==false;
 }
-if(!state.venueMap)state.venueMap=structuredClone(template01.defaults.venueMap);
-if(!Array.isArray(state.updates))state.updates=structuredClone(template01.defaults.updates);
+if(!state.venueMap)state.venueMap=structuredClone(activeTemplate.defaults.venueMap);
+if(!Array.isArray(state.updates))state.updates=structuredClone(activeTemplate.defaults.updates);
 state.updates=(state.updates||[]).map(item=>({...item,target:({passport:'activities','guide-home':'guide'}[item.target]||item.target||'top')}));
-if(!Array.isArray(state.socialLinks))state.socialLinks=structuredClone(template01.defaults.socialLinks);
-if(!Array.isArray(state.sponsors))state.sponsors=structuredClone(template01.defaults.sponsors);
+if(!Array.isArray(state.socialLinks))state.socialLinks=structuredClone(activeTemplate.defaults.socialLinks);
+if(!Array.isArray(state.sponsors))state.sponsors=structuredClone(activeTemplate.defaults.sponsors);
 if(state.sponsors.length===1){
  const x=state.sponsors[0]||{};
  if(String(x.name||'').trim()==='合作伙伴'&&String(x.level||'').trim()==='合作伙伴'&&!String(x.url||'').trim()&&!String(x.logo||'').trim())state.sponsors=[];
@@ -161,7 +164,8 @@ state.guests=(state.guests||[]).map(g=>({id:g.id||uid('g'),guestType:g.guestType
 state.schedule=(state.schedule||[]).map(a=>{const next={id:a.id||uid('s'),day:a.day||'DAY 1',time:a.time||'',endTime:a.endTime||'',title:a.title||'',stage:a.stage||'',detail:a.detail||'',category:a.category||'',guestIds:Array.isArray(a.guestIds)?a.guestIds:[],participationId:a.participationId||'',registrationUrl:a.registrationUrl||'',...a};next.guestIds=Array.isArray(a.guestIds)?a.guestIds:[];next.participationId=a.participationId||'';delete next.locationId;return next});
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(t){toastEl.textContent=t;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),1400)}
-function save(){saveState.textContent='保存中…';syncContentCounts();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));saveState.textContent='已保存'},180)}
+function syncStudioIdentity(){const t=document.querySelector('#workspaceTemplateName');if(t)t.textContent=activeTemplate.name.replace(/^\d+\s*·\s*/,'');const p=document.querySelector('#projectTemplateName');if(p)p.textContent=activeTemplate.name.replace(/^\d+\s*·\s*/,'');const e=document.querySelector('#projectEventName');if(e)e.textContent=state.eventName||'未命名活动'}
+function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));saveState.textContent='已保存'},180)}
 function checkpoint(){history.push(JSON.stringify(state));if(history.length>80)history.shift();future.length=0;syncHistory()}
 function syncHistory(){$('#undoBtn').disabled=!history.length;$('#redoBtn').disabled=!future.length}
 function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a.length-1;i++)o=o[/^\d+$/.test(a[i])?Number(a[i]):a[i]];const k=a.at(-1);o[/^\d+$/.test(k)?Number(k):k]=value;save()}
@@ -671,7 +675,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.45" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.34.46" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1353,4 +1357,4 @@ function reconcilePageAfterHistory(){
 $('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
 $('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
 $('#publishBtn').onclick=()=>send({type:'OE_EXPORT_HTML'});
-renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
+syncStudioIdentity();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');

@@ -1,28 +1,30 @@
 // @ts-check
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.34.45';
+import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.34.46';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.34.45';
+import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.34.46';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.34.45';
+import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.34.46';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.34.45';
+import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.34.46';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createCollections} from '/v8/renderer/collections.js?v=8.34.45';
+import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.34.46';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createParticipation} from '/v8/renderer/participation.js?v=8.34.45';
+import {createCollections} from '/v8/renderer/collections.js?v=8.34.46';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRouter} from '/v8/renderer/router.js?v=8.34.45';
+import {createParticipation} from '/v8/renderer/participation.js?v=8.34.46';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createFields} from '/v8/renderer/fields.js?v=8.34.45';
+import {createRouter} from '/v8/renderer/router.js?v=8.34.46';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRuntime} from '/v8/renderer/runtime.js?v=8.34.45';
+import {createFields} from '/v8/renderer/fields.js?v=8.34.46';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.34.45';
+import {createRuntime} from '/v8/renderer/runtime.js?v=8.34.46';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.34.45';
+import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.34.46';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {validateRendererContext} from '/v8/renderer/context.js?v=8.34.45';
+import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.34.46';
+// @ts-ignore -- browser cache-busted absolute ESM URL
+import {validateRendererContext} from '/v8/renderer/context.js?v=8.34.46';
 
 const ORIGIN=location.origin;
 let state={},mode='edit';
@@ -32,12 +34,19 @@ runtimeWindow.__oeRenderLoadId=(runtimeWindow.__oeRenderLoadId||0)+1;
 
 const runtimeStyle=document.createElement('style');
 runtimeStyle.dataset.oeRuntime='1';
-runtimeStyle.textContent=previewStyle+runtimeExtraStyle+activityLayoutFixStyle;
 document.head.appendChild(runtimeStyle);
-document.body.innerHTML=previewBody.replace('这不是后台功能，而是一种前台视觉表达。主办方只需要配置哪些企划需要展示，网站负责把它做得像活动场刊。','');
 
-const sponsorSection=$('.sponsors')?.closest('section');if(sponsorSection)sponsorSection.id='sponsors';
-$('.scroll-progress')?.remove();
+let currentTemplateId='',currentPreview=getTemplatePreview(DEFAULT_TEMPLATE_ID);
+function mountTemplate(templateId=DEFAULT_TEMPLATE_ID){
+  const next=getTemplatePreview(templateId);
+  if(currentTemplateId===next.id&&document.body.children.length)return;
+  currentTemplateId=next.id;currentPreview=next;
+  runtimeStyle.textContent=currentPreview.style+runtimeExtraStyle+activityLayoutFixStyle;
+  document.body.innerHTML=currentPreview.body.replace('这不是后台功能，而是一种前台视觉表达。主办方只需要配置哪些企划需要展示，网站负责把它做得像活动场刊。','');
+  const sponsorSection=$('.sponsors')?.closest('section');if(sponsorSection)sponsorSection.id='sponsors';
+  $('.scroll-progress')?.remove();
+}
+mountTemplate(DEFAULT_TEMPLATE_ID);
 
 const getDeep=path=>getByPath(state,path);
 const setDeep=(path,value)=>setByPath(state,path,value);
@@ -56,7 +65,7 @@ const participation=createParticipation({...rendererContext,send});
 const router=createRouter({...rendererContext,renderParticipation:participation.renderParticipation,onPageNavigate:page=>send({type:'OE_PAGE_NAVIGATED',page})});
 const fields=createFields({...rendererContext,setModeState:next=>{mode=next},setDeep,renderTickets:collections.renderTickets});
 const runtime=createRuntime(rendererContext);
-const buildStandaloneHtml=createStandaloneExporter({getState:()=>state,previewStyle,runtimeExtraStyle:runtimeExtraStyle+activityLayoutFixStyle,escapeHtml:esc});
+const buildStandaloneHtml=()=>createStandaloneExporter({getState:()=>state,previewStyle:currentPreview.style,runtimeExtraStyle:runtimeExtraStyle+activityLayoutFixStyle,escapeHtml:esc})();
 
 function applyState(next){
   state={...state,...next};
@@ -77,6 +86,7 @@ window.addEventListener('message',e=>{
   if(e.origin!==ORIGIN||e.source!==parent)return;
   const m=e.data||{};
   if(m.type==='OE_INIT_STATE'){
+    mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);
     router.setCurrentPage(m.page||'home');
     applyState(m.state||{});
     fields.setMode(m.mode||'edit');
@@ -84,7 +94,7 @@ window.addEventListener('message',e=>{
     router.showPage(router.getCurrentPage(),false);
   }
   if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value)}
-  if(m.type==='OE_REPLACE_STATE'){state=m.state||{};applyState(state);runtime.initRuntime()}
+  if(m.type==='OE_REPLACE_STATE'){mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);state=m.state||{};applyState(state);runtime.initRuntime()}
   if(m.type==='OE_SET_MODE'){
     fields.setMode(m.mode);
     collections.renderCollections();
