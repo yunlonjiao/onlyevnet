@@ -183,7 +183,6 @@ test('entry animation stays static until play and returns to static after playba
   await expect.poll(async()=>await frame.locator('#loader').getAttribute('class'),{timeout:5000}).toContain('hide');
   await expect(frame.locator('#loader')).toBeHidden();
   await page.locator('#previewBtn').click();
-  await page.locator('#previewBtn').click();
   await expect(frame.locator('#loader')).toBeVisible();
   await expect(frame.locator('#loader')).not.toHaveClass(/entry-playing|hide/);
   await frame.locator('.gate').click();
