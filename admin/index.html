@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>OnlyEvent Studio</title>
+  <link rel="stylesheet" href="/admin/styles.css?v=1.0.0">
+</head>
+<body>
+  <header class="admin-topbar">
+    <a class="brand-zone" href="/admin/" aria-label="OnlyEvent Studio 首页">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+      <span class="brand-copy"><b>OnlyEvent <strong>Studio</strong></b><small>Organizer Platform</small></span>
+    </a>
+    <div class="top-actions">
+      <button class="quiet" id="templateLibraryBtn" type="button">模板库</button>
+      <button class="primary" id="newProjectBtn" type="button"><span>＋</span> 新建活动</button>
+    </div>
+  </header>
+
+  <main class="admin-shell">
+    <aside class="admin-sidebar">
+      <nav>
+        <button class="active" data-admin-page="projects" type="button"><span>⌂</span><b>我的活动</b></button>
+        <button data-admin-page="templates" type="button"><span>◇</span><b>模板库</b></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <span>ONLYEVENT STUDIO</span>
+        <small>模板建站 · 发布游客网站</small>
+      </div>
+    </aside>
+
+    <section class="admin-content">
+      <div class="admin-page active" data-page-panel="projects">
+        <div class="page-head">
+          <div>
+            <span class="eyebrow">ORGANIZER WORKSPACE</span>
+            <h1>我的活动</h1>
+            <p>管理活动网站、继续编辑或发布最新版本。</p>
+          </div>
+          <button class="primary large" id="newProjectHeroBtn" type="button">新建活动 <span>↗</span></button>
+        </div>
+        <div class="project-toolbar">
+          <div class="project-stats"><b id="projectCount">0</b><span>个项目</span></div>
+          <label class="project-search"><span>⌕</span><input id="projectSearch" placeholder="搜索活动名称"></label>
+        </div>
+        <div class="project-grid" id="projectGrid"></div>
+        <div class="empty-projects" id="emptyProjects" hidden>
+          <div class="empty-orbit"><i></i><i></i></div>
+          <b>还没有活动项目</b>
+          <p>从模板开始创建第一个活动网站。</p>
+          <button class="primary" id="emptyCreateBtn" type="button">选择模板</button>
+        </div>
+      </div>
+
+      <div class="admin-page" data-page-panel="templates" hidden>
+        <div class="page-head compact">
+          <div>
+            <span class="eyebrow">TEMPLATE LIBRARY</span>
+            <h1>选择网站模板</h1>
+            <p>模板决定网站的视觉、布局与交互；活动内容仍由 OnlyEvent Studio 统一管理。</p>
+          </div>
+        </div>
+        <div class="template-filter-row">
+          <button class="active" type="button">全部</button>
+          <button type="button">ONLY / 同好活动</button>
+          <button type="button" disabled>综合漫展</button>
+          <button type="button" disabled>Live / 舞台</button>
+        </div>
+        <div class="template-grid" id="templateGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="create-dialog" id="createDialog">
+    <form method="dialog" class="create-shell" id="createForm">
+      <div class="dialog-head">
+        <div><span class="eyebrow">CREATE PROJECT</span><b>创建活动网站</b></div>
+        <button value="cancel" aria-label="关闭">×</button>
+      </div>
+      <div class="dialog-body">
+        <section class="selected-template" id="selectedTemplateCard"></section>
+        <label><span>活动名称</span><input id="createProjectName" maxlength="80" placeholder="例如：STARDUST ONLY 2026" required></label>
+        <div class="dialog-note">创建后会直接进入 OnlyEvent Studio。模板可以继续扩展，但项目内容独立保存。</div>
+      </div>
+      <div class="dialog-foot">
+        <button value="cancel" type="button" id="createCancel">取消</button>
+        <button class="primary" value="default" type="submit">使用此模板创建</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="projectCardTemplate">
+    <article class="project-card">
+      <div class="project-cover">
+        <div class="mini-site">
+          <span class="mini-nav"></span><span class="mini-title"></span><span class="mini-art"></span>
+        </div>
+        <span class="project-status"></span>
+      </div>
+      <div class="project-card-body">
+        <div class="project-card-title"><div><b></b><span></span></div><button type="button" class="project-menu" aria-label="项目菜单">•••</button></div>
+        <div class="project-meta-row"><span class="project-template"></span><span class="project-time"></span></div>
+        <div class="project-actions"><button class="edit-project" type="button">继续编辑</button><a class="open-site" target="_blank" rel="noopener" hidden>打开网站 ↗</a></div>
+      </div>
+    </article>
+  </template>
+
+  <script type="module" src="/admin/app.js?v=1.0.0"></script>
+</body>
+</html>
