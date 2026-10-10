@@ -1,4 +1,4 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.34.53';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.34.54';
 
 export const DEFAULT_TEMPLATE_ID='01-ip-only';
 
