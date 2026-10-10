@@ -17,6 +17,18 @@ export const template01 = {
     heroTitleColor:'#17151b',
     heroTitleAccentColor:'#ff5f91',
     tagline:'围绕单一作品 IP 的粉丝综合活动。主办方负责 KV、活动信息和内容；网站负责把摊位、嘉宾、舞台与地图组织成完整官网。',
+    entryAnimation:{
+      enabled:true,
+      showSkip:true,
+      style:'ticket-tear',
+      title:'',
+      subtitle:'ADMIT ONE · OFFICIAL EVENT PASS',
+      organizer:'ONLYEVENT',
+      ticketLabel:'ENTRY PASS',
+      serial:'OE-001',
+      accent:'#ff5f91',
+      duration:1800
+    },
     theme:'#ff5f91',
     sticker1:'主题活动 ✦',
     sticker2:'40+ 社团',
