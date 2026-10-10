@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>OnlyEvent Studio</title>
-  <link rel="stylesheet" href="/admin/styles.css?v=1.1.0">
+  <link rel="stylesheet" href="/admin/styles.css?v=1.1.1">
 </head>
 <body>
   <header class="admin-topbar">
@@ -20,11 +20,11 @@
   </header>
 
 
-  <main class="auth-shell" id="authShell">
+  <main class="auth-shell" id="authShell" hidden>
     <section class="auth-visual">
       <span class="auth-eyebrow">ONLYEVENT ORGANIZER</span>
       <h1>把活动网站<br><em>交给你自己。</em></h1>
-      <p>创建、编辑并发布 ONLY / 同好活动网站。注册只需要一个主办方名称，也可以绑定邮箱方便以后找回密码。</p>
+      <p>创建、编辑并发布 ONLY / 同好活动网站。</p>
       <div class="auth-feature-row"><span>01 创建活动</span><span>02 编辑网站</span><span>03 一键发布</span></div>
     </section>
 
@@ -116,8 +116,6 @@
         <div class="auth-code-warning"><b>只显示这一次</b><span>忘记密码时，输入主办方名称和这 6 位数字即可设置新密码。</span></div>
         <div class="auth-result-actions"><button id="authCopyRecoveryCode" class="quiet" type="button">复制找回码</button><button id="authEnterAdmin" class="primary" type="button">我已保存，进入后台</button></div>
       </section>
-
-      <div class="auth-security-note"><span>🔒</span><p><b>模拟流程阶段</b><br>目前账号只保存在当前浏览器，用于把注册、登录和找回体验全部定稿；正式打包 Cloudflare 时再接服务端账号与数据库。</p></div>
     </section>
   </main>
 
@@ -209,6 +207,6 @@
     </article>
   </template>
 
-  <script type="module" src="/admin/app.js?v=1.1.0"></script>
+  <script type="module" src="/admin/app.js?v=1.1.1"></script>
 </body>
 </html>
