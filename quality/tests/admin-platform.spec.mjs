@@ -23,7 +23,9 @@ test('creating from Template 01 opens a project-scoped Studio and returns to adm
   await expect(page).toHaveURL(/\/v8\/\?template=01-ip-only&project=/);
   await expect(page.frameLocator('#liveFrame').locator('.hero')).toBeVisible();
   await expect(page.locator('#projectEventName')).toHaveText('测试 ONLY 2027');
-  await expect(page.locator('#studioVersion')).toHaveText('v8.34.51');
+  await expect(page.locator('#studioVersion')).toHaveText('v8.34.52');
+  await expect(page.locator('#backAdminBtn')).toHaveText('← 返回主页');
+  await expect(page.locator('#adminHomeLink')).toHaveCount(0);
   await expect(page.locator('.studio-topbar > .brand-zone')).toHaveCount(1);
   await expect(page.locator('.studio-topbar > .top-actions')).toHaveCount(1);
   const shellBox=await page.locator('.studio-shell').boundingBox();
@@ -61,4 +63,25 @@ test('admin exposes explicit project deletion and published-site unpublish contr
 test('root sends organizers to the admin platform',async({page})=>{
   await page.goto('/');
   await expect(page).toHaveURL(/\/admin\/$/);
+});
+
+
+test('admin header has no duplicate template/create shortcuts and sidebar stays compact',async({page})=>{
+  await page.goto('/admin/');
+  await expect(page.locator('#templateLibraryBtn')).toHaveCount(0);
+  await expect(page.locator('#newProjectBtn')).toHaveCount(0);
+  const sidebar=await page.locator('.admin-sidebar').boundingBox();
+  expect(sidebar.width).toBeLessThan(190);
+});
+
+test('empty-project panel disappears when a project exists',async({page})=>{
+  await page.goto('/admin/');
+  await page.evaluate(()=>{
+    localStorage.setItem('onlyevent-admin-projects-v1',JSON.stringify([{
+      id:'one-project',name:'第一个活动',templateId:'01-ip-only',status:'draft',updatedAt:new Date().toISOString(),siteUrl:''
+    }]));
+  });
+  await page.reload();
+  await expect(page.locator('#projectGrid .project-card')).toHaveCount(1);
+  await expect(page.locator('#emptyProjects')).toBeHidden();
 });
