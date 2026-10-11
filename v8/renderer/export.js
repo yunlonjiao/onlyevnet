@@ -16,6 +16,13 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
     clone.querySelectorAll('[data-favorite-booth]').forEach(el=>{el.classList.remove('active');el.setAttribute('aria-pressed','false');el.textContent='♡ 收藏社团'});
     clone.querySelectorAll('[data-wishlist-product]').forEach(el=>{el.classList.remove('active');el.setAttribute('aria-pressed','false');el.textContent='☆ 心愿'});
     clone.querySelectorAll('[data-wishlist-count]').forEach(el=>el.textContent='0');
+    clone.querySelectorAll('img').forEach(img=>{
+      if(!img.hasAttribute('loading'))img.setAttribute('loading','lazy');
+      if(!img.hasAttribute('decoding'))img.setAttribute('decoding','async');
+      if(!img.hasAttribute('onerror'))img.setAttribute('onerror',"this.hidden=true;var p=this.parentElement;if(p)p.classList.add('image-failed')");
+    });
+    const eventStatus=['upcoming','live','ended'].includes(state.eventStatus)?state.eventStatus:'upcoming';
+    if(eventStatus==='ended')clone.querySelectorAll('.ticket-purchase-link,.nav>.wrap>.btn').forEach(el=>el.remove());
     const directory=clone.querySelector('#booths .booth-directory-rich');if(directory){directory.dataset.directoryView='booths';directory.dataset.directoryPage='1';directory.dataset.directorySaved='0';directory.querySelectorAll('[data-directory-view-btn]').forEach(x=>x.classList.toggle('active',x.dataset.directoryViewBtn==='booths'));directory.querySelector('[data-directory-saved]')?.classList.remove('active');directory.querySelectorAll('[data-directory-card]').forEach(x=>x.hidden=false);}
 
     const stateJson=JSON.stringify(state).replace(/</g,'\\u003c');
@@ -190,6 +197,23 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
 
     const entryEnabled=state.entryAnimation?.enabled!==false;
     const extra=runtimeExtraStyle+'.oe-page-hidden{display:none!important}'+(entryEnabled?'.loader{display:grid!important}':'.loader{display:none!important}')+'.special:after{display:none!important}.kv:after{display:none!important}.ticket-top{display:grid;grid-template-columns:minmax(0,1fr) 104px;gap:14px;align-items:start}.ticket-gift-image{width:104px;height:104px;padding:0;border:2px solid var(--ink);border-radius:14px;background:#fff;overflow:hidden;cursor:zoom-in;box-shadow:4px 4px 0 var(--ink)}.ticket-gift-image img{width:100%;height:100%;object-fit:cover;display:block}';
-    return '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(state.eventName||'OnlyEvent')+'</title><style>'+previewStyle+extra+'</style></head><body>'+clone.innerHTML+'<script>'+runtime+'<\\/script></body></html>';
+    const seo=state.seo||{};
+    const title=String(seo.pageTitle||state.eventName||'OnlyEvent').trim();
+    const description=String(seo.metaDescription||state.tagline||'').trim();
+    const canonical=String(seo.canonical||'').trim();
+    const ogTitle=String(seo.ogTitle||title).trim();
+    const ogDescription=String(seo.ogDescription||description).trim();
+    const ogImage=String(seo.ogImage||state.heroImage||'').trim();
+    const meta=[
+      '<title>'+esc(title)+'</title>',
+      description?'<meta name="description" content="'+esc(description)+'">':'',
+      canonical?'<link rel="canonical" href="'+esc(canonical)+'">':'',
+      '<meta property="og:type" content="website">',
+      '<meta property="og:title" content="'+esc(ogTitle)+'">',
+      ogDescription?'<meta property="og:description" content="'+esc(ogDescription)+'">':'',
+      ogImage?'<meta property="og:image" content="'+esc(ogImage)+'">':'',
+      canonical?'<meta property="og:url" content="'+esc(canonical)+'">':''
+    ].join('');
+    return '<!doctype html><html lang="zh-CN" class="event-status-'+eventStatus+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+meta+'<style>'+previewStyle+extra+'</style></head><body class="event-status-'+eventStatus+'">'+clone.innerHTML+'<script>'+runtime+'<\\/script></body></html>';
   }
 }
