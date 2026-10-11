@@ -67,6 +67,33 @@ const fields=createFields({...rendererContext,setModeState:next=>{mode=next},set
 const runtime=createRuntime(rendererContext);
 const buildStandaloneHtml=()=>createStandaloneExporter({getState:()=>state,previewStyle:currentPreview.style,runtimeExtraStyle:runtimeExtraStyle+activityLayoutFixStyle,escapeHtml:esc})();
 
+function applyLifecycleState(){
+  const status=['upcoming','live','ended'].includes(state.eventStatus)?state.eventStatus:'upcoming';
+  document.documentElement.classList.remove('event-status-upcoming','event-status-live','event-status-ended');
+  document.documentElement.classList.add('event-status-'+status);
+  const copy=$('.hero-copy');
+  if(copy){
+    let badge=copy.querySelector('.event-status-badge');
+    if(!badge){badge=document.createElement(status==='live'?'a':'span');badge.className='event-status-badge';copy.insertBefore(badge,copy.firstChild)}
+    if(status==='live'){
+      if(badge.tagName!=='A'){
+        const next=document.createElement('a');next.className='event-status-badge';badge.replaceWith(next);badge=next;
+      }
+      badge.href='#activities';badge.dataset.pageLink='activities';badge.dataset.targetMode='page';badge.textContent='活动进行中 · 查看当天日程';
+    }else{
+      if(badge.tagName!=='SPAN'){
+        const next=document.createElement('span');next.className='event-status-badge';badge.replaceWith(next);badge=next;
+      }
+      badge.textContent=status==='ended'?'活动已结束':'活动未开始';
+    }
+  }
+  const ended=status==='ended'&&mode!=='edit';
+  qa('.ticket-purchase-link,.nav>.wrap>.btn').forEach(el=>{
+    if(ended)el.setAttribute('hidden','');
+    else el.removeAttribute('hidden');
+  });
+}
+
 function applyEntryState(){
   const a=state.entryAnimation||{},loader=$('#loader');
   if(!loader)return;
@@ -147,6 +174,7 @@ function applyState(next){
   Object.keys(fields.fieldMap).forEach(k=>fields.applyField(k,state[k]));
   fields.extraStatePaths.forEach(k=>fields.applyField(k,state[k]));
   applyEntryState();
+  applyLifecycleState();
   collections.renderCollections();
   bindEntryTicket();
   fields.markEditable();
@@ -170,12 +198,13 @@ window.addEventListener('message',e=>{
     runtime.initRuntime();
     router.showPage(router.getCurrentPage(),false);
   }
-  if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value);applyEntryState()}
+  if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value);applyEntryState();if(m.path==='eventStatus')applyLifecycleState()}
   if(m.type==='OE_REPLACE_STATE'){mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);state=m.state||{};applyState(state);runtime.initRuntime()}
   if(m.type==='OE_SET_MODE'){
     fields.setMode(m.mode);
     if(m.mode==='preview'&&state.entryAnimation?.enabled!==false)previewEntry({play:false});
     else if(m.mode!=='preview')hideEntryPreview();
+    applyLifecycleState();
     collections.renderCollections();
     participation.renderParticipation();
     fields.markEditable();
