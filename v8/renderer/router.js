@@ -41,11 +41,11 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
       ['guide','guide','观展指南','查看指南 →','page'],
       ['map','map-home','场地图','查看场地 →','home']
     ].filter(x=>moduleOn(x[0]));
-    if(getState().eventStatus==='live'){
+    if(lifecycleStatus()==='live'){
       const order={activities:0,map:1,guide:2,booths:3,tickets:4};
       defs=defs.sort((a,b)=>(order[a[0]]??9)-(order[b[0]]??9));
     }
-    if(getState().eventStatus==='ended')defs=defs.filter(x=>x[0]!=='tickets');
+    if(lifecycleStatus()==='ended')defs=defs.filter(x=>x[0]!=='tickets');
     grid.innerHTML=defs.map((x,i)=>'<a class="quick-card reveal in" href="#'+x[1]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[1]+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
   }
   function renderCustomNav(){
