@@ -1,30 +1,30 @@
 // @ts-check
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.35.1';
+import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.36.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.35.1';
+import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.36.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.35.1';
+import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.36.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.35.1';
+import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.36.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.35.1';
+import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.36.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createCollections} from '/v8/renderer/collections.js?v=8.35.1';
+import {createCollections} from '/v8/renderer/collections.js?v=8.36.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createParticipation} from '/v8/renderer/participation.js?v=8.35.1';
+import {createParticipation} from '/v8/renderer/participation.js?v=8.36.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRouter} from '/v8/renderer/router.js?v=8.35.1';
+import {createRouter} from '/v8/renderer/router.js?v=8.36.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createFields} from '/v8/renderer/fields.js?v=8.35.1';
+import {createFields} from '/v8/renderer/fields.js?v=8.36.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRuntime} from '/v8/renderer/runtime.js?v=8.35.1';
+import {createRuntime} from '/v8/renderer/runtime.js?v=8.36.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.35.1';
+import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.36.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.35.1';
+import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.36.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {validateRendererContext} from '/v8/renderer/context.js?v=8.35.1';
+import {validateRendererContext} from '/v8/renderer/context.js?v=8.36.0';
 
 const ORIGIN=location.origin;
 let state={},mode='edit',entryPreviewTimer=0;
@@ -41,6 +41,8 @@ function mountTemplate(templateId=DEFAULT_TEMPLATE_ID){
   const next=getTemplatePreview(templateId);
   if(currentTemplateId===next.id&&document.body.children.length)return;
   currentTemplateId=next.id;currentPreview=next;
+  document.documentElement.dataset.oeTemplate=next.id;
+  document.body.dataset.oeTemplate=next.id;
   runtimeStyle.textContent=currentPreview.style+runtimeExtraStyle+activityLayoutFixStyle;
   document.body.innerHTML=currentPreview.body.replace('这不是后台功能，而是一种前台视觉表达。主办方只需要配置哪些企划需要展示，网站负责把它做得像活动场刊。','');
   const sponsorSection=$('.sponsors')?.closest('section');if(sponsorSection)sponsorSection.id='sponsors';
