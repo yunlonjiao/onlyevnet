@@ -99,13 +99,32 @@ test('updates handle zero items and very long titles',async({page})=>{
   await assertNoRealHorizontalScroll(frame);
 });
 
-test('zero sponsors hide sponsor section and populated sponsors render',async({page})=>{
+test('zero sponsors hide in visitor preview while populated sponsors render',async({page})=>{
   let frame=await loadWith(page,s=>{s.sponsors=[];s.modules.sponsors=true});
+  await page.locator('#previewBtn').click();
   await expect(frame.locator('#sponsors')).toHaveClass(/oe-page-hidden/);
 
   frame=await loadWith(page,s=>{s.modules.sponsors=true;s.sponsors=[{id:'sp1',name:'测试赞助商',level:'合作伙伴',url:'https://example.com',logo:''}]});
+  await page.locator('#previewBtn').click();
   await expect(frame.locator('#sponsors')).not.toHaveClass(/oe-page-hidden/);
   await expect(frame.locator('#sponsors .sponsor-card')).toHaveCount(1);
+});
+
+test('zero-content standalone modules disappear from visitor navigation but remain editable',async({page})=>{
+  const frame=await loadWith(page,s=>{
+    s.booths=[];s.guests=[];s.participation=[];s.schedule=[];
+    s.modules.booths=true;s.modules.guests=true;s.modules.activities=true;
+  });
+  await expect(page.locator('.page-nav [data-page="booths"]')).toBeVisible();
+  await expect(page.locator('.page-nav [data-page="guests"]')).toBeVisible();
+  await expect(page.locator('.page-nav [data-page="activities"]')).toBeVisible();
+
+  await page.locator('#previewBtn').click();
+  await expect(frame.locator('.quick-grid [data-page-link="booths"]')).toHaveCount(0);
+  await expect(frame.locator('.quick-grid [data-page-link="activities"]')).toHaveCount(0);
+  await expect(frame.locator('.nav [data-page-link="booths"]')).toBeHidden();
+  await expect(frame.locator('.nav [data-page-link="guests"]')).toBeHidden();
+  await expect(frame.locator('.nav [data-page-link="activities"]')).toBeHidden();
 });
 
 test('missing hero, guest, product and guide images keep usable fallback surfaces',async({page})=>{
