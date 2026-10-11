@@ -1,4 +1,6 @@
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
+  const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
+
   function enhanceImages(){
     qa('img').forEach(img=>{
       if(!img.hasAttribute('loading'))img.setAttribute('loading','lazy');
@@ -37,13 +39,13 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
   }
   function openGiftLightbox(src){if(!src)return;const dlg=ensureLightbox();dlg.querySelector('img').src=src;dlg.showModal()}
   function renderTickets(){
-    const box=$('#tickets .ticket-grid');if(!box)return;const state=getState();
+    const box=mount('tickets','#tickets .ticket-grid');if(!box)return;const state=getState();
     box.innerHTML=(state.tickets||[]).map((x,i)=>{
       const image=x.image?'<button class="ticket-gift-image" type="button" data-ticket-image="'+i+'" aria-label="查看赠品图片"><img src="'+esc(x.image)+'" alt="'+esc(x.name||'')+' 赠品"></button>':'';
       return '<article class="ticket cut-ticket reveal in" data-oe-item="tickets" data-oe-index="'+i+'"><div class="ticket-top"><div class="ticket-copy">'+field('tickets.'+i+'.name',x.name,'h3')+'<div class="price" data-oe-field="tickets.'+i+'.price" contenteditable="'+(getMode()==='edit')+'" spellcheck="false">'+esc(x.price)+'</div></div>'+image+'</div><div class="gift"><b>包含 / 特典</b>\n'+field('tickets.'+i+'.gift',x.gift,'span')+'</div>'+field('tickets.'+i+'.note',x.note||'','small')+'</article>';
     }).join('');
     const raw=String(state.ticketUrl||'').trim(),href=externalHref(raw),valid=!!href,label=String(state.ticketLinkLabel||'前往官方售票平台').trim()||'前往官方售票平台';
-    const ticketWrap=$('#tickets .ticket-actions');
+    const ticketWrap=mount('ticket-actions','#tickets .ticket-actions');
     if(ticketWrap){
       ticketWrap.innerHTML='<a class="btn ticket-purchase-link" data-ticket-settings href="'+(valid?esc(href):'#')+'" target="_blank" rel="noopener">'+esc(valid?label+' ↗':'设置购票平台链接')+'</a>';
       ticketWrap.hidden=!valid&&getMode()!=='edit';
@@ -57,7 +59,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
   }
 
   function renderHighlights(){
-    const box=$('#highlights .specials');if(!box)return;const state=getState();
+    const box=mount('highlights','#highlights .specials');if(!box)return;const state=getState();
     box.innerHTML=(state.highlights||[]).map((x,i)=>'<article class="special reveal in" data-oe-item="highlights" data-oe-index="'+i+'" style="--tone:'+esc(x.tone||'#ffe45c')+'">'+field('highlights.'+i+'.stamp',x.stamp||('STAMP '+String(i+1).padStart(2,'0')),'span','stamp')+field('highlights.'+i+'.title',x.title,'h3')+field('highlights.'+i+'.text',x.text,'p')+'</article>').join('');
   }
 
@@ -81,7 +83,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
         endTime:String(x.endTime||'').trim()
       };
     });
-    const detail=$('#activities .activity-detail-list');
+    const detail=mount('schedule','#activities .activity-detail-list');
     if(detail){
       const days=[...new Set(normalized.map(r=>r.day))];
       detail.innerHTML=normalized.map(({x,i,plan,day,area,endTime})=>{
@@ -103,7 +105,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
         e.preventDefault();e.stopPropagation();
         send?.({type:'OE_SELECT_ITEM',collection:'schedule',index:Number(row.dataset.oeIndex)});
       }));
-      const dayBar=$('#activities .activity-day-tabs');
+      const dayBar=mount('activity-days','#activities .activity-day-tabs');
       if(dayBar){
         dayBar.hidden=days.length<=1;
         dayBar.innerHTML=days.map((day,i)=>'<button type="button" data-activity-day="'+esc(day)+'" class="'+(i===0?'active':'')+'">'+esc(day)+'</button>').join('');
@@ -126,11 +128,11 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       return '<article class="guide-chapter guide-kind-'+esc(preset)+'" id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"><span class="guide-chapter-no">'+String(i+1).padStart(2,'0')+'</span><div class="guide-chapter-main"><div class="guide-chapter-head"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b><small>'+esc(x.label||kindLabel[preset]||'GUIDE')+'</small></div><div class="guide-body">'+field('guide.items.'+i+'.text',x.text||'','p')+'</div></div></article>';
     };
     const home=$('#guide-home .guide-home-grid');if(home)home.innerHTML=items.slice(0,homeCount).map((x,i)=>card(x,i,'home')).join('');
-    const detail=$('#guide .guide-detail-grid');if(detail)detail.innerHTML='<div class="guide-detail-content">'+items.map((x,i)=>card(x,i,'detail')).join('')+'</div>';
+    const detail=mount('guide-detail','#guide .guide-detail-grid');if(detail)detail.innerHTML='<div class="guide-detail-content">'+items.map((x,i)=>card(x,i,'detail')).join('')+'</div>';
   }
 
   function renderMap(){
-    const state=getState(),map=state.venueMap||{},box=$('#venueMap'),rail=$('.map-link-rail'),list=$('.map-link-list');if(!box)return;
+    const state=getState(),map=state.venueMap||{},box=mount('map','#venueMap'),rail=$('[data-oe-mount="map-rail"]')||$('.map-link-rail'),list=mount('map-links','.map-link-list');if(!box)return;
     box.dataset.oeImage='venueMap.image';box.classList.toggle('has-map',!!map.image);
     box.innerHTML=map.image?'<button class="map-image-view" type="button" data-product-lightbox="'+esc(map.image)+'" aria-label="查看场地图大图"><img src="'+esc(map.image)+'" alt="活动场地图"><span>查看大图 ↗</span></button>':'<div class="map-static-placeholder"><b>场地图</b><span>主办方暂未上传场地图</span></div>';
     const firstLevelPages=new Set(['booths','activities','guests','guide',...(state.customPages||[]).map(p=>'custom-'+p.id)]);
@@ -165,7 +167,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
     return String(value??'').normalize('NFKC').toLocaleLowerCase().replace(/\s+/g,' ').trim();
   }
   function renderBooths(){
-    const state=getState(),box=$('#booths .booth-directory-rich');if(!box)return;
+    const state=getState(),box=mount('booths','#booths .booth-directory-rich');if(!box)return;
     const previousView=box.dataset.directoryView==='products'?'products':'booths';
     const previousPage=box.dataset.directoryPage||'1';
     const previousSaved=box.dataset.directorySaved||'0';
@@ -347,7 +349,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
     return host?'https://www.google.com/s2/favicons?domain='+encodeURIComponent(host)+'&sz=64':'';
   }
   function renderGuests(){
-    const state=getState(),box=$('#guests .guest-grid');if(!box)return;
+    const state=getState(),box=mount('guests','#guests .guest-grid');if(!box)return;
     box.innerHTML=(state.guests||[]).map((g,i)=>{
       const plans=(state.participation||[]).filter(a=>(a.guestIds||[]).includes(g.id));
       const schedules=(state.schedule||[]).filter(a=>(a.guestIds||[]).includes(g.id));
@@ -379,14 +381,14 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
   }
 
   function renderUpdates(){
-    const state=getState(),box=$('#updates .updates-list');if(!box)return;
+    const state=getState(),box=mount('updates','#updates .updates-list');if(!box)return;
     const items=(state.updates||[]).slice(0,3);
     box.innerHTML=items.map((u,i)=>{const target=({passport:'activities','guide-home':'guide'}[u.target]||u.target||'top'),mode=['booths','activities','guests','guide'].includes(target)||String(target).startsWith('custom-')?'page':'home';return '<a class="update-item" href="#'+esc(target)+'" data-target-mode="'+mode+'" data-page-link="'+esc(target)+'" data-oe-item="updates" data-oe-index="'+i+'"><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<span>→</span></a>'}).join('');
     $('#updates')?.classList.toggle('oe-page-hidden',items.length===0);
   }
 
   function renderCommunity(){
-    const state=getState(),box=$('#community .community');if(!box)return;
+    const state=getState(),box=mount('community','#community .community');if(!box)return;
     box.innerHTML=(state.socialLinks||[]).map((x,i)=>{
       const img=x.image?'<button class="social-image" data-product-lightbox="'+esc(x.image)+'" data-oe-image="socialLinks.'+i+'.image" type="button"><img src="'+esc(x.image)+'" alt="'+esc(x.label||'社群')+'"></button>':(getMode()==='edit'?'<button class="social-image empty" data-oe-image="socialLinks.'+i+'.image" type="button">＋ 图片 / 二维码</button>':'');
       const href=externalHref(x.url),action=href?'<a class="social-action" href="'+esc(href)+'" target="_blank" rel="noopener">进入 ↗</a>':'<span class="social-action muted">未设置链接</span>';
@@ -395,7 +397,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
   }
 
   function renderSponsors(){
-    const state=getState(),box=$('.sponsors');if(!box)return;
+    const state=getState(),box=mount('sponsors','.sponsors');if(!box)return;
     const items=(state.sponsors||[]).map((item,index)=>({item,index})).filter(({item})=>String(item?.name||'').trim()||String(item?.logo||'').trim()||String(item?.url||'').trim());
     box.innerHTML=items.map(({item:x,index:i})=>{
       const logo=x.logo?'<button class="sponsor-logo" data-product-lightbox="'+esc(x.logo)+'" data-oe-image="sponsors.'+i+'.logo" type="button"><img src="'+esc(x.logo)+'" alt="'+esc(x.name||'赞助商')+'"></button>':(getMode()==='edit'?'<button class="sponsor-logo empty" data-oe-image="sponsors.'+i+'.logo" type="button">＋ Logo</button>':'');
