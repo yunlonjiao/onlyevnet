@@ -68,6 +68,10 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
       $('.hero')?.style.setProperty('--oe-hero-title-accent',String(value||'#ff5f91'));
       return;
     }
+    if(['heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile'].includes(path)){
+      applyHeroMedia();
+      return;
+    }
     if(path==='navigationUrl'){
       const a=$('.venue-nav');
       if(a)a.href=safeExternalUrl(value);
@@ -101,10 +105,6 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
       }
     }
 
-    if(['heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile'].includes(path)){
-      applyHeroMedia();
-      return;
-    }
     el.textContent=value??'';
 
     if(path.startsWith('ribbon')){
