@@ -1,22 +1,29 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.35.1';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.36.0';
+import {template02} from '/v8/templates/02-scrapbook.js?v=8.36.0';
+import {template03} from '/v8/templates/03-school-festival.js?v=8.36.0';
+import {template04} from '/v8/templates/04-museum-editorial.js?v=8.36.0';
+import {template05} from '/v8/templates/05-live-poster.js?v=8.36.0';
+import {template06} from '/v8/templates/06-expo-catalogue.js?v=8.36.0';
+import {template07} from '/v8/templates/07-immersive-character.js?v=8.36.0';
 
 export const DEFAULT_TEMPLATE_ID='01-ip-only';
 
-export const templateRegistry=Object.freeze({
-  [template01.id]:Object.freeze({
-    ...template01,
-    version:'1.0.0',
-    category:'单 IP / 同好活动',
-    description:'适合几百到几千人的单 IP、ONLY、同好主题活动。包含票务、摊位与制品、活动日程、嘉宾、观展指南、社群、赞助、自定义页面与移动端游客站。',
-    engine:'onlyevent-studio-v8',
-    renderer:'01-ip-only'
-  })
-});
+const all=[template01,template02,template03,template04,template05,template06,template07];
+
+export const templateRegistry=Object.freeze(Object.fromEntries(
+  all.map(template=>[template.id,Object.freeze({
+    ...template,
+    category:template.category||'单 IP / 同好活动',
+    description:template.description||'单 IP / ONLY 活动模板。',
+    engine:template.engine||'onlyevent-studio-v8',
+    renderer:template.renderer||template.id
+  })])
+));
 
 export function getTemplate(id=DEFAULT_TEMPLATE_ID){
   return templateRegistry[id]||templateRegistry[DEFAULT_TEMPLATE_ID];
 }
 
 export function listTemplates(){
-  return Object.values(templateRegistry);
+  return all.map(x=>templateRegistry[x.id]);
 }
