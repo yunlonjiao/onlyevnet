@@ -26,6 +26,12 @@ try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&activeTem
 if(!hasSavedProject&&initialProjectName)state.eventName=initialProjectName;
 state.templateId=activeTemplate.id;
 state.projectId=projectId;
+if(state.eventStatus===undefined)state.eventStatus=activeTemplate.defaults.eventStatus||'upcoming';
+if(state.heroImage===undefined)state.heroImage=activeTemplate.defaults.heroImage||'';
+if(state.mobileHeroImage===undefined)state.mobileHeroImage=activeTemplate.defaults.mobileHeroImage||'';
+if(state.heroFocalDesktop===undefined)state.heroFocalDesktop=activeTemplate.defaults.heroFocalDesktop||'50% 50%';
+if(state.heroFocalMobile===undefined)state.heroFocalMobile=activeTemplate.defaults.heroFocalMobile||'50% 50%';
+state.seo={...structuredClone(activeTemplate.defaults.seo||{}),...(state.seo||{})};
 if(!state.entryAnimation)state.entryAnimation=structuredClone(activeTemplate.defaults.entryAnimation||{enabled:true,showSkip:true,style:'ticket-tear',title:'',subtitle:'SPECIAL EVENT PASS',ticketLabel:'SPECIAL PASS',accent:'#ff5f91',duration:1800});
 state.entryAnimation={...structuredClone(activeTemplate.defaults.entryAnimation||{}),...state.entryAnimation};
 state.entryAnimation={
@@ -451,7 +457,9 @@ const PAGE_CONTENT_CONFIG={
  animation:[{tool:'entryAnimation',label:'入场动画'}],
  home:[
    {tool:'basic',label:'基本信息'},
+   {tool:'lifecycle',label:'活动状态'},
    {tool:'hero',label:'主视觉'},
+   {tool:'seo',label:'SEO / 分享'},
    {collection:'ribbonItems',label:'滚动公告'},
    {collection:'tickets',label:'票务'},
    {tool:'map',label:'场地图'},
@@ -607,7 +615,7 @@ function setPageContentActive({tool='',collection=''}={}){
  });
 }
 function syncCanvasSelection(path){
- if(/^heroTitle|^heroImage$|^tagline$|^sticker\d+$/.test(path)){syncStudioPageUI('home',{openContent:false});setPageContentActive({tool:'hero'});return}
+ if(/^heroTitle|^(?:heroImage|mobileHeroImage|heroFocalDesktop|heroFocalMobile)$|^tagline$|^sticker\d+$/.test(path)){syncStudioPageUI('home',{openContent:false});setPageContentActive({tool:'hero'});return}
  if(/^ribbonItems\./.test(path)){syncStudioPageUI('home',{openContent:false});setPageContentActive({collection:'ribbonItems'});return}
  if(path==='venueMap.image'){syncStudioPageUI('home',{openContent:false});setPageContentActive({tool:'map'});return}
  const map=[
@@ -695,7 +703,9 @@ function openPageTool(tool){
  const panel=$('#contentListPanel');if(panel)panel.innerHTML='';
  if(tool==='entryAnimation'){openEntryAnimationInspector();return}
  if(tool==='basic'){openAddressInspector();return}
+ if(tool==='lifecycle'){openLifecycleInspector();return}
  if(tool==='hero'){openHeroTitleInspector();return}
+ if(tool==='seo'){openSeoInspector();return}
  if(tool==='map'){openImageInspector('venueMap.image');return}
  if(tool==='freewalk'||tool==='itasha'){openOptionalPageInspector(tool);return}
  showInspectorEmpty();
@@ -898,15 +908,51 @@ function bindInspectorStateInput(input,path,{clean=false,number=false}={}){
 }
 
 function openHeroTitleInspector(){
- setInspector('主视觉','标题与样式','<div class="item-fields">'+
+ const desktop=String(state.heroImage||'').trim(),mobile=String(state.mobileHeroImage||'').trim();
+ const media=(path,label,src,emptyLabel)=>'<div class="item-media hero-media-field"><span>'+label+'</span><div class="item-media-row">'+(src?'<img src="'+esc(src)+'" alt="">':'<div class="item-media-empty">'+emptyLabel+'</div>')+'<div><button type="button" data-hero-image="'+path+'">选择 / 裁剪</button>'+(src?'<button type="button" class="ghost" data-hero-image-remove="'+path+'">移除</button>':'')+'</div></div></div>';
+ setInspector('主视觉','标题、图片与裁切','<div class="item-fields">'+
   '<label><span>第一行</span><input data-sync-path="heroTitle1" value="'+esc(state.heroTitle1||'')+'"></label>'+
   '<label><span>第二行</span><input data-sync-path="heroTitle2" value="'+esc(state.heroTitle2||'')+'"></label>'+
   '<label><span>第三行</span><input data-sync-path="heroTitle3" value="'+esc(state.heroTitle3||'')+'"></label>'+
   '<label><span>字号 · <b id="heroTitleSizeValue">'+Number(state.heroTitleSize||126)+' px</b></span><input type="range" min="56" max="160" step="1" data-sync-path="heroTitleSize" value="'+Number(state.heroTitleSize||126)+'"></label>'+
   '<label><span>主文字颜色</span><input type="color" data-sync-path="heroTitleColor" value="'+esc(state.heroTitleColor||'#17151b')+'"></label>'+
   '<label><span>强调色</span><input type="color" data-sync-path="heroTitleAccentColor" value="'+esc(state.heroTitleAccentColor||'#ff5f91')+'"></label>'+
- '</div>');
+ '</div>'+media('heroImage','桌面 KV',desktop,'DESKTOP')+media('mobileHeroImage','手机 KV（可选）',mobile,'MOBILE')+
+ '<div class="item-fields hero-focal-fields">'+
+  '<label><span>桌面焦点</span><input data-sync-path="heroFocalDesktop" value="'+esc(state.heroFocalDesktop||'50% 50%')+'" placeholder="50% 50%"></label>'+
+  '<label><span>手机焦点</span><input data-sync-path="heroFocalMobile" value="'+esc(state.heroFocalMobile||'50% 50%')+'" placeholder="50% 50%"></label>'+
+ '</div><p class="inspector-note">手机 KV 留空时自动使用桌面 KV。焦点格式示例：50% 30%，分别表示水平与垂直位置。</p>');
  inspector.querySelectorAll('[data-sync-path]').forEach(input=>bindInspectorStateInput(input,input.dataset.syncPath,{clean:input.type==='text',number:input.type==='range'}));
+ inspector.querySelectorAll('[data-hero-image]').forEach(btn=>btn.addEventListener('click',()=>{$('#imageInput').dataset.path=btn.dataset.heroImage;$('#imageInput').click()}));
+ inspector.querySelectorAll('[data-hero-image-remove]').forEach(btn=>btn.addEventListener('click',()=>{checkpoint();setDeep(btn.dataset.heroImageRemove,'');save();send({type:'OE_REPLACE_STATE',state});openHeroTitleInspector()}));
+}
+
+function openLifecycleInspector(){
+ const status=String(state.eventStatus||'upcoming');
+ setInspector('活动状态','生命周期','<div class="lifecycle-grid">'+
+   '<button type="button" data-event-status="upcoming" class="'+(status==='upcoming'?'active':'')+'"><b>未开始</b><small>突出购票与活动信息</small></button>'+
+   '<button type="button" data-event-status="live" class="'+(status==='live'?'active':'')+'"><b>进行中</b><small>突出当天日程与场地图</small></button>'+
+   '<button type="button" data-event-status="ended" class="'+(status==='ended'?'active':'')+'"><b>已结束</b><small>自动隐藏失效购票入口</small></button>'+
+ '</div><p class="inspector-note">活动状态会同步到游客网站。已结束时不再显示购票 CTA；进行中时首页会优先提示当天信息。</p>');
+ inspector.querySelectorAll('[data-event-status]').forEach(btn=>btn.addEventListener('click',()=>{
+   checkpoint();state.eventStatus=btn.dataset.eventStatus;save();send({type:'OE_REPLACE_STATE',state});openLifecycleInspector();
+ }));
+}
+
+function openSeoInspector(){
+ state.seo??={};
+ const seo=state.seo;
+ setInspector('SEO / 分享','搜索与社交卡片','<div class="item-fields">'+
+  '<label><span>页面标题</span><input data-seo-field="pageTitle" value="'+esc(seo.pageTitle||'')+'" placeholder="留空则使用活动名称"></label>'+
+  '<label><span>页面描述</span><textarea data-seo-field="metaDescription" rows="4" placeholder="用于搜索结果与分享摘要">'+esc(seo.metaDescription||'')+'</textarea></label>'+
+  '<label><span>标准网址 Canonical</span><input type="url" data-seo-field="canonical" value="'+esc(seo.canonical||'')+'" placeholder="https://example.onlyevent.cn/"></label>'+
+  '<label><span>分享标题</span><input data-seo-field="ogTitle" value="'+esc(seo.ogTitle||'')+'" placeholder="留空则使用页面标题"></label>'+
+  '<label><span>分享描述</span><textarea data-seo-field="ogDescription" rows="3" placeholder="留空则使用页面描述">'+esc(seo.ogDescription||'')+'</textarea></label>'+
+ '</div><div class="item-media"><span>分享封面</span><div class="item-media-row">'+(seo.ogImage?'<img src="'+esc(seo.ogImage)+'" alt="">':'<div class="item-media-empty">OG</div>')+'<div><button type="button" data-seo-image>选择 / 裁剪</button>'+(seo.ogImage?'<button type="button" class="ghost" data-seo-image-remove>移除</button>':'')+'</div></div></div>'+
+ '<p class="inspector-note">分享封面留空时正式导出会回退到活动 KV。SEO 信息会写入导出的游客 HTML。</p>');
+ inspector.querySelectorAll('[data-seo-field]').forEach(input=>bindInspectorStateInput(input,'seo.'+input.dataset.seoField,{clean:true}));
+ inspector.querySelector('[data-seo-image]')?.addEventListener('click',()=>{$('#imageInput').dataset.path='seo.ogImage';$('#imageInput').click()});
+ inspector.querySelector('[data-seo-image-remove]')?.addEventListener('click',()=>{checkpoint();state.seo.ogImage='';save();send({type:'OE_REPLACE_STATE',state});openSeoInspector()});
 }
 
 function openAddressInspector(){
@@ -936,7 +982,9 @@ function openFieldInspector(path){
  }
  if(path==='ticketUrl'||path==='ticketLinkLabel'){openTicketSettingsInspector();return}
  if(path==='edition'||path==='navigationUrl'){openAddressInspector();return}
- if(path.startsWith('heroTitle')){openHeroTitleInspector();return}
+ if(path==='eventStatus'){openLifecycleInspector();return}
+ if(path.startsWith('seo.')){openSeoInspector();return}
+ if(path.startsWith('heroTitle')||['heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile'].includes(path)){openHeroTitleInspector();return}
  const value=getDeep(path);
  setInspector('内容','编辑文字','<label>内容<textarea id="fieldInput" data-path="'+esc(path)+'">'+esc(value)+'</textarea></label>');
  const input=$('#fieldInput');let started=false;fitTextarea(input);
@@ -1288,7 +1336,9 @@ function mutateItem(collection,index,op){
  save();send({type:'OE_REPLACE_STATE',state});syncContentCounts();openCollectionManager(collection,index);openItemInspector(collection,index);
 }
 function imageSlotConfig(path){
- if(path==='heroImage')return {label:'主视觉 KV',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1400,height:1400,fixed:true};
+ if(path==='heroImage')return {label:'桌面主视觉 KV',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1400,height:1400,fixed:true};
+ if(path==='mobileHeroImage')return {label:'手机主视觉 KV',ratio:4/5,ratioLabel:'手机端独立主视觉 · 比例 4:5',width:1080,height:1350,fixed:true};
+ if(path==='seo.ogImage')return {label:'分享封面',ratio:1.91,ratioLabel:'社交分享推荐比例 1.91:1',width:1200,height:628,fixed:true};
  if(/^tickets\.\d+\.image$/.test(path))return {label:'票务赠品图',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:900,height:900,fixed:true};
  if(/^participation\.\d+\.image$/.test(path))return {label:'活动宣传图',ratio:16/9,ratioLabel:'裁剪框可移动 · 比例 16:9',width:1440,height:810,fixed:true};
  if(/^featuredActivities\.\d+\.image$/.test(path))return {label:'首页活动精选图片',ratio:16/9,ratioLabel:'裁剪框可移动 · 比例 16:9',width:1440,height:810,fixed:true};
