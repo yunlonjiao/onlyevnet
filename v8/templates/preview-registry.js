@@ -1,6 +1,6 @@
-import {previewStyle as ipOnlyStyle,previewBody as ipOnlyBody} from '/v8/templates/01-ip-only-preview.js?v=8.36.1';
-import {createVariantPreview} from '/v8/templates/ip-only-visual-variants.js?v=8.36.1';
-import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.36.1';
+import {previewStyle as ipOnlyStyle,previewBody as ipOnlyBody} from '/v8/templates/01-ip-only-preview.js?v=8.36.2';
+import {createVariantPreview} from '/v8/templates/ip-only-visual-variants.js?v=8.36.2';
+import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.36.2';
 
 const previews=Object.freeze({
   '01-ip-only':Object.freeze({id:'01-ip-only',style:ipOnlyStyle,body:ipOnlyBody}),
