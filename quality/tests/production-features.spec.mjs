@@ -65,7 +65,9 @@ test('lifecycle changes visitor emphasis and ended mode removes ticket CTA',asyn
   frame=await setState(page,s=>{s.eventStatus='ended';s.ticketUrl='https://example.com/tickets'});
   await expect(frame.locator('.event-status-badge')).toContainText('活动已结束');
   await page.locator('#previewBtn').click();
-  await expect(frame.locator('.ticket-purchase-link')).toBeHidden();
+  await expect(frame.locator('.ticket-purchase-link')).toHaveCount(2);
+  await expect(frame.locator('.ticket-purchase-link').first()).toBeHidden();
+  await expect(frame.locator('.ticket-purchase-link').nth(1)).toBeHidden();
   await expect(frame.locator('.nav>.wrap>.btn')).toBeHidden();
   await expect(frame.locator('.quick-grid [data-page-link="tickets"]')).toHaveCount(0);
 });
@@ -102,6 +104,7 @@ test('SEO and lifecycle are written into exported visitor HTML',async({page})=>{
     s.eventStatus='ended';
     s.ticketUrl='https://example.com/tickets';
     s.heroImage='https://example.com/kv.jpg';
+    s.guests=[{id:'seo-g1',guestType:'person',name:'SEO 嘉宾',role:'GUEST',members:'',attendanceNote:'',works:'',intro:'',image:'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="20"%3E%3C/svg%3E',socialLinks:[]}];
     s.seo={
       pageTitle:'自定义页面标题',
       metaDescription:'这是搜索摘要。',
