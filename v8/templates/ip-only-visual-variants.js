@@ -447,6 +447,48 @@ html[data-oe-template="07-immersive-character"] .imm-event-scroll{display:block!
 `
 };
 
+
+const entrySystems={
+'02-scrapbook':`
+html[data-oe-template="02-scrapbook"] .loader{background:#efe7d8;background-image:linear-gradient(#d9cdbc55 1px,transparent 1px),linear-gradient(90deg,#d9cdbc55 1px,transparent 1px);background-size:22px 22px}
+html[data-oe-template="02-scrapbook"] .gate{width:min(850px,88vw);grid-template-columns:1.2fr .8fr;transform:rotate(-1.2deg);box-shadow:18px 20px 0 #b9a58f;border-color:#5f534b;border-radius:3px;background:#fffaf0}
+html[data-oe-template="02-scrapbook"] .entry-photo{border:12px solid #fff;border-bottom-width:48px;box-shadow:0 8px 18px #0002;transform:rotate(-2deg)}
+html[data-oe-template="02-scrapbook"] .ticket-half.right{background:#dcecf0;border-left:1px dashed #8c7c6d}
+html[data-oe-template="02-scrapbook"] .entry-ticket-label{font-family:Georgia,serif;letter-spacing:.16em}.entry-ticket-title{font-family:Georgia,serif}
+html[data-oe-template="02-scrapbook"] .stub-barcode{opacity:.45}.skip{background:#d9ff46;color:#342d2f;border-color:#5f534b}
+`,
+'03-school-festival':`
+html[data-oe-template="03-school-festival"] .loader{background:#eaf5ff;background-image:radial-gradient(circle,#badcff 2px,transparent 2px);background-size:22px 22px}
+html[data-oe-template="03-school-festival"] .gate{border:4px solid #15304f;border-radius:24px;box-shadow:14px 14px 0 #ffe46b;background:#fff;overflow:hidden}
+html[data-oe-template="03-school-festival"] .ticket-half.right{background:#fff;border-left:4px solid #15304f}.entry-ticket-label{color:#2e8df5;font-weight:950}.entry-ticket-title{color:#15304f}.entry-ticket-meta>div{border:2px solid #15304f;border-radius:10px;background:#f3f9ff}.stub-barcode{background-color:#15304f}.skip{background:#2e8df5;color:#fff;border:3px solid #15304f;box-shadow:5px 5px 0 #15304f}
+`,
+'04-museum-editorial':`
+html[data-oe-template="04-museum-editorial"] .loader{background:#f7f5f0}
+html[data-oe-template="04-museum-editorial"] .gate{width:min(980px,88vw);border:1px solid #aaa397;border-radius:0;box-shadow:none;background:#f7f5f0;grid-template-columns:1.35fr .65fr}
+html[data-oe-template="04-museum-editorial"] .entry-photo{filter:saturate(.72);border-radius:0}.ticket-half.right{background:#f7f5f0;border-left:1px solid #aaa397}
+html[data-oe-template="04-museum-editorial"] .entry-ticket-label{font-family:Georgia,serif;font-weight:400;color:#7a7268;letter-spacing:.22em}.entry-ticket-title{font-family:Georgia,serif;font-weight:400;font-size:clamp(24px,4vw,44px)}
+html[data-oe-template="04-museum-editorial"] .entry-ticket-meta{border-top:1px solid #aaa397;border-bottom:1px solid #aaa397}.entry-ticket-meta>div{border:0;border-right:1px solid #aaa397;border-radius:0;background:transparent}.stub-barcode{opacity:.35}.skip{border:1px solid #191816;border-radius:0;background:transparent;color:#191816;box-shadow:none}
+`,
+'05-live-poster':`
+html[data-oe-template="05-live-poster"] .loader{background:radial-gradient(circle at 50% 30%,#31182a,#08090d 56%);color:#fff}
+html[data-oe-template="05-live-poster"] .gate{border:1px solid #555867;border-radius:0;background:#11131b;box-shadow:18px 18px 0 #ff3b74;transform:skewX(-2deg);color:#fff}
+html[data-oe-template="05-live-poster"] .entry-photo{border-radius:0;filter:saturate(1.25) contrast(1.08)}.ticket-half.right{background:#0e0f15;border-left:1px solid #555867}
+html[data-oe-template="05-live-poster"] .entry-ticket-label{color:#72f5dc;font-style:italic;font-weight:950}.entry-ticket-title{color:#fff;font-style:italic;text-transform:uppercase}.entry-ticket-meta>div{background:#171923;border-color:#444755;color:#fff;border-radius:0}.stub-barcode{filter:invert(1)}.skip{background:#72f5dc;color:#08090d;border:0;border-radius:0;box-shadow:6px 6px 0 #ff3b74}
+`,
+'06-expo-catalogue':`
+html[data-oe-template="06-expo-catalogue"] .loader{background:#deddd8}
+html[data-oe-template="06-expo-catalogue"] .gate{width:min(1040px,92vw);grid-template-columns:1.4fr .6fr;border:2px solid #101820;border-radius:0;box-shadow:none;background:#f3f2ee}
+html[data-oe-template="06-expo-catalogue"] .entry-photo{border-radius:0}.ticket-half.right{background:#f3f2ee;border-left:2px solid #101820}
+html[data-oe-template="06-expo-catalogue"] .entry-ticket-label{display:block;padding:8px;background:#ff5b35;color:#101820;font-weight:950}.entry-ticket-title{font-size:36px;text-transform:uppercase}.entry-ticket-meta{display:block;border-top:2px solid #101820}.entry-ticket-meta>div{display:grid;grid-template-columns:80px 1fr;padding:10px 0;border:0;border-bottom:1px solid #101820;border-radius:0;background:transparent}.stub-barcode{background-color:#101820}.skip{border:2px solid #101820;border-radius:0;background:#ffd94f;color:#101820;box-shadow:none}
+`,
+'07-immersive-character':`
+html[data-oe-template="07-immersive-character"] .loader{background:radial-gradient(circle at center,#1a3150,#080e18 70%);color:#f5efe3}
+html[data-oe-template="07-immersive-character"] .gate{width:min(860px,88vw);border:8px solid #6f4f34;border-radius:0;background:#e6d1aa;box-shadow:0 0 0 1px #d7b177,0 24px 80px #0008;color:#2d211a}
+html[data-oe-template="07-immersive-character"] .entry-photo{border-radius:0;clip-path:polygon(0 4%,96% 0,100% 96%,4% 100%)}.ticket-half.right{background:linear-gradient(180deg,#efe2c8,#e6d1aa);border-left:4px double #795e43}
+html[data-oe-template="07-immersive-character"] .entry-ticket-label{font-family:serif;color:#8f2f2f;letter-spacing:.3em}.entry-ticket-title{font-family:serif;letter-spacing:.08em}.entry-ticket-meta>div{background:transparent;border:1px solid #96795e;border-radius:0}.stub-barcode{opacity:.45}.skip{border:1px solid #d7b177;border-radius:0;background:#10182a;color:#f5efe3;box-shadow:none;font-family:serif;letter-spacing:.15em}
+`
+};
+
 export function createVariantPreview(id){
-  return {id,style:baseStyle+(variants[id]||'')+(structural[id]||'')+(independent[id]||'')+(componentSystems[id]||''),body:variantBodies[id]||''};
+  return {id,style:baseStyle+(variants[id]||'')+(structural[id]||'')+(independent[id]||'')+(componentSystems[id]||'')+(entrySystems[id]||''),body:variantBodies[id]||''};
 }
