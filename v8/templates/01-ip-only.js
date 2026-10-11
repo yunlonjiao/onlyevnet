@@ -21,7 +21,10 @@ export const template01 = {
   renderer:'01-ip-only',
   defaults:{
     eventName:'STARDUST ONLY 2026',
+    eventStatusMode:'auto',
     eventStatus:'upcoming',
+    eventStartDateTime:'2026-11-08T10:00',
+    eventEndDateTime:'2026-11-08T17:00',
     date:'2026.11.08',
     location:'杭州',
     edition:'杭州国际博览中心',
