@@ -57,6 +57,13 @@ function scrapbook(){
   mark(guide,'scrap-foldout-guide');
   qa(guide,'article').forEach((item,i)=>{mark(item,'scrap-guide-note');prependLabel(item,'scrap-guide-tab','NOTE '+String(i+1).padStart(2,'0'))});
 
+  const activities=document.querySelector('[data-oe-mount="activity-projects"]');
+  mark(activities,'scrap-activity-album');
+  qa(activities,'.activity-feature').forEach((item,i)=>{mark(item,'scrap-activity-page');prependLabel(item,'scrap-album-no','MEMORY '+String(i+1).padStart(2,'0'))});
+  const featured=document.querySelector('[data-oe-mount="featured-activities"]');
+  mark(featured,'scrap-featured-film');
+  qa(featured,'.featured-activity-card').forEach((item,i)=>{mark(item,'scrap-film-frame');prependLabel(item,'scrap-film-no','FRAME '+String(i+1).padStart(2,'0'))});
+  const updates=document.querySelector('[data-oe-mount="updates"]');mark(updates,'scrap-post-log');
   const community=document.querySelector('[data-oe-mount="community"]');
   mark(community,'scrap-contact-sheet');
   qa(community,'article').forEach((item,i)=>{mark(item,'scrap-contact-card');prependLabel(item,'scrap-contact-no','#'+String(i+1).padStart(2,'0'))});
@@ -71,6 +78,10 @@ function school(){
   qa(guests,'.guest-card').forEach((x,i)=>{mark(x,'school-profile');prependLabel(x,'school-profile-id','PROFILE '+String(i+1).padStart(2,'0'))});
   const schedule=document.querySelector('[data-oe-mount="schedule"]');mark(schedule,'school-timetable-board');
   qa(schedule,'.timetable-row').forEach(x=>mark(x,'school-period'));
+  const activities=document.querySelector('[data-oe-mount="activity-projects"]');mark(activities,'school-program-board');
+  qa(activities,'.activity-feature').forEach((x,i)=>{mark(x,'school-program-card');prependLabel(x,'school-card-no','PROGRAM '+String(i+1).padStart(2,'0'))});
+  const featured=document.querySelector('[data-oe-mount="featured-activities"]');mark(featured,'school-stage-cards');
+  qa(featured,'.featured-activity-card').forEach((x,i)=>{mark(x,'school-stage-card');prependLabel(x,'school-card-no','STAGE '+String(i+1).padStart(2,'0'))});
   const guide=document.querySelector('[data-oe-mount="guide-detail"]');mark(guide,'school-rulebook');
   qa(guide,'article').forEach((x,i)=>{mark(x,'school-rule');prependLabel(x,'school-rule-index','RULE '+String(i+1).padStart(2,'0'))});
 }
@@ -84,6 +95,10 @@ function museum(){
   qa(guests,'.guest-card').forEach((x,i)=>{mark(x,'museum-portrait');prependLabel(x,'museum-object-no','PORTRAIT '+String(i+1).padStart(2,'0'))});
   const schedule=document.querySelector('[data-oe-mount="schedule"]');mark(schedule,'museum-programme');
   qa(schedule,'.timetable-row').forEach((x,i)=>{mark(x,'museum-programme-row');prependLabel(x,'museum-object-no','PROGRAM '+String(i+1).padStart(2,'0'))});
+  const activities=document.querySelector('[data-oe-mount="activity-projects"]');mark(activities,'museum-exhibition-program');
+  qa(activities,'.activity-feature').forEach((x,i)=>{mark(x,'museum-program-object');prependLabel(x,'museum-object-no','EVENT '+String(i+1).padStart(2,'0'))});
+  const featured=document.querySelector('[data-oe-mount="featured-activities"]');mark(featured,'museum-feature-index');
+  qa(featured,'.featured-activity-card').forEach((x,i)=>{mark(x,'museum-feature-object');prependLabel(x,'museum-object-no','FEATURE '+String(i+1).padStart(2,'0'))});
   const guide=document.querySelector('[data-oe-mount="guide-detail"]');mark(guide,'museum-notes');
   qa(guide,'article').forEach((x,i)=>{mark(x,'museum-note');prependLabel(x,'museum-object-no','NOTE '+String(i+1).padStart(2,'0'))});
 }
@@ -97,6 +112,10 @@ function live(){
   qa(guests,'.guest-card').forEach((x,i)=>{mark(x,'live-performer');prependLabel(x,'live-card-index','ACT '+String(i+1).padStart(2,'0'))});
   const schedule=document.querySelector('[data-oe-mount="schedule"]');mark(schedule,'live-stage-board');
   qa(schedule,'.timetable-row').forEach((x,i)=>{mark(x,'live-slot');prependLabel(x,'live-card-index','STAGE '+String(i+1).padStart(2,'0'))});
+  const activities=document.querySelector('[data-oe-mount="activity-projects"]');mark(activities,'live-program-lineup');
+  qa(activities,'.activity-feature').forEach((x,i)=>{mark(x,'live-program-card');prependLabel(x,'live-card-index','PROGRAM '+String(i+1).padStart(2,'0'))});
+  const featured=document.querySelector('[data-oe-mount="featured-activities"]');mark(featured,'live-featured-lineup');
+  qa(featured,'.featured-activity-card').forEach((x,i)=>{mark(x,'live-featured-card');prependLabel(x,'live-card-index','LIVE '+String(i+1).padStart(2,'0'))});
   const guide=document.querySelector('[data-oe-mount="guide-detail"]');mark(guide,'live-venue-guide');
 }
 
@@ -109,6 +128,10 @@ function expo(){
   qa(guests,'.guest-card').forEach((x,i)=>{mark(x,'expo-guest-row');prependLabel(x,'expo-cell-code','G-'+String(i+1).padStart(3,'0'))});
   const schedule=document.querySelector('[data-oe-mount="schedule"]');mark(schedule,'expo-schedule-table');
   qa(schedule,'.timetable-row').forEach((x,i)=>{mark(x,'expo-schedule-row');prependLabel(x,'expo-cell-code','SC-'+String(i+1).padStart(2,'0'))});
+  const activities=document.querySelector('[data-oe-mount="activity-projects"]');mark(activities,'expo-program-table');
+  qa(activities,'.activity-feature').forEach((x,i)=>{mark(x,'expo-program-row');prependLabel(x,'expo-cell-code','EV-'+String(i+1).padStart(3,'0'))});
+  const featured=document.querySelector('[data-oe-mount="featured-activities"]');mark(featured,'expo-feature-table');
+  qa(featured,'.featured-activity-card').forEach((x,i)=>{mark(x,'expo-feature-row');prependLabel(x,'expo-cell-code','FT-'+String(i+1).padStart(3,'0'))});
   const guide=document.querySelector('[data-oe-mount="guide-detail"]');mark(guide,'expo-guide-table');
 }
 
@@ -121,6 +144,10 @@ function immersive(){
   qa(guests,'.guest-card').forEach((x,i)=>{mark(x,'imm-character');prependLabel(x,'imm-seal','人物 '+String(i+1).padStart(2,'0'))});
   const schedule=document.querySelector('[data-oe-mount="schedule"]');mark(schedule,'imm-chronicle');
   qa(schedule,'.timetable-row').forEach((x,i)=>{mark(x,'imm-chronicle-row');prependLabel(x,'imm-seal','刻 '+String(i+1).padStart(2,'0'))});
+  const activities=document.querySelector('[data-oe-mount="activity-projects"]');mark(activities,'imm-event-scroll');
+  qa(activities,'.activity-feature').forEach((x,i)=>{mark(x,'imm-event');prependLabel(x,'imm-seal','催 '+String(i+1).padStart(2,'0'))});
+  const featured=document.querySelector('[data-oe-mount="featured-activities"]');mark(featured,'imm-feature-scroll');
+  qa(featured,'.featured-activity-card').forEach((x,i)=>{mark(x,'imm-feature');prependLabel(x,'imm-seal','章 '+String(i+1).padStart(2,'0'))});
   const guide=document.querySelector('[data-oe-mount="guide-detail"]');mark(guide,'imm-rule-scroll');
   qa(guide,'article').forEach((x,i)=>{mark(x,'imm-rule');prependLabel(x,'imm-seal','案内 '+String(i+1).padStart(2,'0'))});
 }
