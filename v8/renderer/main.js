@@ -71,6 +71,17 @@ const fields=createFields({...rendererContext,setModeState:next=>{mode=next},set
 const runtime=createRuntime(rendererContext);
 const buildStandaloneHtml=()=>createStandaloneExporter({getState:()=>state,previewStyle:currentPreview.style,runtimeExtraStyle:runtimeExtraStyle+activityLayoutFixStyle,escapeHtml:esc})();
 
+let templateAdapterFrame=0;
+function refreshTemplateComponents(){
+  cancelAnimationFrame(templateAdapterFrame);
+  templateAdapterFrame=requestAnimationFrame(()=>applyTemplateComponentAdapters(currentTemplateId));
+}
+const templateComponentObserver=new MutationObserver(records=>{
+  if(records.some(record=>record.type==='childList'&&(record.addedNodes.length||record.removedNodes.length)))refreshTemplateComponents();
+});
+templateComponentObserver.observe(document.body,{childList:true,subtree:true});
+document.addEventListener('click',()=>refreshTemplateComponents(),true);
+
 function resolveLifecycleStatus(){
   if(state.eventStatusMode==='manual')return ['upcoming','live','ended'].includes(state.eventStatus)?state.eventStatus:'upcoming';
   const now=Date.now(),start=Date.parse(state.eventStartDateTime||''),end=Date.parse(state.eventEndDateTime||'');
