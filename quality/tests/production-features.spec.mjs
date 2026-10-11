@@ -55,14 +55,14 @@ test('mobile KV can differ from desktop KV and keeps independent focal point',as
 });
 
 test('lifecycle changes visitor emphasis and ended mode removes ticket CTA',async({page})=>{
-  let frame=await setState(page,s=>{s.eventStatus='live';s.ticketUrl='https://example.com/tickets'});
+  let frame=await setState(page,s=>{s.eventStatusMode='manual';s.eventStatus='live';s.ticketUrl='https://example.com/tickets'});
   await expect(frame.locator('.event-status-badge')).toContainText('活动进行中');
   await page.locator('#previewBtn').click();
   await frame.locator('.gate').click();
   await expect.poll(()=>frame.locator('#loader').evaluate(el=>el.classList.contains('hide')),{timeout:5000}).toBe(true);
   await expect(frame.locator('.quick-grid .quick-card').first()).toHaveAttribute('data-page-link','activities');
 
-  frame=await setState(page,s=>{s.eventStatus='ended';s.ticketUrl='https://example.com/tickets'});
+  frame=await setState(page,s=>{s.eventStatusMode='manual';s.eventStatus='ended';s.ticketUrl='https://example.com/tickets'});
   await expect(frame.locator('.event-status-badge')).toContainText('活动已结束');
   await page.locator('#previewBtn').click();
   await expect(frame.locator('.ticket-purchase-link')).toHaveCount(2);
@@ -101,6 +101,7 @@ test('SEO and lifecycle are written into exported visitor HTML',async({page})=>{
 
   await setState(page,s=>{
     s.eventName='SEO 测试活动';
+    s.eventStatusMode='manual';
     s.eventStatus='ended';
     s.ticketUrl='https://example.com/tickets';
     s.heroImage='https://example.com/kv.jpg';
