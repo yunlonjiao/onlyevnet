@@ -1570,3 +1570,24 @@ $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navi
 publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});
 if(projectId!=='default'&&!hasSavedProject){localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject()}
 syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
+
+/* v8.35.0 mobile Studio drawers */
+function closeMobileStudioPanels(){
+  document.body.classList.remove('mobile-sidebar-open','mobile-inspector-open');
+  const backdrop=$('#mobilePanelBackdrop');if(backdrop)backdrop.hidden=true;
+  $('#mobilePagesBtn')?.classList.remove('active');
+  $('#mobileInspectorBtn')?.classList.remove('active');
+}
+function openMobileStudioPanel(kind){
+  const sidebar=kind==='sidebar';
+  document.body.classList.toggle('mobile-sidebar-open',sidebar);
+  document.body.classList.toggle('mobile-inspector-open',!sidebar);
+  const backdrop=$('#mobilePanelBackdrop');if(backdrop)backdrop.hidden=false;
+  $('#mobilePagesBtn')?.classList.toggle('active',sidebar);
+  $('#mobileInspectorBtn')?.classList.toggle('active',!sidebar);
+}
+$('#mobilePagesBtn')?.addEventListener('click',()=>document.body.classList.contains('mobile-sidebar-open')?closeMobileStudioPanels():openMobileStudioPanel('sidebar'));
+$('#mobileInspectorBtn')?.addEventListener('click',()=>document.body.classList.contains('mobile-inspector-open')?closeMobileStudioPanels():openMobileStudioPanel('inspector'));
+$('#mobilePanelBackdrop')?.addEventListener('click',closeMobileStudioPanels);
+window.addEventListener('resize',()=>{if(innerWidth>820)closeMobileStudioPanels()});
+document.querySelector('.page-nav')?.addEventListener('click',e=>{if(innerWidth<=820&&e.target.closest('[data-page]'))closeMobileStudioPanels()});
