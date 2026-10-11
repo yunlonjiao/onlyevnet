@@ -48,3 +48,66 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 .auth-security-note{display:flex;gap:8px;margin-top:15px;padding-top:13px;border-top:1px solid #ededf1}.auth-security-note>span{font-size:12px}.auth-security-note p{margin:0;color:#9797a0;font-size:7px;line-height:1.55}.auth-security-note b{color:#777781}
 @media(max-width:900px){.auth-shell{grid-template-columns:1fr;gap:20px;padding-top:28px}.auth-visual{padding:10px 6px}.auth-visual h1{font-size:52px}.auth-visual>p{max-width:700px}.auth-card{max-width:560px;width:100%;margin:0 auto}}
 @media(max-width:600px){.auth-shell{width:calc(100% - 24px);padding:18px 0 42px}.auth-visual{padding:6px 2px}.auth-visual h1{font-size:39px;margin-bottom:14px}.auth-visual>p{font-size:11px}.auth-feature-row{display:none}.auth-card{padding:15px;border-radius:16px}.auth-panel{margin-top:16px}.auth-panel-head h2{font-size:19px}.auth-result-actions{grid-template-columns:1fr}.auth-account-actions>div{display:none}}
+
+
+/* template library art-direction previews v1.2 */
+.template-preview-window .hero{position:relative}.template-preview-window .hero em{position:absolute;left:12px;bottom:7px;font-size:6px;font-style:normal;font-weight:900;letter-spacing:.14em;opacity:.55}
+.template-art-travel-scrapbook .template-preview{background:#efe7d8}
+.template-art-travel-scrapbook .template-preview:before{background:#f1a9b340;border-radius:8px;transform:rotate(10deg)}
+.template-art-travel-scrapbook .template-preview-window{border-color:#9c8c77;border-radius:3px;box-shadow:8px 10px 0 #c8b9a4}
+.template-art-travel-scrapbook .template-preview-window .hero{background:#fffaf0;transform:rotate(-1deg)}
+.template-art-travel-scrapbook .template-preview-window .hero b{font-family:Georgia,serif;color:#43383b}
+.template-art-travel-scrapbook .template-preview-window .art{border:7px solid #fff;border-radius:2px;background:linear-gradient(135deg,#f8b1ba,#8fc9d9);transform:rotate(3deg);box-shadow:0 5px 9px #765c4930}
+.template-art-travel-scrapbook .template-preview-window .rows i{border-radius:2px;background:#fffaf0;border-color:#d3c6b4}
+
+.template-art-school-festival .template-preview{background:#eaf5ff}
+.template-art-school-festival .template-preview:before{background:#ffe46b88}
+.template-art-school-festival .template-preview-window{border:3px solid #15304f;box-shadow:8px 8px 0 #2e8df5}
+.template-art-school-festival .template-preview-window .hero{background:linear-gradient(125deg,#fff 0 68%,#d8edff 68%)}
+.template-art-school-festival .template-preview-window .hero b{color:#15304f;font-weight:950}
+.template-art-school-festival .template-preview-window .art{border:3px solid #15304f;background:linear-gradient(135deg,#5eb6ff,#fff0a3)}
+.template-art-school-festival .template-preview-window .rows i{border:2px solid #15304f;background:#fff}
+
+.template-art-museum-editorial .template-preview{background:#efede7}
+.template-art-museum-editorial .template-preview:before{display:none}
+.template-art-museum-editorial .template-preview-window{border:1px solid #9e9789;border-radius:0;box-shadow:none;background:#f8f6f1}
+.template-art-museum-editorial .template-preview-window .bar{border-color:#bdb7aa}
+.template-art-museum-editorial .template-preview-window .hero{grid-template-columns:.68fr 1.32fr;background:#f8f6f1;gap:14px}
+.template-art-museum-editorial .template-preview-window .hero b{font-family:Georgia,serif;font-weight:400;font-size:22px}
+.template-art-museum-editorial .template-preview-window .art{border:0;border-radius:0;background:linear-gradient(135deg,#c7b9a7,#6b6258)}
+.template-art-museum-editorial .template-preview-window .rows{gap:0}.template-art-museum-editorial .template-preview-window .rows i{border:0;border-right:1px solid #bdb7aa;border-radius:0;background:transparent}
+
+.template-art-live-poster .template-preview{background:#0b0c11}
+.template-art-live-poster .template-preview:before{background:#ff3b7470}
+.template-art-live-poster .template-preview-window{border:1px solid #565865;border-radius:0;box-shadow:10px 10px 0 #ff3b74;background:#11131b}
+.template-art-live-poster .template-preview-window .bar{border-color:#3b3d48}
+.template-art-live-poster .template-preview-window .hero{background:#11131b;color:#fff}
+.template-art-live-poster .template-preview-window .hero b{font-size:27px;font-style:italic;color:#fff}
+.template-art-live-poster .template-preview-window .art{border:0;border-radius:0;background:linear-gradient(135deg,#ff3b74,#72f5dc)}
+.template-art-live-poster .template-preview-window .hero em{color:#72f5dc}
+.template-art-live-poster .template-preview-window .rows i{background:#171923;border-color:#383a45;border-radius:0}
+
+.template-art-expo-catalogue .template-preview{background:#e8e7e2}
+.template-art-expo-catalogue .template-preview:before{background:#ff5b3545;border-radius:0}
+.template-art-expo-catalogue .template-preview-window{border:2px solid #101820;border-radius:1px;box-shadow:none}
+.template-art-expo-catalogue .template-preview-window .hero{background:linear-gradient(90deg,#f3f2ee 0 58%,#deddd8 58%);gap:0}
+.template-art-expo-catalogue .template-preview-window .hero b{font-weight:950;color:#101820}
+.template-art-expo-catalogue .template-preview-window .art{border:0;border-radius:0;background:linear-gradient(135deg,#ff5b35,#101820)}
+.template-art-expo-catalogue .template-preview-window .rows{gap:0;padding:0}.template-art-expo-catalogue .template-preview-window .rows i{height:56px;border:0;border-right:1px solid #99978f;border-radius:0;background:#f3f2ee}
+
+.template-art-immersive-character .template-preview{background:#131225}
+.template-art-immersive-character .template-preview:before{background:#7f6cff80;filter:blur(14px)}
+.template-art-immersive-character .template-preview-window{border:1px solid #55506e;border-radius:18px;box-shadow:0 12px 30px #7f6cff33;background:#0f0e1d}
+.template-art-immersive-character .template-preview-window .bar{border-color:#343146}
+.template-art-immersive-character .template-preview-window .hero{background:radial-gradient(circle at 78% 24%,#7f6cff88,transparent 38%),#131225;color:#fff}
+.template-art-immersive-character .template-preview-window .hero b{font-family:Georgia,serif;font-weight:500;color:#fff}
+.template-art-immersive-character .template-preview-window .art{border:1px solid #8179a1;border-radius:40% 5px 40% 5px;background:linear-gradient(135deg,#302c5a,#a08ef7)}
+.template-art-immersive-character .template-preview-window .hero em{color:#b7a7ff}
+.template-art-immersive-character .template-preview-window .rows i{background:#17152b;border-color:#3d3856}
+
+.selected-template .thumb-travel-scrapbook{background:linear-gradient(135deg,#f8b1ba,#8fc9d9)}
+.selected-template .thumb-school-festival{background:linear-gradient(135deg,#5eb6ff,#ffe46b)}
+.selected-template .thumb-museum-editorial{background:linear-gradient(135deg,#d8d0c4,#776d61)}
+.selected-template .thumb-live-poster{background:linear-gradient(135deg,#ff3b74,#72f5dc)}
+.selected-template .thumb-expo-catalogue{background:linear-gradient(135deg,#ff5b35,#101820)}
+.selected-template .thumb-immersive-character{background:linear-gradient(135deg,#302c5a,#a08ef7)}
