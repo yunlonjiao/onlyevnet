@@ -1,5 +1,5 @@
-import {previewStyle as baseStyle} from '/v8/templates/01-ip-only-preview.js?v=8.36.1';
-import {variantBodies} from '/v8/templates/ip-only-variant-bodies.js?v=8.36.1';
+import {previewStyle as baseStyle} from '/v8/templates/01-ip-only-preview.js?v=8.36.2';
+import {variantBodies} from '/v8/templates/ip-only-variant-bodies.js?v=8.36.2';
 
 const variants={
 '02-scrapbook':`
