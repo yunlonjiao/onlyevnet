@@ -25,6 +25,7 @@ import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.36.2';
 import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.36.2';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {validateRendererContext} from '/v8/renderer/context.js?v=8.36.2';
+// @ts-ignore -- browser cache-busted absolute ESM URL
 import {applyTemplateComponentAdapters} from '/v8/renderer/template-component-adapters.js?v=8.36.3';
 
 const ORIGIN=location.origin;
