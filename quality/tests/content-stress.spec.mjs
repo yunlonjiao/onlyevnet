@@ -11,7 +11,7 @@ async function loadWith(page,mutator){
     const fn=(0,eval)('('+mutatorSource+')');
     fn(state);
     localStorage.setItem(storage,JSON.stringify(state));
-  },{storage,mutatorSource:mutator.toString()});
+  },{storage:STORAGE,mutatorSource:mutator.toString()});
   await page.reload();
   await expect(page.frameLocator('#liveFrame').locator('.hero')).toBeVisible();
   return page.frameLocator('#liveFrame');
