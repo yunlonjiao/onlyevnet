@@ -27,7 +27,7 @@ test('mobile Studio exposes sidebar and inspector as drawers',async({page})=>{
   await expect(page.locator('#studioSidebar')).toBeVisible();
   await expect(page.locator('#mobilePanelBackdrop')).toBeVisible();
 
-  await page.locator('#mobilePanelBackdrop').click();
+  await page.locator('#mobilePanelBackdrop').click({position:{x:410,y:120}});
   await expect(page.locator('#studioSidebar')).toBeHidden();
 
   await page.locator('#mobileInspectorBtn').click();
