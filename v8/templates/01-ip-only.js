@@ -6,6 +6,7 @@ export const template01 = {
   version:'1.0.0',
   defaults:{
     eventName:'STARDUST ONLY 2026',
+    eventStatus:'upcoming',
     date:'2026.11.08',
     location:'杭州',
     edition:'杭州国际博览中心',
@@ -16,6 +17,18 @@ export const template01 = {
     heroTitleSize:126,
     heroTitleColor:'#17151b',
     heroTitleAccentColor:'#ff5f91',
+    heroImage:'',
+    mobileHeroImage:'',
+    heroFocalDesktop:'50% 50%',
+    heroFocalMobile:'50% 50%',
+    seo:{
+      pageTitle:'',
+      metaDescription:'',
+      canonical:'',
+      ogTitle:'',
+      ogDescription:'',
+      ogImage:''
+    },
     tagline:'围绕单一作品 IP 的粉丝综合活动。主办方负责 KV、活动信息和内容；网站负责把摊位、嘉宾、舞台与地图组织成完整官网。',
     entryAnimation:{
       enabled:true,
