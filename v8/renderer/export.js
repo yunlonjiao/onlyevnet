@@ -21,7 +21,14 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       if(!img.hasAttribute('decoding'))img.setAttribute('decoding','async');
       if(!img.hasAttribute('onerror'))img.setAttribute('onerror',"this.hidden=true;var p=this.parentElement;if(p)p.classList.add('image-failed')");
     });
-    const eventStatus=['upcoming','live','ended'].includes(state.eventStatus)?state.eventStatus:'upcoming';
+    const lifecycleStatus=()=>{
+      if(state.eventStatusMode==='manual')return ['upcoming','live','ended'].includes(state.eventStatus)?state.eventStatus:'upcoming';
+      const now=Date.now(),start=Date.parse(state.eventStartDateTime||''),end=Date.parse(state.eventEndDateTime||'');
+      if(Number.isFinite(end)&&now>end)return 'ended';
+      if(Number.isFinite(start)&&now>=start&&(!Number.isFinite(end)||now<=end))return 'live';
+      return 'upcoming';
+    };
+    const eventStatus=lifecycleStatus();
     if(eventStatus==='ended')clone.querySelectorAll('.ticket-purchase-link,.nav>.wrap>.btn').forEach(el=>el.remove());
     const directory=clone.querySelector('#booths .booth-directory-rich');if(directory){directory.dataset.directoryView='booths';directory.dataset.directoryPage='1';directory.dataset.directorySaved='0';directory.querySelectorAll('[data-directory-view-btn]').forEach(x=>x.classList.toggle('active',x.dataset.directoryViewBtn==='booths'));directory.querySelector('[data-directory-saved]')?.classList.remove('active');directory.querySelectorAll('[data-directory-card]').forEach(x=>x.hidden=false);}
 
