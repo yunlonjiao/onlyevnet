@@ -472,8 +472,8 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
     };
     const on=k=>mods[k]!==false&&(editing||has(k));
     const link=(href,label,mode='home')=>'<a href="#'+href+'" data-target-mode="'+mode+'" data-page-link="'+href+'">'+esc(label)+'</a>';
-    const brand=$('.footer-brand');if(brand)brand.innerHTML='<h2>'+esc(state.eventName||'OnlyEvent')+'</h2><p>'+esc(state.date||'')+' · '+esc(state.edition||state.location||'')+'</p>';
-    const participate=$('.footer-participate');if(participate){
+    const brand=mount('footer-brand','.footer-brand');if(brand)brand.innerHTML='<h2>'+esc(state.eventName||'OnlyEvent')+'</h2><p>'+esc(state.date||'')+' · '+esc(state.edition||state.location||'')+'</p>';
+    const participate=mount('footer-participate','.footer-participate');if(participate){
       const links=[
         ...(on('booths')?[link('booths','摊位','page')]:[]),
         ...(on('activities')?[link('activities','活动','page')]:[]),
@@ -483,11 +483,11 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       participate.innerHTML='<b>参与</b><nav>'+links.join('')+'</nav>';
       participate.hidden=!links.length;
     }
-    const visit=$('.footer-visit');if(visit){
+    const visit=mount('footer-visit','.footer-visit');if(visit){
       const links=[link('tickets','票务'),link('map-home','场地图'),...(on('guide')?[link('guide','观展指南','page')]:[])];
       visit.innerHTML='<b>观展</b><nav>'+links.join('')+'</nav>';
     }
-    const social=$('.footer-social');if(social){
+    const social=mount('footer-social','.footer-social');if(social){
       const links=on('community')?(state.socialLinks||[]).map(x=>{const href=externalHref(x.url);return href?'<a href="'+esc(href)+'" target="_blank" rel="noopener">'+esc(x.label||'社群')+' ↗</a>':'<span>'+esc(x.label||'社群')+'</span>'}):[];
       social.innerHTML='<b>社群</b><nav>'+links.join('')+'</nav>';
       social.hidden=!links.length;
