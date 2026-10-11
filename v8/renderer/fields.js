@@ -13,11 +13,24 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     sticker3:()=>qa('.sticker .editable-copy')[2],
     heroImage:()=>$('.kv')
   };
-  const extraStatePaths=['heroTitleSize','heroTitleColor','heroTitleAccentColor','navigationUrl','ticketUrl','ticketLinkLabel'];
+  const extraStatePaths=['heroTitleSize','heroTitleColor','heroTitleAccentColor','heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile','navigationUrl','ticketUrl','ticketLinkLabel'];
 
   function safeExternalUrl(value){
     const v=String(value||'').trim();
     return /^https?:\/\//i.test(v)?v:'#';
+  }
+
+  function applyHeroMedia(){
+    const hero=$('.hero'),kv=$('.kv');if(!hero||!kv)return;
+    const state=getState?.()||{};
+    const desktop=String(state.heroImage||'').trim();
+    const mobile=String(state.mobileHeroImage||'').trim()||desktop;
+    const safeUrl=src=>src?'url("'+src.replace(/"/g,'%22')+'")':'none';
+    hero.style.setProperty('--oe-hero-image-desktop',safeUrl(desktop));
+    hero.style.setProperty('--oe-hero-image-mobile',safeUrl(mobile));
+    hero.style.setProperty('--oe-hero-focal-desktop',String(state.heroFocalDesktop||'50% 50%'));
+    hero.style.setProperty('--oe-hero-focal-mobile',String(state.heroFocalMobile||'50% 50%'));
+    kv.classList.toggle('empty',!desktop&&!mobile);
   }
 
   function applyField(path,value){
@@ -79,9 +92,8 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
       }
     }
 
-    if(path==='heroImage'){
-      const src=String(value||'').trim();
-      el.style.backgroundImage=src?'linear-gradient(180deg,transparent,rgba(0,0,0,.26)),url("'+src.replace(/"/g,'%22')+'")':'';
+    if(['heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile'].includes(path)){
+      applyHeroMedia();
       return;
     }
     el.textContent=value??'';
@@ -96,7 +108,7 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     Object.entries(fieldMap).forEach(([path,get])=>{
       const el=get();
       if(!el)return;
-      if(path==='heroImage'){
+      if(path==='heroImage'||path==='mobileHeroImage'){
         el.dataset.oeImage=path;
         return;
       }
