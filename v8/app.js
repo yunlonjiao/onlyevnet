@@ -26,7 +26,10 @@ try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&activeTem
 if(!hasSavedProject&&initialProjectName)state.eventName=initialProjectName;
 state.templateId=activeTemplate.id;
 state.projectId=projectId;
+if(state.eventStatusMode===undefined)state.eventStatusMode=activeTemplate.defaults.eventStatusMode||'auto';
 if(state.eventStatus===undefined)state.eventStatus=activeTemplate.defaults.eventStatus||'upcoming';
+if(state.eventStartDateTime===undefined)state.eventStartDateTime=activeTemplate.defaults.eventStartDateTime||'';
+if(state.eventEndDateTime===undefined)state.eventEndDateTime=activeTemplate.defaults.eventEndDateTime||'';
 if(state.heroImage===undefined)state.heroImage=activeTemplate.defaults.heroImage||'';
 if(state.mobileHeroImage===undefined)state.mobileHeroImage=activeTemplate.defaults.mobileHeroImage||'';
 if(state.heroFocalDesktop===undefined)state.heroFocalDesktop=activeTemplate.defaults.heroFocalDesktop||'50% 50%';
@@ -928,14 +931,18 @@ function openHeroTitleInspector(){
 }
 
 function openLifecycleInspector(){
- const status=String(state.eventStatus||'upcoming');
+ const mode=String(state.eventStatusMode||'auto'),status=String(state.eventStatus||'upcoming');
  setInspector('活动状态','生命周期','<div class="lifecycle-grid">'+
-   '<button type="button" data-event-status="upcoming" class="'+(status==='upcoming'?'active':'')+'"><b>未开始</b><small>突出购票与活动信息</small></button>'+
-   '<button type="button" data-event-status="live" class="'+(status==='live'?'active':'')+'"><b>进行中</b><small>突出当天日程与场地图</small></button>'+
-   '<button type="button" data-event-status="ended" class="'+(status==='ended'?'active':'')+'"><b>已结束</b><small>自动隐藏失效购票入口</small></button>'+
- '</div><p class="inspector-note">活动状态会同步到游客网站。已结束时不再显示购票 CTA；进行中时首页会优先提示当天信息。</p>');
+   '<button type="button" data-event-status-mode="auto" class="'+(mode==='auto'?'active':'')+'"><b>自动判断</b><small>根据活动开始 / 结束时间自动切换</small></button>'+
+   '<button type="button" data-event-status="upcoming" class="'+(mode==='manual'&&status==='upcoming'?'active':'')+'"><b>手动 · 未开始</b><small>强制显示未开始状态</small></button>'+
+   '<button type="button" data-event-status="live" class="'+(mode==='manual'&&status==='live'?'active':'')+'"><b>手动 · 进行中</b><small>强制显示进行中状态</small></button>'+
+   '<button type="button" data-event-status="ended" class="'+(mode==='manual'&&status==='ended'?'active':'')+'"><b>手动 · 已结束</b><small>强制隐藏失效购票入口</small></button>'+
+ '</div><p class="inspector-note">推荐使用自动判断。只在需要提前切换或特殊运营时使用手动状态。</p>');
+ inspector.querySelector('[data-event-status-mode="auto"]')?.addEventListener('click',()=>{
+   checkpoint();state.eventStatusMode='auto';save();send({type:'OE_REPLACE_STATE',state});openLifecycleInspector();
+ });
  inspector.querySelectorAll('[data-event-status]').forEach(btn=>btn.addEventListener('click',()=>{
-   checkpoint();state.eventStatus=btn.dataset.eventStatus;save();send({type:'OE_REPLACE_STATE',state});openLifecycleInspector();
+   checkpoint();state.eventStatusMode='manual';state.eventStatus=btn.dataset.eventStatus;save();send({type:'OE_REPLACE_STATE',state});openLifecycleInspector();
  }));
 }
 
@@ -956,10 +963,14 @@ function openSeoInspector(){
 }
 
 function openAddressInspector(){
- setInspector('基础信息','场馆与导航','<div class="item-fields">'+
+ setInspector('基础信息','时间、场馆与导航','<div class="item-fields">'+
+  '<label><span>活动开始时间</span><input type="datetime-local" data-sync-path="eventStartDateTime" value="'+esc(state.eventStartDateTime||'')+'"></label>'+
+  '<label><span>活动结束时间</span><input type="datetime-local" data-sync-path="eventEndDateTime" value="'+esc(state.eventEndDateTime||'')+'"></label>'+
   '<label><span>场馆地址</span><input data-sync-path="edition" value="'+esc(state.edition||'')+'"></label>'+
   '<label><span>导航链接</span><input type="url" data-sync-path="navigationUrl" value="'+esc(state.navigationUrl||'')+'" placeholder="https://"></label>'+
- '</div><div class="row"><button id="testNavigation" type="button">打开导航 ↗</button></div>');
+ '</div><div class="row"><button id="testNavigation" type="button">打开导航 ↗</button></div><p class="inspector-note">活动状态默认自动判断：开始前为未开始，活动时间内为进行中，超过结束时间后自动变为已结束。</p>');
+ bindInspectorStateInput(inspector.querySelector('[data-sync-path="eventStartDateTime"]'),'eventStartDateTime',{clean:true});
+ bindInspectorStateInput(inspector.querySelector('[data-sync-path="eventEndDateTime"]'),'eventEndDateTime',{clean:true});
  bindInspectorStateInput(inspector.querySelector('[data-sync-path="edition"]'),'edition',{clean:true});
  bindInspectorStateInput(inspector.querySelector('[data-sync-path="navigationUrl"]'),'navigationUrl',{clean:true});
  $('#testNavigation').onclick=()=>{const url=String(state.navigationUrl||'').trim();if(url.startsWith('https://')||url.startsWith('http://'))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
