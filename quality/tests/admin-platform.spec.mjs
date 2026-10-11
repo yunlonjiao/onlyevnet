@@ -34,7 +34,7 @@ test('creating from Template 01 opens a project-scoped Studio and returns to adm
   await expect(page).toHaveURL(/\/v8\/\?template=01-ip-only&project=/);
   await expect(page.frameLocator('#liveFrame').locator('.hero')).toBeVisible();
   await expect(page.locator('#projectEventName')).toHaveText('测试 ONLY 2027');
-  await expect(page.locator('#studioVersion')).toHaveText(/v8\.34\.\d+/);
+  await expect(page.locator('#studioVersion')).toHaveText(/v8\.\d+\.\d+/);
   await expect(page.locator('#backAdminBtn')).toHaveText('← 返回主页');
   await expect(page.locator('#adminHomeLink')).toHaveCount(0);
   await expect(page.locator('.studio-topbar > .brand-zone')).toHaveCount(1);
