@@ -1,4 +1,14 @@
 export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,onPageNavigate=()=>{}}){
+  const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
+  const lifecycleStatus=()=>{
+    const s=getState();
+    if(s.eventStatusMode==='manual')return ['upcoming','live','ended'].includes(s.eventStatus)?s.eventStatus:'upcoming';
+    const now=Date.now(),start=Date.parse(s.eventStartDateTime||''),end=Date.parse(s.eventEndDateTime||'');
+    if(Number.isFinite(end)&&now>end)return 'ended';
+    if(Number.isFinite(start)&&now>=start&&(!Number.isFinite(end)||now<=end))return 'live';
+    return 'upcoming';
+  };
+
   const baseStandalonePages=['booths','activities','guests','guide'];
   const fixedModules=new Set(['tickets','map']);
   const homeSections=[
@@ -33,7 +43,7 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
   function isHomeModule(id){return homeSections.some(([section])=>section===id)}
   function isStandalonePage(id){return standalonePages().includes(id)}
   function renderQuickAccess(){
-    const grid=$('.quick-grid');if(!grid)return;
+    const grid=mount('quick','.quick-grid');if(!grid)return;
     let defs=[
       ['tickets','tickets','票务与特典','查看票种 →','home'],
       ['booths','booths','摊位与制品','查看摊位 →','page'],
@@ -49,7 +59,7 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
     grid.innerHTML=defs.map((x,i)=>'<a class="quick-card reveal in" href="#'+x[1]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[1]+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
   }
   function renderCustomNav(){
-    const pages=getState().customPages||[],desktop=$('.nav .links'),mobile=$('.mobile-dock');
+    const pages=getState().customPages||[],desktop=mount('nav-links','.nav .links'),mobile=mount('mobile-nav','.mobile-dock');
     qa('[data-custom-nav]').forEach(x=>x.remove());
     pages.forEach(page=>{
       const key='custom-'+page.id,label=page.title||'专题页面';
