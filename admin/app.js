@@ -1,5 +1,5 @@
-import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.35.1';
-import {deleteSite} from '/v8/publisher.js?v=8.35.1';
+import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.36.0';
+import {deleteSite} from '/v8/publisher.js?v=8.36.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -86,9 +86,11 @@ migrateLegacyProject();projects=readProjects();
 function renderTemplates(){
   const templates=listTemplates(),grid=$('#templateGrid');grid.innerHTML='';
   templates.forEach((template,index)=>{
-    const card=document.createElement('article');card.className='template-card';
-    card.innerHTML='<div class="template-preview"><div class="template-preview-window"><span class="bar"></span><div class="hero"><b>STAR<br>BEAT<br>ONLY</b><span class="art"></span></div><div class="rows"><i></i><i></i><i></i></div></div></div>'+
-      '<div class="template-card-body"><span>TEMPLATE '+String(index+1).padStart(2,'0')+'</span><h2>'+template.label+'</h2><p>'+template.description+'</p><div class="template-card-footer"><span class="template-tag">'+template.category+'</span><button class="use-template" data-template="'+template.id+'" type="button">使用此模板</button></div></div>';
+    const card=document.createElement('article');
+    card.className='template-card template-art-'+String(template.artDirection||'default').replace(/[^a-z0-9-]/gi,'');
+    card.dataset.templateId=template.id;
+    card.innerHTML='<div class="template-preview"><div class="template-preview-window"><span class="bar"></span><div class="hero"><b>STAR<br>BEAT<br>ONLY</b><span class="art"></span><em>'+String(template.structureProfile||'portal').toUpperCase()+'</em></div><div class="rows"><i></i><i></i><i></i></div></div></div>'+
+      '<div class="template-card-body"><span>TEMPLATE '+String(index+1).padStart(2,'0')+'</span><h2>'+template.label+'</h2><p>'+template.description+'</p><div class="template-card-footer"><span class="template-tag">'+template.artDirection+'</span><button class="use-template" data-template="'+template.id+'" type="button">使用此模板</button></div></div>';
     grid.appendChild(card);
   });
   for(const [name,tag] of [['综合漫展','COMING SOON'],['Live / 舞台活动','COMING SOON']]){
@@ -137,7 +139,7 @@ function showPage(name){
 function openCreate(templateId=DEFAULT_TEMPLATE_ID){
   selectedTemplateId=templateId;
   const t=getTemplate(templateId);
-  $('#selectedTemplateCard').innerHTML='<span class="thumb"></span><div><b>'+t.label+'</b><span>'+t.category+' · '+t.version+'</span></div>';
+  $('#selectedTemplateCard').innerHTML='<span class="thumb thumb-'+String(t.artDirection||'default').replace(/[^a-z0-9-]/gi,'')+'"></span><div><b>'+t.label+'</b><span>'+t.artDirection+' · '+t.version+'</span></div>';
   $('#createProjectName').value='';
   $('#createDialog').showModal();
   setTimeout(()=>$('#createProjectName').focus(),0);
