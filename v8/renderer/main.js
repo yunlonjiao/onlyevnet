@@ -69,8 +69,15 @@ const fields=createFields({...rendererContext,setModeState:next=>{mode=next},set
 const runtime=createRuntime(rendererContext);
 const buildStandaloneHtml=()=>createStandaloneExporter({getState:()=>state,previewStyle:currentPreview.style,runtimeExtraStyle:runtimeExtraStyle+activityLayoutFixStyle,escapeHtml:esc})();
 
+function resolveLifecycleStatus(){
+  if(state.eventStatusMode==='manual')return ['upcoming','live','ended'].includes(state.eventStatus)?state.eventStatus:'upcoming';
+  const now=Date.now(),start=Date.parse(state.eventStartDateTime||''),end=Date.parse(state.eventEndDateTime||'');
+  if(Number.isFinite(end)&&now>end)return 'ended';
+  if(Number.isFinite(start)&&now>=start&&(!Number.isFinite(end)||now<=end))return 'live';
+  return 'upcoming';
+}
 function applyLifecycleState(){
-  const status=['upcoming','live','ended'].includes(state.eventStatus)?state.eventStatus:'upcoming';
+  const status=resolveLifecycleStatus();
   document.documentElement.classList.remove('event-status-upcoming','event-status-live','event-status-ended');
   document.documentElement.classList.add('event-status-'+status);
   const copy=$('.hero-copy');
