@@ -31,6 +31,15 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     hero.style.setProperty('--oe-hero-focal-desktop',String(state.heroFocalDesktop||'50% 50%'));
     hero.style.setProperty('--oe-hero-focal-mobile',String(state.heroFocalMobile||'50% 50%'));
     kv.classList.toggle('empty',!desktop&&!mobile);
+    kv.classList.remove('image-failed');
+    const active=(matchMedia('(max-width:560px)').matches?mobile:desktop)||mobile||desktop;
+    if(active){
+      kv.dataset.oeHeroCheck=active;
+      const probe=new Image();
+      probe.onload=()=>{if(kv.dataset.oeHeroCheck===active)kv.classList.remove('image-failed')};
+      probe.onerror=()=>{if(kv.dataset.oeHeroCheck===active)kv.classList.add('image-failed')};
+      probe.src=active;
+    }else delete kv.dataset.oeHeroCheck;
   }
 
   function applyField(path,value){
