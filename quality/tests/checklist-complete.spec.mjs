@@ -51,11 +51,12 @@ test('nav, CTA, tabs, search, map entry and external links are real interactions
 
   await page.locator('.page-nav [data-page="home"]').click();
   await expect(frame.locator('#map-home [data-page-link="booths"]').first()).toBeVisible();
+  await enterPreview(page,frame);
   await frame.locator('#map-home [data-page-link="booths"]').first().click();
   await expect(frame.locator('#booths')).toBeVisible();
+  await frame.locator('#booths .section-back').click();
+  await expect(frame.locator('.hero')).toBeVisible();
 
-  await page.locator('.page-nav [data-page="home"]').click();
-  await enterPreview(page,frame);
   const ticket=frame.locator('a[href="https://example.com/tickets"]').first();
   await expect(ticket).toBeVisible();
   await expect(ticket).toHaveAttribute('target','_blank');
