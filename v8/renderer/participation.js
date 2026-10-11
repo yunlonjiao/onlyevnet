@@ -1,4 +1,5 @@
 export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send}){
+  const mount=(name,fallback)=>document.querySelector('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
   const externalHref=value=>{const raw=String(value||'').trim();if(!raw)return '';if(/^https?:\/\//i.test(raw))return raw;if(/^www\./i.test(raw)||/^[\w.-]+\.[a-z]{2,}(?:[\/:?#]|$)/i.test(raw))return 'https://'+raw;return ''};
 
   const field=(path,value,tag='span',cls='')=>'<'+tag+' class="'+cls+'" data-oe-field="'+esc(path)+'" contenteditable="'+(getMode()==='edit'?'true':'false')+'">'+esc(value??'')+'</'+tag+'>';
@@ -10,7 +11,7 @@ export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send})
   function renderParticipation(){
     const state=getState(),items=state.participation||[],schedule=state.schedule||[];
 
-    const home=$('#participation .featured-activity-grid');
+    const home=mount('featured-activities','#participation .featured-activity-grid');
     if(home){
       const slots=Array.isArray(state.featuredActivities)?state.featuredActivities.slice(0,3):[];
       const fallback=items.slice(0,3).map((x,i)=>({id:'fa'+(i+1),participationId:x.id}));
@@ -32,7 +33,7 @@ export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send})
       }).join('');
     }
 
-    const page=$('#activities .activity-project-list');
+    const page=mount('activity-projects','#activities .activity-project-list');
     if(page)page.innerHTML=items.map((x,i)=>{
       const type=x.activityType||'general';
       const guests=(x.guestIds||[]).map(id=>(state.guests||[]).find(g=>g.id===id)).filter(Boolean);
