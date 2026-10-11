@@ -29,6 +29,8 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
     const runtime=`(()=>{
       const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)],S=${stateJson};
       const mods=S.modules||{},standalone=["booths","activities","guests","guide",...(S.customPages||[]).map(p=>"custom-"+p.id)],fixed=new Set(["tickets","map"]);
+      const heroSrc=(matchMedia("(max-width:560px)").matches?(S.mobileHeroImage||S.heroImage):(S.heroImage||S.mobileHeroImage))||"";
+      if(heroSrc){const probe=new Image(),kv=$(".kv");probe.onload=()=>kv?.classList.remove("image-failed");probe.onerror=()=>kv?.classList.add("image-failed");probe.src=heroSrc;}
       const homeSections=[["tickets","tickets"],["map-home","map"],["participation","activities"],["schedule-home","activities"],["community","community"],["sponsors","sponsors"]];
       const hasContent=k=>k==="booths"?(S.booths||[]).length>0:k==="activities"?(S.participation||[]).length>0||(S.schedule||[]).length>0:k==="guests"?(S.guests||[]).length>0:k==="guide"?(S.guide?.items||[]).length>0:k==="community"?(S.socialLinks||[]).some(x=>String(x?.label||"").trim()||String(x?.note||"").trim()||String(x?.url||"").trim()||String(x?.image||"").trim()):k==="ribbon"?(S.ribbonItems||[]).some(x=>String(x?.text||"").trim()):k==="sponsors"?(S.sponsors||[]).some(x=>String(x?.name||"").trim()||String(x?.logo||"").trim()||String(x?.url||"").trim()):true;
       const on=k=>String(k).startsWith("custom-")?standalone.includes(k):fixed.has(k)?true:mods[k]!==false&&hasContent(k);
