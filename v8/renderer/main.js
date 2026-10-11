@@ -170,7 +170,7 @@ function previewEntry({play=false}={}){
   if(play){
     void loader.offsetWidth;
     loader.classList.add('entry-playing');
-    const delay=Math.max(1100,Number(state.entryAnimation?.duration)||1800);
+    const delay=Math.max(900,Math.min(3200,Number(state.entryAnimation?.duration)||1800));
     entryPreviewTimer=setTimeout(()=>{
       loader.classList.remove('entry-playing');
       loader.classList.add('hide');
