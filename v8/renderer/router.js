@@ -34,13 +34,18 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
   function isStandalonePage(id){return standalonePages().includes(id)}
   function renderQuickAccess(){
     const grid=$('.quick-grid');if(!grid)return;
-    const defs=[
+    let defs=[
       ['tickets','tickets','票务与特典','查看票种 →','home'],
       ['booths','booths','摊位与制品','查看摊位 →','page'],
       ['activities','activities','活动','查看活动 →','page'],
       ['guide','guide','观展指南','查看指南 →','page'],
       ['map','map-home','场地图','查看场地 →','home']
     ].filter(x=>moduleOn(x[0]));
+    if(getState().eventStatus==='live'){
+      const order={activities:0,map:1,guide:2,booths:3,tickets:4};
+      defs=defs.sort((a,b)=>(order[a[0]]??9)-(order[b[0]]??9));
+    }
+    if(getState().eventStatus==='ended')defs=defs.filter(x=>x[0]!=='tickets');
     grid.innerHTML=defs.map((x,i)=>'<a class="quick-card reveal in" href="#'+x[1]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[1]+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
   }
   function renderCustomNav(){
