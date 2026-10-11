@@ -1,4 +1,5 @@
-import {previewStyle as baseStyle,previewBody as baseBody} from '/v8/templates/01-ip-only-preview.js?v=8.36.0';
+import {previewStyle as baseStyle} from '/v8/templates/01-ip-only-preview.js?v=8.36.1';
+import {variantBodies} from '/v8/templates/ip-only-variant-bodies.js?v=8.36.1';
 
 const variants={
 '02-scrapbook':`
@@ -183,5 +184,5 @@ html[data-oe-template="07-immersive-character"] .event-status-badge{background:r
 };
 
 export function createVariantPreview(id){
-  return {id,style:baseStyle+(variants[id]||''),body:baseBody};
+  return {id,style:baseStyle+(variants[id]||''),body:variantBodies[id]||''};
 }
