@@ -5,7 +5,10 @@ export function makeIpOnlyTemplate({
   theme,heroTitleColor,heroTitleAccentColor,presentationProfile={}
 }){
   const defaults=createIpOnlyDefaults();
+  const resolvedPresentation={...DEFAULT_IP_ONLY_PRESENTATION_PROFILE,...presentationProfile};
   defaults.templateId=id;
+  if(defaults.entryAnimation)defaults.entryAnimation.enabled=!!resolvedPresentation.entryAnimation;
+  defaults.modules={...(defaults.modules||{}),ribbon:!!resolvedPresentation.ribbon};
   if(theme)defaults.theme=theme;
   if(heroTitleColor)defaults.heroTitleColor=heroTitleColor;
   if(heroTitleAccentColor)defaults.heroTitleAccentColor=heroTitleAccentColor;
@@ -26,7 +29,7 @@ export function makeIpOnlyTemplate({
     sponsorRenderer:'sponsor.'+(structureProfile==='catalogue'?'tiered':'logo-wall'),
     engine:'onlyevent-studio-v8',
     renderer:id,
-    presentationProfile:{...DEFAULT_IP_ONLY_PRESENTATION_PROFILE,...presentationProfile},
+    presentationProfile:resolvedPresentation,
     defaults
   };
 }
