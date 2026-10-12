@@ -1,4 +1,4 @@
-import {quickMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.36.9';
+import {quickMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.37.3';
 export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,onPageNavigate=()=>{}}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
   const lifecycleStatus=()=>{
@@ -60,7 +60,7 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
     grid.innerHTML=defs.map((x,i)=>quickMarkup({state:getState(),x,i,esc:s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))})||'<a class="quick-card reveal in" href="#'+x[1]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[1]+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
   }
   function renderCustomNav(){
-    const pages=getState().customPages||[],desktop=mount('nav-links','.nav .links'),mobile=mount('mobile-nav','.mobile-dock');
+    const pages=getState().customPages||[],desktop=mount('nav-links','.nav .links'),mobile=mount('mobile-nav','[data-oe-mount="mobile-nav"]');
     qa('[data-custom-nav]').forEach(x=>x.remove());
     pages.forEach(page=>{
       const key='custom-'+page.id,label=page.title||'专题页面';
@@ -73,7 +73,7 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
     homeSections.forEach(([id,key])=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(key)));
     standalonePages().forEach(id=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(id)));
     const navMap={'tickets':'tickets','map-home':'map','schedule-home':'activities','community':'community','booths':'booths','activities':'activities','guests':'guests','guide':'guide'};
-    Object.entries(navMap).forEach(([id,key])=>qa('.nav a[href="#'+id+'"],.mobile-dock a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
+    Object.entries(navMap).forEach(([id,key])=>qa('.nav a[href="#'+id+'"],[data-oe-mount="mobile-nav"] a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
     renderCustomNav();
     renumberSections();
     renderQuickAccess();renderParticipation();
