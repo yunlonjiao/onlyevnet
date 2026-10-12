@@ -1,5 +1,5 @@
-import {ipOnlyPreviewCoreStyle as baseStyle} from '/v8/templates/ip-only-preview-core.js?v=8.37.3';
-import {variantBodies} from '/v8/templates/ip-only-variant-bodies.js?v=8.37.3';
+import {ipOnlyPreviewCoreStyle as baseStyle} from '/v8/templates/ip-only-preview-core.js?v=8.37.4';
+import {variantBodies} from '/v8/templates/ip-only-variant-bodies.js?v=8.37.4';
 
 const variants={
 '02-scrapbook':`
@@ -544,7 +544,7 @@ html[data-oe-template="07-immersive-character"] .kimetsu-footer{grid-template-co
 
 
 const secondRoundCss=`
-/* v8.37.3 — second-pass de-skinning: schedule, guide, density and mobile navigation */
+/* v8.37.4 — second-pass de-skinning: schedule, guide, density and mobile navigation */
 
 /* 02 — scrapbook: loose diary rhythm, torn-note guide, floating filmstrip mobile nav */
 html[data-oe-template="02-scrapbook"] .scrap-page-body{display:grid;grid-template-columns:130px 1fr;gap:38px}
@@ -630,57 +630,206 @@ html[data-oe-template="07-immersive-character"] .kimetsu-community{display:grid;
 
 const finalTemplateCss={
 '02-scrapbook':`
-/* v8.37.3 — Template 02 final isolation layer */
+/* v8.37.4 — Template 02: travel-site architecture, not Template 01 cards */
+html[data-oe-template="02-scrapbook"]{--scrap-bg:#f1eadf;--scrap-paper:#fffaf0;--scrap-ink:#2f2926;--scrap-pink:#ef7f91;--scrap-blue:#9acfe0;--scrap-lime:#dfff45;--scrap-line:#b9aa98}
+html[data-oe-template="02-scrapbook"] body{background:var(--scrap-bg);color:var(--scrap-ink);font-family:"Trebuchet MS","Noto Sans SC",sans-serif}
+html[data-oe-template="02-scrapbook"] .scrap-site{min-height:100vh;background:var(--scrap-bg)}
+html[data-oe-template="02-scrapbook"] .scrap-flight-header{position:sticky;top:0;z-index:85;display:grid;grid-template-columns:260px minmax(220px,1fr) auto auto;align-items:stretch;min-height:78px;background:rgba(255,250,240,.96);border-bottom:1px solid var(--scrap-line);backdrop-filter:blur(14px)}
+html[data-oe-template="02-scrapbook"] .scrap-flight-brand{display:grid;align-content:center;padding:14px 24px;border-right:1px solid var(--scrap-line)}
+html[data-oe-template="02-scrapbook"] .scrap-flight-brand small{font:700 7px/1.2 monospace;letter-spacing:.15em;color:#8a7969}
+html[data-oe-template="02-scrapbook"] .scrap-flight-brand b{margin-top:5px;font:600 24px/.95 Georgia,serif;letter-spacing:-.04em}
+html[data-oe-template="02-scrapbook"] .scrap-flight-status{display:flex;align-items:center;gap:13px;padding:0 22px;white-space:nowrap;font:700 8px/1 monospace;letter-spacing:.11em;color:#66594f}
+html[data-oe-template="02-scrapbook"] .scrap-flight-status i{width:5px;height:5px;border-radius:50%;background:var(--scrap-pink)}
+html[data-oe-template="02-scrapbook"] .scrap-flight-links{display:flex}
+html[data-oe-template="02-scrapbook"] .scrap-flight-links a{min-width:76px;display:grid;place-items:center;padding:10px 14px;border-left:1px solid var(--scrap-line);font:700 9px/1 Georgia,serif;letter-spacing:.05em}
+html[data-oe-template="02-scrapbook"] .scrap-flight-links a small{display:block;margin-bottom:5px;font:700 7px/1 monospace;color:var(--scrap-pink)}
+html[data-oe-template="02-scrapbook"] .scrap-flight-ticket{display:grid;place-items:center;padding:0 24px;background:var(--scrap-lime);border-left:1px solid var(--scrap-ink);font-size:10px;font-weight:900;letter-spacing:.08em}
 html[data-oe-template="02-scrapbook"] .scrap-pocket-nav{display:none}
-html[data-oe-template="02-scrapbook"] .scrap-entry .entry-ticket-title{font-family:Georgia,"Times New Roman",serif!important;font-weight:600!important;letter-spacing:-.025em!important;color:#342d2f!important;text-transform:none!important;font-style:normal!important}
-html[data-oe-template="02-scrapbook"] .scrap-entry .entry-ticket-label{font-family:Georgia,"Times New Roman",serif!important;color:#6e6258!important;font-weight:600!important;letter-spacing:.16em!important}
-html[data-oe-template="02-scrapbook"] .scrap-entry .skip{background:#d9ff46!important;color:#342d2f!important;border:1px solid #5f534b!important;border-radius:3px!important;box-shadow:4px 4px 0 #b9a58f!important;font-family:"Trebuchet MS","Noto Sans SC",sans-serif!important}
-html[data-oe-template="02-scrapbook"] .scrap-entry .ticket-half.right{background:#dcecf0!important;color:#342d2f!important;border-left:1px dashed #8c7c6d!important}
-html[data-oe-template="02-scrapbook"] .scrap-entry .entry-ticket-meta>div{background:#fffaf0!important;border:1px solid #cbbda9!important;border-radius:2px!important;color:#342d2f!important}
-html[data-oe-template="02-scrapbook"] .scrap-memory-menu{padding:72px max(26px,5vw);background:#efe7d8}
-html[data-oe-template="02-scrapbook"] .scrap-memory-menu .quick-grid{max-width:1180px;margin:auto}
-html[data-oe-template="02-scrapbook"] .scrap-memory-menu .scrap-index-card{min-height:166px}
-html[data-oe-template="02-scrapbook"] .scrap-page{padding:72px max(24px,6vw) 100px}
-html[data-oe-template="02-scrapbook"] .scrap-page-head{display:grid;grid-template-columns:1fr auto;gap:8px 28px;align-items:end;max-width:1180px;margin:0 auto 48px;padding-bottom:20px;border-bottom:1px dashed #aa9988}
-html[data-oe-template="02-scrapbook"] .scrap-page-head>span{grid-column:1/-1;font:700 9px/1 monospace;letter-spacing:.16em;color:#ef6f80}
-html[data-oe-template="02-scrapbook"] .scrap-page-head h2{margin:0;font:500 clamp(40px,6vw,72px)/.95 Georgia,serif}
-html[data-oe-template="02-scrapbook"] .scrap-page-head .section-back{font-size:9px;font-weight:800;letter-spacing:.1em;border-bottom:1px solid #342d2f;padding-bottom:4px}
-html[data-oe-template="02-scrapbook"] .scrap-page>div:not(.scrap-page-head),html[data-oe-template="02-scrapbook"] .scrap-page>.scrap-page-body{max-width:1180px;margin-left:auto;margin-right:auto}
-html[data-oe-template="02-scrapbook"] .scrap-community,html[data-oe-template="02-scrapbook"] .scrap-sponsors{padding:84px max(24px,6vw)}
-html[data-oe-template="02-scrapbook"] .scrap-section-heading{max-width:1180px;margin:0 auto 26px}.scrap-section-heading span{font-size:9px;font-weight:800;letter-spacing:.16em;color:#ef6f80}.scrap-section-heading h2{margin:7px 0 0;font:500 clamp(34px,5vw,58px)/1 Georgia,serif}
-html[data-oe-template="02-scrapbook"] .btn{border:1px solid #6f6258;border-radius:3px;background:#d9ff46;color:#342d2f;box-shadow:3px 3px 0 #c5b49f;font:800 10px/1 "Trebuchet MS","Noto Sans SC",sans-serif;letter-spacing:.06em}
-html[data-oe-template="02-scrapbook"] .btn:hover{transform:translateY(-1px)}
-html[data-oe-template="02-scrapbook"] .pill{border:0;border-radius:0;background:transparent;padding:0;font:700 10px/1.45 Georgia,serif;color:#594e47}
-html[data-oe-template="02-scrapbook"] .meta{display:grid;grid-template-columns:repeat(3,minmax(0,auto));justify-content:start;gap:8px 22px;border-top:1px dashed #b7a792;padding-top:14px}
-html[data-oe-template="02-scrapbook"] .ticket-grid{display:grid;grid-template-columns:1fr;gap:18px}
-html[data-oe-template="02-scrapbook"] .featured-activity-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
-html[data-oe-template="02-scrapbook"] .community{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-html[data-oe-template="02-scrapbook"] .sponsors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-html[data-oe-template="02-scrapbook"] .section-no{border:0;border-radius:0;background:transparent;padding:0;font:700 9px/1 monospace;letter-spacing:.14em;color:#ef6f80}
-html[data-oe-template="02-scrapbook"] .event-status-badge{display:inline-flex;width:max-content;border:1px solid #b7a792!important;border-radius:2px!important;background:#fffaf0!important;color:#594e47!important;box-shadow:none!important;font:700 9px/1.2 monospace!important;letter-spacing:.08em!important}
+
+html[data-oe-template="02-scrapbook"] .scrap-landing{min-height:calc(100vh - 78px);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(360px,.8fr);grid-template-rows:1fr auto;position:relative;overflow:hidden;border-bottom:1px solid var(--scrap-line)}
+html[data-oe-template="02-scrapbook"] .scrap-landing-media{grid-column:1;grid-row:1;position:relative;min-height:720px;padding:5vw 2.5vw 4vw 5vw;background:linear-gradient(145deg,#b6dfea 0 50%,#f1eadf 50%)}
+html[data-oe-template="02-scrapbook"] .scrap-landing-media:before{content:"A SIDE / MEMORY";position:absolute;left:16px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font:800 8px/1 monospace;letter-spacing:.22em;color:#fff}
+html[data-oe-template="02-scrapbook"] .scrap-landing-media .hero-art{height:100%;min-height:610px;position:relative}
+html[data-oe-template="02-scrapbook"] .scrap-landing-media .kv{position:absolute;inset:0 6% 4% 2%;border:14px solid #fff;border-bottom-width:72px;border-radius:0;background-position:center;background-size:cover;box-shadow:0 24px 50px #55423430;transform:rotate(-1.2deg)}
+html[data-oe-template="02-scrapbook"] .scrap-landing-media .kv:before{content:"PHOTO / 001";position:absolute;left:18px;bottom:-50px;font:700 9px/1 monospace;letter-spacing:.12em;color:#6b5f55}
+html[data-oe-template="02-scrapbook"] .scrap-landing-copy{grid-column:2;grid-row:1;display:flex;flex-direction:column;justify-content:center;position:relative;padding:6vw 5vw 5vw 4vw;background:var(--scrap-paper)}
+html[data-oe-template="02-scrapbook"] .scrap-route-code{margin-bottom:28px;font:800 8px/1 monospace;letter-spacing:.18em;color:var(--scrap-pink)}
+html[data-oe-template="02-scrapbook"] .scrap-landing-copy h1{margin:0;font:500 clamp(62px,7vw,118px)/.82 Georgia,"Times New Roman",serif;letter-spacing:-.065em;color:var(--scrap-ink)}
+html[data-oe-template="02-scrapbook"] .scrap-landing-copy h1 em{color:var(--scrap-pink);font-style:italic}
+html[data-oe-template="02-scrapbook"] .scrap-landing-copy>p{max-width:430px;margin:28px 0;font-size:13px;line-height:1.9;color:#665b52}
+html[data-oe-template="02-scrapbook"] .scrap-landing-copy .meta{display:grid;grid-template-columns:1fr;gap:7px;padding-top:16px;border-top:1px dashed var(--scrap-line)}
+html[data-oe-template="02-scrapbook"] .scrap-landing-copy .pill{border:0;border-radius:0;background:none;padding:0;font:700 10px/1.35 monospace;color:#544a43}
+html[data-oe-template="02-scrapbook"] .scrap-boarding-stamp{position:absolute;right:26px;bottom:38px;width:92px;height:92px;display:grid;place-items:center;text-align:center;border:2px solid var(--scrap-pink);border-radius:50%;transform:rotate(11deg);font:700 8px/1.2 monospace;color:var(--scrap-pink)}
+html[data-oe-template="02-scrapbook"] .scrap-boarding-stamp b{font-size:20px}
+html[data-oe-template="02-scrapbook"] .scrap-flight-board{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);background:#2f2926;color:#fff}
+html[data-oe-template="02-scrapbook"] .scrap-flight-board span{display:grid;gap:5px;padding:14px 22px;border-right:1px solid #62564f;font:700 10px/1.2 monospace}
+html[data-oe-template="02-scrapbook"] .scrap-flight-board b{font-size:7px;letter-spacing:.14em;color:var(--scrap-blue)}
+
+html[data-oe-template="02-scrapbook"] .scrap-news-board{display:grid;grid-template-columns:240px 1fr;border-bottom:1px solid var(--scrap-line);background:#fffaf0}
+html[data-oe-template="02-scrapbook"] .scrap-news-head{padding:42px 28px;border-right:1px solid var(--scrap-line)}
+html[data-oe-template="02-scrapbook"] .scrap-news-head span{font:700 8px/1 monospace;letter-spacing:.15em;color:var(--scrap-pink)}
+html[data-oe-template="02-scrapbook"] .scrap-news-head b{display:block;margin-top:12px;font:500 30px/1 Georgia,serif}
+html[data-oe-template="02-scrapbook"] .scrap-news-board .updates-list{display:block;padding:18px 32px}
+html[data-oe-template="02-scrapbook"] .scrap-update{display:grid!important;grid-template-columns:120px 1fr auto;align-items:center;gap:18px;padding:17px 0;border-bottom:1px dashed var(--scrap-line);background:none!important;box-shadow:none!important;border-radius:0!important}
+html[data-oe-template="02-scrapbook"] .scrap-update time{font:700 9px/1 monospace;color:#7a6d62}
+html[data-oe-template="02-scrapbook"] .scrap-update b{font-size:12px}
+html[data-oe-template="02-scrapbook"] .scrap-update>span{font:800 8px/1 monospace;letter-spacing:.1em;color:var(--scrap-pink)}
+
+html[data-oe-template="02-scrapbook"] .scrap-introduction{display:grid;grid-template-columns:160px minmax(0,1fr) 420px;gap:54px;align-items:center;padding:130px max(5vw,44px);background:var(--scrap-bg);border-bottom:1px solid var(--scrap-line)}
+html[data-oe-template="02-scrapbook"] .scrap-intro-index{align-self:start}
+html[data-oe-template="02-scrapbook"] .scrap-intro-index span{display:block;font:800 8px/1 monospace;letter-spacing:.18em}
+html[data-oe-template="02-scrapbook"] .scrap-intro-index b{display:block;margin-top:20px;font:500 92px/.8 Georgia,serif;color:#d6c8b8}
+html[data-oe-template="02-scrapbook"] .scrap-intro-lead{margin:0 0 32px;font:500 clamp(38px,5vw,72px)/1.08 Georgia,serif;letter-spacing:-.04em}
+html[data-oe-template="02-scrapbook"] .scrap-intro-copy>p:last-child{max-width:650px;font-size:14px;line-height:2;color:#6d6056}
+html[data-oe-template="02-scrapbook"] .scrap-intro-object{display:grid;place-items:center;min-height:330px;position:relative}
+html[data-oe-template="02-scrapbook"] .scrap-intro-object:before{content:"";position:absolute;width:320px;height:220px;background:#ef7f91;transform:rotate(7deg)}
+html[data-oe-template="02-scrapbook"] .scrap-tape{width:300px;height:188px;padding:26px;border:2px solid #5f534b;border-radius:22px;background:#f7ead8;box-shadow:14px 16px 0 #c7b39c;transform:rotate(-7deg);position:relative;z-index:1}
+html[data-oe-template="02-scrapbook"] .scrap-tape .reel{position:absolute;top:62px;width:50px;height:50px;border:3px solid #6e6258;border-radius:50%;background:#fff}
+html[data-oe-template="02-scrapbook"] .scrap-tape .r1{left:48px}html[data-oe-template="02-scrapbook"] .scrap-tape .r2{right:48px}
+html[data-oe-template="02-scrapbook"] .scrap-tape b{font:700 13px/1.1 Georgia,serif;letter-spacing:.07em}
+html[data-oe-template="02-scrapbook"] .scrap-tape small{position:absolute;left:26px;bottom:20px;font:700 7px/1 monospace;letter-spacing:.13em}
+
+html[data-oe-template="02-scrapbook"] .scrap-journey-index{display:grid;grid-template-columns:230px 1fr;background:#2f2926;color:#fff;border-bottom:1px solid #584d46}
+html[data-oe-template="02-scrapbook"] .scrap-index-caption{padding:46px 30px;border-right:1px solid #584d46}
+html[data-oe-template="02-scrapbook"] .scrap-index-caption span{font:700 8px/1 monospace;letter-spacing:.16em;color:var(--scrap-blue)}
+html[data-oe-template="02-scrapbook"] .scrap-index-caption b{display:block;margin-top:14px;font:500 26px/1.05 Georgia,serif}
+html[data-oe-template="02-scrapbook"] .scrap-journey-index .quick-grid{display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:0!important}
+html[data-oe-template="02-scrapbook"] .scrap-index-card{min-height:210px;display:flex!important;flex-direction:column;justify-content:space-between;padding:26px 22px!important;border:0!important;border-right:1px solid #584d46!important;border-radius:0!important;background:transparent!important;color:#fff!important;box-shadow:none!important;transform:none!important}
+html[data-oe-template="02-scrapbook"] .scrap-index-card>span{font:500 36px/1 Georgia,serif;color:#72665f}
+html[data-oe-template="02-scrapbook"] .scrap-index-card small{font:700 7px/1 monospace;letter-spacing:.13em;color:var(--scrap-pink)}
+html[data-oe-template="02-scrapbook"] .scrap-index-card b{display:block;margin-top:8px;font:500 24px/1 Georgia,serif}
+html[data-oe-template="02-scrapbook"] .scrap-index-card em{display:block;margin-top:8px;font:700 8px/1.4 monospace;color:#aaa099;font-style:normal}
+html[data-oe-template="02-scrapbook"] .scrap-index-card>i{align-self:flex-end;color:var(--scrap-lime);font-style:normal}
+
+html[data-oe-template="02-scrapbook"] .scrap-feature-journey{display:grid;grid-template-columns:320px 1fr;gap:60px;padding:120px max(5vw,44px);background:#e7f2f4;border-bottom:1px solid #a7c7cf}
+html[data-oe-template="02-scrapbook"] .scrap-feature-copy{position:sticky;top:120px;align-self:start}
+html[data-oe-template="02-scrapbook"] .scrap-feature-copy>span{font:800 8px/1 monospace;letter-spacing:.16em;color:#4e8798}
+html[data-oe-template="02-scrapbook"] .scrap-feature-copy h2{margin:10px 0 22px;font:500 56px/.9 Georgia,serif}
+html[data-oe-template="02-scrapbook"] .scrap-feature-copy p{font-size:12px;line-height:1.8;color:#587078}
+html[data-oe-template="02-scrapbook"] .scrap-feature-journey .featured-activity-grid{display:grid!important;grid-template-columns:1fr!important;gap:32px!important}
+html[data-oe-template="02-scrapbook"] .scrap-feature-journey .scrap-activity{grid-template-columns:minmax(260px,.75fr) 1fr!important;background:#fffaf0!important;border:1px solid #b5cdd2!important;box-shadow:none!important;transform:none!important}
+html[data-oe-template="02-scrapbook"] .scrap-feature-journey .scrap-activity:nth-child(2n){margin-left:10%;margin-right:-2%}
+
+html[data-oe-template="02-scrapbook"] .scrap-passport{display:grid;grid-template-columns:34% 66%;min-height:650px;background:#f4dccf;border-bottom:1px solid #c7a99b}
+html[data-oe-template="02-scrapbook"] .scrap-passport-cover{display:flex;flex-direction:column;justify-content:space-between;padding:58px 48px;background:#ef7f91;color:#fff;border-right:1px solid #9f5662}
+html[data-oe-template="02-scrapbook"] .scrap-passport-cover small{font:800 8px/1 monospace;letter-spacing:.18em}
+html[data-oe-template="02-scrapbook"] .scrap-passport-cover b{font:500 clamp(64px,8vw,118px)/.8 Georgia,serif;letter-spacing:-.06em}
+html[data-oe-template="02-scrapbook"] .scrap-passport-cover span{font:700 9px/1 monospace;letter-spacing:.12em}
+html[data-oe-template="02-scrapbook"] .scrap-passport-content{padding:58px max(4vw,36px)}
+html[data-oe-template="02-scrapbook"] .scrap-passport .ticket-grid{display:grid!important;grid-template-columns:1fr!important;gap:14px!important}
+html[data-oe-template="02-scrapbook"] .scrap-pass{display:grid!important;grid-template-columns:90px 1fr 150px!important;background:#fffaf0!important;border:1px solid #bc9f91!important;box-shadow:none!important;transform:none!important}
+html[data-oe-template="02-scrapbook"] .scrap-pass:nth-child(2n){transform:translateX(18px)!important}
+html[data-oe-template="02-scrapbook"] .scrap-pass-no{border-right:1px dashed #bc9f91!important}
+html[data-oe-template="02-scrapbook"] .ticket-actions{margin-top:24px}
+html[data-oe-template="02-scrapbook"] .btn{border:1px solid #6f6258!important;border-radius:0!important;background:var(--scrap-lime)!important;color:#342d2f!important;box-shadow:none!important;font:800 9px/1 monospace!important;letter-spacing:.08em!important}
+
+html[data-oe-template="02-scrapbook"] .scrap-fold-map{display:grid;grid-template-columns:34% 66%;min-height:620px;background:#fffaf0;border-bottom:1px solid var(--scrap-line)}
+html[data-oe-template="02-scrapbook"] .scrap-fold-map-copy{padding:72px 48px;border-right:1px dashed var(--scrap-line)}
+html[data-oe-template="02-scrapbook"] .scrap-fold-map-copy>span{font:800 8px/1 monospace;letter-spacing:.16em;color:#4b8192}
+html[data-oe-template="02-scrapbook"] .scrap-fold-map-copy h2{margin:12px 0 20px;font:500 62px/.9 Georgia,serif}
+html[data-oe-template="02-scrapbook"] .scrap-fold-map-copy p{font-size:12px;line-height:1.8;color:#6c6057}
+html[data-oe-template="02-scrapbook"] .scrap-fold-map-media{padding:34px;background-image:linear-gradient(#c8bcae44 1px,transparent 1px),linear-gradient(90deg,#c8bcae44 1px,transparent 1px);background-size:32px 32px}
+html[data-oe-template="02-scrapbook"] .scrap-fold-map .map-static{height:100%;min-height:520px;border:0!important;border-radius:0!important;box-shadow:8px 10px 0 #d4c7b6!important}
+
+html[data-oe-template="02-scrapbook"] .scrap-page{padding:78px max(5vw,44px) 110px;background:var(--scrap-bg)}
+html[data-oe-template="02-scrapbook"] .scrap-page-head{display:grid;grid-template-columns:1fr auto;gap:8px 30px;align-items:end;max-width:1220px;margin:0 auto 52px;padding-bottom:22px;border-bottom:1px solid var(--scrap-line)}
+html[data-oe-template="02-scrapbook"] .scrap-page-head>span{grid-column:1/-1;font:700 8px/1 monospace;letter-spacing:.16em;color:var(--scrap-pink)}
+html[data-oe-template="02-scrapbook"] .scrap-page-head h2{margin:0;font:500 clamp(46px,6vw,78px)/.9 Georgia,serif}
+html[data-oe-template="02-scrapbook"] .scrap-page-head .section-back{font:800 8px/1 monospace;letter-spacing:.1em;border-bottom:1px solid var(--scrap-ink);padding-bottom:5px}
+html[data-oe-template="02-scrapbook"] .scrap-page>div:not(.scrap-page-head),html[data-oe-template="02-scrapbook"] .scrap-page>.scrap-page-body{max-width:1220px;margin-left:auto;margin-right:auto}
+html[data-oe-template="02-scrapbook"] .scrap-page-body{grid-template-columns:150px 1fr!important}
+html[data-oe-template="02-scrapbook"] .scrap-itinerary{background:#fffaf0!important;box-shadow:none!important;border:1px solid var(--scrap-line)!important;transform:none!important}
+html[data-oe-template="02-scrapbook"] .scrap-guide{box-shadow:none!important;transform:none!important}
+html[data-oe-template="02-scrapbook"] .scrap-community,html[data-oe-template="02-scrapbook"] .scrap-sponsors{padding:90px max(5vw,44px);background:#2f2926!important;color:#fff;border-top:1px solid #584d46!important}
+html[data-oe-template="02-scrapbook"] .scrap-section-heading{max-width:1220px;margin:0 auto 28px}
+html[data-oe-template="02-scrapbook"] .scrap-section-heading span{font:800 8px/1 monospace;letter-spacing:.16em;color:var(--scrap-blue)}
+html[data-oe-template="02-scrapbook"] .scrap-section-heading h2{margin:8px 0 0;font:500 clamp(36px,5vw,60px)/1 Georgia,serif;color:#fff}
+html[data-oe-template="02-scrapbook"] .community{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:#584d46}
+html[data-oe-template="02-scrapbook"] .sponsors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:#584d46}
+html[data-oe-template="02-scrapbook"] .event-status-badge{display:inline-flex;width:max-content;border:1px solid var(--scrap-line)!important;border-radius:0!important;background:transparent!important;color:#66594f!important;box-shadow:none!important;font:700 8px/1.2 monospace!important;letter-spacing:.08em!important}
 html[data-oe-template="02-scrapbook"] #guests .guest-poster-name{color:#342d2f!important;font-family:Georgia,"Times New Roman",serif!important;font-weight:500!important}
 html[data-oe-template="02-scrapbook"] #guests .guest-unified-meta b,html[data-oe-template="02-scrapbook"] #guests .guest-info-block b{color:#594e47!important;font-family:Georgia,"Times New Roman",serif!important}
 html[data-oe-template="02-scrapbook"] #guests .guest-unified-meta span,html[data-oe-template="02-scrapbook"] #guests .guest-works-block span,html[data-oe-template="02-scrapbook"] #guests .guest-intro-block p{color:#74675e!important}
+
+/* isolate scrapbook entry from Template 01 memorial-ticket visuals */
+html[data-oe-template="02-scrapbook"] .scrap-entry .entry-ticket-title{font-family:Georgia,"Times New Roman",serif!important;font-weight:600!important;letter-spacing:-.025em!important;color:#342d2f!important;text-transform:none!important;font-style:normal!important}
+html[data-oe-template="02-scrapbook"] .scrap-entry .entry-ticket-label{font-family:Georgia,"Times New Roman",serif!important;color:#6e6258!important;font-weight:600!important;letter-spacing:.16em!important}
+html[data-oe-template="02-scrapbook"] .scrap-entry .skip{background:var(--scrap-lime)!important;color:#342d2f!important;border:1px solid #5f534b!important;border-radius:0!important;box-shadow:none!important}
+html[data-oe-template="02-scrapbook"] .scrap-entry .ticket-half.right{background:#dcecf0!important;color:#342d2f!important;border-left:1px dashed #8c7c6d!important}
+html[data-oe-template="02-scrapbook"] .scrap-entry .entry-ticket-meta>div{background:#fffaf0!important;border:1px solid #cbbda9!important;border-radius:0!important;color:#342d2f!important}
+
+@media(max-width:980px){
+ html[data-oe-template="02-scrapbook"] .scrap-flight-header{grid-template-columns:220px 1fr auto}
+ html[data-oe-template="02-scrapbook"] .scrap-flight-status{display:none}
+ html[data-oe-template="02-scrapbook"] .scrap-landing{grid-template-columns:1fr}
+ html[data-oe-template="02-scrapbook"] .scrap-landing-media{grid-column:1;grid-row:1;min-height:620px}
+ html[data-oe-template="02-scrapbook"] .scrap-landing-copy{grid-column:1;grid-row:2;padding:54px 7vw}
+ html[data-oe-template="02-scrapbook"] .scrap-flight-board{grid-row:3}
+ html[data-oe-template="02-scrapbook"] .scrap-introduction{grid-template-columns:100px 1fr}
+ html[data-oe-template="02-scrapbook"] .scrap-intro-object{grid-column:2}
+ html[data-oe-template="02-scrapbook"] .scrap-feature-journey{grid-template-columns:1fr}
+ html[data-oe-template="02-scrapbook"] .scrap-feature-copy{position:static}
+ html[data-oe-template="02-scrapbook"] .scrap-passport,html[data-oe-template="02-scrapbook"] .scrap-fold-map{grid-template-columns:1fr}
+ html[data-oe-template="02-scrapbook"] .scrap-passport-cover{min-height:300px}
+}
+
 @media(max-width:760px){
- html[data-oe-template="02-scrapbook"] .scrap-nav{position:sticky!important;top:0!important;z-index:70!important}
- html[data-oe-template="02-scrapbook"] .scrap-pocket-nav{position:sticky;top:58px;z-index:69;display:flex;overflow-x:auto;background:#fffaf0eF;border-bottom:1px dashed #aa9988;backdrop-filter:blur(12px);scrollbar-width:none}
+ html[data-oe-template="02-scrapbook"] .scrap-flight-header{position:sticky;grid-template-columns:1fr auto;min-height:60px}
+ html[data-oe-template="02-scrapbook"] .scrap-flight-brand{padding:10px 14px;border-right:0}
+ html[data-oe-template="02-scrapbook"] .scrap-flight-brand b{font-size:20px}
+ html[data-oe-template="02-scrapbook"] .scrap-flight-links{display:none}
+ html[data-oe-template="02-scrapbook"] .scrap-flight-ticket{padding:0 14px;font-size:8px}
+ html[data-oe-template="02-scrapbook"] .scrap-pocket-nav{position:sticky;top:60px;z-index:80;display:flex;overflow-x:auto;background:#2f2926;color:#fff;border-bottom:1px solid #584d46;scrollbar-width:none}
  html[data-oe-template="02-scrapbook"] .scrap-pocket-nav::-webkit-scrollbar{display:none}
- html[data-oe-template="02-scrapbook"] .scrap-pocket-nav a{flex:0 0 auto;min-width:82px;padding:9px 12px 10px;border-right:1px dashed #c9b9a5;font:700 9px/1.1 Georgia,serif;letter-spacing:.05em;text-align:left;color:#342d2f}
- html[data-oe-template="02-scrapbook"] .scrap-pocket-nav a small{display:block;margin-bottom:4px;font:700 7px/1 monospace;color:#ef6f80}
- html[data-oe-template="02-scrapbook"] .scrap-page{padding:46px 16px 72px}
- html[data-oe-template="02-scrapbook"] .scrap-page-head{grid-template-columns:1fr;gap:12px;margin-bottom:30px}
+ html[data-oe-template="02-scrapbook"] .scrap-pocket-nav a{flex:0 0 auto;min-width:86px;padding:9px 12px;border-right:1px solid #584d46;font:700 8px/1 Georgia,serif;letter-spacing:.05em}
+ html[data-oe-template="02-scrapbook"] .scrap-pocket-nav a small{display:block;margin-bottom:4px;font:700 6px/1 monospace;color:var(--scrap-pink)}
+ html[data-oe-template="02-scrapbook"] .scrap-landing{min-height:0}
+ html[data-oe-template="02-scrapbook"] .scrap-landing-media{min-height:420px;padding:24px 14px;background:linear-gradient(160deg,#b6dfea 0 58%,#f1eadf 58%)}
+ html[data-oe-template="02-scrapbook"] .scrap-landing-media .hero-art{min-height:380px}
+ html[data-oe-template="02-scrapbook"] .scrap-landing-media .kv{inset:8px 12px 24px;border-width:9px;border-bottom-width:44px;transform:rotate(-.5deg)}
+ html[data-oe-template="02-scrapbook"] .scrap-landing-media .kv:before{bottom:-31px;font-size:7px}
+ html[data-oe-template="02-scrapbook"] .scrap-landing-copy{padding:42px 18px 48px}
+ html[data-oe-template="02-scrapbook"] .scrap-route-code{margin-bottom:18px}
+ html[data-oe-template="02-scrapbook"] .scrap-landing-copy h1{font-size:clamp(54px,18vw,84px)}
+ html[data-oe-template="02-scrapbook"] .scrap-boarding-stamp{right:18px;bottom:20px;width:70px;height:70px}
+ html[data-oe-template="02-scrapbook"] .scrap-flight-board{grid-template-columns:1fr 1fr}
+ html[data-oe-template="02-scrapbook"] .scrap-flight-board span{padding:12px 14px;border-bottom:1px solid #62564f}
+ html[data-oe-template="02-scrapbook"] .scrap-news-board{grid-template-columns:1fr}
+ html[data-oe-template="02-scrapbook"] .scrap-news-head{padding:28px 18px;border-right:0;border-bottom:1px solid var(--scrap-line)}
+ html[data-oe-template="02-scrapbook"] .scrap-news-board .updates-list{padding:8px 18px}
+ html[data-oe-template="02-scrapbook"] .scrap-update{grid-template-columns:76px 1fr;padding:14px 0}
+ html[data-oe-template="02-scrapbook"] .scrap-update>span{display:none}
+ html[data-oe-template="02-scrapbook"] .scrap-introduction{grid-template-columns:1fr;gap:30px;padding:72px 18px}
+ html[data-oe-template="02-scrapbook"] .scrap-intro-index b{font-size:64px}
+ html[data-oe-template="02-scrapbook"] .scrap-intro-object{grid-column:1;min-height:250px}
+ html[data-oe-template="02-scrapbook"] .scrap-intro-object:before{width:250px;height:170px}
+ html[data-oe-template="02-scrapbook"] .scrap-tape{width:240px;height:150px}
+ html[data-oe-template="02-scrapbook"] .scrap-tape .reel{top:50px;width:38px;height:38px}
+ html[data-oe-template="02-scrapbook"] .scrap-journey-index{grid-template-columns:1fr}
+ html[data-oe-template="02-scrapbook"] .scrap-index-caption{padding:28px 18px;border-right:0;border-bottom:1px solid #584d46}
+ html[data-oe-template="02-scrapbook"] .scrap-journey-index .quick-grid{display:flex!important;overflow-x:auto!important;scroll-snap-type:x proximity}
+ html[data-oe-template="02-scrapbook"] .scrap-index-card{flex:0 0 70%;min-height:170px;scroll-snap-align:start}
+ html[data-oe-template="02-scrapbook"] .scrap-feature-journey{padding:72px 18px;gap:34px}
+ html[data-oe-template="02-scrapbook"] .scrap-feature-journey .scrap-activity{grid-template-columns:1fr!important}
+ html[data-oe-template="02-scrapbook"] .scrap-feature-journey .scrap-activity:nth-child(2n){margin:0}
+ html[data-oe-template="02-scrapbook"] .scrap-passport-cover{min-height:240px;padding:38px 22px}
+ html[data-oe-template="02-scrapbook"] .scrap-passport-cover b{font-size:64px}
+ html[data-oe-template="02-scrapbook"] .scrap-passport-content{padding:28px 14px 48px}
+ html[data-oe-template="02-scrapbook"] .scrap-pass{grid-template-columns:58px 1fr!important}
+ html[data-oe-template="02-scrapbook"] .scrap-pass aside{grid-column:1/-1;border-left:0!important;border-top:1px dashed #bc9f91!important}
+ html[data-oe-template="02-scrapbook"] .scrap-pass:nth-child(2n){transform:none!important}
+ html[data-oe-template="02-scrapbook"] .scrap-fold-map-copy{padding:48px 18px}
+ html[data-oe-template="02-scrapbook"] .scrap-fold-map-media{padding:18px}
+ html[data-oe-template="02-scrapbook"] .scrap-fold-map .map-static{min-height:360px}
+ html[data-oe-template="02-scrapbook"] .scrap-page{padding:54px 16px 76px}
+ html[data-oe-template="02-scrapbook"] .scrap-page-head{grid-template-columns:1fr;gap:12px;margin-bottom:34px}
  html[data-oe-template="02-scrapbook"] .scrap-page-head .section-back{justify-self:start}
- html[data-oe-template="02-scrapbook"] .scrap-side-a,html[data-oe-template="02-scrapbook"] .scrap-side-b{display:none}
- html[data-oe-template="02-scrapbook"] .scrap-memory-menu{padding:50px 16px}
- html[data-oe-template="02-scrapbook"] .scrap-memory-menu .quick-grid{display:flex!important;overflow-x:auto!important;gap:14px!important;padding:4px 4px 18px;scroll-snap-type:x proximity}
- html[data-oe-template="02-scrapbook"] .scrap-memory-menu .scrap-index-card{flex:0 0 72%;min-height:148px;scroll-snap-align:start}
- html[data-oe-template="02-scrapbook"] .featured-activity-grid{grid-template-columns:1fr}
+ html[data-oe-template="02-scrapbook"] .scrap-page-body{grid-template-columns:1fr!important}
  html[data-oe-template="02-scrapbook"] .community{grid-template-columns:1fr}
  html[data-oe-template="02-scrapbook"] .sponsors{grid-template-columns:repeat(2,minmax(0,1fr))}
- html[data-oe-template="02-scrapbook"] .meta{grid-template-columns:1fr;gap:6px}
 }
 `
-};
+};;
 
 export function createVariantPreview(id){
   return {id,style:baseStyle+(variants[id]||'')+(structural[id]||'')+(independent[id]||'')+(entrySystems[id]||'')+componentAdapterCss+nativeFooterMobile+secondRoundCss+(finalTemplateCss[id]||''),body:variantBodies[id]||''};
