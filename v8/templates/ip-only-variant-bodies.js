@@ -11,6 +11,20 @@ function entryLoader(kind){
   return '<div class="loader '+kind+'-entry" id="loader">'+inner+'<button class="skip" id="skip">跳过动画 →</button></div>';
 }
 
+function scrapDesktopNav(){
+ return '<header class="scrap-flight-header">'+
+  '<a class="scrap-flight-brand" href="#home" data-page-link="home"><small>ONLY EVENT / SPECIAL JOURNEY</small><b>STARDUST ONLY</b></a>'+
+  '<div class="scrap-flight-status"><span>BOARDING</span><i></i><span>2026.11.08</span><i></i><span>HANGZHOU</span></div>'+
+  '<nav class="scrap-flight-links" data-oe-mount="nav-links">'+
+   '<a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small>BOOTH</a>'+
+   '<a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small>PLAN</a>'+
+   '<a href="#guests" data-target-mode="page" data-page-link="guests"><small>03</small>GUEST</a>'+
+   '<a href="#guide" data-target-mode="page" data-page-link="guide"><small>04</small>GUIDE</a>'+
+  '</nav>'+
+  '<a class="scrap-flight-ticket ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">TICKET ↗</a>'+
+ '</header>';
+}
+
 function standardNav(cls=''){
   const base='<nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">摊位</a><a href="#activities" data-target-mode="page" data-page-link="activities">活动</a><a href="#guests" data-target-mode="page" data-page-link="guests">嘉宾</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></nav>';
   if(cls==='scrap-nav')return '<header class="nav scrap-nav"><div class="scrap-nav-mark"><small>ONLY EVENT JOURNEY</small><a class="brand" href="#top">STARDUST<br>ONLY</a></div>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">TRAVEL PASS ↗</a></header>';
@@ -116,20 +130,58 @@ function heroKV(extra=''){return `<div class="hero-art ${extra}"><div class="kv"
 
 export const variantBodies={
 '02-scrapbook':entryLoader('scrap')+
-`<div class="scrap-site"><div class="scrap-side-a">A SIDE / WONDERFUL MEMORIES</div><div class="scrap-side-b">B SIDE / TROUBLE & HAPPENINGS</div>`+
-standardNav('scrap-nav')+scrapMobileNav()+
+`<div class="scrap-site">`+
+scrapDesktopNav()+scrapMobileNav()+
 `<main id="top">
-<section class="hero scrap-hero"><div class="oe-home-only scrap-hero-grid">
-  <div class="scrap-tape-wrap"><div class="scrap-tape"><span class="reel r1"></span><span class="reel r2"></span><b>SPECIAL EVENT<br>MEMORIES</b><small>01 / MEMORY ARCHIVE</small></div><div class="scrap-postcard">ONLY EVENT<br><b>SPECIAL JOURNEY</b></div></div>
-  ${heroKV('scrap-photo')}${heroFields('scrap-copy')}
-</div></section>
-<section class="oe-home-only scrap-manifesto"><div><span>EVERY EVENT LEAVES A MEMORY WORTH KEEPING.</span><p>旅行中留下的美好与意外，不是彼此分开的两面，而是同一次旅程的完整记忆。</p></div></section>
-<div class="scrap-hashtags">#ONLYEVENT　#SPECIALJOURNEY　#FANMEMORIES</div>
-<section class="oe-home-only scrap-news" id="updates"><div class="scrap-label">LATEST UPDATE</div><div data-oe-mount="updates" class="updates-list"></div></section>
-<section class="oe-home-only scrap-memory-menu"><div class="scrap-label">CONTENTS / INDEX</div><div data-oe-mount="quick" class="quick-grid"></div></section>
-<section class="oe-home-only scrap-ticket-book" id="tickets"><div class="scrap-section-title"><span>TRAVEL PASS</span><h2>票务与特典</h2></div><div data-oe-mount="tickets" class="ticket-grid"></div><div data-oe-mount="ticket-actions" class="ticket-actions"></div></section>
-<section class="oe-home-only scrap-featured" id="participation"><div class="scrap-section-title"><span>MEMORY PICKS</span><h2>活动精选</h2></div><div data-oe-mount="featured-activities" class="featured-activity-grid"></div></section>
-<section class="oe-home-only scrap-map" id="map-home"><div class="oe-home-only scrap-map-copy"><span>TRAVEL MAP</span><h2>场地图</h2><div data-oe-mount="map-links" class="map-link-list"></div></div><div data-oe-mount="map" id="venueMap" class="map-static"></div></section>
+<section class="scrap-landing oe-home-only" id="home">
+  <div class="scrap-landing-media">${heroKV('scrap-photo')}</div>
+  <div class="scrap-landing-copy">
+    <div class="scrap-route-code">OE / 2026 / JOURNEY 01</div>
+    ${heroFields('scrap-copy')}
+    <div class="scrap-boarding-stamp">BOARDING<br><b>NOW</b></div>
+  </div>
+  <div class="scrap-flight-board">
+    <span><b>DATE</b>11.08 SUN</span>
+    <span><b>DESTINATION</b>HANGZHOU</span>
+    <span><b>VENUE</b>ONLY EVENT</span>
+    <span><b>STATUS</b>OPEN</span>
+  </div>
+</section>
+
+<section class="oe-home-only scrap-news-board" id="updates">
+  <div class="scrap-news-head"><span>NEWS / LATEST UPDATE</span><b>旅程更新</b></div>
+  <div data-oe-mount="updates" class="updates-list"></div>
+</section>
+
+<section class="oe-home-only scrap-introduction">
+  <div class="scrap-intro-index"><span>INTRODUCTION</span><b>01</b></div>
+  <div class="scrap-intro-copy">
+    <p class="scrap-intro-lead">EVERY EVENT LEAVES A MEMORY WORTH KEEPING.</p>
+    <p>一次 ONLY 活动，不只是几个信息模块。票根、见面、舞台、摊位与意外，最后都会成为同一段旅程里的记忆。</p>
+  </div>
+  <div class="scrap-intro-object"><div class="scrap-tape"><span class="reel r1"></span><span class="reel r2"></span><b>SPECIAL EVENT<br>MEMORIES</b><small>MEMORY ARCHIVE / 01</small></div></div>
+</section>
+
+<section class="oe-home-only scrap-journey-index">
+  <div class="scrap-index-caption"><span>TRIP INDEX</span><b>CHOOSE YOUR STOP</b></div>
+  <div data-oe-mount="quick" class="quick-grid"></div>
+</section>
+
+<section class="oe-home-only scrap-feature-journey" id="participation">
+  <div class="scrap-feature-copy"><span>JOURNEY HIGHLIGHTS</span><h2>活动精选</h2><p>把最值得去的企划当作这次旅程的几个停靠点。</p></div>
+  <div data-oe-mount="featured-activities" class="featured-activity-grid"></div>
+</section>
+
+<section class="oe-home-only scrap-passport" id="tickets">
+  <div class="scrap-passport-cover"><small>ADMISSION</small><b>TRAVEL<br>PASS</b><span>ONLY EVENT 2026</span></div>
+  <div class="scrap-passport-content"><div data-oe-mount="tickets" class="ticket-grid"></div><div data-oe-mount="ticket-actions" class="ticket-actions"></div></div>
+</section>
+
+<section class="oe-home-only scrap-fold-map" id="map-home">
+  <div class="scrap-fold-map-copy"><span>DESTINATION MAP</span><h2>场地图</h2><p>把场地当成一次旅行目的地来浏览。</p><div data-oe-mount="map-links" class="map-link-list"></div></div>
+  <div class="scrap-fold-map-media"><div data-oe-mount="map" id="venueMap" class="map-static"></div></div>
+</section>
+
 ${detailPages('scrap')}${commonUtility('scrap')}
 </main>${footer('scrap')}</div>`,
 
