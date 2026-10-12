@@ -20,6 +20,15 @@ function standardNav(cls=''){
   if(cls==='expo-nav')return '<header class="nav expo-nav"><a class="brand" href="#top">STARDUST<br>EXPO</a>'+base+'<div class="expo-nav-code">2026 / HANGZHOU</div><a class="btn" href="#" target="_blank" rel="noopener">TICKET</a></header>';
   return '<header class="nav kimetsu-nav"><a class="brand" href="#top"><b>追憶回廊</b><small>STARDUST ONLY</small></a>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">入場案内</a></header>';
 }
+function scrapMobileNav(){
+ return '<nav class="scrap-pocket-nav" data-oe-mount="mobile-nav" aria-label="移动导航">'+
+  '<a href="#home" data-page-link="home"><small>01</small>HOME</a>'+
+  '<a href="#booths" data-target-mode="page" data-page-link="booths"><small>02</small>MEMORY</a>'+
+  '<a href="#activities" data-target-mode="page" data-page-link="activities"><small>03</small>PLAN</a>'+
+  '<a href="#guests" data-target-mode="page" data-page-link="guests"><small>04</small>GUEST</a>'+
+  '<a href="#guide" data-target-mode="page" data-page-link="guide"><small>05</small>GUIDE</a></nav>';
+}
+
 function mobileNav(prefix){
  const labels={
   scrap:['HOME','MEMORY','PLAN','GUEST','GUIDE'],
@@ -121,9 +130,8 @@ standardNav('scrap-nav')+
 <section class="oe-home-only scrap-ticket-book" id="tickets"><div class="scrap-section-title"><span>TRAVEL PASS</span><h2>票务与特典</h2></div><div data-oe-mount="tickets" class="ticket-grid"></div><div data-oe-mount="ticket-actions" class="ticket-actions"></div></section>
 <section class="oe-home-only scrap-featured" id="participation"><div class="scrap-section-title"><span>MEMORY PICKS</span><h2>活动精选</h2></div><div data-oe-mount="featured-activities" class="featured-activity-grid"></div></section>
 <section class="oe-home-only scrap-map" id="map-home"><div class="oe-home-only scrap-map-copy"><span>TRAVEL MAP</span><h2>场地图</h2><div data-oe-mount="map-links" class="map-link-list"></div></div><div data-oe-mount="map" id="venueMap" class="map-static"></div></section>
-<div class="oe-home-only ribbon scrap-ribbon" data-oe-mount="ribbon"><div class="ribbon-track" data-oe-mount="ribbon-track"></div></div>
 ${detailPages('scrap')}${commonUtility('scrap')}
-</main>${mobileNav('scrap')}${footer('scrap')}</div>`,
+</main>${scrapMobileNav()}${footer('scrap')}</div>`,
 
 '03-school-festival':entryLoader('school')+
 `<div class="school-site"><aside class="school-fixed-rail"><b>ONLY EVENT</b><span>01</span><span>02</span><span>03</span><span>04</span></aside>`+
