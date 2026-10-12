@@ -1,5 +1,5 @@
-import {ipOnlyPreviewCoreStyle as baseStyle} from '/v8/templates/ip-only-preview-core.js?v=8.37.1';
-import {variantBodies} from '/v8/templates/ip-only-variant-bodies.js?v=8.37.1';
+import {ipOnlyPreviewCoreStyle as baseStyle} from '/v8/templates/ip-only-preview-core.js?v=8.37.3';
+import {variantBodies} from '/v8/templates/ip-only-variant-bodies.js?v=8.37.3';
 
 const variants={
 '02-scrapbook':`
@@ -544,7 +544,7 @@ html[data-oe-template="07-immersive-character"] .kimetsu-footer{grid-template-co
 
 
 const secondRoundCss=`
-/* v8.37.1 — second-pass de-skinning: schedule, guide, density and mobile navigation */
+/* v8.37.3 — second-pass de-skinning: schedule, guide, density and mobile navigation */
 
 /* 02 — scrapbook: loose diary rhythm, torn-note guide, floating filmstrip mobile nav */
 html[data-oe-template="02-scrapbook"] .scrap-page-body{display:grid;grid-template-columns:130px 1fr;gap:38px}
@@ -627,6 +627,44 @@ html[data-oe-template="07-immersive-character"] .kimetsu-community{display:grid;
 }
 `;
 
+
+const finalTemplateCss={
+'02-scrapbook':`
+/* v8.37.3 — Template 02 final isolation layer */
+html[data-oe-template="02-scrapbook"] .scrap-pocket-nav{display:none}
+html[data-oe-template="02-scrapbook"] .scrap-entry .entry-ticket-title{font-family:Georgia,"Times New Roman",serif!important;font-weight:600!important;letter-spacing:-.025em!important;color:#342d2f!important;text-transform:none!important;font-style:normal!important}
+html[data-oe-template="02-scrapbook"] .scrap-entry .entry-ticket-label{font-family:Georgia,"Times New Roman",serif!important;color:#6e6258!important;font-weight:600!important;letter-spacing:.16em!important}
+html[data-oe-template="02-scrapbook"] .scrap-entry .skip{background:#d9ff46!important;color:#342d2f!important;border:1px solid #5f534b!important;border-radius:3px!important;box-shadow:4px 4px 0 #b9a58f!important;font-family:"Trebuchet MS","Noto Sans SC",sans-serif!important}
+html[data-oe-template="02-scrapbook"] .scrap-entry .ticket-half.right{background:#dcecf0!important;color:#342d2f!important;border-left:1px dashed #8c7c6d!important}
+html[data-oe-template="02-scrapbook"] .scrap-entry .entry-ticket-meta>div{background:#fffaf0!important;border:1px solid #cbbda9!important;border-radius:2px!important;color:#342d2f!important}
+html[data-oe-template="02-scrapbook"] .scrap-memory-menu{padding:72px max(26px,5vw);background:#efe7d8}
+html[data-oe-template="02-scrapbook"] .scrap-memory-menu .quick-grid{max-width:1180px;margin:auto}
+html[data-oe-template="02-scrapbook"] .scrap-memory-menu .scrap-index-card{min-height:166px}
+html[data-oe-template="02-scrapbook"] .scrap-page{padding:72px max(24px,6vw) 100px}
+html[data-oe-template="02-scrapbook"] .scrap-page-head{display:grid;grid-template-columns:1fr auto;gap:8px 28px;align-items:end;max-width:1180px;margin:0 auto 48px;padding-bottom:20px;border-bottom:1px dashed #aa9988}
+html[data-oe-template="02-scrapbook"] .scrap-page-head>span{grid-column:1/-1;font:700 9px/1 monospace;letter-spacing:.16em;color:#ef6f80}
+html[data-oe-template="02-scrapbook"] .scrap-page-head h2{margin:0;font:500 clamp(40px,6vw,72px)/.95 Georgia,serif}
+html[data-oe-template="02-scrapbook"] .scrap-page-head .section-back{font-size:9px;font-weight:800;letter-spacing:.1em;border-bottom:1px solid #342d2f;padding-bottom:4px}
+html[data-oe-template="02-scrapbook"] .scrap-page>div:not(.scrap-page-head),html[data-oe-template="02-scrapbook"] .scrap-page>.scrap-page-body{max-width:1180px;margin-left:auto;margin-right:auto}
+html[data-oe-template="02-scrapbook"] .scrap-community,html[data-oe-template="02-scrapbook"] .scrap-sponsors{padding:84px max(24px,6vw)}
+html[data-oe-template="02-scrapbook"] .scrap-section-heading{max-width:1180px;margin:0 auto 26px}.scrap-section-heading span{font-size:9px;font-weight:800;letter-spacing:.16em;color:#ef6f80}.scrap-section-heading h2{margin:7px 0 0;font:500 clamp(34px,5vw,58px)/1 Georgia,serif}
+@media(max-width:760px){
+ html[data-oe-template="02-scrapbook"] .scrap-nav{position:sticky!important;top:0!important;z-index:70!important}
+ html[data-oe-template="02-scrapbook"] .scrap-pocket-nav{position:sticky;top:58px;z-index:69;display:flex;overflow-x:auto;background:#fffaf0eF;border-bottom:1px dashed #aa9988;backdrop-filter:blur(12px);scrollbar-width:none}
+ html[data-oe-template="02-scrapbook"] .scrap-pocket-nav::-webkit-scrollbar{display:none}
+ html[data-oe-template="02-scrapbook"] .scrap-pocket-nav a{flex:0 0 auto;min-width:82px;padding:9px 12px 10px;border-right:1px dashed #c9b9a5;font:700 9px/1.1 Georgia,serif;letter-spacing:.05em;text-align:left;color:#342d2f}
+ html[data-oe-template="02-scrapbook"] .scrap-pocket-nav a small{display:block;margin-bottom:4px;font:700 7px/1 monospace;color:#ef6f80}
+ html[data-oe-template="02-scrapbook"] .scrap-page{padding:46px 16px 72px}
+ html[data-oe-template="02-scrapbook"] .scrap-page-head{grid-template-columns:1fr;gap:12px;margin-bottom:30px}
+ html[data-oe-template="02-scrapbook"] .scrap-page-head .section-back{justify-self:start}
+ html[data-oe-template="02-scrapbook"] .scrap-side-a,html[data-oe-template="02-scrapbook"] .scrap-side-b{display:none}
+ html[data-oe-template="02-scrapbook"] .scrap-memory-menu{padding:50px 16px}
+ html[data-oe-template="02-scrapbook"] .scrap-memory-menu .quick-grid{display:flex!important;overflow-x:auto!important;gap:14px!important;padding:4px 4px 18px;scroll-snap-type:x proximity}
+ html[data-oe-template="02-scrapbook"] .scrap-memory-menu .scrap-index-card{flex:0 0 72%;min-height:148px;scroll-snap-align:start}
+}
+`
+};
+
 export function createVariantPreview(id){
-  return {id,style:baseStyle+(variants[id]||'')+(structural[id]||'')+(independent[id]||'')+(entrySystems[id]||'')+componentAdapterCss+nativeFooterMobile+secondRoundCss,body:variantBodies[id]||''};
+  return {id,style:baseStyle+(variants[id]||'')+(structural[id]||'')+(independent[id]||'')+(entrySystems[id]||'')+componentAdapterCss+nativeFooterMobile+secondRoundCss+(finalTemplateCss[id]||''),body:variantBodies[id]||''};
 }
