@@ -25,7 +25,7 @@ export function guestMarkup({state,g,i,field,esc,img,related,worksBlock,introBlo
   const name=field('guests.'+i+'.name',g.name||'','b','guest-poster-name');
   const role=field('guests.'+i+'.role',g.role||'GUEST','small');
   const common=' id="guest-'+esc(g.id)+'" data-oe-item="guests" data-oe-index="'+i+'"';
-  if(id==='02-scrapbook')return '<article class="scrap-guest guest-type-'+guestType+'"'+common+'><div class="scrap-polaroid">'+img+'<span>MEMORY '+num(i)+'</span></div><div class="scrap-guest-note"><small>'+role+'</small>'+name+'<div class="scrap-tape-meta"><b>'+metaLabel+'</b>'+meta+'</div>'+worksBlock+introBlock+social+related+'</div></article>';
+  if(id==='02-scrapbook')return '<article class="scrap-guest guest-type-'+guestType+'"'+common+'><div class="scrap-polaroid">'+img+'<span>同行记录 '+num(i)+'</span></div><div class="scrap-guest-note"><small>'+role+'</small>'+name+'<div class="scrap-tape-meta"><b>'+metaLabel+'</b>'+meta+'</div>'+worksBlock+introBlock+social+related+'</div><div class="scrap-guest-route"><span>BACK</span><b>'+num(i)+'</b><span>NEXT</span></div></article>';
   if(id==='03-school-festival')return '<article class="school-profile guest-type-'+guestType+'"'+common+'><div class="school-profile-no">'+num(i)+'</div>'+img+'<div class="school-profile-copy"><span>GUEST PROFILE</span>'+name+role+'<div class="school-profile-meta">'+meta+'</div>'+worksBlock+introBlock+social+related+'</div></article>';
   if(id==='04-museum-editorial')return '<article class="museum-portrait guest-type-'+guestType+'"'+common+'><figure>'+img+'<figcaption>PORTRAIT '+num(i)+'</figcaption></figure><div class="museum-portrait-copy"><div><span>'+role+'</span>'+name+'</div><dl><dt>'+metaLabel+'</dt><dd>'+meta+'</dd></dl>'+worksBlock+introBlock+social+related+'</div></article>';
   if(id==='05-live-poster')return '<article class="live-performer guest-type-'+guestType+'"'+common+'><div class="live-performer-no">'+num(i)+'</div>'+img+'<div class="live-performer-copy">'+role+name+'<div class="live-performer-meta">'+meta+'</div>'+worksBlock+introBlock+social+related+'</div></article>';
@@ -49,7 +49,7 @@ export function scheduleMarkup({state,x,i,field,esc,day,area,endTime,guestHtml,p
 export function updateMarkup({state,u,i,field,esc,target,mode}){
   const id=tid(state); if(id==='01-ip-only')return '';
   const common=' href="#'+esc(target)+'" data-target-mode="'+mode+'" data-page-link="'+esc(target)+'" data-oe-item="updates" data-oe-index="'+i+'"';
-  if(id==='02-scrapbook')return '<a class="scrap-update"'+common+'><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<span>READ NOTE ↗</span></a>';
+  if(id==='02-scrapbook')return '<a class="scrap-update"'+common+'><time>'+esc(u.date||'')+'</time><small>资讯 '+num(i)+'</small>'+field('updates.'+i+'.title',u.title||'','b')+'<span>查看 ↗</span></a>';
   if(id==='03-school-festival')return '<a class="school-update"'+common+'><span>NEWS '+num(i)+'</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<i>→</i></a>';
   if(id==='04-museum-editorial')return '<a class="museum-update"'+common+'><time>'+esc(u.date||'')+'</time><span>NEWS</span>'+field('updates.'+i+'.title',u.title||'','b')+'<i>VIEW</i></a>';
   if(id==='05-live-poster')return '<a class="live-update"'+common+'><span>'+num(i)+'</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<i>↗</i></a>';
@@ -101,7 +101,7 @@ export function activityMarkup({state,x,i,field,esc,image,scheduleInfo,venueInfo
   const summary=String(x.text||'').trim()?field('participation.'+i+'.text',x.text,'p','oe-secondary-copy'):'';
   const body=modules.length?'<div class="oe-activity-modules">'+modules.join('')+'</div>':'';
   const meta=type==='venue'?venueInfo:scheduleInfo;
-  if(id==='02-scrapbook')return '<article class="scrap-activity"'+common+'><div class="scrap-activity-photo">'+image+'</div><div class="scrap-activity-note"><span>MEMORY PLAN '+num(i)+'</span>'+title+'<small>'+typeLabel+'</small>'+summary+meta+guestHtml+action+body+'</div></article>';
+  if(id==='02-scrapbook')return '<article class="scrap-activity"'+common+'><div class="scrap-activity-photo">'+image+'</div><div class="scrap-activity-note"><span>旅程企划 '+num(i)+'</span>'+title+'<small>'+typeLabel+'</small>'+summary+meta+guestHtml+action+body+'</div></article>';
   if(id==='03-school-festival')return '<article class="school-activity"'+common+'><header><span>'+num(i)+'</span><b>'+typeLabel+'</b></header><div class="school-activity-main">'+image+'<div>'+title+summary+meta+guestHtml+action+body+'</div></div></article>';
   if(id==='04-museum-editorial')return '<article class="museum-activity"'+common+'><aside><span>PROGRAM '+num(i)+'</span><small>'+typeLabel+'</small></aside><div class="museum-activity-copy">'+title+summary+meta+guestHtml+body+action+'</div>'+image+'</article>';
   if(id==='05-live-poster')return '<article class="live-activity"'+common+'><div class="live-activity-no">'+num(i)+'</div><div class="live-activity-visual">'+image+'</div><div class="live-activity-copy"><span>'+typeLabel+'</span>'+title+summary+meta+guestHtml+body+action+'</div></article>';
