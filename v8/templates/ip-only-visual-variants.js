@@ -523,6 +523,25 @@ html[data-oe-template="07-immersive-character"] .kimetsu-nav{display:grid;grid-t
 @media(max-width:760px){.scrap-nav,.school-nav,.museum-nav,.live-nav,.expo-nav,.kimetsu-nav{grid-template-columns:1fr auto!important}.scrap-nav .links,.school-nav .links,.museum-nav .links,.live-nav .links,.expo-nav .links,.kimetsu-nav .links,.museum-nav-rule,.expo-nav-code{display:none!important}.scrap-entry-gate,.museum-entry-gate,.expo-entry-gate{grid-template-columns:1fr!important}.scrap-entry-tape,.museum-entry-index,.expo-entry-code{display:none!important}}
 `;
 
+
+const nativeFooterMobile=`
+html[data-oe-template="02-scrapbook"] .scrap-footer{grid-template-columns:140px 1.6fr 1fr 1fr!important}.scrap-footer-label{font:500 10px/1.3 Georgia,serif;letter-spacing:.15em;color:#ef6f80}.scrap-footer-links{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+html[data-oe-template="03-school-festival"] .school-footer{grid-template-columns:90px 1.4fr 1fr 1fr 1fr!important}.school-footer-no{font-size:64px;font-weight:1000;line-height:.8;color:#5eb6ff}
+html[data-oe-template="04-museum-editorial"] .museum-footer{grid-template-columns:150px 1.5fr 1fr 1fr 1fr!important}.museum-footer-index{font:400 9px/1.4 Georgia,serif;letter-spacing:.18em;color:#a28b6f}
+html[data-oe-template="05-live-poster"] .live-footer{grid-template-columns:180px 1.5fr 1fr 1fr 1fr!important}.live-footer-mark{font-size:18px;font-weight:1000;font-style:italic;line-height:.85;color:#72f5dc}
+html[data-oe-template="06-expo-catalogue"] .expo-footer{grid-template-columns:110px 1.4fr 1fr 1fr 1fr!important}.expo-footer-code{font-size:9px;font-weight:950;letter-spacing:.12em;color:#ff5b35}
+html[data-oe-template="07-immersive-character"] .kimetsu-footer{grid-template-columns:90px 1.5fr 1fr 1fr 1fr!important}.kimetsu-footer-seal{display:grid;place-items:center;width:54px;height:54px;border-radius:50%;background:#8f302e;color:#f5efe3;font:500 24px/1 serif;box-shadow:0 0 0 3px #d7b177}
+@media(max-width:560px){
+ html[data-oe-template="02-scrapbook"] .scrap-mobile-dock{background:#fffaf0;border-top:1px dashed #aa9988}.scrap-mobile-dock a{font-family:Georgia,serif;color:#4a3f39}
+ html[data-oe-template="03-school-festival"] .school-mobile-dock{background:#15304f;border-top:3px solid #ffe46b}.school-mobile-dock a{color:#fff;font-weight:900}
+ html[data-oe-template="04-museum-editorial"] .museum-mobile-dock{background:#f7f5f0;border-top:1px solid #aaa397}.museum-mobile-dock a{font-family:Georgia,serif;color:#191816}
+ html[data-oe-template="05-live-poster"] .live-mobile-dock{background:#090a0f;border-top:1px solid #ff3b74}.live-mobile-dock a{color:#fff;font-weight:900;font-style:italic}
+ html[data-oe-template="06-expo-catalogue"] .expo-mobile-dock{background:#f3f2ee;border-top:2px solid #101820}.expo-mobile-dock a{color:#101820;font-size:8px;font-weight:950}
+ html[data-oe-template="07-immersive-character"] .kimetsu-mobile-dock{background:#0c1423;border-top:1px solid #6f4f34}.kimetsu-mobile-dock a{font-family:serif;color:#f5efe3}
+ .scrap-footer,.school-footer,.museum-footer,.live-footer,.expo-footer,.kimetsu-footer{grid-template-columns:1fr!important}.scrap-footer-links{grid-template-columns:1fr!important}
+}
+`;
+
 export function createVariantPreview(id){
   return {id,style:baseStyle+(variants[id]||'')+(structural[id]||'')+(independent[id]||'')+(entrySystems[id]||'')+componentAdapterCss,body:variantBodies[id]||''};
 }
