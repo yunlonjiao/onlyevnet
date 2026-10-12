@@ -58,7 +58,8 @@ test('six added templates have genuinely different visual fingerprints',async({p
       const h=getComputedStyle(el);
       const title=getComputedStyle(document.querySelector('.hero h1'));
       const kv=getComputedStyle(document.querySelector('.kv'));
-      const card=getComputedStyle(document.querySelector('.quick-card'));
+      const quick=document.querySelector('[data-oe-mount="quick"] > *');
+      const card=getComputedStyle(quick);
       return [
         h.backgroundColor,h.minHeight,
         title.fontFamily,title.fontSize,title.fontStyle,
