@@ -1,4 +1,4 @@
-import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.36.3';
+import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.36.3';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
 
@@ -128,8 +128,12 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
           ?'<button class="guide-access-media" type="button" data-product-lightbox="'+esc(x.image)+'" data-oe-image="guide.items.'+i+'.image"><img src="'+esc(x.image)+'" alt="'+esc(x.title||'交通路线图')+'"></button>'
           :(getMode()==='edit'?'<button class="guide-access-media guide-access-media-empty" type="button" data-oe-image="guide.items.'+i+'.image"><span>ROUTE / MAP</span><small>上传交通路线图或入口示意图</small></button>':'');
         const navigationHref=externalHref(state.navigationUrl),navigation=navigationHref?'<a class="btn guide-venue-nav" data-navigation-settings href="'+esc(navigationHref)+'" target="_blank" rel="noopener">导航到场馆 <span>↗</span></a>':'<button class="btn guide-venue-nav guide-venue-nav-empty" type="button" data-navigation-settings>设置场馆导航 <span>↗</span></button>';
+        const adapted=guideMarkup({state,x,i,field,esc,image,navigation,preset,kindLabel,scope});
+        if(adapted)return adapted;
         return '<article class="guide-access'+(x.image?' has-media':'')+'" id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"><div class="guide-access-copy"><div class="guide-access-head"><span class="guide-chapter-no guide-access-no">'+String(i+1).padStart(2,'0')+'</span><b class="guide-access-heading">'+field('guide.items.'+i+'.title',x.title||'','span')+'</b><small class="guide-access-label">'+esc(x.label||kindLabel[preset]||'GUIDE')+'</small></div><div class="guide-access-rule"></div><div class="guide-body">'+field('guide.items.'+i+'.text',x.text||'','p')+'</div>'+navigation+'</div>'+image+'</article>';
       }
+      const adapted=guideMarkup({state,x,i,field,esc,image:'',navigation:'',preset,kindLabel,scope});
+      if(adapted)return adapted;
       return '<article class="guide-chapter guide-kind-'+esc(preset)+'" id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"><span class="guide-chapter-no">'+String(i+1).padStart(2,'0')+'</span><div class="guide-chapter-main"><div class="guide-chapter-head"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b><small>'+esc(x.label||kindLabel[preset]||'GUIDE')+'</small></div><div class="guide-body">'+field('guide.items.'+i+'.text',x.text||'','p')+'</div></div></article>';
     };
     const home=$('#guide-home .guide-home-grid');if(home)home.innerHTML=items.slice(0,homeCount).map((x,i)=>card(x,i,'home')).join('');
@@ -403,7 +407,8 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
     box.innerHTML=(state.socialLinks||[]).map((x,i)=>{
       const img=x.image?'<button class="social-image" data-product-lightbox="'+esc(x.image)+'" data-oe-image="socialLinks.'+i+'.image" type="button"><img src="'+esc(x.image)+'" alt="'+esc(x.label||'社群')+'"></button>':(getMode()==='edit'?'<button class="social-image empty" data-oe-image="socialLinks.'+i+'.image" type="button">＋ 图片 / 二维码</button>':'');
       const href=externalHref(x.url),action=href?'<a class="social-action" href="'+esc(href)+'" target="_blank" rel="noopener">进入 ↗</a>':'<span class="social-action muted">未设置链接</span>';
-      return '<article data-oe-item="socialLinks" data-oe-index="'+i+'">'+field('socialLinks.'+i+'.label',x.label,'b')+field('socialLinks.'+i+'.note',x.note||'','p')+img+action+'</article>';
+      const adapted=communityMarkup({state,x,i,field,esc,img,action});
+      return adapted||'<article data-oe-item="socialLinks" data-oe-index="'+i+'">'+field('socialLinks.'+i+'.label',x.label,'b')+field('socialLinks.'+i+'.note',x.note||'','p')+img+action+'</article>';
     }).join('');
   }
 
