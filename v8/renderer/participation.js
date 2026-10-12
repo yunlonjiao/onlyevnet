@@ -1,4 +1,4 @@
-import {activityMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.36.6';
+import {activityMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.36.7';
 export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>document.querySelector('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
   const externalHref=value=>{const raw=String(value||'').trim();if(!raw)return '';if(/^https?:\/\//i.test(raw))return raw;if(/^www\./i.test(raw)||/^[\w.-]+\.[a-z]{2,}(?:[\/:?#]|$)/i.test(raw))return 'https://'+raw;return ''};
