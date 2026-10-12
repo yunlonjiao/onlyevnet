@@ -105,20 +105,20 @@ export const previewBody=`
         <div class="trip-card c1"><span>11.08</span></div>
         <div class="trip-card c2"><span>杭州</span></div>
         <div class="trip-card c3"><span>ONLY EVENT</span></div>
-        <div class="trip-ticket-stub">OE 2026<br><b>入场凭证</b><small>入口 08 / SEAT A01</small></div>
+        <div class="trip-ticket-stub">OE 2026<br><b>入场凭证</b><small>入口 08 / 座位 A01</small></div>
         <div class="trip-cassette"><i></i><i></i><b>特别旅程</b><small>记忆磁带 / 001</small></div>
       </div>
     </section>
 
     <section class="trip-sides oe-home-only" data-trip-section="04 / A+B 面">
       <article class="trip-side-a">
-        <header><span>A SIDE</span><small>美好记忆</small></header>
+        <header><span>A 面</span><small>美好记忆</small></header>
         <h3>相遇 / 发现 / 尽兴</h3>
         <p>喜欢的社团、期待的舞台、遇见的人和意外的惊喜，都属于旅程正面的声音。</p>
         <div class="trip-side-meter"><i></i><b>记录 01</b><i></i><i></i><i></i></div>
       </article>
       <article class="trip-side-b">
-        <header><span>B SIDE</span><small>途中小事</small></header>
+        <header><span>B 面</span><small>途中小事</small></header>
         <h3>等待 / 错过 / 再次找到</h3>
         <p>排队、迷路、临时变更和没赶上的瞬间，也会一起留下来，成为完整的一天。</p>
         <div class="trip-side-meter"><i></i><i></i><b>记录 02</b><i></i><i></i></div>
