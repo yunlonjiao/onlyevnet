@@ -1,8 +1,8 @@
-import {IP_ONLY_CORE_MODULES} from '/v8/templates/ip-only-core-contract.js?v=8.37.1';
+import {IP_ONLY_CORE_MODULES,DEFAULT_IP_ONLY_PRESENTATION_PROFILE} from '/v8/templates/ip-only-core-contract.js?v=8.37.2';
 import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.37.0';
 export function makeIpOnlyTemplate({
   id,name,label,description,structureProfile,artDirection,motionProfile,
-  theme,heroTitleColor,heroTitleAccentColor
+  theme,heroTitleColor,heroTitleAccentColor,presentationProfile={}
 }){
   const defaults=createIpOnlyDefaults();
   defaults.templateId=id;
@@ -26,6 +26,7 @@ export function makeIpOnlyTemplate({
     sponsorRenderer:'sponsor.'+(structureProfile==='catalogue'?'tiered':'logo-wall'),
     engine:'onlyevent-studio-v8',
     renderer:id,
+    presentationProfile:{...DEFAULT_IP_ONLY_PRESENTATION_PROFILE,...presentationProfile},
     defaults
   };
 }
