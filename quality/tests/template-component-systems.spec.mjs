@@ -68,3 +68,23 @@ test('02-07 use native quick-navigation and map-link components',async({page})=>
     await expect(frame.locator('.map-jump-tag')).toHaveCount(0);
   }
 });
+
+
+test('02-07 have native header, entry, mobile dock and footer chrome',async({page})=>{
+  const expected={
+    '02-scrapbook':['.scrap-nav','.scrap-entry-gate','.scrap-mobile-dock','.scrap-footer'],
+    '03-school-festival':['.school-nav','.school-entry-gate','.school-mobile-dock','.school-footer'],
+    '04-museum-editorial':['.museum-nav','.museum-entry-gate','.museum-mobile-dock','.museum-footer'],
+    '05-live-poster':['.live-nav','.live-entry-gate','.live-mobile-dock','.live-footer'],
+    '06-expo-catalogue':['.expo-nav','.expo-entry-gate','.expo-mobile-dock','.expo-footer'],
+    '07-immersive-character':['.kimetsu-nav','.kimetsu-entry-gate','.kimetsu-mobile-dock','.kimetsu-footer']
+  };
+  for(const [id,selectors] of Object.entries(expected)){
+    await page.goto('/v8/?template='+id+'&project=native-chrome-'+id);
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator(selectors[0])).toBeVisible();
+    await expect(frame.locator(selectors[1])).toBeAttached();
+    await expect(frame.locator(selectors[2]+' a')).toHaveCount(5);
+    await expect(frame.locator(selectors[3])).toBeVisible();
+  }
+});
