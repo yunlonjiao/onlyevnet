@@ -1,10 +1,10 @@
 export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTickets,getState}){
   const fieldMap={
-    eventName:()=>$('.brand'),
-    tagline:()=>$('.hero-copy p'),
-    date:()=>qa('.meta .pill')[0],
-    location:()=>qa('.meta .pill')[1],
-    edition:()=>$('.venue-nav'),
+    eventName:()=> $('[data-oe-field="eventName"]') || $('.brand'),
+    tagline:()=> $('[data-oe-field="tagline"]') || $('.hero-copy p'),
+    date:()=> $('[data-oe-field="date"]') || qa('.meta .pill')[0],
+    location:()=> $('[data-oe-field="location"]') || qa('.meta .pill')[1],
+    edition:()=> $('[data-oe-field="edition"]') || $('.venue-nav'),
     heroTitle1:()=>$('.hero-title-1'),
     heroTitle2:()=>$('.hero-title-2'),
     heroTitle3:()=>$('.hero-title-3'),
