@@ -10,13 +10,13 @@ export const previewBody=`
       <div class="trip-opening-route"><span>开放时间</span><b class="entry-ticket-time">10:00</b><i>→</i><span>活动状态</span><b>开放中</b></div>
       <div class="trip-opening-board">
         <header><span>活动官网</span><b>2026</b></header>
-        <div class="trip-opening-board-row"><small>活动</small><strong class="entry-ticket-title">活动名称</strong></div>
+        <div class="trip-opening-board-row"><small>活动</small><strong class="entry-ticket-title">STARDUST ONLY</strong></div>
         <div class="trip-opening-board-row"><small>状态</small><strong>官方网站已开放</strong></div>
         <footer><span>活动信息 / 摊位 / 日程 / 嘉宾</span><b>ENTER</b></footer>
       </div>
       <div class="trip-opening-copy">
         <span class="entry-ticket-label">正在登场</span>
-        <h1 class="entry-ticket-title">活动名称</h1>
+        <h1 class="entry-ticket-title">STARDUST ONLY</h1>
         <p class="entry-ticket-subtitle">活动信息、参展内容与当天安排已准备就绪。</p>
       </div>
     </div>
@@ -41,7 +41,7 @@ export const previewBody=`
       <b data-oe-field="eventName">STARDUST<br>ONLY</b>
     </a>
     <div class="trip-flight-info">
-      <span>活动官网</span><i></i><span>最新资讯</span><i></i><span>观展信息</span>
+      <span>OFFICIAL SITE</span><i></i><span>最新资讯</span><i></i><span>观展信息</span>
     </div>
     <nav class="trip-nav" data-oe-mount="nav-links">
       <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small>摊位</a>
@@ -68,7 +68,7 @@ export const previewBody=`
       </div>
       <div class="trip-hero-copy hero-copy">
         <div class="trip-route">EVENT / 01 / 2026</div>
-        <h1><span class="hero-title-line hero-title-1">活动</span><br><em class="hero-title-line hero-title-2">主题</em><br><span class="hero-title-line hero-title-3">名称</span></h1>
+        <h1><span class="hero-title-line hero-title-1">STAR</span><br><em class="hero-title-line hero-title-2">BEAT</em><br><span class="hero-title-line hero-title-3">ONLY</span></h1>
         <p data-oe-field="tagline">围绕单一作品 IP 的粉丝综合活动。这里集中展示活动信息、参展内容、嘉宾、日程与观展指南。</p>
         <div class="trip-hero-meta">
           <span data-oe-field="date">11.08 SUN</span>
