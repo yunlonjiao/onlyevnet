@@ -5,12 +5,12 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-reference');
     const frame=page.frameLocator('#liveFrame');
 
-    await expect(frame.locator('.scrap-nav')).toBeVisible();
-    await expect(frame.locator('.scrap-pocket-nav a')).toHaveCount(5);
-    await expect(frame.locator('.scrap-memory-menu [data-oe-mount="quick"]')).toBeVisible();
-    await expect(frame.locator('.scrap-ribbon')).toHaveCount(0);
-    await expect(frame.locator('.scrap-mobile-dock')).toHaveCount(0);
-    await expect(frame.locator('.scrap-footer')).toBeVisible();
+    await expect(frame.locator('.trip-header')).toBeVisible();
+    await expect(frame.locator('.trip-mobile-nav a')).toHaveCount(5);
+    await expect(frame.locator('.trip-index [data-oe-mount="quick"]')).toBeVisible();
+    await expect(frame.locator('.trip-ribbon')).toHaveCount(0);
+    await expect(frame.locator('.trip-mobile-dock')).toHaveCount(0);
+    await expect(frame.locator('.trip-footer')).toBeVisible();
   });
 
   test('preserves direct editing and Shared Core content mounts',async({page})=>{
