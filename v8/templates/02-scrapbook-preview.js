@@ -26,7 +26,7 @@ export const previewBody=`
   <header class="trip-header">
     <a class="trip-logo" href="#home" data-page-link="home">
       <small>ONLY EVENT / JOURNEY</small>
-      <b>STARDUST<br>ONLY</b>
+      <b data-oe-field="eventName">STARDUST<br>ONLY</b>
     </a>
     <div class="trip-flight-info">
       <span>OE 2026</span><i></i><span>11.08 SUN</span><i></i><span>HANGZHOU</span>
@@ -61,7 +61,7 @@ export const previewBody=`
         <div class="trip-hero-meta">
           <span data-oe-field="date">11.08 SUN</span>
           <span data-oe-field="location">杭州</span>
-          <a class="venue-nav" href="#" target="_blank" rel="noopener" data-oe-field="venueName">杭州国际博览中心</a>
+          <a class="venue-nav" href="#" target="_blank" rel="noopener" data-oe-field="edition">杭州国际博览中心</a>
         </div>
         <div class="trip-stamp">BOARDING<br><b>NOW</b></div>
       </div>
