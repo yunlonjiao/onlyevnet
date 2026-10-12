@@ -64,7 +64,7 @@ export const previewBody=`
     <section class="trip-hero hero oe-home-only" id="home">
       <div class="trip-hero-visual">
         <div class="kv"></div>
-        <div class="trip-photo-caption"><span>照片 / 001</span><b>A 面 — 美好记忆</b></div>
+        <div class="trip-photo-caption"><span>主视觉 / 001</span><b>ONLY EVENT 主视觉</b></div>
       </div>
       <div class="trip-hero-copy hero-copy">
         <div class="trip-route">OE / 旅程 01 / 2026</div>
@@ -75,18 +75,18 @@ export const previewBody=`
           <span data-oe-field="location">杭州</span>
           <a class="venue-nav" href="#" target="_blank" rel="noopener" data-oe-field="edition">杭州国际博览中心</a>
         </div>
-        <div class="trip-stamp">正在<br><b>入场</b></div>
+        <div class="trip-stamp">活动<br><b>信息</b></div>
       </div>
       <div class="trip-weather-strip">
         <span><b>日期</b>11.08 SUN</span>
         <span><b>时间</b>10:00 — 17:00</span>
-        <span><b>天气</b>17.4℃ ☀</span>
-        <span><b>目的地</b>杭州</span>
+        <span><b>场馆</b>杭州国际博览中心</span>
+        <span><b>状态</b>开放购票</span>
       </div>
     </section>
 
     <div class="trip-route-ticker oe-home-only" aria-hidden="true">
-      <div><span>✈ ONLY EVENT 旅程</span><span>#特别旅程</span><span>杭州 / 11.08</span><span>17.4℃ ☀</span><span>正在入场</span><span>✈ ONLY EVENT 旅程</span><span>#特别旅程</span><span>杭州 / 11.08</span></div>
+      <div><span>✈ ONLY EVENT</span><span>#活动资讯</span><span>杭州 / 11.08</span><span>10:00 — 17:00</span><span>开放购票</span><span>✈ ONLY EVENT</span><span>#参展指南</span><span>杭州 / 11.08</span></div>
     </div>
 
     <section class="trip-news oe-home-only" id="updates" data-trip-section="02 / 资讯">
@@ -96,38 +96,38 @@ export const previewBody=`
     </section>
 
     <section class="trip-intro oe-home-only" data-trip-section="03 / 介绍">
-      <aside><span>旅程介绍</span><b>01</b></aside>
+      <aside><span>活动介绍</span><b>01</b></aside>
       <div class="trip-intro-copy">
-        <h2>一天的记忆，<br>就像一盘完整的磁带。</h2>
-        <p>好的一面、忙乱的一面、遇到的人、突然发生的小事，都会一起留下来。活动不是一串卡片，而是一段完整的旅程。</p>
+        <h2>为同一份喜欢，<br>安排一整天的相聚。</h2>
+        <p>这里汇总本次 ONLY EVENT 的活动定位、参展内容与现场重点。主办方可以直接替换成活动简介、主题说明或本届特色。</p>
       </div>
       <div class="trip-collage" aria-hidden="true">
-        <div class="trip-card c1"><span>11.08</span></div>
-        <div class="trip-card c2"><span>杭州</span></div>
-        <div class="trip-card c3"><span>ONLY EVENT</span></div>
-        <div class="trip-ticket-stub">OE 2026<br><b>入场凭证</b><small>入口 08 / 座位 A01</small></div>
-        <div class="trip-cassette"><i></i><i></i><b>特别旅程</b><small>记忆磁带 / 001</small></div>
+        <div class="trip-card c1"><span>活动日期</span></div>
+        <div class="trip-card c2"><span>活动城市</span></div>
+        <div class="trip-card c3"><span>活动主视觉</span></div>
+        <div class="trip-ticket-stub">OE 2026<br><b>入场信息</b><small>时间 / 场馆 / 票务</small></div>
+        <div class="trip-cassette"><i></i><i></i><b>ONLY EVENT</b><small>活动档案 / 001</small></div>
       </div>
     </section>
 
-    <section class="trip-sides oe-home-only" data-trip-section="04 / A+B 面">
+    <section class="trip-sides oe-home-only" data-trip-section="04 / 活动亮点">
       <article class="trip-side-a">
-        <header><span>A 面</span><small>美好记忆</small></header>
-        <h3>相遇 / 发现 / 尽兴</h3>
-        <p>喜欢的社团、期待的舞台、遇见的人和意外的惊喜，都属于旅程正面的声音。</p>
-        <div class="trip-side-meter"><i></i><b>记录 01</b><i></i><i></i><i></i></div>
+        <header><span>参展亮点</span><small>BOOTH / GOODS</small></header>
+        <h3>社团 / 制品 / 主题展示</h3>
+        <p>集中展示本届值得关注的社团、限定制品和主题摊位，让游客快速知道“这次有什么值得逛”。</p>
+        <div class="trip-side-meter"><i></i><b>亮点 01</b><i></i><i></i><i></i></div>
       </article>
       <article class="trip-side-b">
-        <header><span>B 面</span><small>途中小事</small></header>
-        <h3>等待 / 错过 / 再次找到</h3>
-        <p>排队、迷路、临时变更和没赶上的瞬间，也会一起留下来，成为完整的一天。</p>
-        <div class="trip-side-meter"><i></i><i></i><b>记录 02</b><i></i><i></i></div>
+        <header><span>现场亮点</span><small>STAGE / GUEST</small></header>
+        <h3>舞台 / 嘉宾 / 互动企划</h3>
+        <p>突出本届舞台活动、嘉宾互动和现场企划，让游客在首页就能抓住当天最重要的内容。</p>
+        <div class="trip-side-meter"><i></i><i></i><b>亮点 02</b><i></i><i></i></div>
       </article>
     </section>
 
     <section class="trip-transition oe-home-only">
-      <span>一天 / 两面 / 很多记忆</span>
-      <b>美好的、忙乱的，<br>还有发生在中间的一切。</b>
+      <span>活动信息 / 参展内容 / 当天安排</span>
+      <b>先看重点，<br>再决定从哪里开始逛。</b>
       <i>→</i>
     </section>
 
