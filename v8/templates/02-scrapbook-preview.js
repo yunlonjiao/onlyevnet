@@ -49,7 +49,7 @@ export const previewBody=`
   </nav>
 
   <main id="top">
-    <section class="trip-hero oe-home-only" id="home">
+    <section class="trip-hero hero oe-home-only" id="home">
       <div class="trip-hero-visual">
         <div class="kv"></div>
         <div class="trip-photo-caption"><span>PHOTO / 001</span><b>A SIDE — THE GOOD MEMORIES</b></div>
