@@ -133,3 +133,28 @@ export function communityMarkup({state,x,i,field,esc,img,action}){
   if(id==='06-expo-catalogue')return '<article class="expo-social"'+common+'><span>C-'+num(i)+'</span>'+img+'<div>'+label+note+'</div>'+action+'</article>';
   return '<article class="kimetsu-social"'+common+'>'+img+'<div>'+label+note+action+'</div></article>';
 }
+
+
+export function quickMarkup({state,x,i,esc}){
+  const id=tid(state);if(id==='01-ip-only')return '';
+  const href='#'+x[1],mode=x[4],label=x[2],hint=x[3],n=num(i);
+  const common=' href="'+href+'" data-target-mode="'+mode+'" data-page-link="'+esc(x[1])+'"';
+  if(id==='02-scrapbook')return '<a class="scrap-index-card"'+common+'><span>'+n+'</span><div><small>MEMORY FILE</small><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></div><i>↗</i></a>';
+  if(id==='03-school-festival')return '<a class="school-wayfinding-card"'+common+'><span>'+n+'</span><div><small>FESTIVAL GUIDE</small><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></div><i>→</i></a>';
+  if(id==='04-museum-editorial')return '<a class="museum-index-link"'+common+'><span>'+n+'</span><div><b>'+esc(label)+'</b><small>'+esc(hint)+'</small></div><i>VIEW</i></a>';
+  if(id==='05-live-poster')return '<a class="live-menu-tile"'+common+'><span>'+n+'</span><div><small>CONTENTS</small><b>'+esc(label)+'</b></div><i>'+esc(hint)+'</i></a>';
+  if(id==='06-expo-catalogue')return '<a class="expo-index-row"'+common+'><span>I-'+n+'</span><b>'+esc(label)+'</b><small>'+esc(hint)+'</small><i>→</i></a>';
+  return '<a class="kimetsu-path-link"'+common+'><span>'+n+'</span><div><small>章</small><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></div><i>›</i></a>';
+}
+
+export function mapLinkMarkup({state,item,index,field,esc,target,kind,itemId}){
+  const id=tid(state);if(id==='01-ip-only')return '';
+  const common=' href="#'+esc(target)+'" data-target-mode="page" data-page-link="'+esc(target)+'" data-explore-link data-explore-kind="'+esc(kind)+'" data-explore-id="'+esc(itemId)+'" data-oe-item="explore" data-oe-index="'+index+'"';
+  const label=field('venueMap.links.'+index+'.label',item.label,'span');
+  if(id==='02-scrapbook')return '<a class="scrap-map-tag"'+common+'><b>'+num(index)+'</b>'+label+'<i>↗</i></a>';
+  if(id==='03-school-festival')return '<a class="school-map-sign"'+common+'><span>'+num(index)+'</span><b>'+label+'</b><i>→</i></a>';
+  if(id==='04-museum-editorial')return '<a class="museum-map-index"'+common+'><span>'+num(index)+'</span><b>'+label+'</b><small>VIEW</small></a>';
+  if(id==='05-live-poster')return '<a class="live-venue-link"'+common+'><span>'+num(index)+'</span><b>'+label+'</b><i>↗</i></a>';
+  if(id==='06-expo-catalogue')return '<a class="expo-area-link"'+common+'><span>A-'+num(index)+'</span><b>'+label+'</b><i>→</i></a>';
+  return '<a class="kimetsu-map-link"'+common+'><span>'+num(index)+'</span><b>'+label+'</b><i>巡</i></a>';
+}
