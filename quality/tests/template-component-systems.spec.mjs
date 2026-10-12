@@ -72,7 +72,7 @@ test('02-07 use native quick-navigation and map-link components',async({page})=>
 
 test('02-07 keep native header/footer while presentation chrome follows each reference design',async({page})=>{
   const expected={
-    '02-scrapbook':['.scrap-nav','.scrap-footer'],
+    '02-scrapbook':['.trip-header','.trip-footer'],
     '03-school-festival':['.school-nav','.school-footer'],
     '04-museum-editorial':['.museum-nav','.museum-footer'],
     '05-live-poster':['.live-nav','.live-footer'],
@@ -89,7 +89,7 @@ test('02-07 keep native header/footer while presentation chrome follows each ref
   await page.goto('/v8/?template=02-scrapbook&project=scrap-reference-chrome');
   const scrapbook=page.frameLocator('#liveFrame');
   await expect(scrapbook.locator('.scrap-entry-gate')).toBeAttached();
-  await expect(scrapbook.locator('.scrap-pocket-nav a')).toHaveCount(5);
-  await expect(scrapbook.locator('.scrap-ribbon')).toHaveCount(0);
-  await expect(scrapbook.locator('.scrap-mobile-dock')).toHaveCount(0);
+  await expect(scrapbook.locator('.trip-mobile-nav a')).toHaveCount(5);
+  await expect(scrapbook.locator('.trip-ribbon')).toHaveCount(0);
+  await expect(scrapbook.locator('.trip-mobile-dock')).toHaveCount(0);
 });
