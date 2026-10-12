@@ -1,3 +1,4 @@
+import {quickMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.36.4';
 export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,onPageNavigate=()=>{}}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
   const lifecycleStatus=()=>{
@@ -56,7 +57,7 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
       defs=defs.sort((a,b)=>(order[a[0]]??9)-(order[b[0]]??9));
     }
     if(lifecycleStatus()==='ended')defs=defs.filter(x=>x[0]!=='tickets');
-    grid.innerHTML=defs.map((x,i)=>'<a class="quick-card reveal in" href="#'+x[1]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[1]+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
+    grid.innerHTML=defs.map((x,i)=>quickMarkup({state:getState(),x,i,esc:s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))})||'<a class="quick-card reveal in" href="#'+x[1]+'" data-target-mode="'+x[4]+'" data-page-link="'+x[1]+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+x[2]+'</b><small>'+x[3]+'</small></a>').join('');
   }
   function renderCustomNav(){
     const pages=getState().customPages||[],desktop=mount('nav-links','.nav .links'),mobile=mount('mobile-nav','.mobile-dock');
