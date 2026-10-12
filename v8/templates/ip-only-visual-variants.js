@@ -648,6 +648,19 @@ html[data-oe-template="02-scrapbook"] .scrap-page-head .section-back{font-size:9
 html[data-oe-template="02-scrapbook"] .scrap-page>div:not(.scrap-page-head),html[data-oe-template="02-scrapbook"] .scrap-page>.scrap-page-body{max-width:1180px;margin-left:auto;margin-right:auto}
 html[data-oe-template="02-scrapbook"] .scrap-community,html[data-oe-template="02-scrapbook"] .scrap-sponsors{padding:84px max(24px,6vw)}
 html[data-oe-template="02-scrapbook"] .scrap-section-heading{max-width:1180px;margin:0 auto 26px}.scrap-section-heading span{font-size:9px;font-weight:800;letter-spacing:.16em;color:#ef6f80}.scrap-section-heading h2{margin:7px 0 0;font:500 clamp(34px,5vw,58px)/1 Georgia,serif}
+html[data-oe-template="02-scrapbook"] .btn{border:1px solid #6f6258;border-radius:3px;background:#d9ff46;color:#342d2f;box-shadow:3px 3px 0 #c5b49f;font:800 10px/1 "Trebuchet MS","Noto Sans SC",sans-serif;letter-spacing:.06em}
+html[data-oe-template="02-scrapbook"] .btn:hover{transform:translateY(-1px)}
+html[data-oe-template="02-scrapbook"] .pill{border:0;border-radius:0;background:transparent;padding:0;font:700 10px/1.45 Georgia,serif;color:#594e47}
+html[data-oe-template="02-scrapbook"] .meta{display:grid;grid-template-columns:repeat(3,minmax(0,auto));justify-content:start;gap:8px 22px;border-top:1px dashed #b7a792;padding-top:14px}
+html[data-oe-template="02-scrapbook"] .ticket-grid{display:grid;grid-template-columns:1fr;gap:18px}
+html[data-oe-template="02-scrapbook"] .featured-activity-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+html[data-oe-template="02-scrapbook"] .community{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+html[data-oe-template="02-scrapbook"] .sponsors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+html[data-oe-template="02-scrapbook"] .section-no{border:0;border-radius:0;background:transparent;padding:0;font:700 9px/1 monospace;letter-spacing:.14em;color:#ef6f80}
+html[data-oe-template="02-scrapbook"] .event-status-badge{display:inline-flex;width:max-content;border:1px solid #b7a792!important;border-radius:2px!important;background:#fffaf0!important;color:#594e47!important;box-shadow:none!important;font:700 9px/1.2 monospace!important;letter-spacing:.08em!important}
+html[data-oe-template="02-scrapbook"] #guests .guest-poster-name{color:#342d2f!important;font-family:Georgia,"Times New Roman",serif!important;font-weight:500!important}
+html[data-oe-template="02-scrapbook"] #guests .guest-unified-meta b,html[data-oe-template="02-scrapbook"] #guests .guest-info-block b{color:#594e47!important;font-family:Georgia,"Times New Roman",serif!important}
+html[data-oe-template="02-scrapbook"] #guests .guest-unified-meta span,html[data-oe-template="02-scrapbook"] #guests .guest-works-block span,html[data-oe-template="02-scrapbook"] #guests .guest-intro-block p{color:#74675e!important}
 @media(max-width:760px){
  html[data-oe-template="02-scrapbook"] .scrap-nav{position:sticky!important;top:0!important;z-index:70!important}
  html[data-oe-template="02-scrapbook"] .scrap-pocket-nav{position:sticky;top:58px;z-index:69;display:flex;overflow-x:auto;background:#fffaf0eF;border-bottom:1px dashed #aa9988;backdrop-filter:blur(12px);scrollbar-width:none}
@@ -661,6 +674,10 @@ html[data-oe-template="02-scrapbook"] .scrap-section-heading{max-width:1180px;ma
  html[data-oe-template="02-scrapbook"] .scrap-memory-menu{padding:50px 16px}
  html[data-oe-template="02-scrapbook"] .scrap-memory-menu .quick-grid{display:flex!important;overflow-x:auto!important;gap:14px!important;padding:4px 4px 18px;scroll-snap-type:x proximity}
  html[data-oe-template="02-scrapbook"] .scrap-memory-menu .scrap-index-card{flex:0 0 72%;min-height:148px;scroll-snap-align:start}
+ html[data-oe-template="02-scrapbook"] .featured-activity-grid{grid-template-columns:1fr}
+ html[data-oe-template="02-scrapbook"] .community{grid-template-columns:1fr}
+ html[data-oe-template="02-scrapbook"] .sponsors{grid-template-columns:repeat(2,minmax(0,1fr))}
+ html[data-oe-template="02-scrapbook"] .meta{grid-template-columns:1fr;gap:6px}
 }
 `
 };
