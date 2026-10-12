@@ -1,4 +1,4 @@
-import {IP_ONLY_CORE_MODULES} from '/v8/templates/ip-only-core-contract.js?v=8.37.1';
+import {IP_ONLY_CORE_MODULES,DEFAULT_IP_ONLY_PRESENTATION_PROFILE} from '/v8/templates/ip-only-core-contract.js?v=8.37.2';
 import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.37.0';
 export const template01 = {
   id:'01-ip-only',
@@ -21,5 +21,6 @@ export const template01 = {
   sponsorRenderer:'sponsor.logo-wall',
   engine:'onlyevent-studio-v8',
   renderer:'01-ip-only',
+  presentationProfile:{...DEFAULT_IP_ONLY_PRESENTATION_PROFILE,entryAnimation:true,ribbon:true,quickAccess:true,mobileDock:true,scrollProgress:true,floatingStickers:true,passportProgress:true,decorativeSectionOrbits:true},
   defaults:createIpOnlyDefaults()
 };
