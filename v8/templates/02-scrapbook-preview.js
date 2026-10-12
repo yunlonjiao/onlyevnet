@@ -5,18 +5,18 @@
 export const previewBody=`
 <div class="loader scrap-entry" id="loader">
   <div class="gate trip-opening-gate" role="button" tabindex="0" aria-label="点击进入活动网站">
-    <div class="trip-opening-topbar"><span>ONLY EVENT 活动信息 / OE2026</span><span class="entry-ticket-date">2026.11.08</span><span class="entry-ticket-location">杭州</span></div>
+    <div class="trip-opening-topbar"><span>活动信息</span><span class="entry-ticket-date">2026.11.08</span><span class="entry-ticket-location">杭州</span></div>
     <div class="trip-opening-center">
-      <div class="trip-opening-route"><span>开放时间</span><b class="entry-ticket-time">10:00</b><i>→</i><span>活动类型</span><b>ONLY EVENT</b></div>
+      <div class="trip-opening-route"><span>开放时间</span><b class="entry-ticket-time">10:00</b><i>→</i><span>活动状态</span><b>开放中</b></div>
       <div class="trip-opening-board">
-        <header><span>ONLY EVENT</span><b>OE 2026</b></header>
-        <div class="trip-opening-board-row"><small>活动</small><strong>STARDUST ONLY 2026</strong></div>
+        <header><span>活动官网</span><b>2026</b></header>
+        <div class="trip-opening-board-row"><small>活动</small><strong class="entry-ticket-title">活动名称</strong></div>
         <div class="trip-opening-board-row"><small>状态</small><strong>官方网站已开放</strong></div>
         <footer><span>活动信息 / 摊位 / 日程 / 嘉宾</span><b>ENTER</b></footer>
       </div>
       <div class="trip-opening-copy">
         <span class="entry-ticket-label">正在登场</span>
-        <h1 class="entry-ticket-title">STARDUST ONLY 2026</h1>
+        <h1 class="entry-ticket-title">活动名称</h1>
         <p class="entry-ticket-subtitle">活动信息、参展内容与当天安排已准备就绪。</p>
       </div>
     </div>
@@ -30,18 +30,18 @@ export const previewBody=`
 
 <div class="trip-site">
   <aside class="trip-rail" aria-hidden="true">
-    <span>ONLY EVENT GUIDE</span>
+    <span>活动导航</span>
     <i></i>
-    <b>OE / 2026</b>
+    <b>2026</b>
     <em>向下 ↓</em>
   </aside>
   <header class="trip-header">
     <a class="trip-logo" href="#home" data-page-link="home">
-      <small>ONLY EVENT / 活动指南</small>
+      <small>活动信息</small>
       <b data-oe-field="eventName">STARDUST<br>ONLY</b>
     </a>
     <div class="trip-flight-info">
-      <span>OE 2026</span><i></i><span>ONLY EVENT</span><i></i><span>OFFICIAL SITE</span>
+      <span>活动官网</span><i></i><span>最新资讯</span><i></i><span>观展信息</span>
     </div>
     <nav class="trip-nav" data-oe-mount="nav-links">
       <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small>摊位</a>
@@ -64,11 +64,11 @@ export const previewBody=`
     <section class="trip-hero hero oe-home-only" id="home">
       <div class="trip-hero-visual">
         <div class="kv"></div>
-        <div class="trip-photo-caption"><span>主视觉 / 001</span><b>ONLY EVENT 主视觉</b></div>
+        <div class="trip-photo-caption"><span>主视觉 / 001</span><b>活动主视觉</b></div>
       </div>
       <div class="trip-hero-copy hero-copy">
-        <div class="trip-route">OE / EVENT 01 / 2026</div>
-        <h1><span class="hero-title-line hero-title-1">STAR</span><br><em class="hero-title-line hero-title-2">BEAT</em><br><span class="hero-title-line hero-title-3">ONLY</span></h1>
+        <div class="trip-route">EVENT / 01 / 2026</div>
+        <h1><span class="hero-title-line hero-title-1">活动</span><br><em class="hero-title-line hero-title-2">主题</em><br><span class="hero-title-line hero-title-3">名称</span></h1>
         <p data-oe-field="tagline">围绕单一作品 IP 的粉丝综合活动。这里集中展示活动信息、参展内容、嘉宾、日程与观展指南。</p>
         <div class="trip-hero-meta">
           <span data-oe-field="date">11.08 SUN</span>
@@ -86,7 +86,7 @@ export const previewBody=`
     </section>
 
     <div class="trip-route-ticker oe-home-only" aria-hidden="true">
-      <div><span>✈ ONLY EVENT</span><span>#活动资讯</span><span>杭州 / 11.08</span><span>10:00 — 17:00</span><span>开放购票</span><span>✈ ONLY EVENT</span><span>#参展指南</span><span>杭州 / 11.08</span></div>
+      <div><span>✈ 活动资讯</span><span>#参展指南</span><span>杭州 / 11.08</span><span>10:00 — 17:00</span><span>开放购票</span><span>✈ 当天日程</span><span>#场地图</span><span>杭州 / 11.08</span></div>
     </div>
 
     <section class="trip-news oe-home-only" id="updates" data-trip-section="02 / 资讯">
@@ -99,7 +99,7 @@ export const previewBody=`
       <aside><span>活动介绍</span><b>01</b></aside>
       <div class="trip-intro-copy">
         <h2>为同一份喜欢，<br>安排一整天的相聚。</h2>
-        <p>这里汇总本次 ONLY EVENT 的活动定位、参展内容与现场重点。主办方可以直接替换成活动简介、主题说明或本届特色。</p>
+        <p>这里汇总本次活动的定位、参展内容与现场重点。主办方可以直接替换成活动简介、主题说明或本届特色。</p>
         <div class="trip-intro-facts">
           <div><small>参展内容</small><b>社团 / 制品</b></div>
           <div><small>现场内容</small><b>活动 / 嘉宾</b></div>
@@ -124,7 +124,7 @@ export const previewBody=`
     </section>
 
     <section class="trip-ticket-section oe-home-only" id="tickets" data-trip-section="06 / 票务">
-      <div class="trip-ticket-cover"><small>入场</small><b>票务<br>信息</b><span>ONLY EVENT / 2026</span></div>
+      <div class="trip-ticket-cover"><small>入场</small><b>票务<br>信息</b><span>活动票务 / 2026</span></div>
       <div class="trip-ticket-list">
         <div data-oe-mount="tickets" class="ticket-grid"></div>
         <div data-oe-mount="ticket-actions" class="ticket-actions"></div>
@@ -233,7 +233,7 @@ export const previewStyle=`
 .trip-page{padding:78px max(5vw,44px) 110px;min-height:calc(100vh - 78px);background:var(--trip-bg)}.trip-page-head{display:grid;grid-template-columns:1fr auto;gap:8px 30px;align-items:end;max-width:1220px;margin:0 auto 50px;padding-bottom:20px;border-bottom:1px solid var(--trip-line)}.trip-page-head>span{grid-column:1/-1}.trip-page-head h2{margin:0;font:500 clamp(45px,6vw,78px)/.9 Georgia,serif}.trip-page-head .section-back{font:800 8px/1 monospace;border-bottom:1px solid var(--trip-ink);padding-bottom:5px}
 
 .trip-page#guests:before{content:"CHARACTER / 嘉宾阵容";font-size:7px}.trip-page#guests .trip-page-head:before{content:"COMPANIONS";position:absolute;left:0;bottom:-22px;font:500 clamp(70px,10vw,150px)/.7 Georgia,serif;letter-spacing:-.07em;color:#ded4c8;z-index:-1;white-space:nowrap}.trip-page#activities .trip-page-head:before{content:"PROGRAM";position:absolute;left:0;bottom:-22px;font:500 clamp(70px,10vw,150px)/.7 Georgia,serif;letter-spacing:-.07em;color:#ded4c8;z-index:-1;white-space:nowrap}
-.trip-page:before{content:"ONLY EVENT / 活动资料";display:block;max-width:1220px;margin:0 auto 18px;font:800 7px/1 monospace;letter-spacing:.18em;color:#9c8d80}.trip-page:after{content:"";position:fixed;right:14px;bottom:18px;width:34px;height:34px;border:1px solid #b9aa97;border-radius:50%;pointer-events:none}
+.trip-page:before{content:"活动资料";display:block;max-width:1220px;margin:0 auto 18px;font:800 7px/1 monospace;letter-spacing:.18em;color:#9c8d80}.trip-page:after{content:"";position:fixed;right:14px;bottom:18px;width:34px;height:34px;border:1px solid #b9aa97;border-radius:50%;pointer-events:none}
 .trip-page-head{position:relative}.trip-page-head:after{content:"✈";position:absolute;right:0;top:4px;font-size:20px;color:#c7b8a8}.trip-page-head h2{letter-spacing:-.045em}.trip-page-head .section-back{justify-self:end}
 
 .trip-page-pager{max-width:1220px;margin:72px auto 0;padding-top:18px;border-top:1px solid var(--trip-line);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font:800 8px/1 monospace;letter-spacing:.12em}.trip-page-pager a:last-child,.trip-page-pager span:last-child{text-align:right}.trip-page-pager b{font:500 20px/1 Georgia,serif;color:#c2b3a3}
