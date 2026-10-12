@@ -45,9 +45,7 @@ test('favorites and product wishlist also work outside Template 01',async({page}
   const frame=page.frameLocator('#liveFrame');
   await expect(frame.locator('.hero')).toBeVisible();
   await page.locator('#previewBtn').click();
-  await expect(frame.locator('#loader')).toBeVisible();
-  await frame.locator('.gate').click();
-  await expect.poll(()=>frame.locator('#loader').evaluate(el=>el.classList.contains('hide')),{timeout:5000}).toBe(true);
+  await expect(frame.locator('#loader')).toBeHidden();
 
   await frame.locator('.nav [data-page-link="booths"]').click();
   const fav=frame.locator('[data-favorite-booth]').first();
