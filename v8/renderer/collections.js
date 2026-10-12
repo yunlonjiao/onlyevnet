@@ -1,4 +1,4 @@
-import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.36.3';
+import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.36.4';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
 
@@ -153,7 +153,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
     if(list){
       list.innerHTML=links.map(({item:x,index})=>{
         const target=x.target||'activities',kind=x.itemType||'page',itemId=x.itemId||'';
-        return '<a class="map-jump-tag" href="#'+esc(target)+'" data-target-mode="page" data-page-link="'+esc(target)+'" data-explore-link data-explore-kind="'+esc(kind)+'" data-explore-id="'+esc(itemId)+'" data-oe-item="explore" data-oe-index="'+index+'"><span>'+field('venueMap.links.'+index+'.label',x.label,'span')+'</span><i>↗</i></a>';
+        return mapLinkMarkup({state,item:x,index,field,esc,target,kind,itemId})||'<a class="map-jump-tag" href="#'+esc(target)+'" data-target-mode="page" data-page-link="'+esc(target)+'" data-explore-link data-explore-kind="'+esc(kind)+'" data-explore-id="'+esc(itemId)+'" data-oe-item="explore" data-oe-index="'+index+'"><span>'+field('venueMap.links.'+index+'.label',x.label,'span')+'</span><i>↗</i></a>';
       }).join('');
     }
     if(rail)rail.hidden=!links.length;
