@@ -7,7 +7,7 @@
  * typography and motion; the core defines data, behavior and editing contracts.
  */
 
-export const IP_ONLY_CORE_VERSION='8.37.1';
+export const IP_ONLY_CORE_VERSION='8.37.2';
 
 export const IP_ONLY_CORE_MODULES=Object.freeze([
   'ribbon',
@@ -32,19 +32,79 @@ export const IP_ONLY_CORE_PAGES=Object.freeze([
   'guide'
 ]);
 
+
+/* Mandatory capabilities are behavioral contracts already proven in Template 01.
+   Every IP ONLY template must preserve these behaviors even if its visual structure differs. */
+export const IP_ONLY_MANDATORY_CAPABILITIES=Object.freeze({
+  editing:[
+    'inline-editable-visible-copy',
+    'card-or-surface-selection',
+    'right-side-editor-selection',
+    'image-field-editing',
+    'edit-preview-interaction-isolation'
+  ],
+  relations:[
+    'featured-activity-linking',
+    'activity-schedule-linking',
+    'activity-guest-linking',
+    'schedule-guest-linking',
+    'map-target-linking',
+    'custom-page-navigation'
+  ],
+  visitor:[
+    'booth-favorites',
+    'product-wishlist',
+    'search',
+    'image-lightbox',
+    'external-links',
+    'module-visibility',
+    'standalone-export'
+  ],
+  media:[
+    'desktop-mobile-hero-media',
+    'lazy-loading',
+    'broken-image-guard'
+  ]
+});
+
+/* Presentation capabilities exist in Shared Core but are opt-in per template.
+   Their presence on the visitor site is decided by the reference-site design, not by Template 01. */
+export const IP_ONLY_OPTIONAL_PRESENTATION_CAPABILITIES=Object.freeze([
+  'entry-animation',
+  'ribbon',
+  'quick-access',
+  'mobile-dock',
+  'scroll-progress',
+  'floating-stickers',
+  'passport-progress',
+  'decorative-section-orbits'
+]);
+
+export const DEFAULT_IP_ONLY_PRESENTATION_PROFILE=Object.freeze({
+  entryAnimation:true,
+  ribbon:true,
+  quickAccess:true,
+  mobileDock:true,
+  scrollProgress:true,
+  floatingStickers:true,
+  passportProgress:true,
+  decorativeSectionOrbits:true
+});
+
 export const IP_ONLY_CORE_CAPABILITIES=Object.freeze({
   event:{
     lifecycle:['auto-status','manual-status','start-end-datetime'],
     identity:['eventName','date','location','edition','tagline'],
     hero:['desktop-image','mobile-image','focal-position','title-lines','title-size','title-colors'],
     seo:['pageTitle','metaDescription','canonical','ogTitle','ogDescription','ogImage'],
-    entry:['enabled','skip','style','title','subtitle','label','accent','duration']
+    entry:['enabled','skip','style','title','subtitle','label','accent','duration'],
+    entryPresentation:'optional-per-template'
   },
   navigation:{
     pages:['home','booths','activities','guests','guide','custom-pages'],
     moduleVisibility:true,
-    quickAccess:true,
-    desktopAndMobile:true,
+    quickAccess:'optional-per-template',
+    desktopAndMobile:'template-defined-navigation-surface',
     lifecycleAware:true
   },
   tickets:{
@@ -179,6 +239,9 @@ export function getIpOnlyCoreManifest(){
     version:IP_ONLY_CORE_VERSION,
     modules:[...IP_ONLY_CORE_MODULES],
     pages:[...IP_ONLY_CORE_PAGES],
+    mandatoryCapabilities:IP_ONLY_MANDATORY_CAPABILITIES,
+    optionalPresentationCapabilities:[...IP_ONLY_OPTIONAL_PRESENTATION_CAPABILITIES],
+    defaultPresentationProfile:{...DEFAULT_IP_ONLY_PRESENTATION_PROFILE},
     capabilities:IP_ONLY_CORE_CAPABILITIES,
     relations:IP_ONLY_CORE_RELATIONS,
     editProtocol:IP_ONLY_CORE_EDIT_PROTOCOL
@@ -193,5 +256,6 @@ export function validateIpOnlyTemplateDefinition(template){
   const supported=new Set(template.supportedModules||[]);
   IP_ONLY_CORE_MODULES.forEach(key=>{if(!supported.has(key))errors.push('missing supported module: '+key)});
   if(!template.defaults||typeof template.defaults!=='object')errors.push('template.defaults is required');
+  if(!template.presentationProfile||typeof template.presentationProfile!=='object')errors.push('template.presentationProfile is required');
   return errors;
 }
