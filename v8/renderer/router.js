@@ -73,7 +73,7 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
     homeSections.forEach(([id,key])=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(key)));
     standalonePages().forEach(id=>$('#'+id)?.classList.toggle('oe-module-off',!moduleOn(id)));
     const navMap={'tickets':'tickets','map-home':'map','schedule-home':'activities','community':'community','booths':'booths','activities':'activities','guests':'guests','guide':'guide'};
-    Object.entries(navMap).forEach(([id,key])=>qa('[data-oe-mount="nav-links"] a[href="#'+id+'"],[data-oe-mount="mobile-nav"] a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
+    Object.entries(navMap).forEach(([id,key])=>qa('[data-oe-mount="nav-links"] a[href="#'+id+'"],.nav a[href="#'+id+'"],[data-oe-mount="mobile-nav"] a[href="#'+id+'"]').forEach(a=>a.hidden=!moduleOn(key)));
     renderCustomNav();
     renumberSections();
     renderQuickAccess();renderParticipation();
