@@ -466,6 +466,23 @@ html[data-oe-template="06-expo-catalogue"] .expo-activity-row{display:grid;grid-
 html[data-oe-template="07-immersive-character"] .kimetsu-activity{display:grid;grid-template-columns:60px 280px 1fr;gap:24px;padding:22px 0;border-bottom:1px solid #6f4f34}.kimetsu-activity-mark{font:500 28px/1 serif;color:#d7b177}.kimetsu-activity>.activity-feature-media{width:280px;min-height:240px;border:6px solid #6f4f34}.kimetsu-activity-copy>span{font-size:8px;letter-spacing:.18em;color:#d7b177}.kimetsu-activity-copy h3{font:500 32px/1.2 serif;margin:7px 0}.kimetsu-guide{display:grid;grid-template-columns:60px 1fr 280px;gap:24px;padding:22px 0;border-bottom:1px solid #6f4f34}.kimetsu-guide>span{font:500 26px/1 serif;color:#d7b177}.kimetsu-guide h3{font:500 28px/1.2 serif}.kimetsu-social{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:16px;border:1px solid #6f4f34;background:#111a2b}.kimetsu-social .social-image{width:110px;height:110px}
 
 
+
+/* template-specific directory geometry: adapters own the layout, not Template 01 grids */
+html[data-oe-template="02-scrapbook"] [data-directory-grid="booths"]{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:22px!important}
+html[data-oe-template="02-scrapbook"] [data-directory-grid="products"]{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}
+html[data-oe-template="03-school-festival"] [data-directory-grid="booths"],
+html[data-oe-template="03-school-festival"] [data-directory-grid="products"],
+html[data-oe-template="04-museum-editorial"] [data-directory-grid="booths"],
+html[data-oe-template="04-museum-editorial"] [data-directory-grid="products"],
+html[data-oe-template="05-live-poster"] [data-directory-grid="booths"],
+html[data-oe-template="05-live-poster"] [data-directory-grid="products"],
+html[data-oe-template="06-expo-catalogue"] [data-directory-grid="booths"],
+html[data-oe-template="06-expo-catalogue"] [data-directory-grid="products"],
+html[data-oe-template="07-immersive-character"] [data-directory-grid="booths"],
+html[data-oe-template="07-immersive-character"] [data-directory-grid="products"]{grid-template-columns:minmax(0,1fr)!important;gap:0!important}
+html[data-oe-template="04-museum-editorial"] .museum-booth,
+html[data-oe-template="04-museum-editorial"] .museum-product{width:100%!important;box-sizing:border-box!important}
+
 /* museum interaction flow fix */
 html[data-oe-template="04-museum-editorial"] .museum-booth{position:relative!important;min-height:190px!important;overflow:visible!important;isolation:isolate;scroll-margin-top:96px}
 html[data-oe-template="04-museum-editorial"] .museum-booth .booth-logo,
