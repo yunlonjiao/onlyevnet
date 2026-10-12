@@ -465,6 +465,16 @@ html[data-oe-template="05-live-poster"] .live-activity{display:grid;grid-templat
 html[data-oe-template="06-expo-catalogue"] .expo-activity-row{display:grid;grid-template-columns:70px 120px 1.2fr 1fr 1fr 180px;border-top:2px solid #101820}.expo-activity-row>*{padding:14px;border-right:1px solid #aaa7a0}.expo-activity-row>span{font-weight:950;color:#ff5b35}.expo-guide-row{display:grid;grid-template-columns:70px 120px 1.5fr 200px 220px;border-top:2px solid #101820}.expo-guide-row>*{padding:14px;border-right:1px solid #aaa7a0}.expo-social{display:grid;grid-template-columns:60px 100px 1fr 120px;border-top:2px solid #101820}.expo-social>*{padding:12px;border-right:1px solid #aaa7a0}
 html[data-oe-template="07-immersive-character"] .kimetsu-activity{display:grid;grid-template-columns:60px 280px 1fr;gap:24px;padding:22px 0;border-bottom:1px solid #6f4f34}.kimetsu-activity-mark{font:500 28px/1 serif;color:#d7b177}.kimetsu-activity>.activity-feature-media{width:280px;min-height:240px;border:6px solid #6f4f34}.kimetsu-activity-copy>span{font-size:8px;letter-spacing:.18em;color:#d7b177}.kimetsu-activity-copy h3{font:500 32px/1.2 serif;margin:7px 0}.kimetsu-guide{display:grid;grid-template-columns:60px 1fr 280px;gap:24px;padding:22px 0;border-bottom:1px solid #6f4f34}.kimetsu-guide>span{font:500 26px/1 serif;color:#d7b177}.kimetsu-guide h3{font:500 28px/1.2 serif}.kimetsu-social{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:16px;border:1px solid #6f4f34;background:#111a2b}.kimetsu-social .social-image{width:110px;height:110px}
 
+
+/* museum interaction flow fix */
+html[data-oe-template="04-museum-editorial"] .museum-booth{position:relative!important;min-height:190px!important;overflow:visible!important;isolation:isolate;scroll-margin-top:96px}
+html[data-oe-template="04-museum-editorial"] .museum-booth .booth-logo,
+html[data-oe-template="04-museum-editorial"] .museum-booth .booth-logo-empty{position:static!important;inset:auto!important;transform:none!important;z-index:auto!important;pointer-events:none}
+html[data-oe-template="04-museum-editorial"] .museum-booth footer{position:relative!important;z-index:6!important;align-self:start}
+html[data-oe-template="04-museum-editorial"] .museum-booth footer button{position:relative!important;z-index:7!important;pointer-events:auto}
+html[data-oe-template="04-museum-editorial"] .museum-booth+ .museum-booth{margin-top:0!important}
+html[data-oe-template="04-museum-editorial"] .museum-page .nav{z-index:40}
+
 /* responsive adapters */
 @media(max-width:760px){
   .scrap-pass,.school-ticket-card,.museum-admission,.live-pass,.expo-ticket-row,.kimetsu-admission,
