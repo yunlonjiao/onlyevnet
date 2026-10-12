@@ -11,12 +11,12 @@ export function ticketMarkup({state,x,i,field,esc,image}){
   const gift=field('tickets.'+i+'.gift',x.gift||'','span','oe-ticket-gift');
   const note=field('tickets.'+i+'.note',x.note||'','small','oe-ticket-note');
   const common=' data-oe-item="tickets" data-oe-index="'+i+'"';
-  if(id==='02-scrapbook')return '<article class="scrap-pass"'+common+'><div class="scrap-pass-no">PASS '+num(i)+'</div><div class="scrap-pass-main">'+name+'<div class="scrap-pass-line"></div>'+gift+note+'</div>'+image+'<aside>'+price+'<span>MEMORY TICKET</span></aside></article>';
-  if(id==='03-school-festival')return '<article class="school-ticket-card"'+common+'><div class="school-ticket-no">'+num(i)+'</div><div class="school-ticket-copy"><span>ADMISSION PASS</span>'+name+gift+note+'</div><div class="school-ticket-price">'+price+'</div>'+image+'</article>';
-  if(id==='04-museum-editorial')return '<article class="museum-admission"'+common+'><header><span>ADMISSION '+num(i)+'</span>'+price+'</header><div class="museum-admission-body">'+name+gift+note+'</div>'+image+'</article>';
-  if(id==='05-live-poster')return '<article class="live-pass"'+common+'><div class="live-pass-band">PASS '+num(i)+'</div><div class="live-pass-copy">'+name+gift+note+'</div><div class="live-pass-price">'+price+'</div>'+image+'</article>';
-  if(id==='06-expo-catalogue')return '<article class="expo-ticket-row"'+common+'><span class="expo-ticket-index">T-'+num(i)+'</span><div>'+name+gift+note+'</div><div>'+price+'</div>'+image+'</article>';
-  return '<article class="kimetsu-admission"'+common+'><div class="kimetsu-ticket-mark">'+num(i)+'</div><div class="kimetsu-ticket-copy">'+name+gift+note+'</div><div class="kimetsu-ticket-price">'+price+'</div>'+image+'</article>';
+  if(id==='02-scrapbook')return '<article class="ticket scrap-pass"'+common+'><div class="scrap-pass-no">PASS '+num(i)+'</div><div class="scrap-pass-main">'+name+'<div class="scrap-pass-line"></div>'+gift+note+'</div>'+image+'<aside>'+price+'<span>MEMORY TICKET</span></aside></article>';
+  if(id==='03-school-festival')return '<article class="ticket school-ticket-card"'+common+'><div class="school-ticket-no">'+num(i)+'</div><div class="school-ticket-copy"><span>ADMISSION PASS</span>'+name+gift+note+'</div><div class="school-ticket-price">'+price+'</div>'+image+'</article>';
+  if(id==='04-museum-editorial')return '<article class="ticket museum-admission"'+common+'><header><span>ADMISSION '+num(i)+'</span>'+price+'</header><div class="museum-admission-body">'+name+gift+note+'</div>'+image+'</article>';
+  if(id==='05-live-poster')return '<article class="ticket live-pass"'+common+'><div class="live-pass-band">PASS '+num(i)+'</div><div class="live-pass-copy">'+name+gift+note+'</div><div class="live-pass-price">'+price+'</div>'+image+'</article>';
+  if(id==='06-expo-catalogue')return '<article class="ticket expo-ticket-row"'+common+'><span class="expo-ticket-index">T-'+num(i)+'</span><div>'+name+gift+note+'</div><div>'+price+'</div>'+image+'</article>';
+  return '<article class="ticket kimetsu-admission"'+common+'><div class="kimetsu-ticket-mark">'+num(i)+'</div><div class="kimetsu-ticket-copy">'+name+gift+note+'</div><div class="kimetsu-ticket-price">'+price+'</div>'+image+'</article>';
 }
 
 export function guestMarkup({state,g,i,field,esc,img,related,worksBlock,introBlock,social,metaLabel,members,attendance,metaValue,guestType}){
@@ -61,10 +61,10 @@ export function sponsorMarkup({state,x,i,field,esc,logo,action}){
   const id=tid(state); if(id==='01-ip-only')return '';
   const name=field('sponsors.'+i+'.name',x.name||'','b'),level=field('sponsors.'+i+'.level',x.level||'','small');
   const common=' data-oe-item="sponsors" data-oe-index="'+i+'"';
-  if(id==='04-museum-editorial')return '<article class="museum-sponsor"'+common+'><span>'+level+'</span>'+logo+'<div>'+name+action+'</div></article>';
-  if(id==='06-expo-catalogue')return '<article class="expo-sponsor"'+common+'><span>S-'+num(i)+'</span>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
-  if(id==='07-immersive-character')return '<article class="kimetsu-sponsor"'+common+'>'+logo+'<div>'+level+name+'</div>'+action+'</article>';
-  return '<article class="variant-sponsor '+id+'"'+common+'>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
+  if(id==='04-museum-editorial')return '<article class="sponsor-card museum-sponsor"'+common+'><span>'+level+'</span>'+logo+'<div>'+name+action+'</div></article>';
+  if(id==='06-expo-catalogue')return '<article class="sponsor-card expo-sponsor"'+common+'><span>S-'+num(i)+'</span>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
+  if(id==='07-immersive-character')return '<article class="sponsor-card kimetsu-sponsor"'+common+'>'+logo+'<div>'+level+name+'</div>'+action+'</article>';
+  return '<article class="sponsor-card variant-sponsor '+id+'"'+common+'>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
 }
 
 export function boothMarkup({state,b,i,field,esc,logo,fav,search,productCount}){
