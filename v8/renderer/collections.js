@@ -1,4 +1,4 @@
-import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.37.3';
+import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.37.4';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
 
@@ -53,12 +53,11 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       ticketWrap.innerHTML='<a class="btn ticket-purchase-link" data-ticket-settings href="'+(valid?esc(href):'#')+'" target="_blank" rel="noopener">'+esc(valid?label+' ↗':'设置购票平台链接')+'</a>';
       ticketWrap.hidden=!valid&&getMode()!=='edit';
     }
-    const navLink=$('.nav .btn');
-    if(navLink){
+    qa('[data-ticket-settings]').forEach(navLink=>{
       navLink.classList.add('ticket-purchase-link');navLink.dataset.ticketSettings='1';
       navLink.href=valid?href:'#';navLink.textContent=valid?label+' ↗':'设置购票链接';
       navLink.hidden=!valid&&getMode()!=='edit';
-    }
+    });
   }
 
   function renderHighlights(){
