@@ -1,12 +1,9 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.36.7';
-
-const clone=value=>JSON.parse(JSON.stringify(value));
-
+import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.37.0';
 export function makeIpOnlyTemplate({
   id,name,label,description,structureProfile,artDirection,motionProfile,
   theme,heroTitleColor,heroTitleAccentColor
 }){
-  const defaults=clone(template01.defaults);
+  const defaults=createIpOnlyDefaults();
   defaults.templateId=id;
   if(theme)defaults.theme=theme;
   if(heroTitleColor)defaults.heroTitleColor=heroTitleColor;
