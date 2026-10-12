@@ -1,3 +1,4 @@
+import {IP_ONLY_CORE_MODULES} from '/v8/templates/ip-only-core-contract.js?v=8.37.1';
 import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.37.0';
 export function makeIpOnlyTemplate({
   id,name,label,description,structureProfile,artDirection,motionProfile,
@@ -14,7 +15,7 @@ export function makeIpOnlyTemplate({
     structureProfile,
     artDirection,
     motionProfile,
-    supportedModules:['ribbon','tickets','booths','activities','guests','guide','map','community','sponsors','customPages','freewalk','itasha'],
+    supportedModules:[...IP_ONLY_CORE_MODULES],
     recommendedFor:['单 IP ONLY','角色主题活动','作品周年活动','几百至几千人同好活动'],
     notRecommendedFor:['大型综合商业展会','多 IP 综合漫展'],
     heroRenderer:'hero.'+structureProfile,
