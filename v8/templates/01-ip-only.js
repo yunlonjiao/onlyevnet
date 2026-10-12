@@ -1,3 +1,4 @@
+import {IP_ONLY_CORE_MODULES} from '/v8/templates/ip-only-core-contract.js?v=8.37.1';
 import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.37.0';
 export const template01 = {
   id:'01-ip-only',
@@ -9,7 +10,7 @@ export const template01 = {
   structureProfile:'portal',
   artDirection:'international-festival',
   motionProfile:'energetic',
-  supportedModules:['ribbon','tickets','booths','activities','guests','guide','map','community','sponsors','customPages','freewalk','itasha'],
+  supportedModules:[...IP_ONLY_CORE_MODULES],
   recommendedFor:['单 IP ONLY','角色主题活动','同好综合活动','几百至几千人活动'],
   notRecommendedFor:['大型综合商业展会','多 IP 综合漫展'],
   heroRenderer:'hero.portal',
