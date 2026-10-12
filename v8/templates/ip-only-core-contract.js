@@ -81,14 +81,14 @@ export const IP_ONLY_OPTIONAL_PRESENTATION_CAPABILITIES=Object.freeze([
 ]);
 
 export const DEFAULT_IP_ONLY_PRESENTATION_PROFILE=Object.freeze({
-  entryAnimation:true,
-  ribbon:true,
-  quickAccess:true,
-  mobileDock:true,
-  scrollProgress:true,
-  floatingStickers:true,
-  passportProgress:true,
-  decorativeSectionOrbits:true
+  entryAnimation:false,
+  ribbon:false,
+  quickAccess:false,
+  mobileDock:false,
+  scrollProgress:false,
+  floatingStickers:false,
+  passportProgress:false,
+  decorativeSectionOrbits:false
 });
 
 export const IP_ONLY_CORE_CAPABILITIES=Object.freeze({
