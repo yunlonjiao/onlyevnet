@@ -7,6 +7,7 @@ export function makeIpOnlyTemplate({
   const defaults=createIpOnlyDefaults();
   const resolvedPresentation={...DEFAULT_IP_ONLY_PRESENTATION_PROFILE,...presentationProfile};
   defaults.templateId=id;
+  defaults.presentationProfile=resolvedPresentation;
   if(defaults.entryAnimation)defaults.entryAnimation.enabled=!!resolvedPresentation.entryAnimation;
   defaults.modules={...(defaults.modules||{}),ribbon:!!resolvedPresentation.ribbon};
   if(theme)defaults.theme=theme;
