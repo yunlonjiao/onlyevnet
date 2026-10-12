@@ -1,7 +1,7 @@
-import {previewStyle as ipOnlyStyle,previewBody as ipOnlyBody} from '/v8/templates/01-ip-only-preview.js?v=8.38.0';
-import {createVariantPreview} from '/v8/templates/ip-only-visual-variants.js?v=8.38.0';
-import {previewStyle as scrapbookStyle,previewBody as scrapbookBody} from '/v8/templates/02-scrapbook-preview.js?v=8.38.0';
-import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.38.0';
+import {previewStyle as ipOnlyStyle,previewBody as ipOnlyBody} from '/v8/templates/01-ip-only-preview.js?v=8.38.1';
+import {createVariantPreview} from '/v8/templates/ip-only-visual-variants.js?v=8.38.1';
+import {previewStyle as scrapbookStyle,previewBody as scrapbookBody} from '/v8/templates/02-scrapbook-preview.js?v=8.38.1';
+import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.38.1';
 
 const previews=Object.freeze({
   '01-ip-only':Object.freeze({id:'01-ip-only',style:ipOnlyStyle,body:ipOnlyBody}),
