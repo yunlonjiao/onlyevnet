@@ -19,17 +19,15 @@ function standardNav(cls=''){
   if(cls==='live-nav')return '<header class="nav live-nav"><a class="brand" href="#top"><b>5TH</b><span>STARDUST<br>THANKS FESTIVAL</span></a>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">GET TICKET ↗</a></header>';
   if(cls==='expo-nav')return '<header class="nav expo-nav"><a class="brand" href="#top">STARDUST<br>EXPO</a>'+base+'<div class="expo-nav-code">2026 / HANGZHOU</div><a class="btn" href="#" target="_blank" rel="noopener">TICKET</a></header>';
   return '<header class="nav kimetsu-nav"><a class="brand" href="#top"><b>追憶回廊</b><small>STARDUST ONLY</small></a>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">入場案内</a></header>';
-}ls=''){
- return `<header class="nav ${cls}"><div class="wrap"><a class="brand" href="#top">STARDUST ONLY 2026</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">摊位</a><a href="#activities" data-target-mode="page" data-page-link="activities">活动</a><a href="#guests" data-target-mode="page" data-page-link="guests">嘉宾</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></nav><a class="btn" href="#" target="_blank" rel="noopener">TICKET ↗</a></div></header>`;
 }
 function mobileNav(){return `<nav class="mobile-dock" data-oe-mount="mobile-nav"></nav>`}
 
 function detailPages(prefix){
  return `
- <section class="${prefix}-page oe-page-view" id="booths"><div class="${prefix}-page-head"><span>BOOTH DIRECTORY</span><h2>摊位与制品</h2><a class="section-back" href="#home" data-page-link="home">返回首页</a></div><div class="${prefix}-page-body" data-oe-mount="booths" class="booth-directory-rich"></div></section>
+ <section class="${prefix}-page oe-page-view" id="booths"><div class="${prefix}-page-head"><span>BOOTH DIRECTORY</span><h2>摊位与制品</h2><a class="section-back" href="#home" data-page-link="home">返回首页</a></div><div class="${prefix}-page-body booth-directory-rich" data-oe-mount="booths"></div></section>
  <section class="${prefix}-page oe-page-view" id="activities"><div class="${prefix}-page-head"><span>PROGRAM</span><h2>活动与日程</h2><a class="section-back" href="#home" data-page-link="home">返回首页</a></div><div class="${prefix}-activity-switch"><div class="activity-view-tabs"><button type="button" class="active" data-activity-view="timeline">日程</button><button type="button" data-activity-view="programs">活动详情</button></div><div data-oe-mount="activity-days" class="activity-day-tabs"></div></div><div class="activity-page-block" data-activity-panel="timeline"><div data-oe-mount="schedule" class="activity-detail-list"></div></div><div class="activity-page-block" data-activity-panel="programs" hidden><div data-oe-mount="activity-projects" class="activity-project-list participation-list"></div></div></section>
- <section class="${prefix}-page oe-page-view" id="guests"><div class="${prefix}-page-head"><span>GUESTS</span><h2>嘉宾</h2><a class="section-back" href="#home" data-page-link="home">返回首页</a></div><div class="${prefix}-guest-mount" data-oe-mount="guests" class="guest-grid"></div></section>
- <section class="${prefix}-page oe-page-view" id="guide"><div class="${prefix}-page-head"><span>GUIDE</span><h2>观展指南</h2><a class="section-back" href="#home" data-page-link="home">返回首页</a></div><div class="${prefix}-guide-mount" data-oe-mount="guide-detail" class="guide-detail-grid"></div></section>`;
+ <section class="${prefix}-page oe-page-view" id="guests"><div class="${prefix}-page-head"><span>GUESTS</span><h2>嘉宾</h2><a class="section-back" href="#home" data-page-link="home">返回首页</a></div><div class="${prefix}-guest-mount guest-grid" data-oe-mount="guests"></div></section>
+ <section class="${prefix}-page oe-page-view" id="guide"><div class="${prefix}-page-head"><span>GUIDE</span><h2>观展指南</h2><a class="section-back" href="#home" data-page-link="home">返回首页</a></div><div class="${prefix}-guide-mount guide-detail-grid" data-oe-mount="guide-detail"></div></section>`;
 }
 
 function footer(prefix){
