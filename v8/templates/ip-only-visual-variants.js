@@ -542,6 +542,91 @@ html[data-oe-template="07-immersive-character"] .kimetsu-footer{grid-template-co
 }
 `;
 
+
+const secondRoundCss=`
+/* v8.36.9 — second-pass de-skinning: schedule, guide, density and mobile navigation */
+
+/* 02 — scrapbook: loose diary rhythm, torn-note guide, floating filmstrip mobile nav */
+html[data-oe-template="02-scrapbook"] .scrap-page-body{display:grid;grid-template-columns:130px 1fr;gap:38px}
+html[data-oe-template="02-scrapbook"] .scrap-diary{max-width:900px;margin-left:auto}
+html[data-oe-template="02-scrapbook"] .scrap-itinerary{grid-template-columns:54px 112px 1fr!important;gap:22px!important;padding:26px 18px!important;margin-bottom:14px!important;background:#fffaf0;border:1px solid #d4c5b0!important;box-shadow:7px 9px 0 #ded0bc;transform:rotate(-.25deg)}
+html[data-oe-template="02-scrapbook"] .scrap-itinerary:nth-child(2n){transform:rotate(.35deg)}
+html[data-oe-template="02-scrapbook"] .scrap-itinerary time{font-family:Georgia,serif}.scrap-itinerary footer{border-top:1px dashed #bcae9c;padding-top:10px}
+html[data-oe-template="02-scrapbook"] .scrap-foldout-guide{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px!important;align-items:start}
+html[data-oe-template="02-scrapbook"] .scrap-guide{display:grid;grid-template-columns:46px 1fr;gap:14px;padding:24px;background:#fffaf0;border:1px solid #d2c3ad;box-shadow:8px 10px 0 #dfd1bd;transform:rotate(var(--note-rot,-.5deg))}
+html[data-oe-template="02-scrapbook"] .scrap-guide:nth-child(2n){--note-rot:.6deg}.scrap-guide>span{font:700 8px/1.4 monospace;letter-spacing:.12em;color:#ef6f80}.scrap-guide h3{font:500 28px/1.1 Georgia,serif}.scrap-guide img{grid-column:1/-1;margin-top:12px}
+html[data-oe-template="02-scrapbook"] .scrap-community,html[data-oe-template="02-scrapbook"] .scrap-sponsors{background:#efe7d8;border-top:1px dashed #bcae9c}
+@media(max-width:700px){
+ html[data-oe-template="02-scrapbook"] .scrap-page-body{grid-template-columns:1fr}
+ html[data-oe-template="02-scrapbook"] .scrap-foldout-guide{grid-template-columns:1fr!important}
+ html[data-oe-template="02-scrapbook"] .scrap-itinerary{grid-template-columns:42px 86px 1fr!important;padding:18px 12px!important}
+ html[data-oe-template="02-scrapbook"] .scrap-mobile-dock{left:12px!important;right:12px!important;bottom:12px!important;border:1px solid #c9b9a5!important;border-radius:6px!important;box-shadow:0 10px 28px #4e3d3228!important;overflow-x:auto!important;justify-content:flex-start!important;padding:6px!important}
+ html[data-oe-template="02-scrapbook"] .scrap-mobile-dock a{min-width:86px!important;padding:10px 8px!important;border-right:1px dashed #c9b9a5!important}
+}
+
+/* 03 — school festival: dense timetable board, notice-board guide, chunky numbered mobile tabs */
+html[data-oe-template="03-school-festival"] .school-program-board{border:3px solid #15304f;background:#fff;box-shadow:10px 10px 0 #cfe7ff;padding:18px}
+html[data-oe-template="03-school-festival"] .school-timetable-board{display:grid;gap:0;border:3px solid #15304f;background:#15304f}
+html[data-oe-template="03-school-festival"] .school-timetable{display:grid!important;grid-template-columns:132px 54px 1fr!important;gap:0!important;background:#fff;border-bottom:3px solid #15304f!important;padding:0!important}
+html[data-oe-template="03-school-festival"] .school-timetable:last-child{border-bottom:0!important}.school-time{padding:20px;border-right:3px solid #15304f;background:#eaf5ff}.school-period{display:grid;place-items:center;border-right:3px solid #15304f;background:#ffe46b;font-size:18px;font-weight:950}.school-timetable>div:last-child{padding:20px 22px}
+html[data-oe-template="03-school-festival"] .school-guide-mount{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px!important}
+html[data-oe-template="03-school-festival"] .school-guide{display:block!important;position:relative;padding:54px 22px 22px!important;border:3px solid #15304f;background:#fff;box-shadow:7px 7px 0 #cfe7ff}.school-guide-no{position:absolute;left:12px;top:10px;font-size:32px;font-weight:950;color:#2e8df5}.school-guide h3{font-size:24px;line-height:1.05}
+html[data-oe-template="03-school-festival"] .school-community,html[data-oe-template="03-school-festival"] .school-sponsors{display:grid;grid-template-columns:130px 1fr;gap:34px;padding:78px max(28px,6vw);border-top:3px solid #15304f}
+@media(max-width:700px){
+ html[data-oe-template="03-school-festival"] .school-timetable{grid-template-columns:92px 42px 1fr!important}.school-time{padding:14px 10px}.school-timetable>div:last-child{padding:14px}
+ html[data-oe-template="03-school-festival"] .school-guide-mount{grid-template-columns:1fr!important}
+ html[data-oe-template="03-school-festival"] .school-mobile-dock{display:grid!important;grid-template-columns:repeat(5,1fr)!important;height:58px!important}
+ html[data-oe-template="03-school-festival"] .school-mobile-dock a{border-right:2px solid #2c4665!important;padding:7px 2px!important;font-size:9px!important}
+}
+
+/* 04 — museum editorial: sparse programme ledger, exhibition-label guide, top-edge mobile index */
+html[data-oe-template="04-museum-editorial"] .museum-program-index{display:flex;justify-content:space-between;align-items:end;border-block:1px solid #aaa397;padding:16px 0;margin-bottom:36px}
+html[data-oe-template="04-museum-editorial"] .museum-program-row{display:grid!important;grid-template-columns:52px 150px 1.3fr .7fr!important;gap:0!important;align-items:start;padding:26px 0!important;border-bottom:1px solid #aaa397!important;background:transparent!important}.museum-program-row>span{font:400 12px/1 Georgia,serif;color:#8b8278}.museum-program-row time{font:400 18px/1.2 Georgia,serif}.museum-program-row>div{padding-right:34px}.museum-program-row aside{border-left:1px solid #c7c1b6;padding-left:24px}
+html[data-oe-template="04-museum-editorial"] .museum-guide-mount{display:block!important}.museum-guide{display:grid!important;grid-template-columns:150px 1fr minmax(180px,.5fr)!important;gap:34px!important;padding:42px 0!important;border-bottom:1px solid #aaa397!important;background:transparent!important}.museum-guide aside{font:400 9px/1.5 Georgia,serif;letter-spacing:.14em;color:#7d756b}.museum-guide h3{font:400 34px/1.1 Georgia,serif}.museum-guide img{width:100%;filter:saturate(.7)}
+html[data-oe-template="04-museum-editorial"] .museum-community,html[data-oe-template="04-museum-editorial"] .museum-sponsors{display:grid;grid-template-columns:180px 1fr;gap:48px;padding:110px max(32px,7vw);border-top:1px solid #aaa397}
+@media(max-width:700px){
+ html[data-oe-template="04-museum-editorial"] .museum-program-row{grid-template-columns:38px 90px 1fr!important}.museum-program-row aside{grid-column:2/-1;border-left:0;border-top:1px solid #c7c1b6;padding:12px 0 0;margin-top:12px}
+ html[data-oe-template="04-museum-editorial"] .museum-guide{grid-template-columns:90px 1fr!important}.museum-guide img{grid-column:2}
+ html[data-oe-template="04-museum-editorial"] body{padding-top:42px}
+ html[data-oe-template="04-museum-editorial"] .museum-mobile-dock{top:0!important;bottom:auto!important;height:42px!important;border-top:0!important;border-bottom:1px solid #aaa397!important;position:fixed!important}
+ html[data-oe-template="04-museum-editorial"] .museum-mobile-dock a{font-size:8px!important;letter-spacing:.08em!important;padding:6px 4px!important}
+}
+
+/* 05 — live poster: compressed running order, full-width guide posters, neon bottom control rail */
+html[data-oe-template="05-live-poster"] .live-program-switch{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid #393c48;padding-bottom:16px;margin-bottom:10px}
+html[data-oe-template="05-live-poster"] .live-running-order{display:grid!important;grid-template-columns:64px 150px 1fr 170px!important;gap:0!important;align-items:stretch;border-bottom:1px solid #343744!important;background:#101119!important;padding:0!important}.live-running-no{display:grid;place-items:center;background:#ff3b74;color:#fff;font-size:22px;font-weight:1000}.live-running-order time{padding:24px 20px;border-right:1px solid #343744}.live-running-order>div:nth-of-type(2){padding:24px}.live-running-order aside{display:grid;align-content:center;padding:18px;border-left:1px solid #343744;background:#0b0c11}
+html[data-oe-template="05-live-poster"] .live-guide-mount{display:grid!important;grid-template-columns:1fr 1fr;gap:2px!important;background:#343744}.live-guide{display:grid!important;grid-template-columns:58px 1fr!important;padding:0!important;background:#11131b!important;min-height:290px}.live-guide>span{display:grid;place-items:center;background:#72f5dc;color:#0a0b10;font-size:24px;font-weight:1000}.live-guide>div{padding:30px}.live-guide h3{font-size:34px;font-style:italic}.live-guide img{grid-column:1/-1;width:100%;max-height:300px;object-fit:cover}
+html[data-oe-template="05-live-poster"] .live-community,html[data-oe-template="05-live-poster"] .live-sponsors{padding:90px max(28px,6vw);border-top:1px solid #343744;background:#0a0b10}
+@media(max-width:700px){
+ html[data-oe-template="05-live-poster"] .live-running-order{grid-template-columns:44px 92px 1fr!important}.live-running-order aside{grid-column:2/-1;border-left:0;border-top:1px solid #343744}
+ html[data-oe-template="05-live-poster"] .live-guide-mount{grid-template-columns:1fr!important}
+ html[data-oe-template="05-live-poster"] .live-mobile-dock{height:64px!important;background:#05060aee!important;backdrop-filter:blur(12px);box-shadow:0 -12px 30px #0008!important}
+ html[data-oe-template="05-live-poster"] .live-mobile-dock a{position:relative;font-size:9px!important}.live-mobile-dock a:before{content:"";position:absolute;left:20%;right:20%;top:2px;height:2px;background:linear-gradient(90deg,#ff3b74,#72f5dc)}
+}
+
+/* 06 — expo catalogue: spreadsheet density, row-based guide, tabular mobile rail */
+html[data-oe-template="06-expo-catalogue"] .expo-program-switch{display:grid;grid-template-columns:220px 1fr;gap:18px;border-bottom:2px solid #101820;padding-bottom:12px;margin-bottom:0}
+html[data-oe-template="06-expo-catalogue"] .expo-program-row{display:grid!important;grid-template-columns:74px 130px 1.2fr .65fr .8fr!important;gap:0!important;padding:0!important;border-bottom:1px solid #101820!important;background:#f3f2ee!important}.expo-program-row>*{padding:16px 12px;border-right:1px solid #101820}.expo-program-row>*:last-child{border-right:0}.expo-program-row>span{font-size:9px;font-weight:950;background:#ffd94f}
+html[data-oe-template="06-expo-catalogue"] .expo-guide-mount{display:block!important;border:2px solid #101820}.expo-guide-row{display:grid!important;grid-template-columns:76px 150px 1fr 190px 220px!important;gap:0!important;padding:0!important;border-bottom:1px solid #101820!important;background:#f3f2ee!important}.expo-guide-row>*{padding:18px 14px;border-right:1px solid #101820}.expo-guide-row>span{background:#5fe3ea;font-weight:950}.expo-guide-row img{width:100%;height:130px;object-fit:cover}
+html[data-oe-template="06-expo-catalogue"] .expo-community,html[data-oe-template="06-expo-catalogue"] .expo-sponsors{display:grid;grid-template-columns:170px 1fr;gap:24px;padding:70px max(26px,5vw);border-bottom:2px solid #101820}
+@media(max-width:700px){
+ html[data-oe-template="06-expo-catalogue"] .expo-program-row{grid-template-columns:58px 84px 1fr!important}.expo-program-row>*:nth-child(n+4){grid-column:3;border-top:1px solid #101820}
+ html[data-oe-template="06-expo-catalogue"] .expo-guide-row{grid-template-columns:54px 96px 1fr!important}.expo-guide-row>*:nth-child(n+4){grid-column:2/-1;border-top:1px solid #101820}
+ html[data-oe-template="06-expo-catalogue"] .expo-mobile-dock{height:54px!important;border:2px solid #101820!important;border-bottom:0!important}.expo-mobile-dock a{border-right:1px solid #101820!important;padding:6px 2px!important}
+}
+
+/* 07 — immersive chapter flow: spacious chapter schedule, scroll-like guide, elevated mobile chapter bar */
+html[data-oe-template="07-immersive-character"] .kimetsu-program-switch{display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid #6f4f34;padding-bottom:14px;margin-bottom:30px}
+html[data-oe-template="07-immersive-character"] .kimetsu-program{display:grid!important;grid-template-columns:70px 150px 1fr!important;gap:28px!important;align-items:start;padding:32px 0!important;border-bottom:1px solid #6f4f34!important;background:transparent!important}.kimetsu-program-mark{display:grid;place-items:center;width:50px;height:50px;border:1px solid #d7b177;border-radius:50%;font-family:serif;color:#d7b177}.kimetsu-program time{font:500 18px/1.5 serif;color:#f5efe3}.kimetsu-program h3,.kimetsu-program b{font-family:serif}
+html[data-oe-template="07-immersive-character"] .kimetsu-guide-mount{max-width:980px;margin:auto;display:grid!important;gap:34px!important}.kimetsu-guide{display:grid!important;grid-template-columns:70px 1fr minmax(180px,.5fr)!important;gap:26px!important;padding:34px!important;background:linear-gradient(90deg,#e7d8bd,#f2e8d5)!important;color:#2d211a!important;border:1px solid #806549!important;box-shadow:0 18px 44px #0004}.kimetsu-guide>span{font:500 26px/1 serif;color:#8f302e}.kimetsu-guide h3{font:500 31px/1.15 serif}.kimetsu-guide img{width:100%;filter:saturate(.75) sepia(.15)}
+html[data-oe-template="07-immersive-character"] .kimetsu-community{display:grid;grid-template-columns:120px 1fr;gap:40px;padding:100px max(26px,7vw);border-top:8px solid #6f4f34;background:#0c1930}.kimetsu-sponsors{padding:90px max(26px,7vw);border-top:1px solid #6f4f34}
+@media(max-width:700px){
+ html[data-oe-template="07-immersive-character"] .kimetsu-program{grid-template-columns:48px 92px 1fr!important;gap:12px!important}
+ html[data-oe-template="07-immersive-character"] .kimetsu-guide{grid-template-columns:48px 1fr!important;padding:22px 16px!important}.kimetsu-guide img{grid-column:2}
+ html[data-oe-template="07-immersive-character"] .kimetsu-mobile-dock{left:18px!important;right:18px!important;bottom:14px!important;height:58px!important;border:1px solid #6f4f34!important;border-radius:4px!important;box-shadow:0 12px 36px #0009!important}.kimetsu-mobile-dock a{font-size:9px!important;letter-spacing:.08em!important}
+}
+`;
+
 export function createVariantPreview(id){
-  return {id,style:baseStyle+(variants[id]||'')+(structural[id]||'')+(independent[id]||'')+(entrySystems[id]||'')+componentAdapterCss,body:variantBodies[id]||''};
+  return {id,style:baseStyle+(variants[id]||'')+(structural[id]||'')+(independent[id]||'')+(entrySystems[id]||'')+componentAdapterCss+nativeFooterMobile+secondRoundCss,body:variantBodies[id]||''};
 }
