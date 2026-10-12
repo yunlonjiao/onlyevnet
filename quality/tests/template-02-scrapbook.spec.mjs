@@ -23,7 +23,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
 
     await expect(frame.locator('.hero-title-1')).toHaveAttribute('contenteditable','true');
     await expect(frame.locator('.hero-copy p')).toHaveAttribute('contenteditable','true');
-    await expect(frame.locator('.meta .pill').first()).toHaveAttribute('contenteditable','true');
+    await expect(frame.locator('[data-oe-field="date"]').first()).toHaveAttribute('contenteditable','true');
 
     await expect(frame.locator('[data-oe-mount="tickets"] .scrap-pass')).toHaveCount(3);
     await expect(frame.locator('[data-oe-mount="featured-activities"]')).toBeVisible();
@@ -78,16 +78,16 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
 
     await page.locator('#previewBtn').click();
     await expect(frame.locator('#loader.scrap-entry')).toBeVisible();
-    await expect(frame.locator('.scrap-entry-gate')).toBeVisible();
+    await expect(frame.locator('.trip-opening-gate')).toBeVisible();
 
-    const gateStyle=await frame.locator('.scrap-entry-gate').evaluate(el=>{
+    const gateStyle=await frame.locator('.trip-opening-gate').evaluate(el=>{
       const s=getComputedStyle(el);
       return {columns:s.gridTemplateColumns,bg:s.backgroundColor,borderRadius:s.borderRadius};
     });
     expect(gateStyle.columns).not.toContain('1.65fr');
     expect(gateStyle.borderRadius).not.toBe('22px');
 
-    await frame.locator('.scrap-entry-gate').click();
+    await frame.locator('.trip-opening-gate').click();
     await expect.poll(()=>frame.locator('#loader').evaluate(el=>el.classList.contains('hide')),{timeout:5000}).toBe(true);
   });
 });
