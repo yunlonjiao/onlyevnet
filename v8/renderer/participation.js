@@ -1,3 +1,4 @@
+import {activityMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.36.3';
 export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>document.querySelector('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
   const externalHref=value=>{const raw=String(value||'').trim();if(!raw)return '';if(/^https?:\/\//i.test(raw))return raw;if(/^www\./i.test(raw)||/^[\w.-]+\.[a-z]{2,}(?:[\/:?#]|$)/i.test(raw))return 'https://'+raw;return ''};
@@ -59,6 +60,8 @@ export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send})
       if(type==='live'&&tracks.length)modules.push('<section class="activity-module activity-module-wide activity-setlist"><span>SETLIST / 歌单</span><ol>'+tracks.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ol></section>');
       if(type==='signing'&&String(x.signingRules||'').trim())modules.push('<section class="activity-module activity-module-wide activity-module-accent"><span>SIGNING RULES / 签售规则</span>'+field('participation.'+i+'.signingRules',x.signingRules,'p')+'</section>');
       const actionHref=externalHref(x.url),action=actionHref?'<a class="activity-feature-action" href="'+esc(actionHref)+'" target="_blank" rel="noopener">报名 / 查看外部详情 ↗</a>':'';
+      const adapted=activityMarkup({state,x,i,field,esc,image,scheduleInfo,venueInfo,guestHtml,action,modules,type,typeLabel});
+      if(adapted)return adapted;
       return '<article class="activity-feature activity-type-'+esc(type)+(hasImage||getMode()==='edit'?'':' no-media')+'" id="participation-'+esc(x.id||String(i))+'" data-oe-item="participation" data-oe-index="'+i+'>'+
         '<div class="activity-feature-copy">'+
           '<div class="activity-feature-head">'+
@@ -71,7 +74,7 @@ export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send})
         '</div>'+image+
       '</article>';
     }).join('');
-    page.querySelectorAll('.activity-feature[data-oe-item="participation"]').forEach(card=>card.addEventListener('click',e=>{
+    page.querySelectorAll('[data-oe-item="participation"]').forEach(card=>card.addEventListener('click',e=>{
       if(getMode()!=='edit'||e.target.closest?.('[data-oe-field],a[href],input,select,textarea,label'))return;
       e.preventDefault();e.stopPropagation();
       send?.({type:'OE_SELECT_ITEM',collection:'participation',index:Number(card.dataset.oeIndex)});
