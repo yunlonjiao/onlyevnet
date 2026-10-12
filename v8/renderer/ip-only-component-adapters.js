@@ -114,7 +114,7 @@ export function guideMarkup({state,x,i,field,esc,image,navigation,preset,kindLab
   const common=' id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"';
   const title=field('guide.items.'+i+'.title',x.title||'','span'),text=field('guide.items.'+i+'.text',x.text||'','p');
   const label=esc(x.label||kindLabel[preset]||'GUIDE');
-  if(id==='02-scrapbook')return '<article class="scrap-guide"'+common+'><span>NOTE '+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
+  if(id==='02-scrapbook')return '<article class="scrap-guide"'+common+'><span>笔记 '+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='03-school-festival')return '<article class="school-guide"'+common+'><div class="school-guide-no">'+num(i)+'</div><div><span>'+label+'</span><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='04-museum-editorial')return '<article class="museum-guide"'+common+'><aside>'+num(i)+' / '+label+'</aside><div><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='05-live-poster')return '<article class="live-guide"'+common+'><span>'+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
@@ -126,7 +126,7 @@ export function communityMarkup({state,x,i,field,esc,img,action}){
   const id=tid(state);if(id==='01-ip-only')return '';
   const common=' data-oe-item="socialLinks" data-oe-index="'+i+'"';
   const label=field('socialLinks.'+i+'.label',x.label,'b'),note=field('socialLinks.'+i+'.note',x.note||'','p');
-  if(id==='02-scrapbook')return '<article class="scrap-social"'+common+'>'+img+'<div><span>SOCIAL NOTE</span>'+label+note+action+'</div></article>';
+  if(id==='02-scrapbook')return '<article class="scrap-social"'+common+'>'+img+'<div><span>社群笔记</span>'+label+note+action+'</div></article>';
   if(id==='03-school-festival')return '<article class="school-social"'+common+'><span>'+num(i)+'</span>'+img+'<div>'+label+note+action+'</div></article>';
   if(id==='04-museum-editorial')return '<article class="museum-social"'+common+'><span>COMMUNITY '+num(i)+'</span><div>'+label+note+action+'</div>'+img+'</article>';
   if(id==='05-live-poster')return '<article class="live-social"'+common+'>'+img+'<div><span>FOLLOW / JOIN</span>'+label+note+action+'</div></article>';
@@ -139,7 +139,7 @@ export function quickMarkup({state,x,i,esc}){
   const id=tid(state);if(id==='01-ip-only')return '';
   const href='#'+x[1],mode=x[4],label=x[2],hint=x[3],n=num(i);
   const common=' href="'+href+'" data-target-mode="'+mode+'" data-page-link="'+esc(x[1])+'"';
-  if(id==='02-scrapbook')return '<a class="scrap-index-card"'+common+'><span>'+n+'</span><div><small>MEMORY FILE</small><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></div><i>↗</i></a>';
+  if(id==='02-scrapbook')return '<a class="scrap-index-card"'+common+'><span>'+n+'</span><div><small>旅程档案</small><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></div><i>↗</i></a>';
   if(id==='03-school-festival')return '<a class="school-wayfinding-card"'+common+'><span>'+n+'</span><div><small>FESTIVAL GUIDE</small><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></div><i>→</i></a>';
   if(id==='04-museum-editorial')return '<a class="museum-index-link"'+common+'><span>'+n+'</span><div><b>'+esc(label)+'</b><small>'+esc(hint)+'</small></div><i>VIEW</i></a>';
   if(id==='05-live-poster')return '<a class="live-menu-tile"'+common+'><span>'+n+'</span><div><small>CONTENTS</small><b>'+esc(label)+'</b></div><i>'+esc(hint)+'</i></a>';
