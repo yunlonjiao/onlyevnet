@@ -29,6 +29,12 @@ export const previewBody=`
 </div>
 
 <div class="trip-site">
+  <aside class="trip-rail" aria-hidden="true">
+    <span>ONLY EVENT JOURNEY</span>
+    <i></i>
+    <b>OE / 2026</b>
+    <em>SCROLL ↓</em>
+  </aside>
   <header class="trip-header">
     <a class="trip-logo" href="#home" data-page-link="home">
       <small>ONLY EVENT / JOURNEY</small>
@@ -83,13 +89,13 @@ export const previewBody=`
       <div><span>✈ ONLY EVENT JOURNEY</span><span>#SPECIAL TRIP</span><span>HANGZHOU / 11.08</span><span>17.4℃ ☀</span><span>BOARDING NOW</span><span>✈ ONLY EVENT JOURNEY</span><span>#SPECIAL TRIP</span><span>HANGZHOU / 11.08</span></div>
     </div>
 
-    <section class="trip-news oe-home-only" id="updates">
+    <section class="trip-news oe-home-only" id="updates" data-trip-section="02 / NEWS">
       <header><span>NEWS / FLIGHT INFORMATION</span><b>LATEST<br>UPDATE</b><small>Attention, all passengers. This is your captain speaking.<br>The information board will guide your trip.</small></header>
       <div class="trip-news-columns"><span>DATE</span><span>TO</span><span>REMARKS</span></div>
       <div data-oe-mount="updates" class="updates-list"></div>
     </section>
 
-    <section class="trip-intro oe-home-only">
+    <section class="trip-intro oe-home-only" data-trip-section="03 / INTRO">
       <aside><span>INTRODUCTION</span><b>01</b></aside>
       <div class="trip-intro-copy">
         <h2>THE MEMORIES OF A DAY<br>ARE LIKE A SINGLE CASSETTE TAPE.</h2>
@@ -104,7 +110,7 @@ export const previewBody=`
       </div>
     </section>
 
-    <section class="trip-sides oe-home-only">
+    <section class="trip-sides oe-home-only" data-trip-section="04 / A+B SIDE">
       <article class="trip-side-a">
         <header><span>A SIDE</span><small>GOOD MEMORIES</small></header>
         <h3>MEET / DISCOVER / ENJOY</h3>
@@ -125,17 +131,17 @@ export const previewBody=`
       <i>→</i>
     </section>
 
-    <section class="trip-index oe-home-only">
+    <section class="trip-index oe-home-only" data-trip-section="05 / INDEX">
       <header><span>TRIP INDEX</span><b>WHERE DO YOU WANT TO GO?</b></header>
       <div data-oe-mount="quick" class="quick-grid"></div>
     </section>
 
-    <section class="trip-feature oe-home-only" id="participation">
+    <section class="trip-feature oe-home-only" id="participation" data-trip-section="06 / PICK UP">
       <header><span>PICK UP</span><h2>JOURNEY HIGHLIGHTS</h2><p>这次活动最值得停留的几个目的地。</p></header>
       <div data-oe-mount="featured-activities" class="featured-activity-grid"></div>
     </section>
 
-    <section class="trip-ticket-section oe-home-only" id="tickets">
+    <section class="trip-ticket-section oe-home-only" id="tickets" data-trip-section="07 / PASS">
       <div class="trip-ticket-cover"><small>ADMISSION</small><b>TRAVEL<br>PASS</b><span>ONLY EVENT / 2026</span></div>
       <div class="trip-ticket-list">
         <div data-oe-mount="tickets" class="ticket-grid"></div>
@@ -143,7 +149,7 @@ export const previewBody=`
       </div>
     </section>
 
-    <section class="trip-map oe-home-only" id="map-home">
+    <section class="trip-map oe-home-only" id="map-home" data-trip-section="08 / MAP">
       <div class="trip-map-copy"><span>DESTINATION</span><h2>VENUE MAP</h2><p>像查看旅行目的地一样查看场地与活动区域。</p><div data-oe-mount="map-links" class="map-link-list"></div></div>
       <div class="trip-map-paper"><div data-oe-mount="map" id="venueMap" class="map-static"></div></div>
     </section>
@@ -195,6 +201,10 @@ export const previewStyle=`
 :root{--trip-bg:#eee7db;--trip-paper:#fffaf0;--trip-ink:#2f2926;--trip-pink:#ef7d90;--trip-blue:#9bd1e2;--trip-lime:#dcff42;--trip-line:#b9aa97}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--trip-bg);color:var(--trip-ink);font-family:"Trebuchet MS","Noto Sans SC",sans-serif;overflow-x:hidden}a{color:inherit;text-decoration:none}button{font:inherit;color:inherit}
 .trip-site{min-height:100vh;background:var(--trip-bg)}
+
+.trip-rail{position:fixed;left:0;top:78px;bottom:0;z-index:60;width:28px;display:flex;flex-direction:column;align-items:center;gap:16px;padding:18px 0 14px;background:#2f2926;color:#fff;border-right:1px solid #5b514a;pointer-events:none}.trip-rail span{writing-mode:vertical-rl;font:800 6px/1 monospace;letter-spacing:.17em}.trip-rail i{flex:1;width:1px;background:linear-gradient(#ef7d90,#9bd1e2,#dcff42)}.trip-rail b,.trip-rail em{writing-mode:vertical-rl;font:800 6px/1 monospace;letter-spacing:.12em;font-style:normal;color:#bdb4ae}
+.trip-site>main,.trip-footer{margin-left:28px}.trip-header{margin-left:28px}
+[data-trip-section]{position:relative}[data-trip-section]:before{content:attr(data-trip-section);position:absolute;left:12px;top:18px;z-index:3;font:800 6px/1 monospace;letter-spacing:.16em;color:#9b8c7e;writing-mode:vertical-rl}
 .trip-header{position:sticky;top:0;z-index:90;display:grid;grid-template-columns:260px minmax(230px,1fr) auto auto;min-height:78px;background:rgba(255,250,240,.97);border-bottom:1px solid var(--trip-line);backdrop-filter:blur(14px)}
 .trip-logo{display:grid;align-content:center;padding:12px 24px;border-right:1px solid var(--trip-line)}.trip-logo small{font:700 7px/1.2 monospace;letter-spacing:.16em;color:#887969}.trip-logo b{margin-top:5px;font:600 23px/.9 Georgia,serif;letter-spacing:-.04em}
 .trip-flight-info{display:flex;align-items:center;gap:13px;padding:0 22px;font:700 8px/1 monospace;letter-spacing:.1em;color:#66584e}.trip-flight-info i{width:5px;height:5px;border-radius:50%;background:var(--trip-pink)}
@@ -211,8 +221,17 @@ export const previewStyle=`
 .trip-stamp{position:absolute;right:30px;bottom:34px;width:94px;height:94px;display:grid;place-items:center;text-align:center;border:2px solid var(--trip-pink);border-radius:50%;transform:rotate(10deg);font:700 8px/1.2 monospace;color:var(--trip-pink)}.trip-stamp b{font-size:19px}
 .trip-weather-strip{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);background:#2f2926;color:#fff}.trip-weather-strip span{display:grid;gap:4px;padding:14px 22px;border-right:1px solid #5c514b;font:700 9px/1.2 monospace}.trip-weather-strip b{font-size:6px;letter-spacing:.14em;color:var(--trip-blue)}
 
+
+.trip-hero-visual .kv,.trip-collage,.trip-opening-cassette,.trip-ticket-stub,.scrap-polaroid{will-change:transform}
+.trip-hero-visual .kv{transition:transform .7s cubic-bezier(.2,.7,.2,1),box-shadow .7s}.trip-hero:hover .trip-hero-visual .kv{transform:rotate(.2deg) scale(1.015);box-shadow:0 34px 70px #4a372536}
+.trip-card{transition:transform .5s cubic-bezier(.2,.7,.2,1)}.trip-intro:hover .trip-card.c1{transform:rotate(-11deg) translate(-4px,-4px)}.trip-intro:hover .trip-card.c2{transform:rotate(12deg) translate(5px,-3px)}.trip-intro:hover .trip-card.c3{transform:rotate(0deg) translateY(4px)}
+.trip-index .scrap-index-card,.trip-nav a,.trip-mobile-nav a,.trip-ticket,.trip-page-pager a{transition:background .25s,color .25s,transform .25s}.trip-index .scrap-index-card:hover{background:#3b3430!important;transform:translateY(-4px)!important}.trip-nav a:hover{background:#f1e9dd}.trip-ticket:hover{background:#c9ef28}.trip-page-pager a:hover{transform:translateX(3px)}.trip-page-pager a:first-child:hover{transform:translateX(-3px)}
+.trip-sides article{transition:filter .35s,transform .35s}.trip-sides article:hover{filter:saturate(1.08);transform:translateY(-3px)}
 .trip-route-ticker{overflow:hidden;background:var(--trip-lime);border-bottom:1px solid var(--trip-ink);white-space:nowrap}.trip-route-ticker>div{display:inline-flex;min-width:max-content;animation:tripTicker 28s linear infinite}.trip-route-ticker span{display:inline-block;padding:12px 28px;border-right:1px solid #8e9d31;font:900 8px/1 monospace;letter-spacing:.13em}@keyframes tripTicker{to{transform:translateX(-50%)}}
 
+
+.trip-news,.trip-intro,.trip-sides,.trip-transition,.trip-index,.trip-feature,.trip-ticket-section,.trip-map{isolation:isolate}
+.trip-news:after,.trip-intro:after,.trip-sides:after,.trip-transition:after,.trip-index:after,.trip-feature:after,.trip-ticket-section:after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:7px;z-index:5;background:linear-gradient(135deg,transparent 6px,currentColor 0) 0 0/12px 7px repeat-x;opacity:.08;pointer-events:none}
 .trip-news{display:grid;grid-template-columns:240px 1fr;background:var(--trip-paper);border-bottom:1px solid var(--trip-line)}.trip-news>header{padding:44px 30px;border-right:1px solid var(--trip-line)}.trip-news>header span,.trip-index>header span,.trip-feature>header>span,.trip-ticket-cover small,.trip-map-copy>span,.trip-page-head>span,.trip-community header span,.trip-sponsors header span{font:800 7px/1 monospace;letter-spacing:.17em;color:var(--trip-pink)}
 .trip-news>header b{display:block;margin-top:12px;font:500 34px/.92 Georgia,serif}.trip-news>header small{display:block;margin-top:22px;font:700 7px/1.7 monospace;letter-spacing:.06em;color:#8a7c70}.trip-news-columns{display:grid;grid-template-columns:120px 90px 1fr;align-content:end;padding:20px 32px 0;font:800 7px/1 monospace;letter-spacing:.12em;color:#8a7c70}
 .trip-news .updates-list{grid-column:2;padding:0 32px 24px}.scrap-update{display:grid!important;grid-template-columns:120px 90px 1fr auto!important;align-items:center;gap:0!important;padding:16px 0!important;border:0!important;border-bottom:1px dashed var(--trip-line)!important;background:none!important;box-shadow:none!important;transform:none!important;border-radius:0!important}.scrap-update time{font:700 8px/1 monospace}.scrap-update b{font-size:12px;font-weight:700}.scrap-update>span{font:800 7px/1 monospace;color:var(--trip-pink)}
@@ -288,5 +307,5 @@ export const previewStyle=`
 @keyframes reelSpin{to{transform:rotate(360deg)}}@keyframes cassetteFloat{50%{transform:rotate(-2deg) translateY(-10px)}}
 
 @media(max-width:980px){.trip-header{grid-template-columns:220px 1fr auto}.trip-flight-info{display:none}.trip-hero{grid-template-columns:1fr}.trip-hero-visual{min-height:620px}.trip-hero-copy{padding:54px 7vw}.trip-weather-strip{grid-row:3}.trip-intro{grid-template-columns:100px 1fr}.trip-collage{grid-column:2}.trip-feature{grid-template-columns:1fr}.trip-feature>header{position:static}.trip-ticket-section,.trip-map{grid-template-columns:1fr}.trip-ticket-cover{min-height:300px}}
-@media(max-width:760px){.trip-opening-center{grid-template-columns:1fr;gap:26px;padding:74px 18px 70px}.trip-opening-route{display:none}.trip-opening-cassette{width:min(78vw,330px)}.trip-opening-copy{text-align:center;align-self:center}.trip-opening-copy h1{font-size:clamp(48px,15vw,78px)}.trip-opening-topbar{grid-template-columns:1fr auto;padding:0 14px}.trip-opening-topbar span:nth-child(2){display:none}.trip-opening-bottom{padding:0 14px;gap:10px;font-size:6px}.trip-opening-gate>.entry-photo{width:70vw;height:80vw;right:-22vw;top:10vh}.trip-header{grid-template-columns:1fr auto;min-height:60px}.trip-logo{padding:9px 14px;border-right:0}.trip-logo b{font-size:19px}.trip-nav{display:none}.trip-ticket{padding:0 14px}.trip-mobile-nav{position:sticky;top:60px;z-index:85;display:flex;overflow-x:auto;background:#2f2926;color:#fff}.trip-mobile-nav a{flex:0 0 auto;min-width:84px;padding:9px 12px;border-right:1px solid #5c514b;font:700 8px/1 Georgia,serif}.trip-mobile-nav small{display:block;margin-bottom:4px;font:700 6px/1 monospace;color:var(--trip-pink)}.trip-hero{min-height:0}.trip-hero-visual{min-height:430px;padding:24px 14px}.trip-hero-visual .kv{inset:26px 22px 55px;border-width:9px;border-bottom-width:44px;transform:rotate(-.6deg)}.trip-photo-caption{left:30px;bottom:30px}.trip-hero-copy{padding:44px 18px 50px}.trip-hero-copy h1{font-size:clamp(54px,18vw,82px)}.trip-stamp{width:70px;height:70px;right:18px;bottom:18px}.trip-weather-strip{grid-template-columns:1fr 1fr}.trip-news{grid-template-columns:1fr}.trip-news>header{border-right:0;border-bottom:1px solid var(--trip-line);padding:28px 18px}.trip-news-columns{display:none}.trip-news .updates-list{grid-column:1;padding:8px 18px 24px}.scrap-update{grid-template-columns:76px 1fr!important}.scrap-update>span{display:none}.trip-intro{grid-template-columns:1fr;gap:28px;padding:70px 18px}.trip-intro>aside b{font-size:62px}.trip-collage{grid-column:1;height:330px}.trip-cassette{left:50%;top:96px;transform:translateX(-50%) rotate(-5deg);width:240px}.trip-ticket-stub{right:0;bottom:6px;width:150px}.trip-sides{grid-template-columns:1fr}.trip-sides article{min-height:340px;padding:48px 18px}.trip-sides h3{margin-top:36px}.trip-transition{grid-template-columns:1fr;padding:54px 18px;gap:22px}.trip-transition i{font-size:44px}.trip-index{grid-template-columns:1fr}.trip-index>header{border-right:0;border-bottom:1px solid #5c514b;padding:28px 18px}.trip-index .quick-grid{display:flex!important;overflow-x:auto!important}.scrap-index-card{flex:0 0 70%;min-height:170px!important}.trip-feature{padding:70px 18px;gap:34px}.trip-feature .scrap-activity{grid-template-columns:1fr!important}.trip-ticket-cover{min-height:240px;padding:38px 22px}.trip-ticket-cover b{font-size:64px}.trip-ticket-list{padding:28px 14px 48px}.scrap-pass{grid-template-columns:58px 1fr!important}.scrap-pass aside{grid-column:1/-1;border-left:0!important;border-top:1px dashed #bc9f91!important}.scrap-pass:nth-child(2n){transform:none!important}.trip-map-copy{padding:48px 18px}.trip-map-paper{padding:18px}.trip-map .map-static{min-height:360px}.trip-page{padding:52px 16px 74px}.trip-page-head{grid-template-columns:1fr;gap:12px;margin-bottom:34px}.trip-page-head .section-back{justify-self:start}.trip-activity-switch{display:grid}.community{grid-template-columns:1fr}.sponsors{grid-template-columns:repeat(2,minmax(0,1fr))}.trip-footer{grid-template-columns:1fr}.trip-footer>div{border-right:0;border-bottom:1px solid #514740}.scrap-entry-gate{grid-template-columns:1fr;width:min(92vw,520px);max-height:82vh;overflow:auto}.scrap-entry-photo{border-right:0;border-bottom:1px dashed #8d7f72}.entry-photo{min-height:250px}.scrap-entry-info{padding:22px}.entry-ticket-title{font-size:30px}}
+@media(max-width:760px){.trip-rail{display:none}.trip-site>main,.trip-footer,.trip-header{margin-left:0}[data-trip-section]:before{display:none}.trip-opening-center{grid-template-columns:1fr;gap:26px;padding:74px 18px 70px}.trip-opening-route{display:none}.trip-opening-cassette{width:min(78vw,330px)}.trip-opening-copy{text-align:center;align-self:center}.trip-opening-copy h1{font-size:clamp(48px,15vw,78px)}.trip-opening-topbar{grid-template-columns:1fr auto;padding:0 14px}.trip-opening-topbar span:nth-child(2){display:none}.trip-opening-bottom{padding:0 14px;gap:10px;font-size:6px}.trip-opening-gate>.entry-photo{width:70vw;height:80vw;right:-22vw;top:10vh}.trip-header{grid-template-columns:1fr auto;min-height:60px}.trip-logo{padding:9px 14px;border-right:0}.trip-logo b{font-size:19px}.trip-nav{display:none}.trip-ticket{padding:0 14px}.trip-mobile-nav{position:sticky;top:60px;z-index:85;display:flex;overflow-x:auto;background:#2f2926;color:#fff}.trip-mobile-nav a{flex:0 0 auto;min-width:84px;padding:9px 12px;border-right:1px solid #5c514b;font:700 8px/1 Georgia,serif}.trip-mobile-nav small{display:block;margin-bottom:4px;font:700 6px/1 monospace;color:var(--trip-pink)}.trip-hero{min-height:0}.trip-hero-visual{min-height:430px;padding:24px 14px}.trip-hero-visual .kv{inset:26px 22px 55px;border-width:9px;border-bottom-width:44px;transform:rotate(-.6deg)}.trip-photo-caption{left:30px;bottom:30px}.trip-hero-copy{padding:44px 18px 50px}.trip-hero-copy h1{font-size:clamp(54px,18vw,82px)}.trip-stamp{width:70px;height:70px;right:18px;bottom:18px}.trip-weather-strip{grid-template-columns:1fr 1fr}.trip-news{grid-template-columns:1fr}.trip-news>header{border-right:0;border-bottom:1px solid var(--trip-line);padding:28px 18px}.trip-news-columns{display:none}.trip-news .updates-list{grid-column:1;padding:8px 18px 24px}.scrap-update{grid-template-columns:76px 1fr!important}.scrap-update>span{display:none}.trip-intro{grid-template-columns:1fr;gap:28px;padding:70px 18px}.trip-intro>aside b{font-size:62px}.trip-collage{grid-column:1;height:330px}.trip-cassette{left:50%;top:96px;transform:translateX(-50%) rotate(-5deg);width:240px}.trip-ticket-stub{right:0;bottom:6px;width:150px}.trip-sides{grid-template-columns:1fr}.trip-sides article{min-height:340px;padding:48px 18px}.trip-sides h3{margin-top:36px}.trip-transition{grid-template-columns:1fr;padding:54px 18px;gap:22px}.trip-transition i{font-size:44px}.trip-index{grid-template-columns:1fr}.trip-index>header{border-right:0;border-bottom:1px solid #5c514b;padding:28px 18px}.trip-index .quick-grid{display:flex!important;overflow-x:auto!important}.scrap-index-card{flex:0 0 70%;min-height:170px!important}.trip-feature{padding:70px 18px;gap:34px}.trip-feature .scrap-activity{grid-template-columns:1fr!important}.trip-ticket-cover{min-height:240px;padding:38px 22px}.trip-ticket-cover b{font-size:64px}.trip-ticket-list{padding:28px 14px 48px}.scrap-pass{grid-template-columns:58px 1fr!important}.scrap-pass aside{grid-column:1/-1;border-left:0!important;border-top:1px dashed #bc9f91!important}.scrap-pass:nth-child(2n){transform:none!important}.trip-map-copy{padding:48px 18px}.trip-map-paper{padding:18px}.trip-map .map-static{min-height:360px}.trip-page{padding:52px 16px 74px}.trip-page-head{grid-template-columns:1fr;gap:12px;margin-bottom:34px}.trip-page-head .section-back{justify-self:start}.trip-activity-switch{display:grid}.community{grid-template-columns:1fr}.sponsors{grid-template-columns:repeat(2,minmax(0,1fr))}.trip-footer{grid-template-columns:1fr}.trip-footer>div{border-right:0;border-bottom:1px solid #514740}.scrap-entry-gate{grid-template-columns:1fr;width:min(92vw,520px);max-height:82vh;overflow:auto}.scrap-entry-photo{border-right:0;border-bottom:1px dashed #8d7f72}.entry-photo{min-height:250px}.scrap-entry-info{padding:22px}.entry-ticket-title{font-size:30px}}
 `;
