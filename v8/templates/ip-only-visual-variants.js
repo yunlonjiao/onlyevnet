@@ -490,7 +490,7 @@ html[data-oe-template="07-immersive-character"] .entry-ticket-label{font-family:
 };
 
 
-const componentSystems=`
+const componentAdapterCss=`
 /* 02 scrapbook components */
 html[data-oe-template="02-scrapbook"] .scrap-pass{display:grid;grid-template-columns:78px 1fr 110px;gap:0;background:#fffaf0;border:1px solid #cbbda9;box-shadow:0 10px 24px #6f58441a;margin:0 0 18px;transform:rotate(-.35deg)}
 html[data-oe-template="02-scrapbook"] .scrap-pass:nth-child(2n){transform:rotate(.45deg)}.scrap-pass-no{padding:18px 12px;border-right:1px dashed #baa992;font:800 9px/1.4 monospace;letter-spacing:.1em}.scrap-pass-main{padding:18px 22px}.scrap-pass-main h3{margin:0 0 10px;font:500 25px/1 Georgia,serif}.scrap-pass-line{border-top:1px dashed #baa992;margin:10px 0}.scrap-pass aside{display:grid;align-content:center;gap:8px;padding:16px;border-left:1px dashed #baa992;background:#f2e7d5}.scrap-pass aside span{font-size:7px;letter-spacing:.14em}.scrap-pass .oe-ticket-price{font-size:22px;font-weight:900}
@@ -548,5 +548,5 @@ html[data-oe-template="07-immersive-character"] .kimetsu-activity{display:grid;g
 }
 `;
 export function createVariantPreview(id){
-  return {id,style:baseStyle+(variants[id]||'')+(structural[id]||'')+(independent[id]||'')+(componentSystems[id]||'')+(entrySystems[id]||''),body:variantBodies[id]||''};
+  return {id,style:baseStyle+(variants[id]||'')+(structural[id]||'')+(independent[id]||'')+(componentSystems[id]||'')+(entrySystems[id]||'')+componentAdapterCss,body:variantBodies[id]||''};
 }
