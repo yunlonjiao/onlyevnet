@@ -7,7 +7,7 @@ export function ticketMarkup({state,x,i,field,esc,image}){
   const id=tid(state);
   if(id==='01-ip-only')return '';
   const name=field('tickets.'+i+'.name',x.name,'h3');
-  const price='<div class="oe-ticket-price" data-oe-field="tickets.'+i+'.price" contenteditable="true" spellcheck="false">'+esc(x.price||'')+'</div>';
+  const price=field('tickets.'+i+'.price',x.price||'','div','oe-ticket-price');
   const gift=field('tickets.'+i+'.gift',x.gift||'','span','oe-ticket-gift');
   const note=field('tickets.'+i+'.note',x.note||'','small','oe-ticket-note');
   const common=' data-oe-item="tickets" data-oe-index="'+i+'"';
