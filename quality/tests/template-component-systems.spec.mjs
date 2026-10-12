@@ -48,3 +48,23 @@ test('component geometries differ materially between the six visual systems',asy
   }
   expect(new Set(signatures).size).toBeGreaterThanOrEqual(5);
 });
+
+
+test('02-07 use native quick-navigation and map-link components',async({page})=>{
+  const expected={
+    '02-scrapbook':['.scrap-index-card','.scrap-map-tag'],
+    '03-school-festival':['.school-wayfinding-card','.school-map-sign'],
+    '04-museum-editorial':['.museum-index-link','.museum-map-index'],
+    '05-live-poster':['.live-menu-tile','.live-venue-link'],
+    '06-expo-catalogue':['.expo-index-row','.expo-area-link'],
+    '07-immersive-character':['.kimetsu-path-link','.kimetsu-map-link']
+  };
+  for(const [id,[quick,map]] of Object.entries(expected)){
+    await page.goto('/v8/?template='+id+'&project=native-nav-'+id);
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator(quick).first()).toBeVisible();
+    await expect(frame.locator(map).first()).toBeVisible();
+    await expect(frame.locator('.quick-card')).toHaveCount(0);
+    await expect(frame.locator('.map-jump-tag')).toHaveCount(0);
+  }
+});
