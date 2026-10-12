@@ -13,7 +13,7 @@ function entryLoader(kind){
 
 function standardNav(cls=''){
   const base='<nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">摊位</a><a href="#activities" data-target-mode="page" data-page-link="activities">活动</a><a href="#guests" data-target-mode="page" data-page-link="guests">嘉宾</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></nav>';
-  if(cls==='scrap-nav')return '<header class="nav scrap-nav"><div class="scrap-nav-mark"><small>HAMA NICE TRIP</small><a class="brand" href="#top">STARDUST<br>ONLY</a></div>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">TRAVEL PASS ↗</a></header>';
+  if(cls==='scrap-nav')return '<header class="nav scrap-nav"><div class="scrap-nav-mark"><small>ONLY EVENT JOURNEY</small><a class="brand" href="#top">STARDUST<br>ONLY</a></div>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">TRAVEL PASS ↗</a></header>';
   if(cls==='school-nav')return '<header class="nav school-nav"><a class="brand" href="#top"><span>04</span>STARDUST FESTIVAL</a>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">TICKET</a></header>';
   if(cls==='museum-nav')return '<header class="nav museum-nav"><a class="brand" href="#top">STARDUST<br><small>EXHIBITION</small></a><div class="museum-nav-rule"></div>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">ADMISSION</a></header>';
   if(cls==='live-nav')return '<header class="nav live-nav"><a class="brand" href="#top"><b>5TH</b><span>STARDUST<br>THANKS FESTIVAL</span></a>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">GET TICKET ↗</a></header>';
@@ -120,11 +120,11 @@ export const variantBodies={
 standardNav('scrap-nav')+scrapMobileNav()+
 `<main id="top">
 <section class="hero scrap-hero"><div class="oe-home-only scrap-hero-grid">
-  <div class="scrap-tape-wrap"><div class="scrap-tape"><span class="reel r1"></span><span class="reel r2"></span><b>THE MEMORIES<br>OF A TRIP</b><small>01 / SPECIAL JOURNEY</small></div><div class="scrap-postcard">HAMA NICE TRIP<br><b>1ST ANNIVERSARY</b></div></div>
+  <div class="scrap-tape-wrap"><div class="scrap-tape"><span class="reel r1"></span><span class="reel r2"></span><b>SPECIAL EVENT<br>MEMORIES</b><small>01 / MEMORY ARCHIVE</small></div><div class="scrap-postcard">ONLY EVENT<br><b>SPECIAL JOURNEY</b></div></div>
   ${heroKV('scrap-photo')}${heroFields('scrap-copy')}
 </div></section>
-<section class="oe-home-only scrap-manifesto"><div><span>THE MEMORIES OF A TRIP ARE LIKE A SINGLE CASSETTE TAPE.</span><p>旅行中留下的美好与意外，不是彼此分开的两面，而是同一次旅程的完整记忆。</p></div></section>
-<div class="scrap-hashtags">#EIGHTEEN TRIP　#1ST ANNIVERSARY　#HAMA NICE TRIP</div>
+<section class="oe-home-only scrap-manifesto"><div><span>EVERY EVENT LEAVES A MEMORY WORTH KEEPING.</span><p>旅行中留下的美好与意外，不是彼此分开的两面，而是同一次旅程的完整记忆。</p></div></section>
+<div class="scrap-hashtags">#ONLYEVENT　#SPECIALJOURNEY　#FANMEMORIES</div>
 <section class="oe-home-only scrap-news" id="updates"><div class="scrap-label">LATEST UPDATE</div><div data-oe-mount="updates" class="updates-list"></div></section>
 <section class="oe-home-only scrap-memory-menu"><div class="scrap-label">CONTENTS / INDEX</div><div data-oe-mount="quick" class="quick-grid"></div></section>
 <section class="oe-home-only scrap-ticket-book" id="tickets"><div class="scrap-section-title"><span>TRAVEL PASS</span><h2>票务与特典</h2></div><div data-oe-mount="tickets" class="ticket-grid"></div><div data-oe-mount="ticket-actions" class="ticket-actions"></div></section>
