@@ -25,8 +25,6 @@ import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.36.3';
 import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.36.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {validateRendererContext} from '/v8/renderer/context.js?v=8.36.3';
-// @ts-ignore -- browser cache-busted absolute ESM URL
-import {applyTemplateComponentAdapters} from '/v8/renderer/template-component-adapters.js?v=8.36.3';
 
 const ORIGIN=location.origin;
 let state={},mode='edit',entryPreviewTimer=0;
@@ -70,17 +68,6 @@ const router=createRouter({...rendererContext,renderParticipation:participation.
 const fields=createFields({...rendererContext,setModeState:next=>{mode=next},setDeep,renderTickets:collections.renderTickets});
 const runtime=createRuntime(rendererContext);
 const buildStandaloneHtml=()=>createStandaloneExporter({getState:()=>state,previewStyle:currentPreview.style,runtimeExtraStyle:runtimeExtraStyle+activityLayoutFixStyle,escapeHtml:esc})();
-
-let templateAdapterFrame=0;
-function refreshTemplateComponents(){
-  cancelAnimationFrame(templateAdapterFrame);
-  templateAdapterFrame=requestAnimationFrame(()=>applyTemplateComponentAdapters(currentTemplateId));
-}
-const templateComponentObserver=new MutationObserver(records=>{
-  if(records.some(record=>record.type==='childList'&&(record.addedNodes.length||record.removedNodes.length)))refreshTemplateComponents();
-});
-templateComponentObserver.observe(document.body,{childList:true,subtree:true});
-document.addEventListener('click',()=>refreshTemplateComponents(),true);
 
 function resolveLifecycleStatus(){
   if(state.eventStatusMode==='manual')return ['upcoming','live','ended'].includes(state.eventStatus)?state.eventStatus:'upcoming';
@@ -199,7 +186,6 @@ function applyState(next){
   applyLifecycleState();
   collections.renderCollections();
   participation.renderParticipation();
-  applyTemplateComponentAdapters(currentTemplateId);
   bindEntryTicket();
   fields.markEditable();
   router.applyModules();
@@ -231,7 +217,6 @@ window.addEventListener('message',e=>{
     applyLifecycleState();
     collections.renderCollections();
     participation.renderParticipation();
-    applyTemplateComponentAdapters(currentTemplateId);
     fields.markEditable();
     router.applyModules();
     router.showPage(router.getCurrentPage(),false);
