@@ -117,7 +117,7 @@ function heroKV(extra=''){return `<div class="hero-art ${extra}"><div class="kv"
 export const variantBodies={
 '02-scrapbook':entryLoader('scrap')+
 `<div class="scrap-site"><div class="scrap-side-a">A SIDE / WONDERFUL MEMORIES</div><div class="scrap-side-b">B SIDE / TROUBLE & HAPPENINGS</div>`+
-standardNav('scrap-nav')+
+standardNav('scrap-nav')+scrapMobileNav()+
 `<main id="top">
 <section class="hero scrap-hero"><div class="oe-home-only scrap-hero-grid">
   <div class="scrap-tape-wrap"><div class="scrap-tape"><span class="reel r1"></span><span class="reel r2"></span><b>THE MEMORIES<br>OF A TRIP</b><small>01 / SPECIAL JOURNEY</small></div><div class="scrap-postcard">HAMA NICE TRIP<br><b>1ST ANNIVERSARY</b></div></div>
@@ -131,7 +131,7 @@ standardNav('scrap-nav')+
 <section class="oe-home-only scrap-featured" id="participation"><div class="scrap-section-title"><span>MEMORY PICKS</span><h2>活动精选</h2></div><div data-oe-mount="featured-activities" class="featured-activity-grid"></div></section>
 <section class="oe-home-only scrap-map" id="map-home"><div class="oe-home-only scrap-map-copy"><span>TRAVEL MAP</span><h2>场地图</h2><div data-oe-mount="map-links" class="map-link-list"></div></div><div data-oe-mount="map" id="venueMap" class="map-static"></div></section>
 ${detailPages('scrap')}${commonUtility('scrap')}
-</main>${scrapMobileNav()}${footer('scrap')}</div>`,
+</main>${footer('scrap')}</div>`,
 
 '03-school-festival':entryLoader('school')+
 `<div class="school-site"><aside class="school-fixed-rail"><b>ONLY EVENT</b><span>01</span><span>02</span><span>03</span><span>04</span></aside>`+
