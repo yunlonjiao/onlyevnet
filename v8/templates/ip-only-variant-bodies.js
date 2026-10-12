@@ -1,6 +1,25 @@
-const entryLoader=`<div class="loader" id="loader"><div class="gate" role="button" tabindex="0" aria-label="点击纪念票进入活动网站"><section class="ticket-half left"><div class="entry-photo" aria-label="活动KV"></div></section><aside class="ticket-half right"><div class="entry-ticket-label">MEMORIAL TICKET</div><div class="entry-ticket-title">STARDUST ONLY 2026</div><div class="entry-ticket-subtitle"></div><div class="entry-ticket-meta"><div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date">2026.11.08</b></div><div class="entry-ticket-time-wrap"><span>TIME</span><b class="entry-ticket-time"></b></div><div class="entry-ticket-location-wrap"><span>PLACE</span><b class="entry-ticket-location">杭州</b></div></div><div class="stub-barcode" aria-hidden="true"></div><div class="stub-code"><span class="entry-serial stub-number">NO. 048271</span></div></aside></div><button class="skip" id="skip">跳过动画 →</button></div>`;
+function entryLoader(kind){
+  const photo='<div class="entry-photo" aria-label="活动KV"></div>';
+  const info='<div class="entry-ticket-label">MEMORIAL TICKET</div><div class="entry-ticket-title">STARDUST ONLY 2026</div><div class="entry-ticket-subtitle"></div><div class="entry-ticket-meta"><div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date">2026.11.08</b></div><div class="entry-ticket-time-wrap"><span>TIME</span><b class="entry-ticket-time"></b></div><div class="entry-ticket-location-wrap"><span>PLACE</span><b class="entry-ticket-location">杭州</b></div></div><div class="stub-barcode" aria-hidden="true"></div><div class="stub-code"><span class="entry-serial stub-number">NO. 048271</span></div>';
+  let inner='';
+  if(kind==='scrap')inner='<div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击纪念票进入活动网站"><div class="scrap-entry-tape"><i></i><i></i><b>MEMORY TAPE</b></div><section class="ticket-half left">'+photo+'</section><aside class="ticket-half right">'+info+'</aside></div>';
+  else if(kind==='school')inner='<div class="gate school-entry-gate" role="button" tabindex="0" aria-label="点击入场证进入活动网站"><div class="school-entry-number">04</div><section class="ticket-half left">'+photo+'</section><aside class="ticket-half right"><span class="school-entry-kicker">CAMPUS FESTIVAL PASS</span>'+info+'</aside></div>';
+  else if(kind==='museum')inner='<div class="gate museum-entry-gate" role="button" tabindex="0" aria-label="点击展览票进入活动网站"><div class="museum-entry-index">EXHIBITION / ADMISSION</div><section class="ticket-half left">'+photo+'</section><aside class="ticket-half right">'+info+'</aside></div>';
+  else if(kind==='live')inner='<div class="gate live-entry-gate" role="button" tabindex="0" aria-label="点击舞台通行证进入活动网站"><div class="live-entry-five">5</div><section class="ticket-half left">'+photo+'</section><aside class="ticket-half right"><span class="live-entry-kicker">BACKSTAGE / EVENT PASS</span>'+info+'</aside></div>';
+  else if(kind==='expo')inner='<div class="gate expo-entry-gate" role="button" tabindex="0" aria-label="点击EXPO通行证进入活动网站"><div class="expo-entry-code">ENTRY / 001</div><section class="ticket-half left">'+photo+'</section><aside class="ticket-half right">'+info+'</aside></div>';
+  else inner='<div class="gate kimetsu-entry-gate" role="button" tabindex="0" aria-label="点击入场札进入活动网站"><div class="kimetsu-entry-seal">入</div><section class="ticket-half left">'+photo+'</section><aside class="ticket-half right">'+info+'</aside></div>';
+  return '<div class="loader '+kind+'-entry" id="loader">'+inner+'<button class="skip" id="skip">跳过动画 →</button></div>';
+}
 
 function standardNav(cls=''){
+  const base='<nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">摊位</a><a href="#activities" data-target-mode="page" data-page-link="activities">活动</a><a href="#guests" data-target-mode="page" data-page-link="guests">嘉宾</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></nav>';
+  if(cls==='scrap-nav')return '<header class="nav scrap-nav"><div class="scrap-nav-mark"><small>HAMA NICE TRIP</small><a class="brand" href="#top">STARDUST<br>ONLY</a></div>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">TRAVEL PASS ↗</a></header>';
+  if(cls==='school-nav')return '<header class="nav school-nav"><a class="brand" href="#top"><span>04</span>STARDUST FESTIVAL</a>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">TICKET</a></header>';
+  if(cls==='museum-nav')return '<header class="nav museum-nav"><a class="brand" href="#top">STARDUST<br><small>EXHIBITION</small></a><div class="museum-nav-rule"></div>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">ADMISSION</a></header>';
+  if(cls==='live-nav')return '<header class="nav live-nav"><a class="brand" href="#top"><b>5TH</b><span>STARDUST<br>THANKS FESTIVAL</span></a>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">GET TICKET ↗</a></header>';
+  if(cls==='expo-nav')return '<header class="nav expo-nav"><a class="brand" href="#top">STARDUST<br>EXPO</a>'+base+'<div class="expo-nav-code">2026 / HANGZHOU</div><a class="btn" href="#" target="_blank" rel="noopener">TICKET</a></header>';
+  return '<header class="nav kimetsu-nav"><a class="brand" href="#top"><b>追憶回廊</b><small>STARDUST ONLY</small></a>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">入場案内</a></header>';
+}ls=''){
  return `<header class="nav ${cls}"><div class="wrap"><a class="brand" href="#top">STARDUST ONLY 2026</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">摊位</a><a href="#activities" data-target-mode="page" data-page-link="activities">活动</a><a href="#guests" data-target-mode="page" data-page-link="guests">嘉宾</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></nav><a class="btn" href="#" target="_blank" rel="noopener">TICKET ↗</a></div></header>`;
 }
 function mobileNav(){return `<nav class="mobile-dock" data-oe-mount="mobile-nav"></nav>`}
@@ -29,7 +48,7 @@ function heroFields(extra=''){
 function heroKV(extra=''){return `<div class="hero-art ${extra}"><div class="kv"></div></div>`}
 
 export const variantBodies={
-'02-scrapbook':entryLoader+
+'02-scrapbook':entryLoader('scrap')+
 `<div class="scrap-site"><div class="scrap-side-a">A SIDE / WONDERFUL MEMORIES</div><div class="scrap-side-b">B SIDE / TROUBLE & HAPPENINGS</div>`+
 standardNav('scrap-nav')+
 `<main id="top">
@@ -48,7 +67,7 @@ standardNav('scrap-nav')+
 ${detailPages('scrap')}${commonUtility('scrap')}
 </main>${mobileNav()}${footer('scrap')}</div>`,
 
-'03-school-festival':entryLoader+
+'03-school-festival':entryLoader('school')+
 `<div class="school-site"><aside class="school-fixed-rail"><b>ONLY EVENT</b><span>01</span><span>02</span><span>03</span><span>04</span></aside>`+
 standardNav('school-nav')+
 `<main id="top">
@@ -63,7 +82,7 @@ standardNav('school-nav')+
 ${detailPages('school')}${commonUtility('school')}
 </main>${mobileNav()}${footer('school')}</div>`,
 
-'04-museum-editorial':entryLoader+
+'04-museum-editorial':entryLoader('museum')+
 `<div class="museum-site">`+standardNav('museum-nav')+
 `<main id="top">
 <section class="oe-home-only museum-titleband"><span>ENSEMBLE ARCHIVE</span><span>10TH ANNIVERSARY EXHIBITION</span><span>2026</span></section>
@@ -79,7 +98,7 @@ ${detailPages('school')}${commonUtility('school')}
 ${detailPages('museum')}${commonUtility('museum')}
 </main>${mobileNav()}${footer('museum')}</div>`,
 
-'05-live-poster':entryLoader+
+'05-live-poster':entryLoader('live')+
 `<div class="live-site">`+standardNav('live-nav')+
 `<main id="top">
 <div class="live-marquee-top"><span>5TH ANNIVERSARY</span><span>THANKS FESTIVAL</span><span>LIVE / STAGE / CONTENTS</span></div>
@@ -93,7 +112,7 @@ ${detailPages('museum')}${commonUtility('museum')}
 ${detailPages('live')}${commonUtility('live')}
 </main>${mobileNav()}${footer('live')}</div>`,
 
-'06-expo-catalogue':entryLoader+
+'06-expo-catalogue':entryLoader('expo')+
 `<div class="expo-site">`+standardNav('expo-nav')+
 `<main id="top">
 <div class="expo-area-tabs"><span>LIVE SHOWCASE AREA</span><span>EXPO AREA</span><span>OUTDOOR AREA</span></div>
@@ -108,7 +127,7 @@ ${detailPages('live')}${commonUtility('live')}
 ${detailPages('expo')}${commonUtility('expo')}
 </main>${mobileNav()}${footer('expo')}</div>`,
 
-'07-immersive-character':entryLoader+
+'07-immersive-character':entryLoader('kimetsu')+
 `<div class="kimetsu-site">`+standardNav('kimetsu-nav')+
 `<main id="top">
 <section class="hero kimetsu-hero"><div class="kimetsu-title-seal"><span>追憶回廊</span><small>MEMORY CORRIDOR</small></div>${heroKV('kimetsu-kv')}${heroFields('kimetsu-copy')}</section>
