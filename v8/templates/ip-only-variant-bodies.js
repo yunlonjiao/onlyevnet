@@ -20,7 +20,22 @@ function standardNav(cls=''){
   if(cls==='expo-nav')return '<header class="nav expo-nav"><a class="brand" href="#top">STARDUST<br>EXPO</a>'+base+'<div class="expo-nav-code">2026 / HANGZHOU</div><a class="btn" href="#" target="_blank" rel="noopener">TICKET</a></header>';
   return '<header class="nav kimetsu-nav"><a class="brand" href="#top"><b>追憶回廊</b><small>STARDUST ONLY</small></a>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">入場案内</a></header>';
 }
-function mobileNav(){return `<nav class="mobile-dock" data-oe-mount="mobile-nav"></nav>`}
+function mobileNav(prefix){
+ const labels={
+  scrap:['HOME','MEMORY','PLAN','GUEST','GUIDE'],
+  school:['首页','摊位','活动','嘉宾','指南'],
+  museum:['HOME','BOOTH','EVENT','GUEST','GUIDE'],
+  live:['HOME','BOOTH','STAGE','CAST','GUIDE'],
+  expo:['HOME','BOOTH','PROGRAM','GUEST','GUIDE'],
+  kimetsu:['首頁','攤位','催事','出演','案内']
+ }[prefix]||['首页','摊位','活动','嘉宾','指南'];
+ return '<nav class="mobile-dock '+prefix+'-mobile-dock" data-oe-mount="mobile-nav">'+
+  '<a href="#home" data-page-link="home">'+labels[0]+'</a>'+
+  '<a href="#booths" data-target-mode="page" data-page-link="booths">'+labels[1]+'</a>'+
+  '<a href="#activities" data-target-mode="page" data-page-link="activities">'+labels[2]+'</a>'+
+  '<a href="#guests" data-target-mode="page" data-page-link="guests">'+labels[3]+'</a>'+
+  '<a href="#guide" data-target-mode="page" data-page-link="guide">'+labels[4]+'</a></nav>';
+}
 
 function detailPages(prefix){
  return `
@@ -31,7 +46,12 @@ function detailPages(prefix){
 }
 
 function footer(prefix){
- return `<footer class="${prefix}-footer footer"><div data-oe-mount="footer-brand" class="footer-brand"></div><div data-oe-mount="footer-participate" class="footer-participate"></div><div data-oe-mount="footer-visit" class="footer-visit"></div><div data-oe-mount="footer-social" class="footer-social"></div></footer>`;
+ if(prefix==='scrap')return '<footer class="scrap-footer footer"><div class="scrap-footer-label">END OF SIDE A</div><div data-oe-mount="footer-brand" class="footer-brand"></div><div class="scrap-footer-links"><div data-oe-mount="footer-participate" class="footer-participate"></div><div data-oe-mount="footer-visit" class="footer-visit"></div></div><div data-oe-mount="footer-social" class="footer-social"></div></footer>';
+ if(prefix==='school')return '<footer class="school-footer footer"><div class="school-footer-no">05</div><div data-oe-mount="footer-brand" class="footer-brand"></div><div data-oe-mount="footer-participate" class="footer-participate"></div><div data-oe-mount="footer-visit" class="footer-visit"></div><div data-oe-mount="footer-social" class="footer-social"></div></footer>';
+ if(prefix==='museum')return '<footer class="museum-footer footer"><div class="museum-footer-index">END / ARCHIVE</div><div data-oe-mount="footer-brand" class="footer-brand"></div><div data-oe-mount="footer-participate" class="footer-participate"></div><div data-oe-mount="footer-visit" class="footer-visit"></div><div data-oe-mount="footer-social" class="footer-social"></div></footer>';
+ if(prefix==='live')return '<footer class="live-footer footer"><div class="live-footer-mark">THANK YOU<br>FOR COMING</div><div data-oe-mount="footer-brand" class="footer-brand"></div><div data-oe-mount="footer-participate" class="footer-participate"></div><div data-oe-mount="footer-visit" class="footer-visit"></div><div data-oe-mount="footer-social" class="footer-social"></div></footer>';
+ if(prefix==='expo')return '<footer class="expo-footer footer"><div class="expo-footer-code">EOF / 2026</div><div data-oe-mount="footer-brand" class="footer-brand"></div><div data-oe-mount="footer-participate" class="footer-participate"></div><div data-oe-mount="footer-visit" class="footer-visit"></div><div data-oe-mount="footer-social" class="footer-social"></div></footer>';
+ return '<footer class="kimetsu-footer footer"><div class="kimetsu-footer-seal">終</div><div data-oe-mount="footer-brand" class="footer-brand"></div><div data-oe-mount="footer-participate" class="footer-participate"></div><div data-oe-mount="footer-visit" class="footer-visit"></div><div data-oe-mount="footer-social" class="footer-social"></div></footer>';
 }
 
 function commonUtility(prefix){
@@ -63,7 +83,7 @@ standardNav('scrap-nav')+
 <section class="oe-home-only scrap-map" id="map-home"><div class="oe-home-only scrap-map-copy"><span>TRAVEL MAP</span><h2>场地图</h2><div data-oe-mount="map-links" class="map-link-list"></div></div><div data-oe-mount="map" id="venueMap" class="map-static"></div></section>
 <div class="oe-home-only ribbon scrap-ribbon" data-oe-mount="ribbon"><div class="ribbon-track" data-oe-mount="ribbon-track"></div></div>
 ${detailPages('scrap')}${commonUtility('scrap')}
-</main>${mobileNav()}${footer('scrap')}</div>`,
+</main>${mobileNav('scrap')}${footer('scrap')}</div>`,
 
 '03-school-festival':entryLoader('school')+
 `<div class="school-site"><aside class="school-fixed-rail"><b>ONLY EVENT</b><span>01</span><span>02</span><span>03</span><span>04</span></aside>`+
@@ -78,7 +98,7 @@ standardNav('school-nav')+
 <section class="oe-home-only school-map" id="map-home"><div><span>ACCESS / VENUE</span><h2>场地图</h2><div data-oe-mount="map-links" class="map-link-list"></div></div><div data-oe-mount="map" id="venueMap" class="map-static"></div></section>
 <div class="oe-home-only ribbon school-ribbon" data-oe-mount="ribbon"><div class="ribbon-track" data-oe-mount="ribbon-track"></div></div>
 ${detailPages('school')}${commonUtility('school')}
-</main>${mobileNav()}${footer('school')}</div>`,
+</main>${mobileNav('school')}${footer('school')}</div>`,
 
 '04-museum-editorial':entryLoader('museum')+
 `<div class="museum-site">`+standardNav('museum-nav')+
@@ -94,7 +114,7 @@ ${detailPages('school')}${commonUtility('school')}
 <section class="oe-home-only museum-index-menu"><aside>INDEX</aside><div data-oe-mount="quick" class="quick-grid"></div></section>
 <div class="oe-home-only ribbon museum-ribbon" data-oe-mount="ribbon"><div class="ribbon-track" data-oe-mount="ribbon-track"></div></div>
 ${detailPages('museum')}${commonUtility('museum')}
-</main>${mobileNav()}${footer('museum')}</div>`,
+</main>${mobileNav('museum')}${footer('museum')}</div>`,
 
 '05-live-poster':entryLoader('live')+
 `<div class="live-site">`+standardNav('live-nav')+
@@ -108,7 +128,7 @@ ${detailPages('museum')}${commonUtility('museum')}
 <section class="oe-home-only live-venue" id="map-home"><div class="live-section-label">VENUE / ACCESS</div><div class="oe-home-only live-venue-grid"><div data-oe-mount="map" id="venueMap" class="map-static"></div><div data-oe-mount="map-links" class="map-link-list"></div></div></section>
 <div class="oe-home-only ribbon live-ribbon" data-oe-mount="ribbon"><div class="ribbon-track" data-oe-mount="ribbon-track"></div></div>
 ${detailPages('live')}${commonUtility('live')}
-</main>${mobileNav()}${footer('live')}</div>`,
+</main>${mobileNav('live')}${footer('live')}</div>`,
 
 '06-expo-catalogue':entryLoader('expo')+
 `<div class="expo-site">`+standardNav('expo-nav')+
@@ -123,7 +143,7 @@ ${detailPages('live')}${commonUtility('live')}
 <section class="oe-home-only expo-map" id="map-home"><div class="expo-code">05 / AREA MAP</div><div class="oe-home-only expo-map-grid"><div data-oe-mount="map" id="venueMap" class="map-static"></div><div data-oe-mount="map-links" class="map-link-list"></div></div></section>
 <div class="oe-home-only ribbon expo-ribbon" data-oe-mount="ribbon"><div class="ribbon-track" data-oe-mount="ribbon-track"></div></div>
 ${detailPages('expo')}${commonUtility('expo')}
-</main>${mobileNav()}${footer('expo')}</div>`,
+</main>${mobileNav('expo')}${footer('expo')}</div>`,
 
 '07-immersive-character':entryLoader('kimetsu')+
 `<div class="kimetsu-site">`+standardNav('kimetsu-nav')+
@@ -137,5 +157,5 @@ ${detailPages('expo')}${commonUtility('expo')}
 <section class="oe-home-only kimetsu-map" id="map-home"><div class="kimetsu-chapter-head"><span>第三章</span><h2>会場を巡る</h2></div><div class="oe-home-only kimetsu-map-grid"><div data-oe-mount="map" id="venueMap" class="map-static"></div><div data-oe-mount="map-links" class="map-link-list"></div></div></section>
 <div class="oe-home-only ribbon kimetsu-ribbon" data-oe-mount="ribbon"><div class="ribbon-track" data-oe-mount="ribbon-track"></div></div>
 ${detailPages('kimetsu')}${commonUtility('kimetsu')}
-</main>${mobileNav()}${footer('kimetsu')}</div>`
+</main>${mobileNav('kimetsu')}${footer('kimetsu')}</div>`
 };
