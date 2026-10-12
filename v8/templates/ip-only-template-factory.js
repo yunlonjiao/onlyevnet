@@ -1,4 +1,4 @@
-import {template01} from '/v8/templates/01-ip-only.js?v=8.36.6';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.36.7';
 
 const clone=value=>JSON.parse(JSON.stringify(value));
 
