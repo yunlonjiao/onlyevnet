@@ -92,3 +92,44 @@ export function productMarkup({state,b,p,i,j,field,esc,img,wished,search}){
   if(id==='06-expo-catalogue')return '<article class="expo-product-row"'+common+'><span>G-'+num(j)+'</span>'+img+'<div>'+name+'<small>'+esc(b.no||'')+' / '+esc(b.name||'')+'</small></div><div>'+tag+'</div><footer>'+price+wish+'</footer></article>';
   return '<article class="kimetsu-product"'+common+'>'+img+'<div>'+tag+name+'<small>'+esc(b.no||'')+' · '+esc(b.name||'')+'</small></div><footer>'+price+wish+'</footer></article>';
 }
+
+
+export function activityMarkup({state,x,i,field,esc,image,scheduleInfo,venueInfo,guestHtml,action,modules,type,typeLabel}){
+  const id=tid(state);if(id==='01-ip-only')return '';
+  const common=' id="participation-'+esc(x.id||String(i))+'" data-oe-item="participation" data-oe-index="'+i+'"';
+  const title=field('participation.'+i+'.title',x.title||'活动','h3');
+  const summary=String(x.text||'').trim()?field('participation.'+i+'.text',x.text,'p','oe-secondary-copy'):'';
+  const body=modules.length?'<div class="oe-activity-modules">'+modules.join('')+'</div>':'';
+  const meta=type==='venue'?venueInfo:scheduleInfo;
+  if(id==='02-scrapbook')return '<article class="scrap-activity"'+common+'><div class="scrap-activity-photo">'+image+'</div><div class="scrap-activity-note"><span>MEMORY PLAN '+num(i)+'</span>'+title+'<small>'+typeLabel+'</small>'+summary+meta+guestHtml+action+body+'</div></article>';
+  if(id==='03-school-festival')return '<article class="school-activity"'+common+'><header><span>'+num(i)+'</span><b>'+typeLabel+'</b></header><div class="school-activity-main">'+image+'<div>'+title+summary+meta+guestHtml+action+body+'</div></div></article>';
+  if(id==='04-museum-editorial')return '<article class="museum-activity"'+common+'><aside><span>PROGRAM '+num(i)+'</span><small>'+typeLabel+'</small></aside><div class="museum-activity-copy">'+title+summary+meta+guestHtml+body+action+'</div>'+image+'</article>';
+  if(id==='05-live-poster')return '<article class="live-activity"'+common+'><div class="live-activity-no">'+num(i)+'</div><div class="live-activity-visual">'+image+'</div><div class="live-activity-copy"><span>'+typeLabel+'</span>'+title+summary+meta+guestHtml+body+action+'</div></article>';
+  if(id==='06-expo-catalogue')return '<article class="expo-activity-row"'+common+'><span>A-'+num(i)+'</span><div>'+typeLabel+'</div><div>'+title+summary+'</div><div>'+meta+guestHtml+'</div><div>'+action+body+'</div>'+image+'</article>';
+  return '<article class="kimetsu-activity"'+common+'><div class="kimetsu-activity-mark">'+num(i)+'</div>'+image+'<div class="kimetsu-activity-copy"><span>'+typeLabel+'</span>'+title+summary+meta+guestHtml+body+action+'</div></article>';
+}
+
+export function guideMarkup({state,x,i,field,esc,image,navigation,preset,kindLabel,scope}){
+  const id=tid(state);if(id==='01-ip-only')return '';
+  const common=' id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"';
+  const title=field('guide.items.'+i+'.title',x.title||'','span'),text=field('guide.items.'+i+'.text',x.text||'','p');
+  const label=esc(x.label||kindLabel[preset]||'GUIDE');
+  if(id==='02-scrapbook')return '<article class="scrap-guide"'+common+'><span>NOTE '+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
+  if(id==='03-school-festival')return '<article class="school-guide"'+common+'><div class="school-guide-no">'+num(i)+'</div><div><span>'+label+'</span><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
+  if(id==='04-museum-editorial')return '<article class="museum-guide"'+common+'><aside>'+num(i)+' / '+label+'</aside><div><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
+  if(id==='05-live-poster')return '<article class="live-guide"'+common+'><span>'+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
+  if(id==='06-expo-catalogue')return '<article class="expo-guide-row"'+common+'><span>G-'+num(i)+'</span><div>'+label+'</div><div><h3>'+title+'</h3>'+text+'</div><div>'+navigation+'</div>'+image+'</article>';
+  return '<article class="kimetsu-guide"'+common+'><span>'+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
+}
+
+export function communityMarkup({state,x,i,field,esc,img,action}){
+  const id=tid(state);if(id==='01-ip-only')return '';
+  const common=' data-oe-item="socialLinks" data-oe-index="'+i+'"';
+  const label=field('socialLinks.'+i+'.label',x.label,'b'),note=field('socialLinks.'+i+'.note',x.note||'','p');
+  if(id==='02-scrapbook')return '<article class="scrap-social"'+common+'>'+img+'<div><span>SOCIAL NOTE</span>'+label+note+action+'</div></article>';
+  if(id==='03-school-festival')return '<article class="school-social"'+common+'><span>'+num(i)+'</span>'+img+'<div>'+label+note+action+'</div></article>';
+  if(id==='04-museum-editorial')return '<article class="museum-social"'+common+'><span>COMMUNITY '+num(i)+'</span><div>'+label+note+action+'</div>'+img+'</article>';
+  if(id==='05-live-poster')return '<article class="live-social"'+common+'>'+img+'<div><span>FOLLOW / JOIN</span>'+label+note+action+'</div></article>';
+  if(id==='06-expo-catalogue')return '<article class="expo-social"'+common+'><span>C-'+num(i)+'</span>'+img+'<div>'+label+note+'</div>'+action+'</article>';
+  return '<article class="kimetsu-social"'+common+'>'+img+'<div>'+label+note+action+'</div></article>';
+}
