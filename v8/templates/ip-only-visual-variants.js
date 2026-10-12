@@ -1,5 +1,5 @@
-import {previewStyle as baseStyle} from '/v8/templates/01-ip-only-preview.js?v=8.36.8';
-import {variantBodies} from '/v8/templates/ip-only-variant-bodies.js?v=8.36.8';
+import {previewStyle as baseStyle} from '/v8/templates/01-ip-only-preview.js?v=8.37.0';
+import {variantBodies} from '/v8/templates/ip-only-variant-bodies.js?v=8.37.0';
 
 const variants={
 '02-scrapbook':`
@@ -544,7 +544,7 @@ html[data-oe-template="07-immersive-character"] .kimetsu-footer{grid-template-co
 
 
 const secondRoundCss=`
-/* v8.36.9 — second-pass de-skinning: schedule, guide, density and mobile navigation */
+/* v8.37.0 — second-pass de-skinning: schedule, guide, density and mobile navigation */
 
 /* 02 — scrapbook: loose diary rhythm, torn-note guide, floating filmstrip mobile nav */
 html[data-oe-template="02-scrapbook"] .scrap-page-body{display:grid;grid-template-columns:130px 1fr;gap:38px}
