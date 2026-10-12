@@ -1,13 +1,13 @@
 /*
  * OnlyEvent IP ONLY Shared Core Contract
- * v8.37.1
+ * v8.37.3
  *
  * This file defines the product capabilities every IP ONLY template must support.
  * It is intentionally visual-agnostic: templates decide markup, composition, density,
  * typography and motion; the core defines data, behavior and editing contracts.
  */
 
-export const IP_ONLY_CORE_VERSION='8.37.2';
+export const IP_ONLY_CORE_VERSION='8.37.3';
 
 export const IP_ONLY_CORE_MODULES=Object.freeze([
   'ribbon',
