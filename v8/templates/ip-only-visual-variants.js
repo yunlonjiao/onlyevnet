@@ -1,4 +1,4 @@
-import {previewStyle as baseStyle} from '/v8/templates/01-ip-only-preview.js?v=8.37.0';
+import {ipOnlyPreviewCoreStyle as baseStyle} from '/v8/templates/ip-only-preview-core.js?v=8.37.0';
 import {variantBodies} from '/v8/templates/ip-only-variant-bodies.js?v=8.37.0';
 
 const variants={
