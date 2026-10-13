@@ -81,10 +81,10 @@ export const previewBody=`
       <div data-oe-mount="updates" class="updates-list"></div>
     </section>
 
-    <section class="trip-intro oe-home-only" hidden aria-hidden="true">
-      <aside><span>INTRODUCTION</span><b>01</b></aside>
+    <section class="trip-intro oe-home-only">
+      <aside><span>活动简介 / INTRODUCTION</span><b>01</b></aside>
       <div class="trip-intro-copy">
-        <h2>ONE DAY.<br>ALL OUR STORIES.</h2>
+        <h2>关于本次活动<small>ABOUT THE EVENT</small></h2>
         <p data-oe-field="tagline">一次相遇，一段值得珍藏的旅程。</p>
       </div>
       <div class="trip-collage" aria-hidden="true">
@@ -103,12 +103,12 @@ export const previewBody=`
     </section>
 
     <section class="trip-index oe-home-only">
-      <header><span>TRIP INDEX</span><b>WHERE DO YOU WANT TO GO?</b></header>
+      <header><span>快速导航 / DIRECTORY</span><b>你想去哪里？<small>WHERE DO YOU WANT TO GO?</small></b></header>
       <div data-oe-mount="quick" class="quick-grid"></div>
     </section>
 
     <section class="trip-feature oe-home-only" id="participation">
-      <header><span>PICK UP</span><h2>JOURNEY HIGHLIGHTS</h2><p>DISCOVER EVENT HIGHLIGHTS</p></header>
+      <header><span>活动精选 / PICK UP</span><h2>精彩活动<small>JOURNEY HIGHLIGHTS</small></h2></header>
       <div data-oe-mount="featured-activities" class="featured-activity-grid"></div>
     </section>
 
@@ -121,7 +121,7 @@ export const previewBody=`
     </section>
 
     <section class="trip-map oe-home-only" id="map-home">
-      <div class="trip-map-copy"><span>DESTINATION</span><h2>VENUE MAP</h2><p>EXPLORE THE VENUE</p><div data-oe-mount="map-links" class="map-link-list"></div></div>
+      <div class="trip-map-copy"><span>场地导览 / DESTINATION</span><h2>场地图<small>VENUE MAP</small></h2><div data-oe-mount="map-links" class="map-link-list"></div></div>
       <div class="trip-map-paper"><div data-oe-mount="map" id="venueMap" class="map-static"></div></div>
     </section>
 
@@ -695,4 +695,16 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-logo small{d
 .trip-ticket-list .ticket-actions{padding-top:16px!important}
 @media(max-width:900px){.trip-ticket-section{grid-template-columns:1fr!important}.trip-ticket-cover{min-height:180px!important;padding:28px!important}.trip-ticket-cover b{font-size:45px!important}.trip-ticket-list .scrap-pass{grid-template-columns:minmax(0,1fr) 110px!important}.trip-ticket-list .scrap-pass-art{display:none!important}.trip-ticket-list .scrap-pass aside{padding:15px!important}.trip-feature .featured-activity-media{max-height:260px!important}}
 @media(max-width:560px){.trip-ticket-list{padding:14px!important}.trip-ticket-list .scrap-pass{grid-template-columns:1fr!important}.trip-ticket-list .scrap-pass aside{border-left:0!important;border-top:1px dashed #b7acaa!important;align-items:flex-start!important;padding:12px 19px!important}.trip-ticket-list .scrap-pass-main{padding:18px!important}.trip-site .trip-mobile-nav a{padding:10px 13px!important}.trip-site .trip-mobile-nav a strong{font-size:14px!important}}
+
+/* Localized homepage: one event introduction, no repeated metadata rail. */
+.trip-site .trip-hero .trip-weather-strip{display:none!important}
+.trip-site .trip-intro{display:grid!important}
+.trip-site .trip-intro[hidden]{display:none!important}
+.trip-site .trip-intro-copy h2{font-size:clamp(36px,4.6vw,78px)!important;letter-spacing:0!important;line-height:1.22!important}
+.trip-site .trip-intro-copy h2 small,.trip-site .trip-index>header b small,.trip-site .trip-feature>header h2 small,.trip-site .trip-map-copy h2 small{display:block!important;font:700 clamp(11px,1vw,15px)/1.65 "Courier New",monospace!important;letter-spacing:.08em!important;margin-top:15px!important;white-space:normal!important}
+.trip-site .trip-hero-copy>p[data-oe-field="tagline"]{display:none!important}
+.trip-site .trip-index>header b{font:750 clamp(27px,2.8vw,53px)/1.24 "Microsoft YaHei","PingFang SC",sans-serif!important;letter-spacing:0!important;word-break:normal!important;overflow-wrap:anywhere}
+.trip-site .trip-feature>header h2,.trip-site .trip-map-copy h2{font-family:"Microsoft YaHei","PingFang SC",sans-serif!important;letter-spacing:0!important;line-height:1.18!important}
+.trip-site .trip-intro>aside b{opacity:.42!important}
+@media(max-width:900px){.trip-site .trip-intro{grid-template-columns:1fr!important}.trip-site .trip-index>header b{font-size:34px!important}}
 `;
