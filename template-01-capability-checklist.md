@@ -684,7 +684,7 @@
 要求：
 - Publisher UI、交互和域名规则在所有模板中保持一致
 - 模板不得单独实现自己的发布流程
-- 模板只需要正确生成独立游客 HTML
+- 模板负责生成完整游客网站，并能输出为独立游客 HTML
 - Cloudflare / GitHub / Vercel 等属于底层实现，不向主办方暴露
 
 ---
@@ -797,3 +797,28 @@
 而不是：
 
 **Template 01 DOM + 换 CSS + 参考站装饰。**
+
+
+## Template / Publisher responsibility split
+
+### Template responsibilities
+- generate the complete visitor website
+- define visual structure and responsive presentation
+- render organizer content and enabled modules
+- render first-level pages and custom pages
+- preserve all visitor interactions
+- produce complete standalone HTML
+
+### Publisher responsibilities
+- manage the public site address
+- publish the generated site
+- update the same published address
+- expose open/copy-link actions
+- provide the shared download/publish workflow
+- hide deployment infrastructure from organizers
+
+In short:
+
+**Template = Site Generator**
+
+**Publisher = Deployment / Delivery Layer**
