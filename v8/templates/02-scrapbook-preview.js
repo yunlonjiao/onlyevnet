@@ -73,9 +73,7 @@ export const previewBody=`
       </div>
     </section>
 
-    <div class="trip-route-ticker oe-home-only" aria-hidden="true">
-      <div><span>✈ ONLY EVENT JOURNEY</span><span>ENJOY YOUR SPECIAL DAY</span><span>DISCOVER YOUR COMMUNITY</span><span>CREATE NEW MEMORIES</span><span>✈ ONLY EVENT JOURNEY</span><span>ENJOY YOUR SPECIAL DAY</span><span>DISCOVER YOUR COMMUNITY</span><span>CREATE NEW MEMORIES</span></div>
-    </div>
+    <div class="trip-route-ticker ribbon oe-home-only"><div class="trip-route-ticker-track ribbon-track"></div></div>
 
     <section class="trip-news oe-home-only" id="updates">
       <header><span>NEWS</span><b>NEWS</b><small>EVENT UPDATES</small></header>
@@ -143,12 +141,12 @@ export const previewBody=`
     </section>
 
     <section class="trip-page oe-page-view" id="guests">
-      <header class="trip-page-head"><span>ROUTE 03 / GUEST</span><h2>TRAVEL COMPANIONS</h2><a class="section-back" href="#home" data-page-link="home">BACK TO TOP</a></header>
-      <div class="guest-grid" data-oe-mount="guests"></div>
+      <header class="trip-page-head"><span>ROUTE 03 / GUEST</span><h2>GUEST / CHARACTER</h2><a class="section-back" href="#home" data-page-link="home">BACK TO TOP</a></header>
+      <div class="trip-guest-carousel"><div class="guest-grid" data-oe-mount="guests" tabindex="0" aria-label="嘉宾列表，左右滑动浏览"></div></div>
     </section>
 
     <section class="trip-page oe-page-view" id="guide">
-      <header class="trip-page-head"><span>ROUTE 04 / GUIDE</span><h2>TRAVEL GUIDE</h2><a class="section-back" href="#home" data-page-link="home">BACK TO TOP</a></header>
+      <header class="trip-page-head"><span>ROUTE 04 / GUIDE</span><h2>VISITOR GUIDE</h2><a class="section-back" href="#home" data-page-link="home">BACK TO TOP</a></header>
       <div class="guide-detail-grid" data-oe-mount="guide-detail"></div>
     </section>
 
@@ -521,4 +519,44 @@ body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero
 body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-weather-strip{position:relative!important;inset:auto!important;width:100%!important}
 body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy h1{font-size:clamp(38px,9vw,70px)!important}
 }
+
+/* Template 02 visual QA — layout typography and editable ticker. */
+.trip-route-ticker.ribbon{display:block!important;overflow:hidden;background:#c9fb62!important;color:#26333c!important;min-height:65px;padding:0!important;border:0!important}
+.trip-route-ticker .ribbon-track{display:flex!important;align-items:center;min-width:max-content;width:max-content;gap:0;animation:tripTicker 26s linear infinite}
+.trip-route-ticker .ribbon-sequence{display:flex!important;align-items:center;gap:0;flex-shrink:0}
+.trip-route-ticker .ribbon-edit{display:inline-block!important;font:900 clamp(17px,2.2vw,34px)/1 Arial,sans-serif!important;letter-spacing:-.06em!important;padding:17px 38px!important;min-width:0;background:none!important;color:#25333c!important;white-space:nowrap}
+.trip-route-ticker .ribbon-edit::after{content:" ↗";font-weight:900;padding-left:25px}
+.trip-route-ticker .ribbon-sequence[aria-hidden="true"]{pointer-events:none}
+.trip-route-ticker .ribbon-sequence[aria-hidden="true"] [data-oe-field]{user-select:none;pointer-events:none}
+.trip-route-ticker:hover .ribbon-track,.trip-route-ticker:focus-within .ribbon-track{animation-play-state:paused}
+.trip-route-ticker [contenteditable="true"]{outline-offset:2px}
+.trip-site .trip-page{background:#f8f8f1!important;padding:clamp(70px,7vw,120px) clamp(24px,5vw,88px) 130px!important;min-height:calc(100vh - 78px);max-width:none!important}
+.trip-site .trip-page-head{display:grid!important;grid-template-columns:minmax(150px,21%) 1fr auto!important;align-items:end!important;gap:25px!important;max-width:none!important;margin:0 0 clamp(40px,5vw,90px)!important;padding:0 0 34px!important;border-bottom:2px solid #293342!important}
+.trip-site .trip-page-head>span{grid-column:1!important;font:800 clamp(10px,.8vw,13px)/1.4 "Courier New",monospace!important;letter-spacing:.15em!important;color:#e46b73!important}
+.trip-site .trip-page-head h2{grid-column:2!important;font:900 clamp(45px,6vw,110px)/.88 Arial,"Noto Sans SC",sans-serif!important;letter-spacing:-.075em!important;color:#293342!important;text-transform:uppercase;overflow-wrap:anywhere}
+.trip-site .trip-page-head .section-back{grid-column:3!important;align-self:end;font-size:12px!important;color:#293342!important}
+.trip-page-head:after{display:none!important}
+#guests .trip-guest-carousel{width:100%;overflow:hidden}
+#guests .guest-grid{display:flex!important;flex-wrap:nowrap!important;gap:clamp(15px,2.7vw,42px)!important;align-items:stretch;overflow-x:auto!important;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding-inline:2px;overscroll-behavior-inline:contain;scrollbar-width:thin;padding:8px 6px 42px!important}
+#guests .scrap-guest{display:flex!important;flex:0 0 min(70vw,560px)!important;min-width:0!important;scroll-snap-align:start;align-items:stretch!important;gap:0!important;background:#eaf0ed!important;border:1px solid #8da6a9!important}
+#guests .scrap-polaroid{width:47%;flex-shrink:0;transform:none!important;box-shadow:none!important;background:#d7e5e3!important;padding:12px!important}
+#guests .scrap-polaroid .guest-image{width:100%;aspect-ratio:3/4!important;overflow:hidden}
+#guests .scrap-polaroid>span{letter-spacing:.17em!important}
+#guests .scrap-guest-note{flex:1;padding:clamp(18px,2vw,34px)!important;min-width:0}
+#guests .scrap-guest-note>.guest-poster-name{font-family:Arial,"Noto Sans SC",sans-serif!important;font-size:clamp(26px,2.8vw,50px)!important;font-weight:900!important;letter-spacing:-.06em!important;overflow-wrap:anywhere}
+#guests .scrap-tape-meta{border-block:1px solid #b9c9c7!important}
+#guests .guest-grid:focus-visible{outline:2px solid #263847;outline-offset:3px}
+@media(max-width:760px){
+.trip-site .trip-page{padding:72px 16px 85px!important}
+.trip-site .trip-page-head{grid-template-columns:1fr auto!important;gap:14px!important;padding-bottom:22px!important}
+.trip-site .trip-page-head>span{grid-column:1/-1!important}
+.trip-site .trip-page-head h2{grid-column:1!important;font-size:clamp(35px,10vw,64px)!important}
+.trip-site .trip-page-head .section-back{grid-column:2!important;font-size:10px!important}
+#guests .scrap-guest{flex:0 0 min(88vw,370px)!important;flex-direction:column!important}
+#guests .scrap-polaroid{width:100%!important}
+#guests .scrap-polaroid .guest-image{aspect-ratio:4/3!important}
+#guests .scrap-guest-note{padding:21px!important}
+.trip-route-ticker .ribbon-edit{padding:13px 22px!important;font-size:20px!important}
+}
+@media(prefers-reduced-motion:reduce){.trip-route-ticker .ribbon-track{animation:none!important}}
 `;
