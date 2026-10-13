@@ -106,6 +106,10 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     }
 
     el.textContent=value??'';
+    // Keep every visual mirror of a core field synchronized. Templates may
+    // repeat event identity in headers, hero metadata, status strips, etc.,
+    // but the organizer still edits one source of truth.
+    qa('[data-oe-field="'+CSS.escape(path)+'"]').forEach(mirror=>{if(mirror!==el)mirror.textContent=value??''});
 
     if(path.startsWith('ribbon')){
       const i=Number(path.replace('ribbon',''))-1;
