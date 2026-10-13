@@ -106,6 +106,13 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     }
 
     el.textContent=value??'';
+    // Mirrored travel-template fields must remain in sync with the Shared Core.
+    // The entry ticket is presentation-only: do not let its duplicates capture editing.
+    if(document.documentElement.dataset.oeTemplate==='02-scrapbook'){
+      qa('[data-oe-field="'+CSS.escape(path)+'"]').forEach(mirror=>{
+        if(mirror!==el && mirror!==document.activeElement)mirror.textContent=value??'';
+      });
+    }
 
     if(path.startsWith('ribbon')){
       const i=Number(path.replace('ribbon',''))-1;
@@ -125,13 +132,13 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
       el.contentEditable=getMode()==='edit'?'true':'false';
       el.spellcheck=false;
     });
-    qa('[data-oe-field]').forEach(el=>el.contentEditable=getMode()==='edit'?'true':'false');
+    qa('[data-oe-field]').forEach(el=>el.contentEditable=(el.closest('#loader')?false:getMode()==='edit')?'true':'false');
   }
 
   function setMode(next){
     setModeState(next);
     document.documentElement.classList.toggle('oe-preview',next==='preview');
-    qa('[data-oe-field]').forEach(el=>el.contentEditable=next==='edit'?'true':'false');
+    qa('[data-oe-field]').forEach(el=>el.contentEditable=(next==='edit'&&!el.closest('#loader'))?'true':'false');
   }
 
   return {fieldMap,extraStatePaths,applyField,markEditable,setMode};
