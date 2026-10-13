@@ -669,13 +669,23 @@
 - [ ] 保留 lifecycle
 - [ ] 清理空编辑占位
 
-## 24.2 Publisher — A 必须继承
+## 24.2 Publisher — Studio 统一能力，不属于模板设计
 
-- [ ] 一键游客站
-- [ ] Cloudflare
-- [ ] GitHub
-- [ ] 下载 HTML
+所有模板统一使用同一个 OnlyEvent Publisher：
+
+- [ ] 设置站点地址：`https://[slug].onlyevent.cn`
+- [ ] 首次发布游客网站
+- [ ] 再次发布更新同一个地址
+- [ ] 打开已发布网站
+- [ ] 复制网站链接
+- [ ] 导出独立 HTML
 - [ ] 发布后游客页不依赖 Studio
+
+要求：
+- Publisher UI、交互和域名规则在所有模板中保持一致
+- 模板不得单独实现自己的发布流程
+- 模板只需要正确生成独立游客 HTML
+- Cloudflare / GitHub / Vercel 等属于底层实现，不向主办方暴露
 
 ---
 
