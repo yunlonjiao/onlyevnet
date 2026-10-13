@@ -78,10 +78,10 @@ export const previewBody=`
         <div class="trip-stamp">活动<br><b>信息</b></div>
       </div>
       <div class="trip-weather-strip">
-        <span><b>日期</b>11.08 SUN</span>
-        <span><b>时间</b>10:00 — 17:00</span>
-        <span><b>场馆</b>杭州国际博览中心</span>
-        <span><b>状态</b>开放购票</span>
+        <span><b>日期</b><i data-oe-field="date">11.08 SUN</i></span>
+        <span><b>城市</b><i data-oe-field="location">杭州</i></span>
+        <span><b>场馆</b><i data-oe-field="edition">杭州国际博览中心</i></span>
+        <span><b>状态</b><i data-oe-lifecycle-status>活动未开始</i></span>
       </div>
     </section>
 
@@ -201,7 +201,7 @@ export const previewStyle=`
 .trip-hero-copy h1{margin:0;font:500 clamp(62px,7.5vw,120px)/.8 Georgia,serif;letter-spacing:-.07em}.trip-hero-copy h1 em{color:var(--trip-pink);font-style:italic}.trip-hero-copy>p{max-width:500px;margin:28px 0;font-size:16px;line-height:1.85;color:#665a50}
 .trip-hero-meta{display:grid;gap:9px;padding-top:18px;border-top:1px dashed var(--trip-line);font:700 12px/1.45 monospace}.trip-hero-meta a{text-decoration:underline;text-underline-offset:3px}
 .trip-stamp{position:absolute;right:30px;bottom:34px;width:94px;height:94px;display:grid;place-items:center;text-align:center;border:2px solid var(--trip-pink);border-radius:50%;transform:rotate(10deg);font:700 8px/1.2 monospace;color:var(--trip-pink)}.trip-stamp b{font-size:19px}
-.trip-weather-strip{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);background:var(--trip-blue-soft);color:var(--trip-ink)}.trip-weather-strip span{display:grid;gap:6px;padding:16px 22px;border-right:1px solid #bfd9df;font:700 12px/1.3 monospace}.trip-weather-strip b{font-size:8px;letter-spacing:.14em;color:#6a9ead}
+.trip-weather-strip{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);background:var(--trip-blue-soft);color:var(--trip-ink)}.trip-weather-strip span{display:grid;gap:6px;padding:16px 22px;border-right:1px solid #bfd9df;font:700 12px/1.3 monospace}.trip-weather-strip b{font-size:8px;letter-spacing:.14em;color:#6a9ead}.trip-weather-strip i{font-style:normal;min-width:0;overflow-wrap:anywhere}
 
 
 .trip-hero-visual .kv,.trip-collage,.scrap-polaroid{will-change:transform}
