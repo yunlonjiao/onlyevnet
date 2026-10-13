@@ -610,4 +610,32 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-ticket{margi
 
 /* Navigation visibility always wins against theme display declarations. */
 .trip-site .oe-page-hidden,.trip-site [hidden]{display:none!important}
+
+/* 8.40.1: content comfort & 18TRIP MUSIC-style activity posters */
+#booths .booth-directory-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,410px),1fr))!important;gap:22px!important}
+#booths .scrap-booth{grid-template-columns:76px minmax(0,1fr)!important;gap:18px!important;padding:24px 24px 25px 48px!important;min-height:250px!important;background:#fbfaf6!important}
+#booths .scrap-booth-pin{width:31px!important;font-size:11px!important;letter-spacing:.08em!important}
+#booths .scrap-booth .booth-logo{width:76px!important;height:76px!important;flex-shrink:0!important}
+#booths .scrap-booth>div:last-child{min-width:0!important}
+#booths .scrap-booth h3{margin:9px 0 12px!important;font:650 clamp(22px,2vw,33px)/1.35 "Microsoft YaHei","PingFang SC",sans-serif!important;letter-spacing:0!important;overflow-wrap:anywhere!important}
+#booths .scrap-booth small{font:400 13px/1.55 "Microsoft YaHei","PingFang SC",sans-serif!important;overflow-wrap:anywhere}
+#booths .scrap-booth p{font:400 13px/1.7 "Microsoft YaHei","PingFang SC",sans-serif!important;margin:0!important;overflow-wrap:anywhere}
+#booths .scrap-booth footer{margin-top:20px!important;gap:10px!important}
+#booths .scrap-booth footer button{font:700 12px/1.35 "Microsoft YaHei",sans-serif!important;padding:8px 12px!important;white-space:normal!important}
+.trip-site .trip-guest-carousel,.trip-site #guests .guest-grid,.trip-site .trip-index .quick-grid,.trip-site .trip-community .community{scrollbar-width:none!important;-ms-overflow-style:none!important}
+.trip-site .trip-guest-carousel::-webkit-scrollbar,.trip-site #guests .guest-grid::-webkit-scrollbar,.trip-site .trip-index .quick-grid::-webkit-scrollbar,.trip-site .trip-community .community::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+#guests .guest-grid{padding-bottom:20px!important}
+.trip-feature .featured-activity-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0!important;background:#fff!important;border:1px solid #b6bcc2!important}
+.trip-feature .scrap-activity{display:flex!important;flex-direction:column!important;align-items:stretch!important;min-width:0!important;border:0!important;border-right:1px solid #b6bcc2!important;border-bottom:1px solid #b6bcc2!important;box-shadow:none!important;background:#fff!important;padding:clamp(20px,3vw,44px)!important;gap:0!important}
+.trip-feature .scrap-activity-photo{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:auto!important;min-height:0!important;aspect-ratio:1!important;background:#f6f6f1!important;overflow:hidden!important;border:1px solid #d0d4d1!important}
+.trip-feature .scrap-activity-photo img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:cover!important;object-position:center!important}
+.trip-feature .scrap-activity-photo [data-oe-image],.trip-feature .scrap-activity-photo .activity-feature-media,.trip-feature .scrap-activity-photo button{width:100%!important;height:100%!important;min-width:0!important;max-width:100%!important;min-height:0!important;max-height:100%!important;overflow:hidden!important;border-radius:0!important;display:flex;align-items:center;justify-content:center}
+.trip-feature .scrap-activity-photo .activity-feature-media img{width:100%!important;height:100%!important;object-fit:cover!important}
+.trip-feature .scrap-activity-note{padding:22px 0 0!important;display:flex;flex-direction:column;align-items:flex-start;gap:9px}
+.trip-feature .scrap-activity-note>span{font:800 12px/1.45 monospace!important;letter-spacing:.12em!important;color:#303948!important}
+.trip-feature .scrap-activity-note h3{font:600 clamp(24px,2.5vw,41px)/1.25 "Microsoft YaHei","PingFang SC",sans-serif!important;letter-spacing:0!important;margin:8px 0!important;overflow-wrap:anywhere}
+.trip-feature .scrap-activity-note small{font:700 12px/1.5 "Microsoft YaHei",sans-serif!important}
+.trip-feature .scrap-activity-note p{font:400 14px/1.8 "Microsoft YaHei",sans-serif!important;color:#414950!important}
+@media(max-width:950px){.trip-feature .featured-activity-grid{grid-template-columns:1fr!important}.trip-feature .scrap-activity{padding:22px!important}}
+@media(max-width:600px){#booths .booth-directory-grid{grid-template-columns:1fr!important}#booths .scrap-booth{grid-template-columns:70px minmax(0,1fr)!important;padding:18px 14px 20px 42px!important;gap:12px!important}#booths .scrap-booth .booth-logo{width:70px!important;height:70px!important}#booths .scrap-booth h3{font-size:24px!important}}
 `;
