@@ -415,4 +415,27 @@ export const previewStyle=`
 .trip-weather-strip{position:absolute!important;z-index:5;bottom:0;left:0;right:0;background:#254956e8!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
 .trip-weather-strip span{padding:8px 14px!important}
 }
+
+/* Default event-poster adaptation: retain the reference navigation and typography,
+   but display a common 3:4 organizer artwork without cropping. Widescreen is opt-in. */
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero{background:#cfdfdd!important}
+@media(min-width:901px){
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-visual{background:linear-gradient(120deg,#d6e6e0 0%,#bad9dd 48%,#dae8e2 100%)!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-visual .kv{inset:5.5% 40% 10% 25%!important;width:auto;height:auto;max-height:85%;border:0!important;box-shadow:15px 22px 50px #20373e38!important;background-size:contain!important;background-repeat:no-repeat!important;background-color:#eff4ee;transform:none!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-visual:hover .kv{transform:none!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy{left:62%!important;right:3%!important;bottom:18%!important;width:35%!important;max-width:35%!important;text-shadow:none!important;color:#264552!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy h1{font-size:clamp(44px,4.4vw,78px)!important;color:#254753!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy>p,body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-meta,body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-meta a{color:#294653!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy .trip-route{color:#247181!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-logo,body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-nav a,body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-flight-info{color:#294653!important;text-shadow:none!important}
+}
+@media(max-width:900px){
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero{min-height:900px!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-visual{background:#d7e7e4!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-visual .kv{inset:85px 12% 255px!important;width:auto;height:auto;max-height:620px;background-size:contain!important;background-repeat:no-repeat!important;background-color:#f4f4ef;box-shadow:0 10px 30px #17384428!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy{bottom:100px!important;min-height:0!important;padding:23px!important;background:#d7e7e4!important;color:#284a54!important;text-shadow:none!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy h1{font-size:clamp(35px,9vw,65px)!important;color:#284a54!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy>p,body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-meta,body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-meta a{color:#284a54!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-logo{color:#284a54!important;text-shadow:none!important}
+}
 `;
