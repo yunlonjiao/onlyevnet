@@ -132,7 +132,7 @@ export const previewBody=`
     </section>
 
     <section class="trip-map oe-home-only" id="map-home" data-trip-section="07 / 场地图">
-      <div class="trip-map-copy"><span>目的地</span><h2>场地图</h2><p>查看场地区域、摊位分布与活动位置。</p><div data-oe-mount="map-links" class="map-link-list"></div></div>
+      <div class="trip-map-copy"><span>场馆信息</span><h2>场地图</h2><p>查看场地区域、摊位分布与活动位置。</p><div data-oe-mount="map-links" class="map-link-list"></div></div>
       <div class="trip-map-paper"><div data-oe-mount="map" id="venueMap" class="map-static"></div></div>
     </section>
 
@@ -170,7 +170,7 @@ export const previewBody=`
   </main>
 
   <footer class="trip-footer footer">
-    <div class="trip-footer-mark">ONLY<br>EVENT</div>
+    <div class="trip-footer-mark">EVENT<br>INFO</div>
     <div data-oe-mount="footer-brand" class="footer-brand"></div>
     <div data-oe-mount="footer-participate" class="footer-participate"></div>
     <div data-oe-mount="footer-visit" class="footer-visit"></div>
