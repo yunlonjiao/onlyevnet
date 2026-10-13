@@ -5,5 +5,6 @@ export const template03=makeIpOnlyTemplate({
  structureProfile:'catalogue',artDirection:'comitia-catalogue',motionProfile:'calm',
  theme:'#3f8754',heroTitleColor:'#2d663f',heroTitleAccentColor:'#b63d32',
  presentationProfile:{entryAnimation:false,quickAccess:true,ribbon:false,mobileDock:false,scrollProgress:false,floatingStickers:false,passportProgress:false,decorativeSectionOrbits:false},
- heroTitleSegments:3,heroStyleControls:false
+ heroTitleSegments:3,heroStyleControls:false,
+ imageRatios:{hero:.707107,mobileHero:.8,activity:1.333333,featured:1.333333,guest:.8}
 });
