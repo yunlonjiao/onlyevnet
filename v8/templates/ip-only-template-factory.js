@@ -3,7 +3,7 @@ import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.40.1';
 export function makeIpOnlyTemplate({
   id,name,label,description,structureProfile,artDirection,motionProfile,
   theme,heroTitleColor,heroTitleAccentColor,presentationProfile={},
-  heroTitleSegments=3,heroStyleControls=false
+  heroTitleSegments=3,heroStyleControls=false,imageRatios={}
 }){
   const defaults=createIpOnlyDefaults();
   const resolvedPresentation={...DEFAULT_IP_ONLY_PRESENTATION_PROFILE,...presentationProfile};
@@ -34,6 +34,7 @@ export function makeIpOnlyTemplate({
     presentationProfile:resolvedPresentation,
     heroTitleSegments:Math.max(1,Math.min(3,Number(heroTitleSegments)||1)),
     heroStyleControls:!!heroStyleControls,
+    imageRatios:{...imageRatios},
     defaults
   };
 }
