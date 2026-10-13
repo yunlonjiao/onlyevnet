@@ -1,11 +1,11 @@
-import {validateIpOnlyTemplateDefinition} from '/v8/templates/ip-only-core-contract.js?v=8.39.15';
-import {template01} from '/v8/templates/01-ip-only.js?v=8.39.15';
-import {template02} from '/v8/templates/02-scrapbook.js?v=8.39.15';
-import {template03} from '/v8/templates/03-school-festival.js?v=8.39.15';
-import {template04} from '/v8/templates/04-museum-editorial.js?v=8.39.15';
-import {template05} from '/v8/templates/05-live-poster.js?v=8.39.15';
-import {template06} from '/v8/templates/06-expo-catalogue.js?v=8.39.15';
-import {template07} from '/v8/templates/07-immersive-character.js?v=8.39.15';
+import {validateIpOnlyTemplateDefinition} from '/v8/templates/ip-only-core-contract.js?v=8.39.16';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.39.16';
+import {template02} from '/v8/templates/02-scrapbook.js?v=8.39.16';
+import {template03} from '/v8/templates/03-school-festival.js?v=8.39.16';
+import {template04} from '/v8/templates/04-museum-editorial.js?v=8.39.16';
+import {template05} from '/v8/templates/05-live-poster.js?v=8.39.16';
+import {template06} from '/v8/templates/06-expo-catalogue.js?v=8.39.16';
+import {template07} from '/v8/templates/07-immersive-character.js?v=8.39.16';
 
 export const DEFAULT_TEMPLATE_ID='01-ip-only';
 
