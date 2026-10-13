@@ -25,27 +25,27 @@ export const previewBody=`
 <div class="trip-site">
   <header class="trip-header">
     <a class="trip-logo" href="#home" data-page-link="home">
-      <small>ONLY EVENT / JOURNEY</small>
+      <small>活动导航 / EVENT SITE</small>
       <b data-oe-field="eventName">ONLY<br>EVENT</b>
     </a>
     <div class="trip-flight-info">
       <span>ONLY EVENT</span><i></i><span data-oe-field="date">EVENT DATE</span><i></i><span data-oe-field="location">DESTINATION</span>
     </div>
     <nav class="trip-nav" data-oe-mount="nav-links">
-      <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small>BOOTH</a>
-      <a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small>EVENT</a>
-      <a href="#guests" data-target-mode="page" data-page-link="guests"><small>03</small>GUEST</a>
-      <a href="#guide" data-target-mode="page" data-page-link="guide"><small>04</small>GUIDE</a>
+      <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small><strong>摊位</strong><em>BOOTH</em></a>
+      <a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small><strong>活动</strong><em>EVENT</em></a>
+      <a href="#guests" data-target-mode="page" data-page-link="guests"><small>03</small><strong>嘉宾</strong><em>GUEST</em></a>
+      <a href="#guide" data-target-mode="page" data-page-link="guide"><small>04</small><strong>指南</strong><em>GUIDE</em></a>
     </nav>
     <a class="trip-ticket ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">TICKET ↗</a>
   </header>
 
   <nav class="trip-mobile-nav" data-oe-mount="mobile-nav">
-    <a href="#home" data-page-link="home"><small>00</small>HOME</a>
-    <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small>BOOTH</a>
-    <a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small>EVENT</a>
-    <a href="#guests" data-target-mode="page" data-page-link="guests"><small>03</small>GUEST</a>
-    <a href="#guide" data-target-mode="page" data-page-link="guide"><small>04</small>GUIDE</a>
+    <a href="#home" data-page-link="home"><small>00</small><strong>首页</strong><em>HOME</em></a>
+    <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small><strong>摊位</strong><em>BOOTH</em></a>
+    <a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small><strong>活动</strong><em>EVENT</em></a>
+    <a href="#guests" data-target-mode="page" data-page-link="guests"><small>03</small><strong>嘉宾</strong><em>GUEST</em></a>
+    <a href="#guide" data-target-mode="page" data-page-link="guide"><small>04</small><strong>指南</strong><em>GUIDE</em></a>
   </nav>
 
   <main id="top">
@@ -81,7 +81,7 @@ export const previewBody=`
       <div data-oe-mount="updates" class="updates-list"></div>
     </section>
 
-    <section class="trip-intro oe-home-only">
+    <section class="trip-intro oe-home-only" hidden aria-hidden="true">
       <aside><span>INTRODUCTION</span><b>01</b></aside>
       <div class="trip-intro-copy">
         <h2>ONE DAY.<br>ALL OUR STORIES.</h2>
@@ -96,7 +96,7 @@ export const previewBody=`
       </div>
     </section>
 
-    <section class="trip-transition oe-home-only">
+    <section class="trip-transition oe-home-only" hidden aria-hidden="true">
       <span>ONE EVENT / ONE COMMUNITY</span>
       <b>MEET HERE.<br>MAKE MEMORIES.</b>
       <i>→</i>
@@ -113,7 +113,7 @@ export const previewBody=`
     </section>
 
     <section class="trip-ticket-section oe-home-only" id="tickets">
-      <div class="trip-ticket-cover"><small>ADMISSION</small><b>EVENT<br>PASS</b><span>ONLY EVENT / 2026</span></div>
+      <div class="trip-ticket-cover"><small>票务信息 / ADMISSION</small><b>入场票<br><i>TICKETS</i></b><span>↗</span></div>
       <div class="trip-ticket-list">
         <div data-oe-mount="tickets" class="ticket-grid"></div>
         <div data-oe-mount="ticket-actions" class="ticket-actions"></div>
@@ -657,4 +657,42 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-ticket{margi
 #activities .activity-project-list .scrap-activity-note h3{font:700 clamp(23px,2.6vw,40px)/1.3 "Microsoft YaHei",sans-serif!important;letter-spacing:0!important;margin:12px 0!important}
 #activities .activity-project-list .scrap-activity-note p{font:400 14px/1.85 "Microsoft YaHei",sans-serif!important}
 @media(max-width:1100px){.trip-feature .featured-activity-grid,#activities .activity-project-list{grid-template-columns:1fr!important}.trip-feature .featured-activity-card:nth-child(even){border-left:1px solid #bec6c8!important}}
+
+/* 8.40.11 — remove repetitive design-copy, bilingual nav and spacious ticket geometry */
+.trip-site .trip-intro[hidden],.trip-site .trip-transition[hidden]{display:none!important}
+.trip-logo small{display:none!important}
+.trip-flight-info>span:first-child,.trip-flight-info>i:first-of-type{display:none!important}
+.trip-site .trip-nav a,.trip-site .trip-mobile-nav a{display:flex!important;flex-direction:column;align-items:flex-start;gap:3px;white-space:nowrap;min-width:0}
+.trip-site .trip-nav a small,.trip-site .trip-mobile-nav a small{display:none!important}
+.trip-site .trip-nav a strong,.trip-site .trip-mobile-nav a strong{font:750 clamp(15px,1.3vw,21px)/1.2 "Microsoft YaHei","PingFang SC",sans-serif!important;letter-spacing:0!important}
+.trip-site .trip-nav a em,.trip-site .trip-mobile-nav a em{font:650 10px/1.25 "Courier New",monospace!important;letter-spacing:.12em!important;opacity:.72;font-style:normal}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-nav a{padding:8px 13px!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-logo small{display:none!important}
+.trip-feature .featured-activity-grid{align-items:start!important}
+.trip-feature .featured-activity-card{height:auto!important;min-height:0!important;align-self:start!important}
+.trip-feature .featured-activity-media{max-height:300px!important;aspect-ratio:4/3!important;flex:0 0 auto!important}
+.trip-feature .featured-activity-media img{object-fit:contain!important;background:#f3f5f1!important}
+.trip-feature .featured-activity-copy{gap:8px!important}
+.trip-ticket-section{grid-template-columns:minmax(190px,31%) minmax(0,1fr)!important;min-width:0!important}
+.trip-ticket-cover{padding:clamp(35px,4vw,70px)!important;display:flex!important;flex-direction:column;justify-content:space-between!important;min-height:500px!important}
+.trip-ticket-cover b{font:850 clamp(44px,5vw,85px)/1.06 "Microsoft YaHei",sans-serif!important;letter-spacing:0!important;overflow-wrap:anywhere}
+.trip-ticket-cover b i{font:900 .58em/1.2 Arial,sans-serif!important;font-style:normal;letter-spacing:-.055em}
+.trip-ticket-cover>span{font-size:58px!important}
+.trip-ticket-list{min-width:0!important;padding:clamp(20px,3vw,50px)!important}
+.trip-ticket-list .ticket-grid{display:grid!important;gap:16px!important;min-width:0}
+.trip-ticket-list .scrap-pass{position:relative;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(95px,23%) minmax(110px,22%)!important;gap:0!important;min-width:0!important;min-height:166px!important;border:1px solid #b7acaa!important;background:#fffdf8!important;overflow:hidden!important;box-shadow:none!important}
+.trip-ticket-list .scrap-pass-watermark{position:absolute;right:18%;top:0;font:900 180px/1 sans-serif;color:#e8f7df;opacity:.7;pointer-events:none}
+.trip-ticket-list .scrap-pass-main{position:relative;z-index:1;display:flex!important;flex-direction:column;justify-content:center;gap:9px;padding:24px!important;min-width:0!important}
+.trip-ticket-list .scrap-pass-label{font:750 10px/1.5 "Microsoft YaHei",sans-serif;letter-spacing:.08em;color:#8d6974}
+.trip-ticket-list .scrap-pass-main h3{margin:0!important;font:750 clamp(19px,1.8vw,29px)/1.3 "Microsoft YaHei",sans-serif!important}
+.trip-ticket-list .scrap-pass-main .scrap-pass-line{display:none!important}
+.trip-ticket-list .scrap-pass-main .oe-ticket-gift,.trip-ticket-list .scrap-pass-main .oe-ticket-note{font:400 12px/1.65 "Microsoft YaHei",sans-serif!important;overflow-wrap:anywhere}
+.trip-ticket-list .scrap-pass-art{position:relative;display:flex;align-items:center;justify-content:center;min-width:0;max-height:170px;overflow:hidden;z-index:1}
+.trip-ticket-list .scrap-pass-art img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:150px!important;object-fit:contain!important}
+.trip-ticket-list .scrap-pass aside{position:relative;z-index:1;display:flex!important;flex-direction:column!important;align-items:flex-end!important;justify-content:center!important;gap:9px;padding:18px 24px!important;border-left:1px dashed #b7acaa!important;min-width:0!important;max-width:none!important}
+.trip-ticket-list .scrap-pass aside .oe-ticket-price{font:850 clamp(25px,2.2vw,38px)/1.15 Arial,"Microsoft YaHei",sans-serif!important;white-space:nowrap}
+.trip-ticket-list .scrap-pass aside>span{font:600 11px/1.5 "Microsoft YaHei",sans-serif!important;letter-spacing:0}
+.trip-ticket-list .ticket-actions{padding-top:16px!important}
+@media(max-width:900px){.trip-ticket-section{grid-template-columns:1fr!important}.trip-ticket-cover{min-height:180px!important;padding:28px!important}.trip-ticket-cover b{font-size:45px!important}.trip-ticket-list .scrap-pass{grid-template-columns:minmax(0,1fr) 110px!important}.trip-ticket-list .scrap-pass-art{display:none!important}.trip-ticket-list .scrap-pass aside{padding:15px!important}.trip-feature .featured-activity-media{max-height:260px!important}}
+@media(max-width:560px){.trip-ticket-list{padding:14px!important}.trip-ticket-list .scrap-pass{grid-template-columns:1fr!important}.trip-ticket-list .scrap-pass aside{border-left:0!important;border-top:1px dashed #b7acaa!important;align-items:flex-start!important;padding:12px 19px!important}.trip-ticket-list .scrap-pass-main{padding:18px!important}.trip-site .trip-mobile-nav a{padding:10px 13px!important}.trip-site .trip-mobile-nav a strong{font-size:14px!important}}
 `;
