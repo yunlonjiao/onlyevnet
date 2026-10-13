@@ -111,4 +111,24 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await frame.locator('.trip-ticket').evaluate(el=>el.removeAttribute('hidden'));
   });
 
+  test('lime announcement strip is mounted from editable CMS ribbons',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-ribbon-qa');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('.trip-route-ticker.ribbon .ribbon-track')).toBeAttached();
+    await expect(frame.locator('.trip-route-ticker .ribbon-sequence').first()).toBeAttached();
+    await expect(frame.locator('.trip-route-ticker .ribbon-edit').first()).toHaveAttribute('data-oe-field',/ribbonItems\\.\\d+\\.text/);
+  });
+  test('guest directory scrolls horizontally with snap alignment',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-guests-qa');
+    const frame=page.frameLocator('#liveFrame');
+    await frame.locator('#guests').evaluate(el=>el.style.display='block');
+    const layout=await frame.locator('#guests .guest-grid').evaluate(el=>{
+      const style=getComputedStyle(el);
+      return {display:style.display,overflowX:style.overflowX,snap:style.scrollSnapType};
+    });
+    expect(layout.display).toBe('flex');
+    expect(layout.overflowX).toBe('auto');
+    expect(layout.snap).toContain('x');
+  });
+
 });
