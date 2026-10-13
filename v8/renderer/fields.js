@@ -14,7 +14,7 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     sticker3:()=>qa('.sticker .editable-copy')[2],
     heroImage:()=>$('.kv')
   };
-  const extraStatePaths=['heroTitleSize','heroTitleColor','heroTitleAccentColor','heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile','navigationUrl','ticketUrl','ticketLinkLabel'];
+  const extraStatePaths=['heroDisplayMode','heroTitleSize','heroTitleColor','heroTitleAccentColor','heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile','navigationUrl','ticketUrl','ticketLinkLabel'];
 
   function safeExternalUrl(value){
     const v=String(value||'').trim();
@@ -56,6 +56,10 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
       return;
     }
 
+    if(path==='heroDisplayMode'){
+      document.body.dataset.oeHeroMode=value==='wide'?'wide':'poster';
+      return;
+    }
     if(path==='heroTitleSize'){
       const n=Math.max(56,Math.min(160,Number(value)||126));
       $('.hero')?.style.setProperty('--oe-hero-title-size',n+'px');
