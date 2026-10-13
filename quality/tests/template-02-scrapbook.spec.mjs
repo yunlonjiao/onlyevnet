@@ -131,4 +131,18 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     expect(layout.snap).toContain('x');
   });
 
+  test('Chinese inner page titles and guide maps do not overlap header or collapse',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-zh-layout');
+    const frame=page.frameLocator('#liveFrame');
+    await page.locator('.page-nav [data-page="guide"]').click();
+    await expect(frame.locator('#guide')).toBeVisible();
+    await expect(frame.locator('.trip-route-ticker')).toBeHidden();
+    const bounds=await frame.locator('.trip-header, #guide .trip-page-head, #guide .scrap-guide').evaluateAll(nodes=>nodes.map(el=>{const b=el.getBoundingClientRect();return {top:b.top,bottom:b.bottom,width:b.width}}));
+    expect(bounds.length).toBeGreaterThanOrEqual(3);
+    expect(bounds[1].top).toBeGreaterThanOrEqual(bounds[0].bottom-2);
+    expect(bounds[2].width).toBeGreaterThan(250);
+    const bodyOverflow=await frame.locator('body').evaluate(el=>el.scrollWidth-document.documentElement.clientWidth);
+    expect(bodyOverflow).toBeLessThanOrEqual(2);
+  });
+
 });
