@@ -80,8 +80,9 @@ function applyLifecycleState(){
   const status=resolveLifecycleStatus();
   document.documentElement.classList.remove('event-status-upcoming','event-status-live','event-status-ended');
   document.documentElement.classList.add('event-status-'+status);
+  const explicitStatus=qa('[data-oe-lifecycle-status]');
   const copy=$('.hero-copy');
-  if(copy){
+  if(copy&&explicitStatus.length===0){
     let badge=copy.querySelector('.event-status-badge');
     if(!badge){badge=document.createElement(status==='live'?'a':'span');badge.className='event-status-badge';copy.insertBefore(badge,copy.firstChild)}
     if(status==='live'){
@@ -95,9 +96,11 @@ function applyLifecycleState(){
       }
       badge.textContent=status==='ended'?'活动已结束':'活动未开始';
     }
+  }else{
+    copy?.querySelector('.event-status-badge')?.remove();
   }
   const statusLabel=status==='live'?'活动进行中':status==='ended'?'活动已结束':'活动未开始';
-  qa('[data-oe-lifecycle-status]').forEach(el=>{el.textContent=statusLabel;el.dataset.status=status});
+  explicitStatus.forEach(el=>{el.textContent=statusLabel;el.dataset.status=status});
   const ended=status==='ended'&&mode!=='edit';
   qa('.ticket-purchase-link,.nav>.wrap>.btn').forEach(el=>{
     if(ended)el.setAttribute('hidden','');
