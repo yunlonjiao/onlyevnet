@@ -559,4 +559,52 @@ body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero
 .trip-route-ticker .ribbon-edit{padding:13px 22px!important;font-size:20px!important}
 }
 @media(prefers-reduced-motion:reduce){.trip-route-ticker .ribbon-track{animation:none!important}}
+
+/* Chinese typography and collision regression fixes — desktop/mobile. */
+.trip-site{font-family:Arial,"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif!important}
+.trip-site [data-oe-field],.trip-site [data-oe-item]{overflow-wrap:anywhere;word-break:normal;min-width:0}
+.trip-site h1,.trip-site h2,.trip-site h3{line-height:1.12!important;overflow-wrap:anywhere;word-break:normal}
+.trip-route-ticker .ribbon-track{position:relative;z-index:1;min-height:72px}
+.trip-route-ticker .ribbon-sequence{gap:0}
+.trip-route-ticker .ribbon-edit{line-height:1.2!important;white-space:nowrap;letter-spacing:.005em!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-header{position:relative!important;inset:auto!important;background:#27323e!important;min-height:88px!important;display:flex!important;flex-wrap:wrap;align-items:center;gap:22px;justify-content:space-between;pointer-events:auto}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-logo{padding:12px 22px!important;color:#fff!important;text-shadow:none!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-logo b{font-size:clamp(20px,2.1vw,33px)!important;letter-spacing:-.035em!important;line-height:1.12!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-logo small{font-size:9px!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-flight-info{display:none!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-nav{position:static!important;display:flex!important;flex-direction:row!important;align-items:center!important;flex-wrap:wrap;margin:0!important;padding:0!important;max-width:none!important;gap:8px}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-nav a{color:#fff!important;text-shadow:none!important;font:700 13px/1.5 Arial,"Microsoft YaHei",sans-serif!important;padding:8px 12px!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-ticket{position:static!important;margin:0 22px 0 0!important;align-self:center!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-mobile-nav{position:relative!important;top:auto!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-page{min-height:calc(100vh - 88px)!important}
+.trip-page-head{grid-template-columns:minmax(130px,19%) minmax(0,1fr) auto!important;gap:clamp(14px,3vw,45px)!important}
+.trip-page-head h2{font-size:clamp(36px,5vw,82px)!important;line-height:1.07!important;letter-spacing:-.055em!important;min-width:0}
+#guide .guide-detail-grid{grid-template-columns:minmax(0,1fr)!important;gap:28px!important;width:100%!important;max-width:none!important}
+#guide .scrap-guide{display:grid!important;grid-template-columns:minmax(62px,12%) minmax(0,1fr)!important;column-gap:clamp(20px,3vw,50px)!important;row-gap:25px!important;padding:clamp(24px,4vw,62px)!important;background:#f9f9f5!important;min-width:0!important;border:1px solid #d0d2cb!important}
+#guide .scrap-guide>span{font:800 12px/1.5 monospace!important;letter-spacing:.12em!important}
+#guide .scrap-guide>div{min-width:0!important;width:100%!important}
+#guide .scrap-guide h3{font:600 clamp(28px,3.1vw,48px)/1.3 "Microsoft YaHei","PingFang SC",sans-serif!important;letter-spacing:0!important}
+#guide .scrap-guide p{font:400 clamp(13px,1.1vw,17px)/1.95 "Microsoft YaHei","PingFang SC",sans-serif!important;color:#48515a;white-space:normal!important;overflow-wrap:anywhere}
+#guide .scrap-guide img,#guide .scrap-guide .guide-access-media,#guide .scrap-guide .guide-image,#guide .scrap-guide [data-oe-image]{grid-column:2!important;width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;min-height:200px;aspect-ratio:16/9!important;object-fit:contain!important}
+#activities .activity-detail-list{display:block!important;width:100%!important;min-width:0}
+#activities .scrap-itinerary{display:grid!important;grid-template-columns:clamp(45px,8%,105px) clamp(105px,18%,230px) minmax(0,1fr)!important;gap:clamp(12px,2vw,38px)!important;align-items:start!important;min-width:0!important;border-bottom:1px solid #9098a3!important;padding:clamp(22px,3vw,44px) 0!important;background:transparent!important}
+#activities .scrap-itinerary-no{font:900 clamp(28px,4vw,66px)/1 Arial,sans-serif!important;color:#d3ff69!important}
+#activities .scrap-itinerary time{font:700 clamp(20px,2.2vw,34px)/1.3 monospace!important;min-width:0;overflow-wrap:anywhere}
+#activities .scrap-itinerary>div{min-width:0}
+#activities .scrap-itinerary>div>b{font:800 clamp(20px,2.3vw,36px)/1.35 "Microsoft YaHei",sans-serif!important;letter-spacing:0!important}
+#activities .scrap-itinerary p{font:400 clamp(13px,1vw,16px)/1.85 "Microsoft YaHei",sans-serif!important;max-width:85ch!important}
+@media(max-width:900px){
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-header{min-height:70px!important;padding:8px!important;gap:8px}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-logo{padding:6px 12px!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-nav{display:none!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-ticket{margin:0 8px 0 0!important}
+.trip-site .trip-page-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important}
+.trip-site .trip-page-head h2{font-size:clamp(31px,8vw,59px)!important;letter-spacing:-.04em!important}
+#guide .scrap-guide{grid-template-columns:1fr!important;padding:23px 17px!important;gap:12px!important}
+#guide .scrap-guide>span{grid-column:1}
+#guide .scrap-guide>div{grid-column:1}
+#guide .scrap-guide img,#guide .scrap-guide .guide-access-media,#guide .scrap-guide .guide-image,#guide .scrap-guide [data-oe-image]{grid-column:1!important;min-height:150px}
+#activities .scrap-itinerary{grid-template-columns:62px minmax(0,1fr)!important}
+#activities .scrap-itinerary>div{grid-column:1/-1}
+}
 `;
