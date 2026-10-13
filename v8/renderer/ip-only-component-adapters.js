@@ -11,7 +11,7 @@ export function ticketMarkup({state,x,i,field,esc,image}){
   const gift=field('tickets.'+i+'.gift',x.gift||'','span','oe-ticket-gift');
   const note=field('tickets.'+i+'.note',x.note||'','small','oe-ticket-note');
   const common=' data-oe-item="tickets" data-oe-index="'+i+'"';
-  if(id==='02-scrapbook')return '<article class="ticket scrap-pass"'+common+'><div class="scrap-pass-no">PASS '+num(i)+'</div><div class="scrap-pass-main">'+name+'<div class="scrap-pass-line"></div>'+gift+note+'</div>'+image+'<aside>'+price+'<span>MEMORY TICKET</span></aside></article>';
+  if(id==='02-scrapbook')return '<article class="ticket scrap-pass"'+common+'><div class="scrap-pass-no">PASS '+num(i)+'</div><div class="scrap-pass-main">'+name+'<div class="scrap-pass-line"></div>'+gift+note+'</div>'+image+'<aside>'+price+'<span>ADMISSION</span></aside></article>';
   if(id==='03-school-festival')return '<article class="ticket school-ticket-card"'+common+'><div class="school-ticket-no">'+num(i)+'</div><div class="school-ticket-copy"><span>ADMISSION PASS</span>'+name+gift+note+'</div><div class="school-ticket-price">'+price+'</div>'+image+'</article>';
   if(id==='04-museum-editorial')return '<article class="ticket museum-admission"'+common+'><header><span>ADMISSION '+num(i)+'</span>'+price+'</header><div class="museum-admission-body">'+name+gift+note+'</div>'+image+'</article>';
   if(id==='05-live-poster')return '<article class="ticket live-pass"'+common+'><div class="live-pass-band">PASS '+num(i)+'</div><div class="live-pass-copy">'+name+gift+note+'</div><div class="live-pass-price">'+price+'</div>'+image+'</article>';
@@ -139,7 +139,7 @@ export function quickMarkup({state,x,i,esc}){
   const id=tid(state);if(id==='01-ip-only')return '';
   const href='#'+x[1],mode=x[4],label=x[2],hint=x[3],n=num(i);
   const common=' href="'+href+'" data-target-mode="'+mode+'" data-page-link="'+esc(x[1])+'"';
-  if(id==='02-scrapbook')return '<a class="scrap-index-card"'+common+'><span>'+n+'</span><div><small>旅程档案</small><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></div><i>↗</i></a>';
+  if(id==='02-scrapbook')return '<a class="scrap-index-card"'+common+'><span>'+n+'</span><div><small>快速入口</small><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></div><i>↗</i></a>';
   if(id==='03-school-festival')return '<a class="school-wayfinding-card"'+common+'><span>'+n+'</span><div><small>FESTIVAL GUIDE</small><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></div><i>→</i></a>';
   if(id==='04-museum-editorial')return '<a class="museum-index-link"'+common+'><span>'+n+'</span><div><b>'+esc(label)+'</b><small>'+esc(hint)+'</small></div><i>VIEW</i></a>';
   if(id==='05-live-poster')return '<a class="live-menu-tile"'+common+'><span>'+n+'</span><div><small>CONTENTS</small><b>'+esc(label)+'</b></div><i>'+esc(hint)+'</i></a>';
