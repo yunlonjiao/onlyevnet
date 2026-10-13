@@ -11,7 +11,7 @@ export function ticketMarkup({state,x,i,field,esc,image}){
   const gift=field('tickets.'+i+'.gift',x.gift||'','span','oe-ticket-gift');
   const note=field('tickets.'+i+'.note',x.note||'','small','oe-ticket-note');
   const common=' data-oe-item="tickets" data-oe-index="'+i+'"';
-  if(id==='02-scrapbook')return '<article class="ticket scrap-pass"'+common+'><div class="scrap-pass-no">PASS '+num(i)+'</div><div class="scrap-pass-main">'+name+'<div class="scrap-pass-line"></div>'+gift+note+'</div>'+image+'<aside>'+price+'<span>MEMORY TICKET</span></aside></article>';
+  if(id==='02-scrapbook')return '<article class="ticket scrap-pass"'+common+'><div class="scrap-pass-watermark" aria-hidden="true">✳</div><div class="scrap-pass-main"><span class="scrap-pass-label">入场凭证 / ADMISSION</span>'+name+gift+note+'</div><div class="scrap-pass-art">'+image+'</div><aside>'+price+'<span>入场票 / TICKET</span></aside></article>';
   if(id==='03-school-festival')return '<article class="ticket school-ticket-card"'+common+'><div class="school-ticket-no">'+num(i)+'</div><div class="school-ticket-copy"><span>ADMISSION PASS</span>'+name+gift+note+'</div><div class="school-ticket-price">'+price+'</div>'+image+'</article>';
   if(id==='04-museum-editorial')return '<article class="ticket museum-admission"'+common+'><header><span>ADMISSION '+num(i)+'</span>'+price+'</header><div class="museum-admission-body">'+name+gift+note+'</div>'+image+'</article>';
   if(id==='05-live-poster')return '<article class="ticket live-pass"'+common+'><div class="live-pass-band">PASS '+num(i)+'</div><div class="live-pass-copy">'+name+gift+note+'</div><div class="live-pass-price">'+price+'</div>'+image+'</article>';
