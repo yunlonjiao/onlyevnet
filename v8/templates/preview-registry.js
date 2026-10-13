@@ -3,6 +3,7 @@ import {previewStyle as scrapbookStyle,previewBody as scrapbookBody} from '/v8/t
 import {previewStyle as catalogStyle,previewBody as catalogBody} from '/v8/templates/03-school-festival-preview.js?v=8.40.0';
 import {previewStyle as creatorStyle,previewBody as creatorBody} from '/v8/templates/04-museum-editorial-preview.js?v=8.40.0';
 import {previewStyle as liveStyle,previewBody as liveBody} from '/v8/templates/05-live-poster-preview.js?v=8.40.0';
+import {createVariantPreview} from '/v8/templates/ip-only-visual-variants.js?v=8.40.0';
 import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.40.0';
 
 const previews=Object.freeze({
