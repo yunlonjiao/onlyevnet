@@ -103,4 +103,12 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     expect(new Set(dates.map(value=>value.trim())).size).toBe(1);
   });
 
+  test('Template 02 honors hidden purchase links regardless of layout CSS',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-hidden');
+    const frame=page.frameLocator('#liveFrame');
+    await frame.locator('.trip-ticket').evaluate(el=>el.setAttribute('hidden',''));
+    await expect(frame.locator('.trip-ticket')).toBeHidden();
+    await frame.locator('.trip-ticket').evaluate(el=>el.removeAttribute('hidden'));
+  });
+
 });
