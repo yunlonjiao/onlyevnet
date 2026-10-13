@@ -912,19 +912,24 @@ function bindInspectorStateInput(input,path,{clean=false,number=false}={}){
 
 function openHeroTitleInspector(){
  const desktop=String(state.heroImage||'').trim(),mobile=String(state.mobileHeroImage||'').trim();
+ const segments=Math.max(1,Math.min(3,Number(activeTemplate.heroTitleSegments||3)));
+ const showStyle=activeTemplate.id==='01-ip-only'||activeTemplate.heroStyleControls===true;
  const media=(path,label,src,emptyLabel)=>'<div class="item-media hero-media-field"><span>'+label+'</span><div class="item-media-row">'+(src?'<img src="'+esc(src)+'" alt="">':'<div class="item-media-empty">'+emptyLabel+'</div>')+'<div><button type="button" data-hero-image="'+path+'">选择 / 裁剪</button>'+(src?'<button type="button" class="ghost" data-hero-image-remove="'+path+'">移除</button>':'')+'</div></div></div>';
- setInspector('主视觉','标题、图片与裁切','<div class="item-fields">'+
-  '<label><span>第一行</span><input data-sync-path="heroTitle1" value="'+esc(state.heroTitle1||'')+'"></label>'+
-  '<label><span>第二行</span><input data-sync-path="heroTitle2" value="'+esc(state.heroTitle2||'')+'"></label>'+
-  '<label><span>第三行</span><input data-sync-path="heroTitle3" value="'+esc(state.heroTitle3||'')+'"></label>'+
-  '<label><span>字号 · <b id="heroTitleSizeValue">'+Number(state.heroTitleSize||126)+' px</b></span><input type="range" min="56" max="160" step="1" data-sync-path="heroTitleSize" value="'+Number(state.heroTitleSize||126)+'"></label>'+
-  '<label><span>主文字颜色</span><input type="color" data-sync-path="heroTitleColor" value="'+esc(state.heroTitleColor||'#17151b')+'"></label>'+
-  '<label><span>强调色</span><input type="color" data-sync-path="heroTitleAccentColor" value="'+esc(state.heroTitleAccentColor||'#ff5f91')+'"></label>'+
- '</div>'+media('heroImage','桌面 KV',desktop,'DESKTOP')+media('mobileHeroImage','手机 KV（可选）',mobile,'MOBILE')+
+ const titleFields=Array.from({length:segments},(_,i)=>{
+   const path='heroTitle'+(i+1),label=segments===1?'Hero 标题':'标题内容 '+(i+1);
+   return '<label><span>'+label+'</span><input data-sync-path="'+path+'" value="'+esc(state[path]||'')+'"></label>';
+ }).join('');
+ const styleFields=showStyle?(
+   '<label><span>字号 · <b id="heroTitleSizeValue">'+Number(state.heroTitleSize||126)+' px</b></span><input type="range" min="56" max="160" step="1" data-sync-path="heroTitleSize" value="'+Number(state.heroTitleSize||126)+'"></label>'+
+   '<label><span>主文字颜色</span><input type="color" data-sync-path="heroTitleColor" value="'+esc(state.heroTitleColor||'#17151b')+'"></label>'+
+   '<label><span>强调色</span><input type="color" data-sync-path="heroTitleAccentColor" value="'+esc(state.heroTitleAccentColor||'#ff5f91')+'"></label>'
+ ):'';
+ setInspector('主视觉','标题、图片与裁切','<div class="item-fields">'+titleFields+styleFields+'</div>'+
+  media('heroImage','桌面 KV',desktop,'DESKTOP')+media('mobileHeroImage','手机 KV（可选）',mobile,'MOBILE')+
  '<div class="item-fields hero-focal-fields">'+
   '<label><span>桌面焦点</span><input data-sync-path="heroFocalDesktop" value="'+esc(state.heroFocalDesktop||'50% 50%')+'" placeholder="50% 50%"></label>'+
   '<label><span>手机焦点</span><input data-sync-path="heroFocalMobile" value="'+esc(state.heroFocalMobile||'50% 50%')+'" placeholder="50% 50%"></label>'+
- '</div><p class="inspector-note">手机 KV 留空时自动使用桌面 KV。焦点格式示例：50% 30%，分别表示水平与垂直位置。</p>');
+ '</div><p class="inspector-note">标题分段数量与视觉参数由当前模板设计决定；手机 KV 留空时自动使用桌面 KV。</p>');
  inspector.querySelectorAll('[data-sync-path]').forEach(input=>bindInspectorStateInput(input,input.dataset.syncPath,{clean:input.type==='text',number:input.type==='range'}));
  inspector.querySelectorAll('[data-hero-image]').forEach(btn=>btn.addEventListener('click',()=>{$('#imageInput').dataset.path=btn.dataset.heroImage;$('#imageInput').click()}));
  inspector.querySelectorAll('[data-hero-image-remove]').forEach(btn=>btn.addEventListener('click',()=>{checkpoint();setDeep(btn.dataset.heroImageRemove,'');save();send({type:'OE_REPLACE_STATE',state});openHeroTitleInspector()}));
