@@ -8,15 +8,15 @@ export const previewBody=`
     <section class="scrap-entry-photo ticket-half left"><div class="entry-photo" aria-label="活动KV"></div></section>
     <aside class="scrap-entry-info ticket-half right">
       <div class="entry-ticket-label">SPECIAL JOURNEY</div>
-      <div class="entry-ticket-title">STARDUST ONLY 2026</div>
+      <div class="entry-ticket-title">ONLY EVENT</div>
       <div class="entry-ticket-subtitle"></div>
       <div class="entry-ticket-meta">
-        <div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date">2026.11.08</b></div>
+        <div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date">EVENT DATE</b></div>
         <div class="entry-ticket-time-wrap"><span>TIME</span><b class="entry-ticket-time"></b></div>
-        <div class="entry-ticket-location-wrap"><span>DESTINATION</span><b class="entry-ticket-location">杭州</b></div>
+        <div class="entry-ticket-location-wrap"><span>DESTINATION</span><b class="entry-ticket-location">EVENT CITY</b></div>
       </div>
       <div class="stub-barcode" aria-hidden="true"></div>
-      <div class="stub-code"><span class="entry-serial stub-number">NO. 048271</span></div>
+      <div class="stub-code"><span class="entry-serial stub-number">MEMORY / 001</span></div>
     </aside>
   </div>
   <button class="skip" id="skip">SKIP →</button>
@@ -26,7 +26,7 @@ export const previewBody=`
   <header class="trip-header">
     <a class="trip-logo" href="#home" data-page-link="home">
       <small>ONLY EVENT / JOURNEY</small>
-      <b data-oe-field="eventName">STARDUST<br>ONLY</b>
+      <b data-oe-field="eventName">ONLY<br>EVENT</b>
     </a>
     <div class="trip-flight-info">
       <span>ONLY EVENT</span><i></i><span data-oe-field="date">EVENT DATE</span><i></i><span data-oe-field="location">DESTINATION</span>
@@ -56,12 +56,12 @@ export const previewBody=`
       </div>
       <div class="trip-hero-copy hero-copy">
         <div class="trip-route">ONLY EVENT / YOUR SPECIAL JOURNEY</div>
-        <h1><span class="hero-title-line hero-title-1">STAR</span><br><em class="hero-title-line hero-title-2">BEAT</em><br><span class="hero-title-line hero-title-3">ONLY</span></h1>
+        <h1><span class="hero-title-line hero-title-1">YOUR</span><br><em class="hero-title-line hero-title-2">SPECIAL</em><br><span class="hero-title-line hero-title-3">DAY</span></h1>
         <p data-oe-field="tagline">围绕单一作品 IP 的粉丝综合活动。一起把这一天变成值得留下的旅行记忆。</p>
         <div class="trip-hero-meta">
-          <span data-oe-field="date">11.08 SUN</span>
-          <span data-oe-field="location">杭州</span>
-          <a class="venue-nav" href="#" target="_blank" rel="noopener" data-oe-field="edition">杭州国际博览中心</a>
+          <span data-oe-field="date">EVENT DATE</span>
+          <span data-oe-field="location">EVENT CITY</span>
+          <a class="venue-nav" href="#" target="_blank" rel="noopener" data-oe-field="edition">EVENT CITY国际博览中心</a>
         </div>
         <div class="trip-stamp" aria-hidden="true">SPECIAL<br><b>DAY</b></div>
       </div>
@@ -90,10 +90,10 @@ export const previewBody=`
         <p data-oe-field="tagline">一次相遇，一段值得珍藏的旅程。</p>
       </div>
       <div class="trip-collage" aria-hidden="true">
-        <div class="trip-card c1"><span>11.08</span></div>
-        <div class="trip-card c2"><span>HANGZHOU</span></div>
+        <div class="trip-card c1"><span>EVENT DAY</span></div>
+        <div class="trip-card c2"><span>DESTINATION</span></div>
         <div class="trip-card c3"><span>ONLY EVENT</span></div>
-        <div class="trip-ticket-stub">OE 2026<br><b>BOARDING PASS</b><small>GATE 08 / SEAT A01</small></div>
+        <div class="trip-ticket-stub">ONLY EVENT<br><b>BOARDING PASS</b><small>A DAY TO REMEMBER</small></div>
         <div class="trip-cassette"><i></i><i></i><b>SPECIAL JOURNEY</b><small>MEMORY TAPE / 001</small></div>
       </div>
     </section>
@@ -286,4 +286,14 @@ export const previewStyle=`
 @media(max-width:900px){.trip-hero{grid-template-columns:1fr}.trip-hero-visual{min-height:60vh;padding:0}.trip-hero-visual .kv{inset:6% 8% 8%;border-width:8px;border-bottom-width:38px}.trip-hero-copy{padding:55px 6vw 74px}.trip-weather-strip{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.trip-hero{min-height:0}.trip-hero-visual{min-height:50vh}.trip-hero-copy h1{font-size:clamp(52px,17vw,88px)}.trip-hero-copy{padding:44px 24px 72px}.trip-weather-strip strong{font-size:12px}.trip-photo-caption{bottom:11%;left:12%}.trip-ticket-cover b{font-size:58px}}
 @media(prefers-reduced-motion:reduce){.trip-route-ticker>div{animation:none}.trip-hero-visual .kv{transition:none}.trip-hero-visual:hover .kv{transform:rotate(-1deg)}}
+
+/* v8.40.1 — safe entry usability and responsive travel composition */
+.scrap-entry-gate{cursor:pointer;outline-offset:6px}
+.scrap-entry-gate:focus-visible{outline:3px solid #286e86}
+.trip-hero-copy h1{overflow-wrap:anywhere}
+.trip-header [data-oe-field],.trip-weather-strip [data-oe-field]{overflow-wrap:anywhere}
+.trip-weather-strip span{align-content:center}
+.trip-site :focus-visible{outline:3px solid #3d93a5;outline-offset:3px}
+@media(max-width:720px){.trip-header{grid-template-columns:minmax(0,1fr) auto}.trip-logo{min-width:0}.trip-flight-info{display:none}.trip-ticket{padding:0 16px}.trip-hero-copy{min-width:0}.trip-hero-visual{min-width:0}.trip-weather-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.trip-site *, .scrap-entry *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 `;
