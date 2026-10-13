@@ -127,7 +127,7 @@ export const IP_ONLY_CORE_CAPABILITIES=Object.freeze({
   activities:{
     collection:true,
     fields:['preset','activityType','title','meta','text','detail','participationMode','requirements','rules','url','image'],
-    featuredSlots:3,
+    featuredSlots:'template-defined',
     scheduleLinking:true,
     guestLinking:true,
     externalRegistration:true,
