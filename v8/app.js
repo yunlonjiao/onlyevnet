@@ -31,6 +31,7 @@ if(state.eventStatus===undefined)state.eventStatus=activeTemplate.defaults.event
 if(state.eventStartDateTime===undefined)state.eventStartDateTime=activeTemplate.defaults.eventStartDateTime||'';
 if(state.eventEndDateTime===undefined)state.eventEndDateTime=activeTemplate.defaults.eventEndDateTime||'';
 if(state.heroImage===undefined)state.heroImage=activeTemplate.defaults.heroImage||'';
+if(state.heroDisplayMode===undefined)state.heroDisplayMode='poster';
 if(state.mobileHeroImage===undefined)state.mobileHeroImage=activeTemplate.defaults.mobileHeroImage||'';
 if(state.heroFocalDesktop===undefined)state.heroFocalDesktop=activeTemplate.defaults.heroFocalDesktop||'50% 50%';
 if(state.heroFocalMobile===undefined)state.heroFocalMobile=activeTemplate.defaults.heroFocalMobile||'50% 50%';
@@ -920,7 +921,7 @@ function openHeroTitleInspector(){
   '<label><span>字号 · <b id="heroTitleSizeValue">'+Number(state.heroTitleSize||126)+' px</b></span><input type="range" min="56" max="160" step="1" data-sync-path="heroTitleSize" value="'+Number(state.heroTitleSize||126)+'"></label>'+
   '<label><span>主文字颜色</span><input type="color" data-sync-path="heroTitleColor" value="'+esc(state.heroTitleColor||'#17151b')+'"></label>'+
   '<label><span>强调色</span><input type="color" data-sync-path="heroTitleAccentColor" value="'+esc(state.heroTitleAccentColor||'#ff5f91')+'"></label>'+
- '</div>'+media('heroImage','桌面 KV',desktop,'DESKTOP')+media('mobileHeroImage','手机 KV（可选）',mobile,'MOBILE')+
+ '</div>'+(state.templateId==='02-scrapbook'?'<label><span>KV 展示方式</span><select data-sync-path="heroDisplayMode"><option value="poster"'+(state.heroDisplayMode!=='wide'?' selected':'')+'>标准 3:4 海报（完整展示）</option><option value="wide"'+(state.heroDisplayMode==='wide'?' selected':'')+'>宽屏增强（整屏 KV）</option></select></label>':'')+media('heroImage','桌面 KV',desktop,'DESKTOP')+media('mobileHeroImage','手机 KV（可选）',mobile,'MOBILE')+
  '<div class="item-fields hero-focal-fields">'+
   '<label><span>桌面焦点</span><input data-sync-path="heroFocalDesktop" value="'+esc(state.heroFocalDesktop||'50% 50%')+'" placeholder="50% 50%"></label>'+
   '<label><span>手机焦点</span><input data-sync-path="heroFocalMobile" value="'+esc(state.heroFocalMobile||'50% 50%')+'" placeholder="50% 50%"></label>'+
