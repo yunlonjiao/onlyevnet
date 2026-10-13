@@ -1,5 +1,5 @@
-import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.39.15';
-import {deleteSite} from '/v8/publisher.js?v=8.39.15';
+import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.39.16';
+import {deleteSite} from '/v8/publisher.js?v=8.39.16';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
