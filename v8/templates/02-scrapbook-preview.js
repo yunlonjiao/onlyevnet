@@ -8,12 +8,12 @@ export const previewBody=`
     <section class="scrap-entry-photo ticket-half left"><div class="entry-photo" aria-label="活动KV"></div></section>
     <aside class="scrap-entry-info ticket-half right">
       <div class="entry-ticket-label">SPECIAL JOURNEY</div>
-      <div class="entry-ticket-title">ONLY EVENT</div>
+      <div class="entry-ticket-title" data-oe-field="eventName">ONLY EVENT</div>
       <div class="entry-ticket-subtitle"></div>
       <div class="entry-ticket-meta">
-        <div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date">EVENT DATE</b></div>
+        <div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date" data-oe-field="date">EVENT DATE</b></div>
         <div class="entry-ticket-time-wrap"><span>TIME</span><b class="entry-ticket-time"></b></div>
-        <div class="entry-ticket-location-wrap"><span>DESTINATION</span><b class="entry-ticket-location">EVENT CITY</b></div>
+        <div class="entry-ticket-location-wrap"><span>DESTINATION</span><b class="entry-ticket-location" data-oe-field="location">EVENT CITY</b></div>
       </div>
       <div class="stub-barcode" aria-hidden="true"></div>
       <div class="stub-code"><span class="entry-serial stub-number">MEMORY / 001</span></div>
@@ -61,7 +61,7 @@ export const previewBody=`
         <div class="trip-hero-meta">
           <span data-oe-field="date">EVENT DATE</span>
           <span data-oe-field="location">EVENT CITY</span>
-          <a class="venue-nav" href="#" target="_blank" rel="noopener" data-oe-field="edition">EVENT CITY国际博览中心</a>
+          <a class="venue-nav" href="#" target="_blank" rel="noopener" data-oe-field="edition">EVENT VENUE</a>
         </div>
         <div class="trip-stamp" aria-hidden="true">SPECIAL<br><b>DAY</b></div>
       </div>
@@ -296,4 +296,21 @@ export const previewStyle=`
 .trip-site :focus-visible{outline:3px solid #3d93a5;outline-offset:3px}
 @media(max-width:720px){.trip-header{grid-template-columns:minmax(0,1fr) auto}.trip-logo{min-width:0}.trip-flight-info{display:none}.trip-ticket{padding:0 16px}.trip-hero-copy{min-width:0}.trip-hero-visual{min-width:0}.trip-weather-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.trip-site *, .scrap-entry *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* Template 02 / independent guest editorial and route-list composition */
+.trip-page#guests{background:linear-gradient(180deg,#e9f1ef 0,#f8f4ed 38%,#f8f4ed 100%)}
+.trip-page#guests .trip-page-head{border-bottom:1px solid #b5c9c5;padding-bottom:36px}
+.trip-page#guests .trip-page-head h2{font-family:Arial,"Noto Sans SC",sans-serif;font-size:clamp(56px,8.6vw,128px);font-weight:900;letter-spacing:-.09em;line-height:.9}
+.trip-page#guests .guest-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid #b5c9c5;border-left:1px solid #b5c9c5}
+.trip-page#guests .scrap-guest{min-width:0;grid-template-columns:minmax(120px,.9fr) minmax(0,1fr);gap:clamp(12px,2vw,30px);padding:clamp(18px,2.5vw,40px);border-right:1px solid #b5c9c5;border-bottom:1px solid #b5c9c5;background:#f8f4ed;box-shadow:none!important;transform:none!important;transition:background .28s ease}
+.trip-page#guests .scrap-guest:hover{background:#e3f1ef}
+.trip-page#guests .scrap-polaroid{transform:rotate(-2deg);transition:transform .3s ease}
+.trip-page#guests .scrap-guest:hover .scrap-polaroid{transform:rotate(0deg)}
+.trip-page#guests .scrap-guest :is(h3,h4){font-family:Arial,"Noto Sans SC",sans-serif;font-weight:850;letter-spacing:-.04em}
+.trip-page#activities{background:#f3f7f4}
+.trip-page#activities .trip-page-head h2{font-family:Arial,"Noto Sans SC",sans-serif;font-weight:850;letter-spacing:-.065em}
+.trip-page#activities .trip-activity-switch{padding:14px 0;border-block:1px solid #b7ccc7}
+.trip-page#activities .activity-view-tabs button{border-radius:0;font-weight:800;letter-spacing:.06em}
+@media(max-width:780px){.trip-page#guests .guest-grid{grid-template-columns:1fr}.trip-page#guests .scrap-guest{padding:22px 16px}.trip-page#guests .trip-page-head h2{font-size:clamp(52px,14vw,85px)}}
+@media(max-width:430px){.trip-page#guests .scrap-guest{grid-template-columns:120px minmax(0,1fr);gap:14px}.trip-page#guests .scrap-polaroid{max-width:100%}}
 `;
