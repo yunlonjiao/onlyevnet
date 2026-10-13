@@ -116,7 +116,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     const frame=page.frameLocator('#liveFrame');
     await expect(frame.locator('.trip-route-ticker.ribbon .ribbon-track')).toBeAttached();
     await expect(frame.locator('.trip-route-ticker .ribbon-sequence').first()).toBeAttached();
-    await expect(frame.locator('.trip-route-ticker .ribbon-edit').first()).toHaveAttribute('data-oe-field',/ribbonItems\\.\\d+\\.text/);
+    await expect(frame.locator('.trip-route-ticker .ribbon-edit').first()).toHaveAttribute('data-oe-field',/^ribbonItems[.][0-9]+[.]text$/);
   });
   test('guest directory scrolls horizontally with snap alignment',async({page})=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-guests-qa');
