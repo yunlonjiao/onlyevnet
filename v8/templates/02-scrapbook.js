@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.39.16';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.39.17';
 export const template02=makeIpOnlyTemplate({
  id:'02-scrapbook',name:'02 · EDITORIAL EVENT',label:'编辑式主题',
  description:'大幅主视觉、资讯表格、非对称排版与轻量导视语言。适合角色型 IP、周年纪念与视觉型 ONLY。',
