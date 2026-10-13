@@ -4,5 +4,6 @@ export const template03=makeIpOnlyTemplate({
  description:'参考 COMITIA 的目录型活动官网：侧栏信息架构、公告列表、传单主视觉与高密度目录浏览。',
  structureProfile:'catalogue',artDirection:'comitia-catalogue',motionProfile:'calm',
  theme:'#3f8754',heroTitleColor:'#2d663f',heroTitleAccentColor:'#b63d32',
- presentationProfile:{entryAnimation:false,quickAccess:true,ribbon:false,mobileDock:false,scrollProgress:false,floatingStickers:false,passportProgress:false,decorativeSectionOrbits:false}
+ presentationProfile:{entryAnimation:false,quickAccess:true,ribbon:false,mobileDock:false,scrollProgress:false,floatingStickers:false,passportProgress:false,decorativeSectionOrbits:false},
+ heroTitleSegments:3,heroStyleControls:false
 });
