@@ -109,7 +109,7 @@ All IP ONLY templates must support the same organizer-owned content and visitor 
 - Lifecycle behavior
 - SEO / Open Graph export
 - Standalone HTML export
-- Publisher integration
+- Unified Studio Publisher integration (shared by every template)
 
 ## Required semantic mount points
 
@@ -137,3 +137,22 @@ Renderers must target semantic mounts instead of Template 01 visual classes. A t
 - data-oe-mount="footer-social"
 
 Template 01 remains supported through legacy selector fallbacks, but new templates should be authored against semantic mounts.
+
+
+## Publisher boundary
+
+Publishing is a Studio-level system capability, not a visual-template capability.
+
+Every template must:
+- export a complete standalone visitor HTML
+- preserve visitor interactions in that export
+- work with the shared OnlyEvent Publisher
+
+The shared Publisher owns:
+- `https://[slug].onlyevent.cn` site address
+- first publish
+- update existing site at the same address
+- open/copy published URL
+- HTML download
+
+Templates must not expose Cloudflare, GitHub, Vercel, or other deployment infrastructure to organizers.
