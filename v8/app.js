@@ -807,7 +807,15 @@ function openGuideInspector(){
    send({type:'OE_REPLACE_STATE',state});
  });
 }
+function syncPresentationWorkspace(){
+ const entryOn=activeTemplate.presentationProfile?.entryAnimation===true;
+ const row=document.querySelector('.entry-animation-row');
+ if(row)row.hidden=!entryOn;
+ if(!entryOn&&state.entryAnimation)state.entryAnimation.enabled=false;
+ if(!entryOn&&currentPage==='animation')currentPage='home';
+}
 function syncModuleControls(){
+ syncPresentationWorkspace();
  document.querySelectorAll('[data-module]').forEach(input=>{input.checked=state.modules?.[input.dataset.module]!==false});
  document.querySelectorAll('[data-page-row]').forEach(row=>row.classList.toggle('is-disabled',state.modules?.[row.dataset.pageRow]===false));
 }
