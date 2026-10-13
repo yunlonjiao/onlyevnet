@@ -638,4 +638,23 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-ticket{margi
 .trip-feature .scrap-activity-note p{font:400 14px/1.8 "Microsoft YaHei",sans-serif!important;color:#414950!important}
 @media(max-width:950px){.trip-feature .featured-activity-grid{grid-template-columns:1fr!important}.trip-feature .scrap-activity{padding:22px!important}}
 @media(max-width:600px){#booths .booth-directory-grid{grid-template-columns:1fr!important}#booths .scrap-booth{grid-template-columns:70px minmax(0,1fr)!important;padding:18px 14px 20px 42px!important;gap:12px!important}#booths .scrap-booth .booth-logo{width:70px!important;height:70px!important}#booths .scrap-booth h3{font-size:24px!important}}
+
+/* Real CMS mounts: 18TRIP MUSIC-inspired two-column artwork sheets */
+.trip-feature .featured-activity-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0!important;align-items:stretch!important;max-width:none!important}
+.trip-feature .featured-activity-card{display:flex!important;flex-direction:column!important;min-width:0!important;width:100%!important;padding:clamp(16px,2.5vw,38px)!important;border:1px solid #bec6c8!important;border-radius:0!important;box-shadow:none!important;transform:none!important;background:#fff!important;gap:22px!important}
+.trip-feature .featured-activity-card:nth-child(even){border-left:0!important}
+.trip-feature .featured-activity-media{display:block!important;position:relative!important;width:100%!important;aspect-ratio:1!important;min-height:0!important;height:auto!important;overflow:hidden!important;border-radius:0!important;background:#d2ff68!important}
+.trip-feature .featured-activity-media img{display:block!important;width:100%!important;height:100%!important;position:absolute!important;inset:0!important;object-fit:cover!important;object-position:center!important;border-radius:0!important}
+.trip-feature .featured-activity-copy{display:flex!important;flex-direction:column!important;gap:10px!important;padding:0!important;min-width:0!important}
+.trip-feature .featured-activity-copy h3{margin:0!important;font:700 clamp(21px,2.4vw,39px)/1.35 "Microsoft YaHei","PingFang SC",sans-serif!important;letter-spacing:0!important;overflow-wrap:anywhere!important}
+.trip-feature .featured-activity-copy small,.trip-feature .featured-activity-copy p{font:400 13px/1.8 "Microsoft YaHei",sans-serif!important;margin:0!important}
+#activities .activity-project-list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0!important;border-top:1px solid #c2c8c8;border-left:1px solid #c2c8c8;min-width:0}
+#activities .activity-project-list .scrap-activity{display:flex!important;flex-direction:column!important;min-width:0!important;gap:0!important;padding:clamp(18px,2.7vw,45px)!important;border:0!important;border-right:1px solid #c2c8c8!important;border-bottom:1px solid #c2c8c8!important;background:#fff!important}
+#activities .activity-project-list .scrap-activity-photo{display:flex!important;align-items:center!important;justify-content:center!important;aspect-ratio:1!important;width:100%!important;min-height:0!important;height:auto!important;background:#f3f4ee!important;overflow:hidden!important;position:relative}
+#activities .activity-project-list .activity-feature-media{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;border:0!important;border-radius:0!important;display:flex!important;align-items:center;justify-content:center;background:#f0f0ed!important;padding:0!important}
+#activities .activity-project-list .activity-feature-media img{width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;object-position:center!important;border-radius:0!important}
+#activities .activity-project-list .scrap-activity-note{width:100%;min-width:0;padding:26px 0 0!important}
+#activities .activity-project-list .scrap-activity-note h3{font:700 clamp(23px,2.6vw,40px)/1.3 "Microsoft YaHei",sans-serif!important;letter-spacing:0!important;margin:12px 0!important}
+#activities .activity-project-list .scrap-activity-note p{font:400 14px/1.85 "Microsoft YaHei",sans-serif!important}
+@media(max-width:1100px){.trip-feature .featured-activity-grid,#activities .activity-project-list{grid-template-columns:1fr!important}.trip-feature .featured-activity-card:nth-child(even){border-left:1px solid #bec6c8!important}}
 `;
