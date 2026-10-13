@@ -313,4 +313,7 @@ export const previewStyle=`
 .trip-page#activities .activity-view-tabs button{border-radius:0;font-weight:800;letter-spacing:.06em}
 @media(max-width:780px){.trip-page#guests .guest-grid{grid-template-columns:1fr}.trip-page#guests .scrap-guest{padding:22px 16px}.trip-page#guests .trip-page-head h2{font-size:clamp(52px,14vw,85px)}}
 @media(max-width:430px){.trip-page#guests .scrap-guest{grid-template-columns:120px minmax(0,1fr);gap:14px}.trip-page#guests .scrap-polaroid{max-width:100%}}
+
+/* Honor lifecycle and module visibility over theme-specific display rules. */
+.trip-site [hidden],.scrap-entry [hidden]{display:none!important}
 `;
