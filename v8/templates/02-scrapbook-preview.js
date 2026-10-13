@@ -58,28 +58,10 @@ export const previewBody=`
         
         <h1><span class="hero-title-line hero-title-1">YOUR</span><br><em class="hero-title-line hero-title-2">SPECIAL</em><br><span class="hero-title-line hero-title-3">DAY</span></h1>
         <p data-oe-field="tagline">围绕单一作品 IP 的粉丝综合活动。一起把这一天变成值得留下的旅行记忆。</p>
-        <div class="trip-hero-meta">
-          <span data-oe-field="date">EVENT DATE</span>
-          <span data-oe-field="location">EVENT CITY</span>
-          <a class="venue-nav" href="#" target="_blank" rel="noopener" data-oe-field="edition">EVENT VENUE</a>
-        </div>
-        
-      </div>
-      <div class="trip-weather-strip" hidden>
-        <span><b>EVENT DATE</b><strong data-oe-field="date">DATE</strong></span>
-        <span><b>DESTINATION</b><strong data-oe-field="location">LOCATION</strong></span>
-        <span><b>VENUE</b><strong data-oe-field="edition">VENUE</strong></span>
-        <span><b>THEME</b><strong data-oe-field="eventName">ONLY EVENT</strong></span>
       </div>
     </section>
 
     <div class="trip-route-ticker ribbon oe-home-only"><div class="trip-route-ticker-track ribbon-track"></div></div>
-
-    <section class="trip-news oe-home-only" id="updates">
-      <header><span>NEWS</span><b>NEWS</b><small>EVENT UPDATES</small></header>
-      <div class="trip-news-columns"><span>DATE</span><span>TYPE</span><span>REMARKS</span></div>
-      <div data-oe-mount="updates" class="updates-list"></div>
-    </section>
 
     <section class="trip-intro oe-home-only">
       <aside><span>活动简介</span><small>INTRODUCTION</small></aside>
@@ -94,6 +76,12 @@ export const previewBody=`
         <div class="trip-ticket-stub">ONLY EVENT<br><b>BOARDING PASS</b><small>A DAY TO REMEMBER</small></div>
         <div class="trip-cassette"><i></i><i></i><b>SPECIAL JOURNEY</b><small>MEMORY TAPE / 001</small></div>
       </div>
+    </section>
+
+    <section class="trip-news oe-home-only" id="updates">
+      <header><span>NEWS</span><b>NEWS</b><small>EVENT UPDATES</small></header>
+      <div class="trip-news-columns"><span>DATE</span><span>TYPE</span><span>REMARKS</span></div>
+      <div data-oe-mount="updates" class="updates-list"></div>
     </section>
 
     <section class="trip-transition oe-home-only" hidden aria-hidden="true">
