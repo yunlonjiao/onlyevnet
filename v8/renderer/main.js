@@ -96,6 +96,8 @@ function applyLifecycleState(){
       badge.textContent=status==='ended'?'活动已结束':'活动未开始';
     }
   }
+  const statusLabel=status==='live'?'活动进行中':status==='ended'?'活动已结束':'活动未开始';
+  qa('[data-oe-lifecycle-status]').forEach(el=>{el.textContent=statusLabel;el.dataset.status=status});
   const ended=status==='ended'&&mode!=='edit';
   qa('.ticket-purchase-link,.nav>.wrap>.btn').forEach(el=>{
     if(ended)el.setAttribute('hidden','');
@@ -208,7 +210,7 @@ window.addEventListener('message',e=>{
     runtime.initRuntime();
     router.showPage(router.getCurrentPage(),false);
   }
-  if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value);applyEntryState();if(m.path==='eventStatus')applyLifecycleState()}
+  if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value);applyEntryState();if(['eventStatus','eventStatusMode','eventStartDateTime','eventEndDateTime'].includes(m.path))applyLifecycleState()}
   if(m.type==='OE_REPLACE_STATE'){mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);state=m.state||{};applyState(state);runtime.initRuntime()}
   if(m.type==='OE_SET_MODE'){
     fields.setMode(m.mode);
