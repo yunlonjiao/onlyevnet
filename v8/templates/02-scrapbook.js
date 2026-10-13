@@ -5,5 +5,6 @@ export const template02=makeIpOnlyTemplate({
  structureProfile:'editorial',artDirection:'travel-scrapbook',motionProfile:'editorial',
  theme:'#ff7f91',heroTitleColor:'#342d2f',heroTitleAccentColor:'#ef6f80',
  presentationProfile:{entryAnimation:true,quickAccess:true,ribbon:false,mobileDock:false,scrollProgress:false,floatingStickers:false,passportProgress:false,decorativeSectionOrbits:false},
- heroTitleSegments:3,heroStyleControls:false
+ heroTitleSegments:3,heroStyleControls:false,
+ imageRatios:{hero:1,mobileHero:.8,activity:1.777778,featured:1.777778,guest:.8}
 });
