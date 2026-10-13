@@ -5,5 +5,6 @@ export const template04=makeIpOnlyTemplate({
  structureProfile:'editorial',artDirection:'design-festa-editorial',motionProfile:'editorial',
  theme:'#ff4f8d',heroTitleColor:'#d93537',heroTitleAccentColor:'#ffe33f',
  presentationProfile:{entryAnimation:false,quickAccess:true,ribbon:false,mobileDock:false,scrollProgress:false,floatingStickers:false,passportProgress:false,decorativeSectionOrbits:false},
- heroTitleSegments:2,heroStyleControls:false
+ heroTitleSegments:2,heroStyleControls:false,
+ imageRatios:{hero:.8,mobileHero:.8,activity:1.333333,featured:1.333333,guest:.8}
 });
