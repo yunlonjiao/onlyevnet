@@ -156,3 +156,28 @@ The shared Publisher owns:
 - HTML download
 
 Templates must not expose Cloudflare, GitHub, Vercel, or other deployment infrastructure to organizers.
+
+
+## Template / Publisher responsibility split
+
+### Template responsibilities
+- generate the complete visitor website
+- define visual structure and responsive presentation
+- render organizer content and enabled modules
+- render first-level pages and custom pages
+- preserve all visitor interactions
+- produce complete standalone HTML
+
+### Publisher responsibilities
+- manage the public site address
+- publish the generated site
+- update the same published address
+- expose open/copy-link actions
+- provide the shared download/publish workflow
+- hide deployment infrastructure from organizers
+
+In short:
+
+**Template = Site Generator**
+
+**Publisher = Deployment / Delivery Layer**
