@@ -1,10 +1,11 @@
 export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTickets,getState}){
+  const liveField=path=>document.querySelector('.trip-site [data-oe-field="'+path+'"]')||document.querySelector('[data-oe-field="'+path+'"]');
   const fieldMap={
-    eventName:()=> $('[data-oe-field="eventName"]') || $('.brand'),
+    eventName:()=>liveField('eventName'),
     tagline:()=> $('[data-oe-field="tagline"]') || $('.hero-copy p'),
-    date:()=> $('[data-oe-field="date"]') || qa('.meta .pill')[0],
-    location:()=> $('[data-oe-field="location"]') || qa('.meta .pill')[1],
-    edition:()=> $('[data-oe-field="edition"]') || $('.venue-nav'),
+    date:()=>liveField('date'),
+    location:()=>liveField('location'),
+    edition:()=>liveField('edition'),
     heroTitle1:()=>$('.hero-title-1'),
     heroTitle2:()=>$('.hero-title-2'),
     heroTitle3:()=>$('.hero-title-3'),
