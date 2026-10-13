@@ -90,4 +90,16 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await frame.locator('.scrap-entry-gate').click();
     await expect.poll(()=>frame.locator('#loader').evaluate(el=>el.classList.contains('hide')),{timeout:5000}).toBe(true);
   });
+  test('mirrors event identity across hero, navigation and entry ticket',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-mirrors');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('.trip-logo [data-oe-field="eventName"]')).toBeAttached();
+    await expect(frame.locator('.trip-weather-strip [data-oe-field="eventName"]')).toBeAttached();
+    await expect(frame.locator('.scrap-entry [data-oe-field="eventName"]')).toHaveAttribute('contenteditable','false');
+    const names=await frame.locator('.trip-site [data-oe-field="eventName"]').allTextContents();
+    expect(new Set(names.map(name=>name.trim())).size).toBe(1);
+    const dates=await frame.locator('.trip-site [data-oe-field="date"]').allTextContents();
+    expect(new Set(dates.map(value=>value.trim())).size).toBe(1);
+  });
+
 });
