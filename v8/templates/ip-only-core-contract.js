@@ -1,13 +1,13 @@
 /*
  * OnlyEvent IP ONLY Shared Core Contract
- * v8.37.3
+ * v8.40.1
  *
  * This file defines the product capabilities every IP ONLY template must support.
  * It is intentionally visual-agnostic: templates decide markup, composition, density,
  * typography and motion; the core defines data, behavior and editing contracts.
  */
 
-export const IP_ONLY_CORE_VERSION='8.37.3';
+export const IP_ONLY_CORE_VERSION='8.40.1';
 
 export const IP_ONLY_CORE_MODULES=Object.freeze([
   'ribbon',
@@ -95,7 +95,7 @@ export const IP_ONLY_CORE_CAPABILITIES=Object.freeze({
   event:{
     lifecycle:['auto-status','manual-status','start-end-datetime'],
     identity:['eventName','date','location','edition','tagline'],
-    hero:['desktop-image','mobile-image','focal-position','title-lines','title-size','title-colors'],
+    hero:['desktop-image','mobile-image','focal-position','editable-title','template-defined-title-layout'],
     seo:['pageTitle','metaDescription','canonical','ogTitle','ogDescription','ogImage'],
     entry:['enabled','skip','style','title','subtitle','label','accent','duration'],
     entryPresentation:'optional-per-template'
@@ -127,7 +127,7 @@ export const IP_ONLY_CORE_CAPABILITIES=Object.freeze({
   activities:{
     collection:true,
     fields:['preset','activityType','title','meta','text','detail','participationMode','requirements','rules','url','image'],
-    featuredSlots:3,
+    featuredSlots:'unbounded-linked-activity-list',
     scheduleLinking:true,
     guestLinking:true,
     externalRegistration:true,
@@ -160,6 +160,7 @@ export const IP_ONLY_CORE_CAPABILITIES=Object.freeze({
   venueMap:{
     image:true,
     linkedTargets:true,
+    targetMode:'internal-page-or-item',
     linksTo:['activities','booths','pages','items']
   },
   community:{
