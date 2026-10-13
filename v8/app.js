@@ -1348,7 +1348,9 @@ function mutateItem(collection,index,op){
  save();send({type:'OE_REPLACE_STATE',state});syncContentCounts();openCollectionManager(collection,index);openItemInspector(collection,index);
 }
 function imageSlotConfig(path){
+ if(path==='heroImage'&&state.templateId==='02-scrapbook')return state.heroDisplayMode==='wide'?{label:'宽屏增强 KV',ratio:16/9,ratioLabel:'宽屏增强 · 比例 16:9',width:1920,height:1080,fixed:true}:{label:'标准漫展主视觉',ratio:3/4,ratioLabel:'常用海报 · 比例 3:4（完整展示）',width:1200,height:1600,fixed:true};
  if(path==='heroImage')return {label:'桌面主视觉 KV',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1400,height:1400,fixed:true};
+ if(path==='mobileHeroImage'&&state.templateId==='02-scrapbook')return {label:'手机主视觉（可选）',ratio:3/4,ratioLabel:'标准海报 · 比例 3:4',width:1080,height:1440,fixed:true};
  if(path==='mobileHeroImage')return {label:'手机主视觉 KV',ratio:4/5,ratioLabel:'手机端独立主视觉 · 比例 4:5',width:1080,height:1350,fixed:true};
  if(path==='seo.ogImage')return {label:'分享封面',ratio:1.91,ratioLabel:'社交分享推荐比例 1.91:1',width:1200,height:628,fixed:true};
  if(/^tickets\.\d+\.image$/.test(path))return {label:'票务赠品图',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:900,height:900,fixed:true};
