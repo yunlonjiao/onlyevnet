@@ -49,7 +49,7 @@ export function scheduleMarkup({state,x,i,field,esc,day,area,endTime,guestHtml,p
 export function updateMarkup({state,u,i,field,esc,target,mode}){
   const id=tid(state); if(id==='01-ip-only')return '';
   const common=' href="#'+esc(target)+'" data-target-mode="'+mode+'" data-page-link="'+esc(target)+'" data-oe-item="updates" data-oe-index="'+i+'"';
-  if(id==='02-scrapbook')return '<a class="scrap-update"'+common+'><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<span>READ NOTE ↗</span></a>';
+  if(id==='02-scrapbook')return '<a class="scrap-update"'+common+'><time class="scrap-update-date">'+esc(u.date||'')+'</time><span class="scrap-update-type">INFO</span>'+field('updates.'+i+'.title',u.title||'','b')+'<span class="scrap-update-arrow" aria-hidden="true">↗</span></a>';
   if(id==='03-school-festival')return '<a class="school-update"'+common+'><span>NEWS '+num(i)+'</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<i>→</i></a>';
   if(id==='04-museum-editorial')return '<a class="museum-update"'+common+'><time>'+esc(u.date||'')+'</time><span>NEWS</span>'+field('updates.'+i+'.title',u.title||'','b')+'<i>VIEW</i></a>';
   if(id==='05-live-poster')return '<a class="live-update"'+common+'><span>'+num(i)+'</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<i>↗</i></a>';
@@ -126,7 +126,7 @@ export function communityMarkup({state,x,i,field,esc,img,action}){
   const id=tid(state);if(id==='01-ip-only')return '';
   const common=' data-oe-item="socialLinks" data-oe-index="'+i+'"';
   const label=field('socialLinks.'+i+'.label',x.label,'b'),note=field('socialLinks.'+i+'.note',x.note||'','p');
-  if(id==='02-scrapbook')return '<article class="scrap-social"'+common+'>'+img+'<div><span>SOCIAL NOTE</span>'+label+note+action+'</div></article>';
+  if(id==='02-scrapbook')return '<article class="scrap-social"'+common+'><div class="scrap-social-face">'+img+'<span class="scrap-social-stamp">↗</span></div><div class="scrap-social-caption">'+label+note+action+'</div></article>';
   if(id==='03-school-festival')return '<article class="school-social"'+common+'><span>'+num(i)+'</span>'+img+'<div>'+label+note+action+'</div></article>';
   if(id==='04-museum-editorial')return '<article class="museum-social"'+common+'><span>COMMUNITY '+num(i)+'</span><div>'+label+note+action+'</div>'+img+'</article>';
   if(id==='05-live-poster')return '<article class="live-social"'+common+'>'+img+'<div><span>FOLLOW / JOIN</span>'+label+note+action+'</div></article>';
