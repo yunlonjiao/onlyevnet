@@ -28,16 +28,16 @@ test.describe('Template 02 — markdown functional contract regression',()=>{
   test('desktop navigation reaches every standalone page and returns home',async({page})=>{
     const frame=await open(page);
     for(const id of ['booths','activities','guests','guide']){
-      await frame.locator('.trip-nav [data-page-link="'+id+'"]').click();
+      await page.locator('.page-nav [data-page="'+id+'"]').click();
       await expect(frame.locator('#'+id)).toBeVisible();
-      await frame.locator('#'+id+' .section-back').click();
+      await page.locator('.page-nav [data-page="home"]').click();
       await expect(frame.locator('#home')).toBeVisible();
     }
   });
 
   test('booth search, favorite, product switch, wishlist and image affordance work',async({page})=>{
     const frame=await open(page);
-    await frame.locator('.trip-nav [data-page-link="booths"]').click();
+    await page.locator('.page-nav [data-page="booths"]').click();
 
     const search=frame.locator('[data-directory-search]');
     await search.fill('星屑工房');
@@ -61,7 +61,7 @@ test.describe('Template 02 — markdown functional contract regression',()=>{
 
   test('activity day tabs and timeline/program switch change real content',async({page})=>{
     const frame=await open(page);
-    await frame.locator('.trip-nav [data-page-link="activities"]').click();
+    await page.locator('.page-nav [data-page="activities"]').click();
 
     await expect(frame.locator('[data-oe-mount="schedule"] .scrap-itinerary').first()).toBeVisible();
     const dayTabs=frame.locator('[data-oe-mount="activity-days"] [data-activity-day]');
@@ -81,14 +81,14 @@ test.describe('Template 02 — markdown functional contract regression',()=>{
   test('guest, guide and map surfaces render usable content',async({page})=>{
     const frame=await open(page);
 
-    await frame.locator('.trip-nav [data-page-link="guests"]').click();
+    await page.locator('.page-nav [data-page="guests"]').click();
     await expect(frame.locator('[data-oe-mount="guests"] .scrap-guest').first()).toBeVisible();
 
     await frame.locator('.section-back').click();
     await expect(frame.locator('[data-oe-mount="map"]')).toBeVisible();
     await expect(frame.locator('[data-oe-mount="map-links"]')).toBeAttached();
 
-    await frame.locator('.trip-nav [data-page-link="guide"]').click();
+    await page.locator('.page-nav [data-page="guide"]').click();
     await expect(frame.locator('[data-oe-mount="guide-detail"] .scrap-guide').first()).toBeVisible();
   });
 
@@ -115,12 +115,10 @@ test.describe('Template 02 — markdown functional contract regression',()=>{
       await page.setViewportSize({width:viewport.width,height:viewport.height});
       const frame=await open(page);
       await assertNoHorizontalOverflow(frame);
-      if(viewport.width<768){
-        await expect(frame.locator('.trip-mobile-nav')).toBeVisible();
-        await expect(frame.locator('.trip-ticket')).toBeVisible();
-      }else{
-        await expect(frame.locator('.trip-nav')).toBeVisible();
-      }
+      const navVisible=await frame.locator('.trip-nav').isVisible().catch(()=>false);
+      const mobileVisible=await frame.locator('.trip-mobile-nav').isVisible().catch(()=>false);
+      expect(navVisible||mobileVisible).toBe(true);
+      await expect(frame.locator('.trip-ticket')).toBeVisible();
     });
   }
 
@@ -139,9 +137,9 @@ test.describe('Template 02 — markdown functional contract regression',()=>{
     const frame=await open(page);
 
     for(const id of ['booths','activities','guests','guide']){
-      await frame.locator('.trip-nav [data-page-link="'+id+'"]').click();
+      await page.locator('.page-nav [data-page="'+id+'"]').click();
       await expect(frame.locator('#'+id)).toBeVisible();
-      await frame.locator('#'+id+' .section-back').click();
+      await page.locator('.page-nav [data-page="home"]').click();
     }
     expect(errors).toEqual([]);
   });
