@@ -29,7 +29,7 @@ export const previewBody=`
       <b data-oe-field="eventName">STARDUST<br>ONLY</b>
     </a>
     <div class="trip-flight-info">
-      <span>OE 2026</span><i></i><span>11.08 SUN</span><i></i><span>HANGZHOU</span>
+      <span>ONLY EVENT</span><i></i><span data-oe-field="date">EVENT DATE</span><i></i><span data-oe-field="location">DESTINATION</span>
     </div>
     <nav class="trip-nav" data-oe-mount="nav-links">
       <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small>BOOTH</a>
@@ -55,7 +55,7 @@ export const previewBody=`
         <div class="trip-photo-caption"><span>PHOTO / 001</span><b>A SIDE — THE GOOD MEMORIES</b></div>
       </div>
       <div class="trip-hero-copy hero-copy">
-        <div class="trip-route">OE / JOURNEY 01 / 2026</div>
+        <div class="trip-route">ONLY EVENT / YOUR SPECIAL JOURNEY</div>
         <h1><span class="hero-title-line hero-title-1">STAR</span><br><em class="hero-title-line hero-title-2">BEAT</em><br><span class="hero-title-line hero-title-3">ONLY</span></h1>
         <p data-oe-field="tagline">围绕单一作品 IP 的粉丝综合活动。一起把这一天变成值得留下的旅行记忆。</p>
         <div class="trip-hero-meta">
@@ -63,22 +63,22 @@ export const previewBody=`
           <span data-oe-field="location">杭州</span>
           <a class="venue-nav" href="#" target="_blank" rel="noopener" data-oe-field="edition">杭州国际博览中心</a>
         </div>
-        <div class="trip-stamp">BOARDING<br><b>NOW</b></div>
+        <div class="trip-stamp" aria-hidden="true">SPECIAL<br><b>DAY</b></div>
       </div>
       <div class="trip-weather-strip">
-        <span><b>DATE</b>11.08 SUN</span>
-        <span><b>TIME</b>10:00 — 17:00</span>
-        <span><b>WEATHER</b>17.4℃ ☀</span>
-        <span><b>DESTINATION</b>HANGZHOU</span>
+        <span><b>EVENT DATE</b><strong data-oe-field="date">DATE</strong></span>
+        <span><b>DESTINATION</b><strong data-oe-field="location">LOCATION</strong></span>
+        <span><b>VENUE</b><strong data-oe-field="edition">VENUE</strong></span>
+        <span><b>THEME</b><strong data-oe-field="eventName">ONLY EVENT</strong></span>
       </div>
     </section>
 
     <div class="trip-route-ticker oe-home-only" aria-hidden="true">
-      <div><span>✈ ONLY EVENT JOURNEY</span><span>#SPECIAL TRIP</span><span>HANGZHOU / 11.08</span><span>17.4℃ ☀</span><span>BOARDING NOW</span><span>✈ ONLY EVENT JOURNEY</span><span>#SPECIAL TRIP</span><span>HANGZHOU / 11.08</span></div>
+      <div><span>✈ ONLY EVENT JOURNEY</span><span>ENJOY YOUR SPECIAL DAY</span><span>DISCOVER YOUR COMMUNITY</span><span>CREATE NEW MEMORIES</span><span>✈ ONLY EVENT JOURNEY</span><span>ENJOY YOUR SPECIAL DAY</span><span>DISCOVER YOUR COMMUNITY</span><span>CREATE NEW MEMORIES</span></div>
     </div>
 
     <section class="trip-news oe-home-only" id="updates">
-      <header><span>NEWS / FLIGHT INFORMATION</span><b>LATEST<br>UPDATE</b><small>Attention, all passengers.<br>The information board will guide your trip.</small></header>
+      <header><span>NEWS / FLIGHT INFORMATION</span><b>LATEST<br>UPDATE</b><small>EVENT INFORMATION / UPDATES</small></header>
       <div class="trip-news-columns"><span>DATE</span><span>TO</span><span>REMARKS</span></div>
       <div data-oe-mount="updates" class="updates-list"></div>
     </section>
@@ -87,7 +87,7 @@ export const previewBody=`
       <aside><span>INTRODUCTION</span><b>01</b></aside>
       <div class="trip-intro-copy">
         <h2>THE MEMORIES OF A DAY<br>ARE LIKE A SINGLE CASSETTE TAPE.</h2>
-        <p>好的一面、忙乱的一面、遇到的人、突然发生的小事，都会一起留下来。活动不是一串卡片，而是一段完整的旅程。</p>
+        <p data-oe-field="tagline">一次相遇，一段值得珍藏的旅程。</p>
       </div>
       <div class="trip-collage" aria-hidden="true">
         <div class="trip-card c1"><span>11.08</span></div>
@@ -110,7 +110,7 @@ export const previewBody=`
     </section>
 
     <section class="trip-feature oe-home-only" id="participation">
-      <header><span>PICK UP</span><h2>JOURNEY HIGHLIGHTS</h2><p>这次活动最值得停留的几个目的地。</p></header>
+      <header><span>PICK UP</span><h2>JOURNEY HIGHLIGHTS</h2><p>DISCOVER EVENT HIGHLIGHTS</p></header>
       <div data-oe-mount="featured-activities" class="featured-activity-grid"></div>
     </section>
 
@@ -123,7 +123,7 @@ export const previewBody=`
     </section>
 
     <section class="trip-map oe-home-only" id="map-home">
-      <div class="trip-map-copy"><span>DESTINATION</span><h2>VENUE MAP</h2><p>像查看旅行目的地一样查看场地与活动区域。</p><div data-oe-mount="map-links" class="map-link-list"></div></div>
+      <div class="trip-map-copy"><span>DESTINATION</span><h2>VENUE MAP</h2><p>EXPLORE THE VENUE</p><div data-oe-mount="map-links" class="map-link-list"></div></div>
       <div class="trip-map-paper"><div data-oe-mount="map" id="venueMap" class="map-static"></div></div>
     </section>
 
@@ -246,4 +246,44 @@ export const previewStyle=`
 
 @media(max-width:980px){.trip-header{grid-template-columns:220px 1fr auto}.trip-flight-info{display:none}.trip-hero{grid-template-columns:1fr}.trip-hero-visual{min-height:620px}.trip-hero-copy{padding:54px 7vw}.trip-weather-strip{grid-row:3}.trip-intro{grid-template-columns:100px 1fr}.trip-collage{grid-column:2}.trip-feature{grid-template-columns:1fr}.trip-feature>header{position:static}.trip-ticket-section,.trip-map{grid-template-columns:1fr}.trip-ticket-cover{min-height:300px}}
 @media(max-width:760px){.trip-header{grid-template-columns:1fr auto;min-height:60px}.trip-logo{padding:9px 14px;border-right:0}.trip-logo b{font-size:19px}.trip-nav{display:none}.trip-ticket{padding:0 14px}.trip-mobile-nav{position:sticky;top:60px;z-index:85;display:flex;overflow-x:auto;background:#2f2926;color:#fff}.trip-mobile-nav a{flex:0 0 auto;min-width:84px;padding:9px 12px;border-right:1px solid #5c514b;font:700 8px/1 Georgia,serif}.trip-mobile-nav small{display:block;margin-bottom:4px;font:700 6px/1 monospace;color:var(--trip-pink)}.trip-hero{min-height:0}.trip-hero-visual{min-height:430px;padding:24px 14px}.trip-hero-visual .kv{inset:26px 22px 55px;border-width:9px;border-bottom-width:44px;transform:rotate(-.6deg)}.trip-photo-caption{left:30px;bottom:30px}.trip-hero-copy{padding:44px 18px 50px}.trip-hero-copy h1{font-size:clamp(54px,18vw,82px)}.trip-stamp{width:70px;height:70px;right:18px;bottom:18px}.trip-weather-strip{grid-template-columns:1fr 1fr}.trip-news{grid-template-columns:1fr}.trip-news>header{border-right:0;border-bottom:1px solid var(--trip-line);padding:28px 18px}.trip-news-columns{display:none}.trip-news .updates-list{grid-column:1;padding:8px 18px 24px}.scrap-update{grid-template-columns:76px 1fr!important}.scrap-update>span{display:none}.trip-intro{grid-template-columns:1fr;gap:28px;padding:70px 18px}.trip-intro>aside b{font-size:62px}.trip-collage{grid-column:1;height:330px}.trip-cassette{left:50%;top:96px;transform:translateX(-50%) rotate(-5deg);width:240px}.trip-ticket-stub{right:0;bottom:6px;width:150px}.trip-transition{grid-template-columns:1fr;padding:54px 18px;gap:22px}.trip-transition i{font-size:44px}.trip-index{grid-template-columns:1fr}.trip-index>header{border-right:0;border-bottom:1px solid #5c514b;padding:28px 18px}.trip-index .quick-grid{display:flex!important;overflow-x:auto!important}.scrap-index-card{flex:0 0 70%;min-height:170px!important}.trip-feature{padding:70px 18px;gap:34px}.trip-feature .scrap-activity{grid-template-columns:1fr!important}.trip-ticket-cover{min-height:240px;padding:38px 22px}.trip-ticket-cover b{font-size:64px}.trip-ticket-list{padding:28px 14px 48px}.scrap-pass{grid-template-columns:58px 1fr!important}.scrap-pass aside{grid-column:1/-1;border-left:0!important;border-top:1px dashed #bc9f91!important}.scrap-pass:nth-child(2n){transform:none!important}.trip-map-copy{padding:48px 18px}.trip-map-paper{padding:18px}.trip-map .map-static{min-height:360px}.trip-page{padding:52px 16px 74px}.trip-page-head{grid-template-columns:1fr;gap:12px;margin-bottom:34px}.trip-page-head .section-back{justify-self:start}.trip-activity-switch{display:grid}.community{grid-template-columns:1fr}.sponsors{grid-template-columns:repeat(2,minmax(0,1fr))}.trip-footer{grid-template-columns:1fr}.trip-footer>div{border-right:0;border-bottom:1px solid #514740}.scrap-entry-gate{grid-template-columns:1fr;width:min(92vw,520px);max-height:82vh;overflow:auto}.scrap-entry-photo{border-right:0;border-bottom:1px dashed #8d7f72}.entry-photo{min-height:250px}.scrap-entry-info{padding:22px}.entry-ticket-title{font-size:30px}}
+
+/* v8.40.1 — purpose-built travel editorial art direction.
+   Keep Shared Core mount anchors unchanged; presentation does not own data. */
+:root{--trip-bg:#eaf1ef;--trip-paper:#fffcf5;--trip-ink:#263e4b;--trip-pink:#e77a72;--trip-blue:#a7dce5;--trip-lime:#e4e9b4;--trip-line:#a5b7b4}
+.trip-site{background:var(--trip-bg)}
+.trip-header{background:rgba(250,252,246,.92);border-bottom:1px solid #a1b7b4}
+.trip-logo{background:#dbe9e8}.trip-logo b{font-family:Arial,"Noto Sans SC",sans-serif;font-size:21px;letter-spacing:-.04em;font-weight:850}
+.trip-nav a{font-family:Arial,"Noto Sans SC",sans-serif;letter-spacing:.045em;transition:background .25s,color .25s}
+.trip-nav a:hover{background:#dcebec;color:#173b51}
+.trip-ticket{background:#f2ddbc}
+.trip-hero{grid-template-columns:minmax(0,1.35fr) minmax(360px,.65fr);background:#e5f2f2;min-height:760px}
+.trip-hero-visual{overflow:hidden;background:radial-gradient(circle at 22% 14%,#fff9d5 0 8%,transparent 9%),linear-gradient(145deg,#b9dce7 0%,#d9eceb 43%,#f6ebe0 100%);min-height:700px}
+.trip-hero-visual:after{content:"TRAVEL DIARY / 02";position:absolute;right:25px;top:22px;font:800 10px/1.3 monospace;letter-spacing:.18em;color:#37596a;writing-mode:vertical-rl}
+.trip-hero-visual .kv{inset:5vw 9% 4.5vw 7%;border:10px solid white;border-bottom-width:44px;transform:rotate(-1deg);box-shadow:16px 22px 40px rgba(37,61,65,.19);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.trip-hero-visual:hover .kv{transform:rotate(0) scale(1.018)}
+.trip-hero-copy{background:#f7f4e9;padding:6vw 4vw 5vw 4vw}
+.trip-hero-copy h1{font-family:Arial,"Noto Sans SC",sans-serif;font-weight:900;font-size:clamp(62px,8vw,132px);letter-spacing:-.095em;line-height:.82;text-transform:uppercase}
+.trip-hero-copy h1 em{font-style:normal;color:#d76970}
+.trip-route{color:#49788a;font-size:10px;letter-spacing:.19em}
+.trip-hero-copy>p{font-size:14px;line-height:2;color:#3c5862}
+.trip-stamp{border-color:#4e99a5;color:#397e8d}
+.trip-weather-strip{background:#294854;grid-template-columns:repeat(4,minmax(0,1fr))}
+.trip-weather-strip span{min-width:0;overflow-wrap:anywhere}
+.trip-weather-strip strong{font:750 clamp(11px,1.1vw,16px)/1.4 "Noto Sans SC",sans-serif}
+.trip-weather-strip b{font-size:9px;color:#b4dce0}
+.trip-route-ticker{background:#e4e9b4}
+.trip-news{background:#fffdfa}
+.trip-intro{background:#e7eee8}
+.trip-intro-copy h2{font-family:Arial,"Noto Sans SC",sans-serif;font-weight:850;letter-spacing:-.055em}
+.trip-transition{background:#dcebea}
+.trip-transition b{font-family:Arial,"Noto Sans SC",sans-serif;font-weight:800}
+.trip-index{background:#294854}.trip-index>header{border-color:#57727b}.trip-index .scrap-index-card{border-color:#57727b!important}
+.trip-feature{background:#eaf3f3}
+.trip-ticket-cover{background:#d16b72}
+.trip-map-copy{background:#f5f4e9}
+.trip-page{background:#f7f8f2}
+@media(min-width:1100px){.trip-hero-copy h1{max-width:9ch}}
+@media(max-width:900px){.trip-hero{grid-template-columns:1fr}.trip-hero-visual{min-height:60vh;padding:0}.trip-hero-visual .kv{inset:6% 8% 8%;border-width:8px;border-bottom-width:38px}.trip-hero-copy{padding:55px 6vw 74px}.trip-weather-strip{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.trip-hero{min-height:0}.trip-hero-visual{min-height:50vh}.trip-hero-copy h1{font-size:clamp(52px,17vw,88px)}.trip-hero-copy{padding:44px 24px 72px}.trip-weather-strip strong{font-size:12px}.trip-photo-caption{bottom:11%;left:12%}.trip-ticket-cover b{font-size:58px}}
+@media(prefers-reduced-motion:reduce){.trip-route-ticker>div{animation:none}.trip-hero-visual .kv{transition:none}.trip-hero-visual:hover .kv{transform:rotate(-1deg)}}
 `;
