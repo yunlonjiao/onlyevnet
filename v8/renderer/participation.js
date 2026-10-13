@@ -14,9 +14,10 @@ export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send})
 
     const home=mount('featured-activities','#participation .featured-activity-grid');
     if(home){
-      const slots=Array.isArray(state.featuredActivities)?state.featuredActivities.slice(0,3):[];
+      const slots=Array.isArray(state.featuredActivities)?state.featuredActivities:[];
       const fallback=items.slice(0,3).map((x,i)=>({id:'fa'+(i+1),participationId:x.id}));
-      const allPicks=(slots.length===3?slots:fallback).map((slot,slotIndex)=>({
+      const source=slots.length?slots:fallback;
+      const allPicks=source.map((slot,slotIndex)=>({
         slot,slotIndex,x:items.find(a=>a.id===slot.participationId)
       }));
       const picks=getMode()==='edit'?allPicks:allPicks.filter(({x})=>!!x);
