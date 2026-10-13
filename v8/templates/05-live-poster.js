@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.40.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.40.1';
 export const template05=makeIpOnlyTemplate({
  id:'05-live-poster',name:'05 · LIVE LINEUP',label:'舞台阵容',
  description:'参考 MUTEK/现场演出官网：巨型阵容排版、黑白现场影像、Running Order 与 Venue 信息。',
