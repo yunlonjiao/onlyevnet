@@ -4,5 +4,6 @@ export const template05=makeIpOnlyTemplate({
  description:'参考 MUTEK/现场演出官网：巨型阵容排版、黑白现场影像、Running Order 与 Venue 信息。',
  structureProfile:'lineup',artDirection:'mutek-live',motionProfile:'energetic',
  theme:'#ff6037',heroTitleColor:'#f1eee8',heroTitleAccentColor:'#ff6037',
- presentationProfile:{entryAnimation:false,quickAccess:true,ribbon:false,mobileDock:false,scrollProgress:false,floatingStickers:false,passportProgress:false,decorativeSectionOrbits:false}
+ presentationProfile:{entryAnimation:false,quickAccess:true,ribbon:false,mobileDock:false,scrollProgress:false,floatingStickers:false,passportProgress:false,decorativeSectionOrbits:false},
+ heroTitleSegments:3,heroStyleControls:false
 });
