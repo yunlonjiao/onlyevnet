@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - 'preview/**'
+      - 'redo/v8.40.1'
     paths:
       - 'v8/**'
       - 'admin/**'
