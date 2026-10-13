@@ -86,7 +86,7 @@ export const previewBody=`
     <section class="trip-intro oe-home-only">
       <aside><span>INTRODUCTION</span><b>01</b></aside>
       <div class="trip-intro-copy">
-        <h2>THE MEMORIES OF A DAY<br>ARE LIKE A SINGLE CASSETTE TAPE.</h2>
+        <h2>ONE DAY.<br>ALL OUR STORIES.</h2>
         <p data-oe-field="tagline">一次相遇，一段值得珍藏的旅程。</p>
       </div>
       <div class="trip-collage" aria-hidden="true">
@@ -99,8 +99,8 @@ export const previewBody=`
     </section>
 
     <section class="trip-transition oe-home-only">
-      <span>ONE DAY / TWO SIDES / MANY MEMORIES</span>
-      <b>GOOD THINGS, SMALL TROUBLES,<br>AND EVERYTHING IN BETWEEN.</b>
+      <span>ONE EVENT / ONE COMMUNITY</span>
+      <b>MEET HERE.<br>MAKE MEMORIES.</b>
       <i>→</i>
     </section>
 
@@ -115,7 +115,7 @@ export const previewBody=`
     </section>
 
     <section class="trip-ticket-section oe-home-only" id="tickets">
-      <div class="trip-ticket-cover"><small>ADMISSION</small><b>TRAVEL<br>PASS</b><span>ONLY EVENT / 2026</span></div>
+      <div class="trip-ticket-cover"><small>ADMISSION</small><b>EVENT<br>PASS</b><span>ONLY EVENT / 2026</span></div>
       <div class="trip-ticket-list">
         <div data-oe-mount="tickets" class="ticket-grid"></div>
         <div data-oe-mount="ticket-actions" class="ticket-actions"></div>
@@ -437,5 +437,69 @@ body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero
 body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy h1{font-size:clamp(35px,9vw,65px)!important;color:#284a54!important}
 body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy>p,body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-meta,body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-meta a{color:#284a54!important}
 body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-logo{color:#284a54!important;text-shadow:none!important}
+}
+
+/* Template 02 homepage final composition pass — 18TRIP reference structure,
+   with organizer poster support. No reused scrapbook/polaroid styling. */
+.trip-site .trip-intro{position:relative;display:grid;grid-template-columns:minmax(130px,18%) minmax(0,1fr);gap:clamp(20px,4vw,70px);align-items:start;background:#f7f8f2!important;padding:clamp(80px,10vw,170px) max(6vw,24px)!important;overflow:hidden;min-height:460px}
+.trip-intro>aside{display:flex;flex-direction:column;gap:16px;align-items:start}
+.trip-intro>aside span{color:#353c4a;font:850 11px/1.5 "Courier New",monospace;letter-spacing:.22em}
+.trip-intro>aside b{font:900 clamp(45px,7vw,120px)/1 Arial,sans-serif;color:#d7ff60;margin:0}
+.trip-intro-copy{max-width:850px}
+.trip-intro-copy h2{font:900 clamp(42px,7vw,110px)/.95 Arial,"Noto Sans SC",sans-serif!important;letter-spacing:-.085em!important;text-transform:uppercase;color:#303845}
+.trip-intro-copy p{margin:28px 0 0;font-size:clamp(14px,1.45vw,20px);line-height:1.8;max-width:520px;color:#444e59}
+.trip-intro .trip-collage{display:none!important}
+.trip-transition{display:grid;grid-template-columns:22% 1fr auto!important;background:#cafd60!important;border:0!important;padding:clamp(36px,5vw,78px) max(6vw,24px)!important;color:#303845!important;min-height:220px}
+.trip-transition>span{font:850 11px/1.5 monospace!important;letter-spacing:.12em!important;color:#303845!important}
+.trip-transition>b{font:900 clamp(32px,4.8vw,76px)/.96 Arial,sans-serif!important;letter-spacing:-.075em!important}
+.trip-transition>i{color:#303845!important}
+.trip-index{background:#2d3543!important;grid-template-columns:minmax(190px,22%) 1fr!important}
+.trip-index>header{border-color:#606777!important;padding:50px clamp(18px,3vw,48px)!important}
+.trip-index>header span{color:#d9ff61!important}
+.trip-index>header b{font:900 clamp(26px,3vw,48px)/.95 Arial,"Noto Sans SC",sans-serif!important;letter-spacing:-.055em}
+.trip-index .quick-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.trip-index .scrap-index-card{border-color:#636e7c!important;transition:background .2s,transform .2s!important}
+.trip-index .scrap-index-card:hover{background:#3d4658!important;transform:none!important}
+.trip-index .scrap-index-card small{color:#c9fa60!important}
+.trip-index .scrap-index-card b{font:800 clamp(17px,1.8vw,28px)/1.15 Arial,"Noto Sans SC",sans-serif!important}
+.trip-feature{position:relative;background:#e5f1f1!important;grid-template-columns:minmax(190px,25%) minmax(0,1fr)!important;gap:clamp(30px,5vw,100px);padding:clamp(85px,10vw,155px) max(6vw,24px)!important}
+.trip-feature>header{top:40px}
+.trip-feature>header h2{font:900 clamp(38px,5.4vw,86px)/.92 Arial,"Noto Sans SC",sans-serif!important;letter-spacing:-.075em}
+.trip-feature>header>span{color:#34636e!important;font-size:11px!important}
+.trip-feature .featured-activity-grid{min-width:0}
+.trip-feature .scrap-activity{border:0!important;box-shadow:0 18px 34px #2748511c!important;transform:none!important}
+.trip-ticket-section{background:#f9f7f0!important}
+.trip-ticket-cover{background:#ef687d!important}
+.trip-ticket-cover b{font:900 clamp(55px,6.4vw,110px)/.85 Arial,sans-serif!important;letter-spacing:-.075em!important}
+.trip-ticket-list{background:#f9f7f0}
+.trip-map{background:#d8eaf0!important}
+.trip-map-copy{background:#d8eaf0!important;border:0!important}
+.trip-map-copy h2{font:900 clamp(43px,5vw,84px)/.95 Arial,sans-serif!important;letter-spacing:-.075em}
+.trip-map-paper{background:#eaf1f2}
+.trip-news .scrap-update b{white-space:normal}
+.trip-community{border-top:0!important}
+@media(max-width:900px){
+.trip-site .trip-intro{grid-template-columns:1fr;gap:20px;min-height:0}
+.trip-intro>aside{flex-direction:row;justify-content:space-between;align-items:center}
+.trip-intro>aside b{font-size:58px}
+.trip-intro-copy h2{font-size:clamp(42px,11vw,90px)!important}
+.trip-transition{grid-template-columns:1fr!important;gap:22px!important}
+.trip-transition>b{font-size:clamp(33px,8vw,65px)!important}
+.trip-index{grid-template-columns:1fr!important}
+.trip-index>header{border-right:0!important;border-bottom:1px solid #606777}
+.trip-index .quick-grid{display:flex!important;overflow-x:auto!important}
+.trip-index .scrap-index-card{flex:0 0 65%;min-width:210px}
+.trip-feature{grid-template-columns:1fr!important;gap:25px!important}
+.trip-feature>header{position:static!important}
+.trip-ticket-section,.trip-map{grid-template-columns:1fr!important}
+.trip-map-copy{padding:46px 22px!important}
+.trip-map-paper{padding:20px!important}
+}
+@media(max-width:520px){
+.trip-intro-copy h2{font-size:41px!important}
+.trip-transition>b{font-size:38px!important}
+.trip-feature>header h2{font-size:47px!important}
+.trip-feature .scrap-activity{grid-template-columns:1fr!important}
+.trip-index .scrap-index-card{flex-basis:79%}
 }
 `;
