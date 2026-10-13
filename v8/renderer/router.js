@@ -98,6 +98,7 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
     if(page!=='home'&&!moduleOn(page)&&getMode?.()!=='edit')page='home';
     const changed=currentPage!==page;
     currentPage=page;
+    document.body.dataset.oeCurrentPage=page;
     if(updateHash&&changed)onPageNavigate(page);
     qa('.oe-home-only').forEach(el=>el.classList.toggle('oe-page-hidden',page!=='home'));[ $('.hero'),$('.quick') ].filter(Boolean).forEach(el=>el.classList.toggle('oe-page-hidden',page!=='home'));
     $('.ribbon')?.classList.toggle('oe-page-hidden',page!=='home'||!moduleOn('ribbon'));
