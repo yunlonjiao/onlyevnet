@@ -171,14 +171,13 @@ state.participation=(state.participation||[]).map(item=>{
    guestIds:Array.isArray(item.guestIds)?item.guestIds:[]
  };
 });
-if(!Array.isArray(state.featuredActivities)||state.featuredActivities.length!==3){
+if(!Array.isArray(state.featuredActivities)){
  const legacy=(state.participation||[]).filter(x=>x.featured).map(x=>x.id);
  const fallback=(state.participation||[]).map(x=>x.id);
  const picked=[...legacy,...fallback.filter(id=>!legacy.includes(id))].slice(0,3);
- state.featuredActivities=Array.from({length:3},(_,i)=>({id:'fa'+(i+1),participationId:picked[i]||'',image:''}));
-}else{
- state.featuredActivities=state.featuredActivities.slice(0,3).map((x,i)=>({id:x?.id||('fa'+(i+1)),participationId:x?.participationId||'',image:x?.image||''}));
+ state.featuredActivities=picked.map((participationId,i)=>({id:'fa'+(i+1),participationId,image:''}));
 }
+state.featuredActivities=(state.featuredActivities||[]).map((x,i)=>({id:x?.id||('fa'+(i+1)),participationId:x?.participationId||'',image:x?.image||''}));
 state.modules??={};
 for(const k of ['booths','activities','guide','freewalk','itasha','ribbon','guests','community','sponsors']){
  if(state.modules[k]===undefined)state.modules[k]=activeTemplate.defaults.modules?.[k]!==false;
@@ -782,8 +781,8 @@ function openCollectionManager(collection,selectedIndex=-1){
  }).join('');
  const guidePresets=collection==='guide'?'<div class="preset-add"><span>常用预设</span><div>'+Object.entries(GUIDE_PRESETS).map(([key,x])=>'<button type="button" data-add-preset="'+key+'">'+esc(x.title)+'</button>').join('')+'</div></div>':'';
  const activityPresets=collection==='participation'?'<div class="preset-add"><span>常用活动</span><div>'+Object.entries(PARTICIPATION_PRESETS).map(([key,x])=>'<button type="button" data-add-preset="'+key+'">'+esc(x.title)+'</button>').join('')+'</div></div>':'';
- const addLabel=collection==='guide'?'＋ 添加自定义指南':collection==='participation'?'＋ 添加自定义活动':'＋ 添加'+meta.title;
- const addButton=collection==='featuredActivities'?'':'<button type="button" class="sidebar-content-add" data-sidebar-content-add>'+addLabel+'</button>';
+ const addLabel=collection==='guide'?'＋ 添加自定义指南':collection==='participation'?'＋ 添加自定义活动':collection==='featuredActivities'?'＋ 添加精选活动':'＋ 添加'+meta.title;
+ const addButton='<button type="button" class="sidebar-content-add" data-sidebar-content-add>'+addLabel+'</button>';
  panel.innerHTML='<div class="sidebar-content-head"><div><b>'+esc(meta.title)+'</b><span>'+arr.length+' 项</span></div>'+(arr.length>6?'<label class="sidebar-content-search"><span>⌕</span><input type="search" placeholder="'+esc(collection==='booths'?'搜索社团，或制品名称 / Tag':'搜索'+meta.title)+'" data-sidebar-content-search></label>':'')+'</div>'+guidePresets+activityPresets+'<div class="sidebar-content-rows">'+(rows||'<div class="sidebar-content-empty">'+esc(meta.empty)+'</div>')+'</div>'+addButton;
  panel.querySelectorAll('[data-open-item]').forEach(btn=>btn.onclick=()=>{const i=Number(btn.dataset.openItem);panel.querySelectorAll('[data-open-item]').forEach(x=>x.classList.toggle('active',x===btn));openItemInspector(collection,i)});
  panel.querySelectorAll('[data-add-preset]').forEach(btn=>btn.onclick=()=>addPresetItem(collection,btn.dataset.addPreset));
@@ -1225,7 +1224,7 @@ function openItemInspector(collection,index){
      :'<div class="guide-media-add"><button type="button" data-media-path="guide.items.'+index+'.image">＋ 上传路线图 / 入口示意图</button></div>')
    :'';
  const itemTitle=contentManagerMeta[collection]?.item?.(item,index)?.[0]||meta.title;
- const itemActions=collection==='featuredActivities'?'':'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>';
+ const itemActions='<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>';
  setInspector('内容',meta.title+' · '+itemTitle,'<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+inspectorFields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+guideMedia+extraInspector(collection,index,item)+itemActions);
  inspector.querySelectorAll('textarea').forEach(fitTextarea);
  inspector.querySelectorAll('[data-key]').forEach(input=>{
@@ -1343,6 +1342,7 @@ function mutateItem(collection,index,op){
      collection==='guests'?{id:uid('g'),guestType:'person',name:'新嘉宾',role:'GUEST',members:'',attendanceNote:'',works:'',intro:'',image:'',socialLinks:[]}:
      collection==='booths'?{id:uid('b'),no:'',name:'新摊位',logo:'',type:'',intro:'',products:[{id:uid('p'),name:'新制品',tag:'',price:'',note:'',image:''}]}:
      collection==='updates'?{id:uid('u'),date:'',title:'新更新',target:'top'}:
+     collection==='featuredActivities'?{id:uid('fa'),participationId:'',image:''}:
      collection==='participation'?{id:uid('pa'),preset:'custom',activityType:'general',title:'新活动',text:'',detail:'',participationMode:'自由参加',requirements:'',rules:'',signingRules:'',activityLocation:'',availabilityNote:'',setlist:'',image:'',target:'activities',url:'',guestIds:[]}:
      collection==='socialLinks'?{id:uid('sl'),label:'新社群入口',note:'',url:'',image:''}:
      collection==='sponsors'?{id:uid('sp'),name:'新赞助商',level:'合作伙伴',url:'',logo:''}:
