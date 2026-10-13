@@ -51,7 +51,7 @@ export const previewBody=`
   <main id="top">
     <section class="trip-hero hero oe-home-only" id="home">
       <div class="trip-hero-visual">
-        <div class="kv"></div>
+        <div class="kv"><span class="trip-kv-placeholder" aria-hidden="true">EVENT<br>POSTER<br><small>3 : 4 / MAIN VISUAL</small></span></div>
         <div class="trip-photo-caption" aria-hidden="true"><span>ONLY EVENT</span><b>YOUR DAY / YOUR STORY</b></div>
       </div>
       <div class="trip-hero-copy hero-copy">
@@ -501,5 +501,24 @@ body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-logo
 .trip-feature>header h2{font-size:47px!important}
 .trip-feature .scrap-activity{grid-template-columns:1fr!important}
 .trip-index .scrap-index-card{flex-basis:79%}
+}
+
+/* Poster-mode layout audit: exact 3:4 artwork, readable empty state,
+   and nonoverlapping vertical mobile arrangement. */
+.trip-hero-visual .kv .trip-kv-placeholder{display:none}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-visual .kv.empty .trip-kv-placeholder{display:flex;position:absolute;inset:0;justify-content:center;align-items:center;flex-direction:column;text-align:center;font:900 clamp(26px,3.8vw,65px)/.92 Arial,sans-serif;letter-spacing:-.07em;color:#395963;background:repeating-linear-gradient(135deg,#e8f0eb,#e8f0eb 20px,#dce9e6 20px,#dce9e6 40px)}
+.trip-hero-visual .kv .trip-kv-placeholder small{margin-top:15px;font:700 11px/1.4 "Courier New",monospace;letter-spacing:.16em}
+@media(min-width:901px){
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-visual .kv{inset:auto!important;left:25%!important;top:50%!important;width:min(34vw,calc(75vh * .75))!important;height:auto!important;max-height:75vh!important;aspect-ratio:3/4!important;transform:translateY(-50%)!important;background-position:center!important;box-shadow:15px 22px 50px #20373e38!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-visual:hover .kv{transform:translateY(-50%)!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy{left:min(69%,calc(25% + min(34vw,56.25vh) + 4%))!important;right:3%!important;width:auto!important;max-width:none!important}
+}
+@media(max-width:900px){
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero{min-height:0!important;padding-top:85px!important;display:flex!important;flex-direction:column!important;background:#d7e7e4!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-visual{position:relative!important;inset:auto!important;display:flex!important;justify-content:center;align-items:center;min-height:0!important;height:auto!important;padding:12px 16px 22px!important;background:#d7e7e4!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-visual .kv{position:relative!important;inset:auto!important;width:min(80vw,380px)!important;height:auto!important;aspect-ratio:3/4!important;max-height:none!important;transform:none!important;background-size:contain!important;box-shadow:0 10px 30px #17384428!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy{position:relative!important;inset:auto!important;display:flex!important;min-height:0!important;width:100%!important;max-width:none!important;padding:24px 7vw 30px!important;background:#d7e7e4!important;text-shadow:none!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-weather-strip{position:relative!important;inset:auto!important;width:100%!important}
+body[data-oe-template="02-scrapbook"]:not([data-oe-hero-mode="wide"]) .trip-hero-copy h1{font-size:clamp(38px,9vw,70px)!important}
 }
 `;
