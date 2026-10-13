@@ -78,8 +78,8 @@ export const previewBody=`
     </div>
 
     <section class="trip-news oe-home-only" id="updates">
-      <header><span>NEWS / FLIGHT INFORMATION</span><b>LATEST<br>UPDATE</b><small>EVENT INFORMATION / UPDATES</small></header>
-      <div class="trip-news-columns"><span>DATE</span><span>TO</span><span>REMARKS</span></div>
+      <header><span>NEWS</span><b>NEWS</b><small>EVENT UPDATES</small></header>
+      <div class="trip-news-columns"><span>DATE</span><span>TYPE</span><span>REMARKS</span></div>
       <div data-oe-mount="updates" class="updates-list"></div>
     </section>
 
@@ -152,7 +152,7 @@ export const previewBody=`
       <div class="guide-detail-grid" data-oe-mount="guide-detail"></div>
     </section>
 
-    <section class="trip-community" id="community"><header><span>POSTCARD WALL</span><h2>COMMUNITY</h2></header><div data-oe-mount="community" class="community"></div></section>
+    <section class="trip-community" id="community"><div class="trip-social-wallpaper" aria-hidden="true">LINK → LINK → LINK → LINK → LINK → LINK →</div><header><span>STAY CONNECTED</span><h2>LINK <i>↗</i></h2></header><div data-oe-mount="community" class="community"></div></section>
     <section class="trip-sponsors" id="sponsors"><header><span>TRAVEL PARTNERS</span><h2>PARTNERS</h2></header><div data-oe-mount="sponsors" class="sponsors"></div></section>
   </main>
 
@@ -316,4 +316,46 @@ export const previewStyle=`
 
 /* Honor lifecycle and module visibility over theme-specific display rules. */
 .trip-site [hidden],.scrap-entry [hidden]{display:none!important}
+
+/* 8.40.1 / reference correction: 18TRIP-style information board */
+.trip-news{display:grid!important;grid-template-columns:minmax(200px,24%) minmax(0,1fr)!important;background:#292f3d!important;color:#f8f9fc!important;border:0!important;min-height:450px}
+.trip-news>header{grid-row:1/3;grid-column:1!important;background:#fff14b!important;border:0!important;padding:70px clamp(20px,3vw,66px)!important;color:#242b3a!important;align-self:stretch}
+.trip-news>header>span{display:none!important}
+.trip-news>header>b{font:900 clamp(52px,5vw,95px)/.9 Arial,"Noto Sans SC",sans-serif!important;letter-spacing:-.09em;margin:0!important}
+.trip-news>header>small{display:block!important;margin-top:22px!important;color:#242b3a!important;letter-spacing:.14em}
+.trip-news-columns{grid-column:2!important;grid-row:1;display:grid!important;grid-template-columns:clamp(140px,18%,260px) clamp(105px,13%,170px) minmax(0,1fr);padding:33px 4vw!important;background:#292f3d!important;color:#fff14b!important;font-size:11px!important;letter-spacing:.24em!important;border-bottom:1px solid #a9a440}
+.trip-news .updates-list{grid-column:2!important;grid-row:2;padding:0!important;display:block!important;background:#292f3d!important;align-self:start;min-width:0}
+.trip-news .scrap-update{position:relative;display:grid!important;grid-template-columns:clamp(140px,18%,260px) clamp(105px,13%,170px) minmax(0,1fr) 28px!important;gap:0!important;align-items:center!important;min-height:118px;padding:18px 3.3vw 18px 4vw!important;border:0!important;border-bottom:1px solid #a9a440!important;color:#f6f7fc!important;background:transparent!important;text-decoration:none;transform:none!important;border-radius:0!important;box-shadow:none!important}
+.trip-news .scrap-update:hover{background:#363c4c!important}
+.trip-news .scrap-update-date{font:500 clamp(24px,3.3vw,50px)/1 "Courier New",monospace!important;letter-spacing:-.08em;color:#fff!important}
+.trip-news .scrap-update-type{display:inline-block!important;width:max-content;padding:7px 17px!important;background:#fff14b!important;color:#252c3c!important;font:850 10px/1.2 monospace!important;letter-spacing:.13em;border-radius:0!important}
+.trip-news .scrap-update>b{font-size:clamp(12px,1.3vw,19px)!important;font-weight:700!important;line-height:1.65!important;color:#fff!important;min-width:0;overflow-wrap:anywhere}
+.trip-news .scrap-update-arrow{display:block!important;text-align:right;font-size:21px!important;color:#fff14b!important}
+.trip-news .scrap-update:focus-visible{outline:2px solid #fff14b;outline-offset:-3px}
+/* Large typographic link wall; social link records remain editable in the CMS. */
+.trip-community{position:relative!important;isolation:isolate;overflow:hidden;background:#fbfaf7!important;color:#292f3d!important;padding:95px 2.5vw 130px!important;min-height:630px}
+.trip-social-wallpaper{position:absolute;z-index:-1;top:-22px;left:-5%;width:140%;font:900 clamp(130px,19vw,350px)/1.12 Arial,sans-serif;letter-spacing:-.09em;color:#c8ff5a;word-break:break-all;pointer-events:none;opacity:.96}
+.trip-community>header{position:relative;max-width:none!important;margin:0 0 24px!important;display:flex;align-items:center;justify-content:space-between}
+.trip-community>header span{color:#292f3d!important;font-size:10px!important}
+.trip-community>header h2{margin:0!important;font:900 clamp(32px,4vw,58px)/1 Arial,sans-serif!important;letter-spacing:-.07em}
+.trip-community>header h2 i{font-style:normal;color:#82ac32}
+.trip-community .community{position:relative;z-index:2;max-width:none!important;display:flex!important;gap:0!important;overflow-x:auto;scroll-snap-type:x mandatory;padding:35px 3vw 45px!important;background:transparent!important;align-items:start}
+.trip-community .scrap-social{position:relative;flex:0 0 clamp(220px,22vw,340px);scroll-snap-align:center;display:flex!important;flex-direction:column!important;gap:12px!important;min-width:0;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;margin-right:-8px;transform:rotate(-5deg);transition:transform .25s ease;min-height:0!important}
+.trip-community .scrap-social:nth-child(3n+2){transform:rotate(5deg) translateY(20px)}.trip-community .scrap-social:nth-child(3n){transform:rotate(-2deg) translateY(-12px)}
+.trip-community .scrap-social:hover{transform:translateY(-10px) rotate(0deg)!important;z-index:4}
+.trip-community .scrap-social-face{position:relative;min-height:245px;aspect-ratio:1.25;background:#ee696b;border:2px solid #292f3d;border-radius:9px;overflow:hidden;display:grid;place-items:center}
+.trip-community .scrap-social:nth-child(4n+2) .scrap-social-face{background:#8d61bc}
+.trip-community .scrap-social:nth-child(4n+3) .scrap-social-face{background:#6d8fea}
+.trip-community .scrap-social:nth-child(4n+4) .scrap-social-face{background:#f0bb62}
+.trip-community .scrap-social-face .social-image{display:grid;place-items:center;width:100%!important;height:100%!important;max-height:100%!important;background:transparent!important;border:0!important;box-shadow:none!important;transform:none!important;padding:0!important}
+.trip-community .scrap-social-face img{width:100%;height:100%;object-fit:contain;padding:18px}
+.trip-community .scrap-social-stamp{position:absolute;right:13px;top:10px;color:white;font-size:27px}
+.trip-community .scrap-social-caption{padding:7px 6px;display:grid;gap:6px}
+.trip-community .scrap-social-caption>b{font-size:20px!important;letter-spacing:-.04em;color:#292f3d}
+.trip-community .scrap-social-caption p{margin:0;font-size:12px;color:#4f5561}
+.trip-community .scrap-social-caption .social-action{justify-self:start;margin-top:4px;color:#292f3d;font-weight:800;text-decoration:underline}
+.trip-route-ticker{background:#c9fb62!important;color:#233c36!important}
+.trip-route-ticker span{font:900 clamp(17px,2.2vw,35px)/1 Arial,sans-serif!important;letter-spacing:-.05em!important;padding:13px 27px!important;border:0!important}
+@media(max-width:760px){.trip-news{grid-template-columns:1fr!important}.trip-news>header{grid-column:1!important;grid-row:1;padding:32px 22px!important}.trip-news>header>b{font-size:58px!important}.trip-news-columns{grid-column:1!important;grid-row:2;grid-template-columns:84px 88px minmax(0,1fr);padding:14px 16px!important}.trip-news .updates-list{grid-column:1!important;grid-row:3}.trip-news .scrap-update{grid-template-columns:84px 88px minmax(0,1fr) 20px!important;min-height:96px;padding:12px 12px 12px 16px!important}.trip-news .scrap-update-date{font-size:24px!important}.trip-news .scrap-update-type{padding:5px 6px!important;font-size:9px!important}.trip-news .scrap-update>b{font-size:12px!important}.trip-news .scrap-update-arrow{font-size:15px!important}.trip-community{padding:55px 12px 70px!important;min-height:480px}.trip-social-wallpaper{font-size:160px}.trip-community .scrap-social{flex-basis:230px}.trip-community .scrap-social-face{min-height:190px}}
+@media(prefers-reduced-motion:reduce){.trip-community .scrap-social{transition:none!important}}
 `;
