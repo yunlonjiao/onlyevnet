@@ -607,4 +607,7 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-ticket{margi
 #activities .scrap-itinerary{grid-template-columns:62px minmax(0,1fr)!important}
 #activities .scrap-itinerary>div{grid-column:1/-1}
 }
+
+/* Navigation visibility always wins against theme display declarations. */
+.trip-site .oe-page-hidden,.trip-site [hidden]{display:none!important}
 `;
