@@ -64,8 +64,8 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
     qa('[data-custom-nav]').forEach(x=>x.remove());
     pages.forEach(page=>{
       const key='custom-'+page.id,label=page.title||'专题页面';
-      if(desktop)desktop.insertAdjacentHTML('beforeend','<a href="#'+key+'" data-target-mode="page" data-page-link="'+key+'" data-custom-nav="1">'+label+'</a>');
-      if(mobile)mobile.insertAdjacentHTML('beforeend','<a href="#'+key+'" data-target-mode="page" data-page-link="'+key+'" data-custom-nav="1">'+label+'</a>');
+      if(desktop){const a=document.createElement('a');a.href='#'+key;a.dataset.targetMode='page';a.dataset.pageLink=key;a.dataset.customNav='1';a.innerHTML='<strong></strong><em>CUSTOM PAGE</em>';a.querySelector('strong').textContent=label;desktop.appendChild(a)}
+      if(mobile){const a=document.createElement('a');a.href='#'+key;a.dataset.targetMode='page';a.dataset.pageLink=key;a.dataset.customNav='1';a.innerHTML='<strong></strong><em>CUSTOM PAGE</em>';a.querySelector('strong').textContent=label;mobile.appendChild(a)}
     });
   }
   function applyModules(){
