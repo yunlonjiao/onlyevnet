@@ -23,7 +23,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
 
     await expect(frame.locator('.hero-title-1')).toHaveAttribute('contenteditable','true');
     await expect(frame.locator('.hero-copy p')).toHaveAttribute('contenteditable','true');
-    await expect(frame.locator('.trip-hero-meta [data-oe-field="date"]').first()).toHaveAttribute('contenteditable','true');
+    await expect(frame.locator('.trip-flight-info [data-oe-field="date"]').first()).toHaveAttribute('contenteditable','true');
 
     await expect(frame.locator('[data-oe-mount="tickets"] .scrap-pass')).toHaveCount(3);
     await expect(frame.locator('[data-oe-mount="featured-activities"]')).toBeVisible();
@@ -94,13 +94,27 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-mirrors');
     const frame=page.frameLocator('#liveFrame');
     await expect(frame.locator('.trip-logo [data-oe-field="eventName"]')).toBeAttached();
-    await expect(frame.locator('.trip-weather-strip [data-oe-field="eventName"]')).toBeAttached();
+    await expect(frame.locator('.trip-weather-strip')).toHaveCount(0);
     await expect(frame.locator('.scrap-entry [data-oe-field="eventName"]')).toHaveAttribute('contenteditable','false');
     await expect(frame.locator('.trip-logo [data-oe-field="eventName"]')).toHaveAttribute('contenteditable','true');
     const names=await frame.locator('.trip-site [data-oe-field="eventName"]').allTextContents();
     expect(new Set(names.map(name=>name.trim())).size).toBe(1);
     const dates=await frame.locator('.trip-site [data-oe-field="date"]').allTextContents();
     expect(new Set(dates.map(value=>value.trim())).size).toBe(1);
+  });
+
+  test('introduction precedes NEWS and duplicate hero summary is absent',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-intro-structure');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('#event-introduction')).toBeVisible();
+    await expect(frame.locator('#event-introduction [data-oe-field="tagline"]')).toBeVisible();
+    await expect(frame.locator('.trip-weather-strip')).toHaveCount(0);
+    await expect(frame.locator('.trip-hero-meta')).toHaveCount(0);
+    const correctOrder=await frame.locator('.trip-site').evaluate(el=>{
+      const intro=el.querySelector('#event-introduction'),news=el.querySelector('#updates'),hero=el.querySelector('#home');
+      return !!(intro&&news&&hero&&(hero.compareDocumentPosition(intro)&Node.DOCUMENT_POSITION_FOLLOWING)&&(intro.compareDocumentPosition(news)&Node.DOCUMENT_POSITION_FOLLOWING));
+    });
+    expect(correctOrder).toBe(true);
   });
 
   test('Template 02 honors hidden purchase links regardless of layout CSS',async({page})=>{
