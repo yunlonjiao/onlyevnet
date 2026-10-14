@@ -196,4 +196,28 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     expect(bodyOverflow).toBeLessThanOrEqual(2);
   });
 
+  test('localized NEWS, intro size and four home facts match CMS state',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-facts-check');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('.trip-news header b')).toHaveText('最新公告');
+    await expect(frame.locator('.trip-event-fact')).toHaveCount(4);
+    const fields=['date','location','edition','eventName'];
+    for(const field of fields)await expect(frame.locator('.trip-event-facts [data-oe-field="'+field+'"]')).toBeVisible();
+    const heights=await frame.locator('#event-introduction').evaluate(el=>({height:el.getBoundingClientRect().height,visible:getComputedStyle(el).display!=='none'}));
+    expect(heights.visible).toBe(true);
+    expect(heights.height).toBeLessThan(390);
+  });
+
+  test('CMS event facts update all four displayed values without stale copies',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-facts-sync');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('.trip-event-facts')).toBeVisible();
+    await page.locator('#liveFrame').evaluate(iframe=>{
+      const data={eventName:'星辰ONLY中文测试',date:'2027.05.21',location:'南京',edition:'南京国际中心'};
+      for(const [path,value] of Object.entries(data))iframe.contentWindow.postMessage({type:'OE_PATCH_FIELD',path,value},location.origin);
+    });
+    for(const [path,value] of Object.entries({eventName:'星辰ONLY中文测试',date:'2027.05.21',location:'南京',edition:'南京国际中心'}))
+      await expect(frame.locator('.trip-event-facts [data-oe-field="'+path+'"]')).toHaveText(value);
+  });
+
 });
