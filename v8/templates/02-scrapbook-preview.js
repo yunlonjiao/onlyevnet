@@ -49,7 +49,7 @@ export const previewBody=`
   <main id="top">
     <section class="trip-hero hero oe-home-only" id="home">
       <div class="trip-hero-visual">
-        <div class="kv"><span class="trip-kv-placeholder" aria-hidden="true">EVENT<br>POSTER<br><small>3 : 4 / MAIN VISUAL</small></span></div>
+        <div class="kv"><span class="trip-kv-placeholder" aria-hidden="true">活动主视觉<small>KV · 1920 × 1080</small></span></div>
         
       </div>
       <div class="trip-hero-copy hero-copy" hidden aria-hidden="true"></div>
@@ -61,7 +61,7 @@ export const previewBody=`
       <div class="trip-event-fact"><span>EVENT DATE</span><strong data-oe-field="date">活动日期</strong></div>
       <div class="trip-event-fact"><span>DESTINATION</span><strong data-oe-field="location">举办城市</strong></div>
       <div class="trip-event-fact"><span>VENUE</span><strong data-oe-field="edition">活动场馆</strong></div>
-      <div class="trip-event-fact"><span>THEME</span><strong data-oe-field="eventName">活动名称</strong></div>
+      <div class="trip-event-fact"><span>EVENT STATUS</span><strong data-oe-status="event">活动未开始</strong></div>
     </section>
 
     <section class="trip-intro oe-home-only" id="event-introduction">
@@ -810,4 +810,24 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .custom
 /* Disabled navigation items must stay hidden despite custom flex layouts. */
 .trip-site .trip-nav a[hidden],.trip-site .trip-mobile-nav a[hidden]{display:none!important}
 body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-nav a[hidden]{display:none!important}
+
+/* Four-field strip: date, city, venue and live event status */
+.trip-site .trip-event-facts .trip-event-fact:last-child strong[data-oe-status]{font-size:clamp(15px,1.35vw,21px)!important}
+.trip-site .trip-hero-visual .trip-kv-placeholder{font:800 clamp(22px,3vw,42px)/1.3 "Microsoft YaHei","PingFang SC",sans-serif!important;letter-spacing:0!important}
+.trip-site .trip-hero-visual .trip-kv-placeholder small{font:700 clamp(11px,1vw,14px)/1.5 monospace!important;letter-spacing:.12em!important}
+.trip-site .trip-ticket-section{grid-template-columns:minmax(170px,23%) minmax(0,1fr)!important;align-items:stretch;min-height:0!important}
+.trip-site .trip-ticket-list{padding:clamp(20px,2.2vw,36px)!important}
+.trip-site .trip-ticket-list .ticket-grid{gap:14px!important;align-items:start!important}
+.trip-site .trip-ticket-list .scrap-pass{width:100%!important;min-width:0!important;max-width:none!important;min-height:172px!important;height:auto!important;grid-template-columns:minmax(0,1fr) minmax(90px,19%) minmax(120px,19%)!important;align-self:start!important;margin:0!important;transform:none!important;border-radius:0!important}
+.trip-site .trip-ticket-list .scrap-pass:nth-child(2n){transform:none!important}
+.trip-site .trip-ticket-list .scrap-pass-main{padding:21px 26px!important;gap:7px!important}
+.trip-site .trip-ticket-list .scrap-pass-art{max-height:175px!important;min-height:0!important}
+.trip-site .trip-ticket-list .scrap-pass aside{padding:17px 20px!important}
+.trip-site .trip-ticket-list .scrap-pass-watermark{position:absolute!important;left:auto!important;right:15%!important;top:50%!important;width:128px!important;height:128px!important;border:2px solid #839e9280!important;border-radius:50%!important;transform:translate(50%,-50%) rotate(-13deg)!important;opacity:.28!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;color:#5b8175!important;background:none!important;pointer-events:none!important;z-index:0!important}
+.trip-site .trip-ticket-list .scrap-pass-watermark::before,.trip-site .trip-ticket-list .scrap-pass-watermark::after{content:none!important}
+.trip-site .scrap-pass-watermark .stamp-journey{font:900 16px/1.2 Georgia,serif!important;letter-spacing:.05em!important}
+.trip-site .scrap-pass-watermark .stamp-caption{font:800 8px/1.2 monospace!important;letter-spacing:.1em!important}
+.trip-site .scrap-pass-watermark .stamp-clover{display:block!important;width:55px!important;height:55px!important;color:inherit}
+@media(max-width:900px){.trip-site .trip-ticket-section{grid-template-columns:1fr!important}.trip-site .trip-ticket-list .scrap-pass{grid-template-columns:minmax(0,1fr) 95px 125px!important}}
+@media(max-width:560px){.trip-site .trip-ticket-list .scrap-pass{grid-template-columns:minmax(0,1fr) 100px!important}.trip-site .trip-ticket-list .scrap-pass-art{display:none!important}.trip-site .trip-ticket-list .scrap-pass-watermark{right:90px!important;width:96px!important;height:96px!important}.trip-site .scrap-pass-watermark .stamp-clover{width:38px!important;height:38px!important}.trip-site .trip-ticket-list .scrap-pass aside{border-top:0!important;border-left:1px dashed #b7acaa!important;justify-content:center!important}}
 `;
