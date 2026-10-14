@@ -80,7 +80,7 @@ export const previewBody=`
     </section>
 
     <section class="trip-news oe-home-only" id="updates">
-      <header><span>NEWS</span><b>NEWS</b><small>EVENT UPDATES</small></header>
+      <header><span>最新公告</span><b>最新公告</b><small>NEWS / UPDATES</small></header>
       <div class="trip-news-columns"><span>DATE</span><span>TYPE</span><span>REMARKS</span></div>
       <div data-oe-mount="updates" class="updates-list"></div>
     </section>
@@ -789,4 +789,21 @@ body:not([data-oe-current-page]) .trip-site .trip-nav{display:none!important}
 /* Bind uploaded KV media: renderer writes these variables to .trip-hero. */
 .trip-site .trip-hero-visual .kv{background-image:linear-gradient(90deg,rgba(15,26,38,.33),transparent 38%),linear-gradient(180deg,rgba(12,25,30,.28),transparent 28%),var(--oe-hero-image-desktop,none)!important}
 @media(max-width:900px){.trip-site .trip-hero-visual .kv{background-image:linear-gradient(180deg,rgba(12,25,30,.33),transparent 34%),var(--oe-hero-image-mobile,var(--oe-hero-image-desktop,none))!important}}
+
+/* Chinese home readability and unified desktop left navigation */
+.trip-site #event-introduction{min-height:0!important;padding-block:clamp(30px,3.2vw,50px)!important}
+.trip-site .trip-intro-copy p{font-size:clamp(15px,1.2vw,19px)!important;line-height:1.7!important}
+.trip-site .trip-news>header>b{font-family:"Microsoft YaHei","PingFang SC",sans-serif!important;letter-spacing:0!important;font-size:clamp(27px,2.6vw,48px)!important;line-height:1.2!important;overflow-wrap:anywhere}
+.trip-site .trip-event-facts .trip-event-fact{min-width:0}
+.trip-site .trip-event-facts [data-oe-field]{word-break:normal;overflow-wrap:anywhere}
+@media(min-width:901px){
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-header{position:relative!important;display:block!important;min-height:78px!important;height:78px!important;background:#293341!important;padding:0!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-logo{display:block!important;position:absolute!important;top:17px!important;left:270px!important;margin:0!important;padding:0!important;color:#fff!important;text-align:left}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-logo b{font:750 24px/1.3 "Microsoft YaHei",sans-serif!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-nav{position:fixed!important;z-index:80!important;top:0!important;left:0!important;bottom:0!important;width:228px!important;max-width:228px!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:5px!important;margin:0!important;padding:100px 23px 30px!important;background:#293341!important;overflow-y:auto!important;box-sizing:border-box!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-nav a{display:flex!important;flex-direction:column!important;align-items:flex-start!important;color:#fff!important;padding:11px 5px!important;white-space:normal!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-page,
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .custom-page-view{margin-left:228px!important;max-width:calc(100% - 228px)!important;box-sizing:border-box!important}
+}
+@media(max-width:900px){.trip-site .trip-news>header>b{font-size:38px!important}.trip-site #event-introduction{padding-block:26px!important}}
 `;
