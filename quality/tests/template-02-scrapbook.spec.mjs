@@ -15,6 +15,22 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await expect(frame.locator('html')).toHaveAttribute('data-oe-template','02-scrapbook');
     await expect(frame.locator('.brand')).toHaveCount(0);
   });
+  test('home KV fills viewport, event name sits on one line and NEWS grows with entries',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-fullscreen-qa');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('.trip-hero')).toBeVisible();
+    const layout=await frame.locator('.trip-site').evaluate(el=>{
+      const hero=el.querySelector('.trip-hero'),kv=el.querySelector('.trip-hero-visual .kv'),logo=el.querySelector('.trip-header .trip-logo b'),facts=el.querySelector('.trip-event-facts'),intro=el.querySelector('#event-introduction'),news=el.querySelector('.trip-news');
+      const hr=hero.getBoundingClientRect(),kr=kv.getBoundingClientRect();
+      return {heroHeight:hr.height,viewport:innerHeight,kvWidth:kr.width,viewportWidth:innerWidth,kvHeight:kr.height,nameWhiteSpace:getComputedStyle(logo).whiteSpace,background:getComputedStyle(kv).backgroundImage,order:!!(facts&&intro&&news&&(facts.compareDocumentPosition(intro)&Node.DOCUMENT_POSITION_FOLLOWING)&&(intro.compareDocumentPosition(news)&Node.DOCUMENT_POSITION_FOLLOWING)),topHeaderGone:!el.querySelector('.trip-flight-info')&&!el.querySelector('.trip-ticket')};
+    });
+    expect(layout.heroHeight).toBeGreaterThanOrEqual(layout.viewport-4);
+    expect(layout.kvWidth).toBeGreaterThanOrEqual(layout.viewportWidth-8);
+    expect(layout.kvHeight).toBeGreaterThanOrEqual(layout.viewport-4);
+    expect(layout.nameWhiteSpace).toBe('nowrap');
+    expect(layout.order).toBe(true);
+    expect(layout.topHeaderGone).toBe(true);
+  });
   test('keeps reference-led chrome instead of Template 01 chrome',async({page})=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-reference');
     const frame=page.frameLocator('#liveFrame');
