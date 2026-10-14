@@ -785,4 +785,8 @@ body:not([data-oe-current-page]) .trip-site .trip-nav{display:none!important}
 .trip-site .trip-news .updates-list{grid-row:3!important}
 .trip-site #event-introduction{min-height:235px!important;padding-top:38px!important;padding-bottom:38px!important}
 }
+
+/* Bind uploaded KV media: renderer writes these variables to .trip-hero. */
+.trip-site .trip-hero-visual .kv{background-image:linear-gradient(90deg,rgba(15,26,38,.33),transparent 38%),linear-gradient(180deg,rgba(12,25,30,.28),transparent 28%),var(--oe-hero-image-desktop,none)!important}
+@media(max-width:900px){.trip-site .trip-hero-visual .kv{background-image:linear-gradient(180deg,rgba(12,25,30,.33),transparent 34%),var(--oe-hero-image-mobile,var(--oe-hero-image-desktop,none))!important}}
 `;
