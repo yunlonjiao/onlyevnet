@@ -54,11 +54,7 @@ export const previewBody=`
         <div class="kv"><span class="trip-kv-placeholder" aria-hidden="true">EVENT<br>POSTER<br><small>3 : 4 / MAIN VISUAL</small></span></div>
         
       </div>
-      <div class="trip-hero-copy hero-copy">
-        
-        <h1><span class="hero-title-line hero-title-1">YOUR</span><br><em class="hero-title-line hero-title-2">SPECIAL</em><br><span class="hero-title-line hero-title-3">DAY</span></h1>
-        <p data-oe-field="tagline">围绕单一作品 IP 的粉丝综合活动。一起把这一天变成值得留下的旅行记忆。</p>
-      </div>
+      <div class="trip-hero-copy hero-copy" hidden aria-hidden="true"></div>
     </section>
 
     <div class="trip-route-ticker ribbon oe-home-only"><div class="trip-route-ticker-track ribbon-track"></div></div>
@@ -741,4 +737,6 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-logo small{d
 .trip-site .trip-event-fact strong{font:750 clamp(14px,1.12vw,18px)/1.4 "Microsoft YaHei","PingFang SC",sans-serif;overflow-wrap:anywhere;max-width:100%}
 @media(max-width:800px){.trip-site .trip-event-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.trip-site .trip-event-fact{min-height:83px;border-bottom:1px solid #58666e;padding:15px 20px}}
 @media(max-width:450px){.trip-site .trip-event-facts{grid-template-columns:1fr}.trip-site .trip-event-fact{min-height:65px;gap:4px;padding:11px 18px}}
+
+.trip-site .trip-hero-copy[hidden]{display:none!important}
 `;
