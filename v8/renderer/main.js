@@ -48,8 +48,8 @@ function mountTemplate(templateId=DEFAULT_TEMPLATE_ID){
   const sponsorSection=$('.sponsors')?.closest('section');if(sponsorSection)sponsorSection.id='sponsors';
   $('.scroll-progress')?.remove();
 }
-mountTemplate(DEFAULT_TEMPLATE_ID);
-
+// Wait for OE_INIT_STATE before mounting any template. Rendering the default here
+// flashes Template 01 before the Studio sends the chosen Template 02.
 const getDeep=path=>getByPath(state,path);
 const setDeep=(path,value)=>setByPath(state,path,value);
 
