@@ -95,6 +95,13 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     const frame=page.frameLocator('#liveFrame');
     await expect(frame.locator('.trip-logo [data-oe-field="eventName"]')).toBeAttached();
     await expect(frame.locator('.trip-weather-strip')).toHaveCount(0);
+    await expect(frame.locator('.trip-event-fact')).toHaveCount(4);
+    await expect(frame.locator('.trip-event-facts')).toBeVisible();
+    const factsAboveIntro=await frame.locator('.trip-site').evaluate(el=>{
+      const facts=el.querySelector('.trip-event-facts'),intro=el.querySelector('#event-introduction');
+      return Boolean(facts&&intro&&(facts.compareDocumentPosition(intro)&Node.DOCUMENT_POSITION_FOLLOWING));
+    });
+    expect(factsAboveIntro).toBe(true);
     await expect(frame.locator('.scrap-entry [data-oe-field="eventName"]')).toHaveAttribute('contenteditable','false');
     await expect(frame.locator('.trip-logo [data-oe-field="eventName"]')).toHaveAttribute('contenteditable','true');
     const names=await frame.locator('.trip-site [data-oe-field="eventName"]').allTextContents();
