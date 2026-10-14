@@ -1,6 +1,20 @@
 import {test,expect} from '@playwright/test';
 
 test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
+  test('iframe boot does not render Template 01 before Studio initialization',async({page})=>{
+    await page.goto('/v8/render.html?v=8.40.19');
+    await expect(page.locator('#oeBoot')).toContainText('Loading preview');
+    await expect(page.locator('.brand')).toHaveCount(0);
+    await expect(page.locator('.trip-site')).toHaveCount(0);
+    await expect(page.locator('html')).not.toHaveAttribute('data-oe-template','01-ip-only');
+  });
+  test('Studio first mounted frame is the selected Template 02',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-no-flash');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('.trip-site')).toBeVisible();
+    await expect(frame.locator('html')).toHaveAttribute('data-oe-template','02-scrapbook');
+    await expect(frame.locator('.brand')).toHaveCount(0);
+  });
   test('keeps reference-led chrome instead of Template 01 chrome',async({page})=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-reference');
     const frame=page.frameLocator('#liveFrame');
