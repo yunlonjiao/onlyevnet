@@ -220,4 +220,22 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
       await expect(frame.locator('.trip-event-facts [data-oe-field="'+path+'"]')).toHaveText(value);
   });
 
+  test('KV patch updates artwork without rebuilding existing page modules',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-fast-kv');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('.trip-site')).toBeVisible();
+    const result=await page.locator('#liveFrame').evaluate(async iframe=>{
+      const doc=iframe.contentDocument,win=iframe.contentWindow;
+      const node=doc.querySelector('.trip-event-facts');
+      const image='data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080"><rect width="1920" height="1080" fill="#abcdef"/></svg>');
+      win.postMessage({type:'OE_PATCH_FIELD',path:'heroImage',value:image},location.origin);
+      await new Promise(resolve=>setTimeout(resolve,150));
+      const kv=doc.querySelector('.trip-hero-visual .kv');
+      return {preserved:node===doc.querySelector('.trip-event-facts'),background:getComputedStyle(kv).backgroundImage,hasImage:doc.querySelector('.trip-hero')?.style.getPropertyValue('--oe-hero-image-desktop').includes('data:image/svg+xml')};
+    });
+    expect(result.preserved).toBe(true);
+    expect(result.hasImage).toBe(true);
+    expect(result.background).toContain('data:image/svg+xml');
+  });
+
 });
