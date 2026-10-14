@@ -806,4 +806,8 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-p
 body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .custom-page-view{margin-left:228px!important;max-width:calc(100% - 228px)!important;box-sizing:border-box!important}
 }
 @media(max-width:900px){.trip-site .trip-news>header>b{font-size:38px!important}.trip-site #event-introduction{padding-block:26px!important}}
+
+/* Disabled navigation items must stay hidden despite custom flex layouts. */
+.trip-site .trip-nav a[hidden],.trip-site .trip-mobile-nav a[hidden]{display:none!important}
+body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-nav a[hidden]{display:none!important}
 `;
