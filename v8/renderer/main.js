@@ -78,6 +78,8 @@ function resolveLifecycleStatus(){
 }
 function applyLifecycleState(){
   const status=resolveLifecycleStatus();
+  const eventStatusLabel=$('[data-oe-status="event"]');
+  if(eventStatusLabel)eventStatusLabel.textContent=status==='live'?'活动进行中':status==='ended'?'活动已结束':'活动未开始';
   document.documentElement.classList.remove('event-status-upcoming','event-status-live','event-status-ended');
   document.documentElement.classList.add('event-status-'+status);
   const copy=$('.hero-copy');
@@ -208,7 +210,7 @@ window.addEventListener('message',e=>{
     runtime.initRuntime();
     router.showPage(router.getCurrentPage(),false);
   }
-  if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value);if(m.path!=='heroImage'&&m.path!=='mobileHeroImage')applyEntryState();if(m.path==='eventStatus')applyLifecycleState()}
+  if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value);if(m.path!=='heroImage'&&m.path!=='mobileHeroImage')applyEntryState();if(['eventStatus','eventStatusMode','eventStartDateTime','eventEndDateTime'].includes(m.path))applyLifecycleState()}
   if(m.type==='OE_REPLACE_STATE'){mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);state=m.state||{};applyState(state);runtime.initRuntime()}
   if(m.type==='OE_SET_MODE'){
     fields.setMode(m.mode);
