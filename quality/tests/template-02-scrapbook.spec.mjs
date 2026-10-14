@@ -196,12 +196,28 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     expect(bodyOverflow).toBeLessThanOrEqual(2);
   });
 
+  test('fourth fact reflects lifecycle status and tickets display JOURNEY clover stamp',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-status-stamp');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('.trip-event-facts .trip-event-fact')).toHaveCount(4);
+    await expect(frame.locator('[data-oe-status="event"]')).toContainText('活动');
+    await expect(frame.locator('.trip-hero-visual .trip-kv-placeholder small')).toContainText('1920 × 1080');
+    await expect(frame.locator('.scrap-pass-watermark .stamp-journey').first()).toHaveText('JOURNEY');
+    await expect(frame.locator('.scrap-pass-watermark .stamp-clover').first()).toBeAttached();
+    await page.locator('#liveFrame').evaluate(iframe=>{
+      const win=iframe.contentWindow;
+      win.postMessage({type:'OE_PATCH_FIELD',path:'eventStatusMode',value:'manual'},location.origin);
+      win.postMessage({type:'OE_PATCH_FIELD',path:'eventStatus',value:'ended'},location.origin);
+    });
+    await expect(frame.locator('[data-oe-status="event"]')).toHaveText('活动已结束');
+  });
+
   test('localized NEWS, intro size and four home facts match CMS state',async({page})=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-facts-check');
     const frame=page.frameLocator('#liveFrame');
     await expect(frame.locator('.trip-news header b')).toHaveText('最新公告');
     await expect(frame.locator('.trip-event-fact')).toHaveCount(4);
-    const fields=['date','location','edition','eventName'];
+    const fields=['date','location','edition'];
     for(const field of fields)await expect(frame.locator('.trip-event-facts [data-oe-field="'+field+'"]')).toBeVisible();
     const heights=await frame.locator('#event-introduction').evaluate(el=>({height:el.getBoundingClientRect().height,visible:getComputedStyle(el).display!=='none'}));
     expect(heights.visible).toBe(true);
@@ -216,7 +232,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
       const data={eventName:'星辰ONLY中文测试',date:'2027.05.21',location:'南京',edition:'南京国际中心'};
       for(const [path,value] of Object.entries(data))iframe.contentWindow.postMessage({type:'OE_PATCH_FIELD',path,value},location.origin);
     });
-    for(const [path,value] of Object.entries({eventName:'星辰ONLY中文测试',date:'2027.05.21',location:'南京',edition:'南京国际中心'}))
+    for(const [path,value] of Object.entries({date:'2027.05.21',location:'南京',edition:'南京国际中心'}))
       await expect(frame.locator('.trip-event-facts [data-oe-field="'+path+'"]')).toHaveText(value);
   });
 
