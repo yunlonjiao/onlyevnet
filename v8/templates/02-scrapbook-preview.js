@@ -58,6 +58,17 @@ export const previewBody=`
         
         <h1><span class="hero-title-line hero-title-1">YOUR</span><br><em class="hero-title-line hero-title-2">SPECIAL</em><br><span class="hero-title-line hero-title-3">DAY</span></h1>
         <p data-oe-field="tagline">围绕单一作品 IP 的粉丝综合活动。一起把这一天变成值得留下的旅行记忆。</p>
+        <div class="trip-hero-meta" hidden aria-hidden="true">
+          <span data-oe-field="date">EVENT DATE</span>
+          <span data-oe-field="location">EVENT CITY</span>
+          <a class="venue-nav" href="#" target="_blank" rel="noopener" data-oe-field="edition">EVENT VENUE</a>
+        </div>
+      </div>
+      <div class="trip-weather-strip" hidden aria-hidden="true">
+        <span><b>EVENT DATE</b><strong data-oe-field="date">DATE</strong></span>
+        <span><b>DESTINATION</b><strong data-oe-field="location">LOCATION</strong></span>
+        <span><b>VENUE</b><strong data-oe-field="edition">VENUE</strong></span>
+        <span><b>THEME</b><strong data-oe-field="eventName">ONLY EVENT</strong></span>
       </div>
     </section>
 
@@ -719,4 +730,6 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-logo small{d
 .trip-site .trip-map-copy>span{display:block!important;margin-bottom:12px!important;line-height:1.4!important}
 .trip-site .trip-map-copy h2{margin:0 0 22px!important;line-height:1.2!important}
 @media(max-width:900px){.trip-site .trip-intro{grid-template-columns:1fr!important;gap:18px!important;padding:42px 22px!important}.trip-site .trip-intro>aside{border-right:0!important;border-bottom:1px solid #c9d0cb!important;padding:0 0 16px!important}.trip-site .trip-intro-copy{padding-left:0!important}.trip-site .trip-map{grid-template-columns:1fr!important}.trip-site .trip-map-copy{padding:35px 25px 18px!important}.trip-site .trip-map-paper{padding:15px 25px 35px!important}.trip-site .trip-map-paper .map-static{height:300px!important}}
+
+.trip-site .trip-hero-meta[hidden],.trip-site .trip-weather-strip[hidden]{display:none!important}
 `;
