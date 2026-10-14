@@ -26,18 +26,16 @@ export const previewBody=`
   <header class="trip-header">
     <a class="trip-logo" href="#home" data-page-link="home">
       <small>活动导航 / EVENT SITE</small>
-      <b data-oe-field="eventName">ONLY<br>EVENT</b>
+      <b data-oe-field="eventName">ONLY EVENT</b>
     </a>
-    <div class="trip-flight-info">
-      <span>ONLY EVENT</span><i></i><span data-oe-field="date">EVENT DATE</span><i></i><span data-oe-field="location">DESTINATION</span>
-    </div>
+    
     <nav class="trip-nav" data-oe-mount="nav-links">
       <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small><strong>摊位</strong><em>BOOTH</em></a>
       <a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small><strong>活动</strong><em>EVENT</em></a>
       <a href="#guests" data-target-mode="page" data-page-link="guests"><small>03</small><strong>嘉宾</strong><em>GUEST</em></a>
       <a href="#guide" data-target-mode="page" data-page-link="guide"><small>04</small><strong>指南</strong><em>GUIDE</em></a>
     </nav>
-    <a class="trip-ticket ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">TICKET ↗</a>
+    
   </header>
 
   <nav class="trip-mobile-nav" data-oe-mount="mobile-nav">
@@ -739,4 +737,52 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-logo small{d
 @media(max-width:450px){.trip-site .trip-event-facts{grid-template-columns:1fr}.trip-site .trip-event-fact{min-height:65px;gap:4px;padding:11px 18px}}
 
 .trip-site .trip-hero-copy[hidden]{display:none!important}
+
+/* Home hero reference: full-bleed key art, centered single-line identity, no header metadata. */
+body[data-oe-current-page="home"] .trip-site .trip-header,
+body:not([data-oe-current-page]) .trip-site .trip-header{position:absolute!important;top:0!important;left:0!important;right:0!important;display:block!important;min-height:0!important;height:0!important;padding:0!important;background:transparent!important;z-index:90!important;pointer-events:none}
+body[data-oe-current-page="home"] .trip-site .trip-logo,
+body:not([data-oe-current-page]) .trip-site .trip-logo{position:absolute!important;left:50%!important;top:clamp(18px,2vw,36px)!important;transform:translateX(-50%)!important;display:block!important;width:max-content!important;max-width:calc(100vw - 240px)!important;padding:0!important;margin:0!important;text-align:center!important;background:none!important;border:0!important;color:#fff!important;text-shadow:0 1px 9px #1119!important;white-space:nowrap!important;pointer-events:auto}
+body[data-oe-current-page="home"] .trip-logo b,
+body:not([data-oe-current-page]) .trip-logo b{display:block!important;font:800 clamp(15px,1.7vw,27px)/1.15 Arial,"Microsoft YaHei",sans-serif!important;white-space:nowrap!important;word-break:keep-all!important;letter-spacing:-.035em!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important}
+body[data-oe-current-page="home"] .trip-site .trip-nav,
+body:not([data-oe-current-page]) .trip-site .trip-nav{position:absolute!important;top:clamp(95px,14vh,175px)!important;left:clamp(22px,3.4vw,68px)!important;display:flex!important;flex-direction:column!important;gap:6px!important;padding:0!important;margin:0!important;max-width:220px!important;pointer-events:auto}
+body[data-oe-current-page="home"] .trip-site .trip-nav a,
+body:not([data-oe-current-page]) .trip-site .trip-nav a{color:#fff!important;text-shadow:0 2px 12px #10171bbd!important}
+body[data-oe-current-page="home"] .trip-site .trip-hero,
+body:not([data-oe-current-page]) .trip-site .trip-hero{display:block!important;position:relative!important;height:100svh!important;min-height:580px!important;padding:0!important;overflow:hidden!important;background:#aecbd0!important}
+body[data-oe-current-page="home"] .trip-site .trip-hero-visual,
+body:not([data-oe-current-page]) .trip-site .trip-hero-visual{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;padding:0!important;display:block!important;background:#b9d6d8!important}
+body[data-oe-current-page="home"] .trip-site .trip-hero-visual .kv,
+body:not([data-oe-current-page]) .trip-site .trip-hero-visual .kv{position:absolute!important;inset:0!important;top:0!important;left:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;background-size:cover!important;background-position:var(--oe-hero-focal-desktop,center)!important;background-repeat:no-repeat!important;background-color:#aabfc2!important;transform:none!important;box-shadow:none!important;border:0!important;border-radius:0!important;transition:none!important}
+body[data-oe-current-page="home"] .trip-site .trip-hero-visual .kv:hover,
+body:not([data-oe-current-page]) .trip-site .trip-hero-visual .kv:hover{transform:none!important}
+.trip-site .trip-hero-visual .kv.empty .trip-kv-placeholder{background:linear-gradient(135deg,#afc9ca,#d5e6e0)!important}
+.trip-site .trip-news{min-height:0!important;grid-template-rows:auto auto!important;align-content:stretch!important}
+.trip-site .trip-news>header{min-height:0!important;grid-row:1 / 3!important;padding-block:clamp(35px,4vw,60px)!important}
+.trip-site .trip-news-columns{grid-row:1!important;padding-block:18px!important}
+.trip-site .trip-news .updates-list{grid-row:2!important;min-height:0!important}
+.trip-site .trip-news .scrap-update{min-height:112px!important;padding-block:16px!important}
+.trip-site .trip-news .updates-list:empty{min-height:224px!important}
+.trip-site #event-introduction{min-height:265px!important;height:auto!important;padding-top:65px!important;padding-bottom:65px!important;align-items:center!important}
+.trip-site #event-introduction .trip-intro-copy p{line-height:1.75!important}
+@media(max-width:900px){
+body[data-oe-current-page="home"] .trip-site .trip-hero,
+body:not([data-oe-current-page]) .trip-site .trip-hero{height:100svh!important;min-height:580px!important;padding:0!important;display:block!important}
+body[data-oe-current-page="home"] .trip-site .trip-hero-visual,
+body:not([data-oe-current-page]) .trip-site .trip-hero-visual{position:absolute!important;inset:0!important;height:100%!important;padding:0!important}
+body[data-oe-current-page="home"] .trip-site .trip-hero-visual .kv,
+body:not([data-oe-current-page]) .trip-site .trip-hero-visual .kv{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;aspect-ratio:auto!important;box-shadow:none!important;background-size:cover!important;background-position:var(--oe-hero-focal-mobile,center)!important}
+body[data-oe-current-page="home"] .trip-site .trip-logo,
+body:not([data-oe-current-page]) .trip-site .trip-logo{max-width:calc(100vw - 120px)!important;top:25px!important}
+body[data-oe-current-page="home"] .trip-logo b,
+body:not([data-oe-current-page]) .trip-logo b{font-size:clamp(14px,3.3vw,23px)!important}
+body[data-oe-current-page="home"] .trip-site .trip-nav,
+body:not([data-oe-current-page]) .trip-site .trip-nav{display:none!important}
+.trip-site .trip-news{grid-template-rows:auto auto auto!important}
+.trip-site .trip-news>header{grid-row:1!important;min-height:135px!important}
+.trip-site .trip-news-columns{grid-row:2!important}
+.trip-site .trip-news .updates-list{grid-row:3!important}
+.trip-site #event-introduction{min-height:235px!important;padding-top:38px!important;padding-bottom:38px!important}
+}
 `;
