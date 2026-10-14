@@ -1518,7 +1518,7 @@ async function applyImageCrop(){
    const blob=await canvasToBlob(canvas,'image/webp',.9);
    const data=await blobToDataUrl(blob);
    checkpoint();setDeep(cropContext.path,data);
-   if(/^tickets\.\d+\.image$/.test(cropContext.path))send({type:'OE_PATCH_FIELD',path:cropContext.path,value:data});else send({type:'OE_REPLACE_STATE',state});
+   if(/^(?:heroImage|mobileHeroImage)$/.test(cropContext.path)||/^tickets\.\d+\.image$/.test(cropContext.path))send({type:'OE_PATCH_FIELD',path:cropContext.path,value:data});else send({type:'OE_REPLACE_STATE',state});
    toast('图片已应用');
    const c=cropContext.returnCollection,i=Number(cropContext.returnIndex);closeImageCropper();
    if(c&&Number.isInteger(i)){if(c.startsWith('custom:'))openCustomPageItemInspector(c.slice(7),i);else if(c.startsWith('product:'))openProductInspector(Number(c.slice(8)),i);else openItemInspector(c,i)}
