@@ -63,6 +63,13 @@ export const previewBody=`
 
     <div class="trip-route-ticker ribbon oe-home-only"><div class="trip-route-ticker-track ribbon-track"></div></div>
 
+    <section class="trip-event-facts oe-home-only" aria-label="活动基本信息">
+      <div class="trip-event-fact"><span>EVENT DATE</span><strong data-oe-field="date">活动日期</strong></div>
+      <div class="trip-event-fact"><span>DESTINATION</span><strong data-oe-field="location">举办城市</strong></div>
+      <div class="trip-event-fact"><span>VENUE</span><strong data-oe-field="edition">活动场馆</strong></div>
+      <div class="trip-event-fact"><span>THEME</span><strong data-oe-field="eventName">活动名称</strong></div>
+    </section>
+
     <section class="trip-intro oe-home-only" id="event-introduction">
       <aside><span>活动简介</span><small>INTRODUCTION</small></aside>
       <div class="trip-intro-copy">
@@ -725,4 +732,13 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-logo small{d
 /* The introduction is a real block immediately after the hero ticker, before NEWS. */
 .trip-site #event-introduction{display:grid!important;visibility:visible!important;opacity:1!important}
 .trip-site #event-introduction .trip-intro-copy p{display:block!important;visibility:visible!important}
+
+/* Standalone event facts: placed above introduction, not overlaying the KV. */
+.trip-site .trip-event-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#455761;color:#fff;min-width:0;border-top:3px solid #c5d3d4}
+.trip-site .trip-event-fact{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:7px;padding:20px clamp(16px,2.6vw,44px);min-width:0;min-height:87px;border-right:1px solid #58666e}
+.trip-site .trip-event-fact:last-child{border-right:0}
+.trip-site .trip-event-fact span{font:800 12px/1.25 "Courier New",monospace;letter-spacing:.12em;color:#e5eeef}
+.trip-site .trip-event-fact strong{font:750 clamp(14px,1.12vw,18px)/1.4 "Microsoft YaHei","PingFang SC",sans-serif;overflow-wrap:anywhere;max-width:100%}
+@media(max-width:800px){.trip-site .trip-event-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.trip-site .trip-event-fact{min-height:83px;border-bottom:1px solid #58666e;padding:15px 20px}}
+@media(max-width:450px){.trip-site .trip-event-facts{grid-template-columns:1fr}.trip-site .trip-event-fact{min-height:65px;gap:4px;padding:11px 18px}}
 `;
