@@ -14,7 +14,7 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     sticker3:()=>qa('.sticker .editable-copy')[2],
     heroImage:()=>$('.kv')
   };
-  const extraStatePaths=['navVerticalOffset','heroDisplayMode','heroTitleSize','heroTitleColor','heroTitleAccentColor','heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile','navigationUrl','ticketUrl','ticketLinkLabel'];
+  const extraStatePaths=['heroDisplayMode','heroTitleSize','heroTitleColor','heroTitleAccentColor','heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile','navigationUrl','ticketUrl','ticketLinkLabel'];
 
   function safeExternalUrl(value){
     const v=String(value||'').trim();
@@ -50,11 +50,6 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
       return;
     }
 
-    if(path==='navVerticalOffset'){
-      const offset=Math.max(0,Math.min(85,Number(value)||0));
-      document.documentElement.style.setProperty('--oe-nav-position',offset+'vh');
-      return;
-    }
     if(path==='heroDisplayMode'){
       document.body.dataset.oeHeroMode=value==='wide'?'wide':'poster';
       return;
