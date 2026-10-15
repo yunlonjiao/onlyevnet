@@ -202,8 +202,8 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await expect(frame.locator('.trip-event-facts .trip-event-fact')).toHaveCount(4);
     await expect(frame.locator('[data-oe-status="event"]')).toContainText('活动');
     await expect(frame.locator('.trip-hero-visual .trip-kv-placeholder small')).toContainText('1920 × 1080');
-    await expect(frame.locator('.scrap-pass-watermark .stamp-journey').first()).toHaveText('JOURNEY');
-    await expect(frame.locator('.scrap-pass-watermark .stamp-clover').first()).toBeAttached();
+    await expect(frame.locator('.scrap-pass-watermark .stamp-svg textPath').first()).toContainText('YOUR SPECIAL JOURNEY');
+    await expect(frame.locator('.scrap-pass-watermark #oe-clover-heart').first()).toBeAttached();
     await page.locator('#liveFrame').evaluate(iframe=>{
       const win=iframe.contentWindow;
       win.postMessage({type:'OE_PATCH_FIELD',path:'eventStatusMode',value:'manual'},location.origin);
@@ -252,6 +252,17 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     expect(result.preserved).toBe(true);
     expect(result.hasImage).toBe(true);
     expect(result.background).toContain('data:image/svg+xml');
+  });
+
+  test('status fact selects lifecycle editor and basic fields select information editor',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-facts-click');
+    const frame=page.frameLocator('#liveFrame');
+    await frame.locator('[data-oe-status="event"]').click();
+    await expect(page.locator('.inspector-header')).toContainText('生命周期');
+    await frame.locator('.trip-event-facts [data-oe-field="date"]').click();
+    await expect(page.locator('.inspector-header')).toContainText('时间、场馆与导航');
+    await expect(page.locator('#inspector [data-sync-path="date"]')).toBeVisible();
+    await expect(page.locator('#inspector [data-sync-path="location"]')).toBeVisible();
   });
 
 });
