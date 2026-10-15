@@ -29,7 +29,7 @@ export const previewBody=`
       <b data-oe-field="eventName">ONLY EVENT</b>
     </a>
     
-    <nav class="trip-nav" data-oe-mount="nav-links"><button type="button" class="trip-nav-position-edit" data-nav-position-edit title="调整导航上下位置">↕ 调整位置</button>
+    <nav class="trip-nav" data-oe-mount="nav-links">
       <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small><strong>摊位</strong><em>BOOTH</em></a>
       <a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small><strong>活动</strong><em>EVENT</em></a>
       <a href="#guests" data-target-mode="page" data-page-link="guests"><small>03</small><strong>嘉宾</strong><em>GUEST</em></a>
@@ -866,8 +866,20 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-n
 .trip-site .trip-feature,.trip-site .trip-ticket-section,.trip-site .trip-map{grid-template-columns:minmax(250px,27%) minmax(0,1fr)!important}
 .trip-site .trip-feature>header,.trip-site .trip-ticket-cover,.trip-site .trip-map-copy{width:100%!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important;padding:clamp(34px,4vw,66px) clamp(24px,3vw,48px)!important}
 .trip-site .trip-map-copy .map-link-list{width:100%!important;max-width:100%!important;min-width:0!important}
-body[data-oe-current-page="home"] .trip-site .trip-nav,body:not([data-oe-current-page]) .trip-site .trip-nav{top:clamp(0px,var(--oe-nav-position,18vh),85vh)!important}
-.trip-site .trip-nav-position-edit{display:none!important}
-html:not(.oe-preview) .trip-site .trip-nav-position-edit{display:block!important;position:static!important;padding:7px 8px!important;margin-bottom:10px!important;color:#fff!important;background:#24333aab!important;border:1px solid #ffffff99!important;font:600 11px/1.3 sans-serif!important;cursor:pointer!important}
+
+
+
 @media(max-width:900px){.trip-site .trip-feature,.trip-site .trip-ticket-section,.trip-site .trip-map{grid-template-columns:minmax(0,1fr)!important}}
+
+/* Persistent rail: stay at the same viewport coordinates while scrolling homepage. */
+@media(min-width:901px){
+body[data-oe-current-page="home"] .trip-site .trip-nav,
+body:not([data-oe-current-page]) .trip-site .trip-nav{
+position:fixed!important;left:clamp(22px,3.4vw,68px)!important;top:clamp(95px,14vh,175px)!important;
+z-index:95!important;height:auto!important;max-height:calc(100dvh - 115px)!important;
+overflow-y:auto!important;overscroll-behavior:contain!important;
+}
+body[data-oe-current-page="home"] .trip-site .trip-nav a,
+body:not([data-oe-current-page]) .trip-site .trip-nav a{color:#fff!important;text-shadow:0 1px 8px #152a35,0 2px 16px #152a35cc!important}
+}
 `;
