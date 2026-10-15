@@ -882,4 +882,15 @@ overflow-y:auto!important;overscroll-behavior:contain!important;
 body[data-oe-current-page="home"] .trip-site .trip-nav a,
 body:not([data-oe-current-page]) .trip-site .trip-nav a{color:#fff!important;text-shadow:0 1px 8px #152a35,0 2px 16px #152a35cc!important}
 }
+
+/* Clean pinned navigation and masthead, without residual dividers or lettering shadows. */
+.trip-site .trip-nav,.trip-site .trip-nav a,.trip-site .trip-nav a::before,.trip-site .trip-nav a::after{border:0!important;border-left:0!important;box-shadow:none!important;background-image:none!important}
+.trip-site .trip-nav a{background:transparent!important;text-shadow:none!important;padding-left:0!important}
+.trip-site .trip-nav a strong,.trip-site .trip-nav a em,.trip-site .trip-nav a small{background:transparent!important;text-shadow:none!important;box-shadow:none!important;border:0!important}
+body[data-oe-current-page="home"] .trip-site .trip-nav a,
+body:not([data-oe-current-page]) .trip-site .trip-nav a{color:#fff!important;text-shadow:none!important;border:0!important;box-shadow:none!important}
+body[data-oe-current-page="home"] .trip-site .trip-logo,
+body:not([data-oe-current-page]) .trip-site .trip-logo,
+body[data-oe-current-page="home"] .trip-site .trip-logo b,
+body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!important;filter:none!important;box-shadow:none!important}
 `;
