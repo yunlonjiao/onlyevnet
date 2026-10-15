@@ -31,6 +31,27 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     expect(layout.order).toBe(true);
     expect(layout.topHeaderGone).toBe(true);
   });
+  test('KV strategy A+C: full-screen cover and mobile image fallback',async({page})=>{
+    await page.setViewportSize({width:1440,height:900});
+    await page.goto('/v8/?template=02-scrapbook&project=template02-hero-ac');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('.trip-hero-visual .kv')).toBeVisible();
+    const desktop=await frame.locator('.trip-hero').evaluate(el=>{
+      const kv=el.querySelector('.kv'),r=el.getBoundingClientRect(),k=kv.getBoundingClientRect();
+      return {height:r.height,viewHeight:innerHeight,width:k.width,viewWidth:innerWidth,size:getComputedStyle(kv).backgroundSize,position:getComputedStyle(kv).backgroundPosition};
+    });
+    expect(desktop.height).toBeGreaterThanOrEqual(desktop.viewHeight-4);
+    expect(desktop.width).toBeGreaterThanOrEqual(desktop.viewWidth-8);
+    expect(desktop.size).toContain('cover');
+    await page.setViewportSize({width:390,height:844});
+    const mobile=await frame.locator('.trip-hero').evaluate(el=>{
+      const kv=el.querySelector('.kv'),r=el.getBoundingClientRect();
+      return {height:r.height,viewHeight:innerHeight,size:getComputedStyle(kv).backgroundSize,position:getComputedStyle(kv).backgroundPosition};
+    });
+    expect(mobile.height).toBeGreaterThanOrEqual(mobile.viewHeight-4);
+    expect(mobile.size).toContain('cover');
+    expect(mobile.position).toBeTruthy();
+  });
   test('keeps reference-led chrome instead of Template 01 chrome',async({page})=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-reference');
     const frame=page.frameLocator('#liveFrame');
