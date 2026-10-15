@@ -1,6 +1,6 @@
 import {previewStyle as ipOnlyStyle,previewBody as ipOnlyBody} from '/v8/templates/01-ip-only-preview.js?v=8.38.3';
 import {createVariantPreview} from '/v8/templates/ip-only-visual-variants.js?v=8.38.3';
-import {previewStyle as scrapbookStyle,previewBody as scrapbookBody} from '/v8/templates/02-scrapbook-preview.js?v=8.40.27';
+import {previewStyle as scrapbookStyle,previewBody as scrapbookBody} from '/v8/templates/02-scrapbook-preview.js?v=8.40.28';
 import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.38.3';
 
 const previews=Object.freeze({
