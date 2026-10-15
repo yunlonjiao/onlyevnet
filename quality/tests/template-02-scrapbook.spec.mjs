@@ -265,4 +265,29 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await expect(page.locator('#inspector [data-sync-path="location"]')).toBeVisible();
   });
 
+  test('home editorial rails have identical measured boundaries at desktop and studio widths',async({page})=>{
+    await page.setViewportSize({width:1600,height:950});
+    await page.goto('/v8/?template=02-scrapbook&project=template02-rail-measurement');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('.trip-feature')).toBeVisible();
+    const selectors=['#event-introduction','.trip-news','.trip-index','.trip-feature','.trip-ticket-section','.trip-map'];
+    for(const width of [1450,840]){
+      await page.locator('#liveFrame').evaluate((el,w)=>{el.style.width=w+'px';el.style.maxWidth='none';el.style.minWidth=w+'px';},width);
+      const info=await frame.locator('.trip-site').evaluate((root,selectors)=>selectors.map(sel=>{
+        const section=root.querySelector(sel),rail=section?.querySelector('.oe-editorial-rail');
+        if(!section||!rail)return {sel,missing:true};
+        const s=section.getBoundingClientRect(),r=rail.getBoundingClientRect();
+        return {sel,sectionWidth:s.width,railWidth:r.width,railRight:r.right-s.left,railStart:r.left-s.left,cols:getComputedStyle(section).gridTemplateColumns,display:getComputedStyle(section).display};
+      }),selectors);
+      const base=info.find(x=>x.sel==='.trip-feature');
+      expect(base?.railWidth,'feature rail missing at '+width).toBeGreaterThan(0);
+      for(const x of info){
+        expect(x.missing,JSON.stringify({width,x})).not.toBe(true);
+        expect(x.display).toBe('grid');
+        expect(Math.abs(x.railStart-base.railStart),JSON.stringify({width,x,base})).toBeLessThan(2);
+        expect(Math.abs(x.railRight-base.railRight),JSON.stringify({width,x,base})).toBeLessThan(2);
+      }
+    }
+  });
+
 });
