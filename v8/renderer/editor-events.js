@@ -7,6 +7,8 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
       return;
     }
     if(getMode()!=='edit')return;
+    const eventStatusFact=e.target.closest?.('.trip-event-fact [data-oe-status]');
+    if(eventStatusFact){e.preventDefault();e.stopPropagation();send({type:'OE_SELECT_FIELD',path:'eventStatus'});return}
     const activitySelect=e.target.closest?.('[data-activity-select]');
     if(activitySelect){
       e.preventDefault();e.stopImmediatePropagation();
