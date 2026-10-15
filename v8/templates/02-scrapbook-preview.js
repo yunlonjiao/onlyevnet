@@ -893,4 +893,33 @@ body[data-oe-current-page="home"] .trip-site .trip-logo,
 body:not([data-oe-current-page]) .trip-site .trip-logo,
 body[data-oe-current-page="home"] .trip-site .trip-logo b,
 body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!important;filter:none!important;box-shadow:none!important}
+
+/* Unified 27% editorial title rail for every standard homepage content block.
+   Full-screen Hero, moving ribbon and four-column event facts retain their own layouts. */
+@media(min-width:901px){
+.trip-site{--oe-home-rail:minmax(250px,27%) minmax(0,1fr);--oe-home-rail-pad:clamp(34px,4vw,66px) clamp(24px,3vw,48px)}
+.trip-site #event-introduction,
+.trip-site .trip-news,
+.trip-site .trip-index,
+.trip-site .trip-feature,
+.trip-site .trip-ticket-section,
+.trip-site .trip-map{display:grid!important;grid-template-columns:var(--oe-home-rail)!important;column-gap:0!important;box-sizing:border-box!important}
+.trip-site #event-introduction{grid-template-rows:auto!important;gap:0!important;padding:0!important;min-height:0!important}
+.trip-site #event-introduction>aside{grid-column:1!important;grid-row:1!important;align-self:stretch!important;padding:var(--oe-home-rail-pad)!important;box-sizing:border-box!important;border-right:1px solid #c9d0cb!important;border-bottom:0!important}
+.trip-site #event-introduction .trip-intro-copy{grid-column:2!important;grid-row:1!important;align-self:center!important;padding:var(--oe-home-rail-pad)!important;box-sizing:border-box!important}
+.trip-site .trip-news{grid-template-rows:auto 1fr!important;min-height:0!important}
+.trip-site .trip-news>header{grid-column:1!important;grid-row:1 / span 2!important;align-self:stretch!important;box-sizing:border-box!important;padding:var(--oe-home-rail-pad)!important;min-width:0!important}
+.trip-site .trip-news-columns{grid-column:2!important;grid-row:1!important;min-width:0!important}
+.trip-site .trip-news .updates-list{grid-column:2!important;grid-row:2!important;min-width:0!important}
+.trip-site .trip-index{grid-template-rows:auto!important}
+.trip-site .trip-index>header{grid-column:1!important;grid-row:1!important;align-self:stretch!important;box-sizing:border-box!important;padding:var(--oe-home-rail-pad)!important;min-width:0!important}
+.trip-site .trip-index>.quick-grid{grid-column:2!important;grid-row:1!important;min-width:0!important}
+.trip-site .trip-feature>header,.trip-site .trip-ticket-cover,.trip-site .trip-map-copy{padding:var(--oe-home-rail-pad)!important}
+}
+/* Mobile retains vertical stacking across all sections. */
+@media(max-width:900px){
+.trip-site #event-introduction,.trip-site .trip-news,.trip-site .trip-index,.trip-site .trip-feature,.trip-site .trip-ticket-section,.trip-site .trip-map{grid-template-columns:minmax(0,1fr)!important}
+.trip-site #event-introduction>aside,.trip-site #event-introduction .trip-intro-copy{grid-column:1!important;padding:25px 23px!important}
+.trip-site #event-introduction>aside{border-right:0!important}
+}
 `;
