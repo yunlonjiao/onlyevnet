@@ -847,4 +847,10 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-n
 .trip-site .trip-event-fact [data-oe-field],.trip-site .trip-event-fact [data-oe-status]{cursor:pointer!important}
 .trip-site .trip-event-fact [data-oe-status]:hover{outline:2px solid #f3e45d;outline-offset:4px}
 @media(max-width:900px){.trip-site .trip-feature,.trip-site .trip-ticket-section,.trip-site .trip-map{grid-template-columns:1fr!important}.trip-site .trip-feature>header,.trip-site .trip-ticket-cover,.trip-site .trip-map-copy{padding:32px 23px!important}.trip-site .trip-feature>header>span,.trip-site .trip-ticket-cover>small,.trip-site .trip-map-copy>span{margin-bottom:16px!important}}
+
+/* Match feature title's visual baseline and English line behavior to TICKETS/VENUE MAP */
+.trip-site .trip-feature>header>h2{font:850 clamp(37px,3.3vw,58px)/1.13 "Microsoft YaHei","PingFang SC",sans-serif!important;letter-spacing:0!important;margin:0!important}
+.trip-site .trip-feature>header>h2 small{font:850 clamp(14px,1.2vw,21px)/1.25 Arial,sans-serif!important;letter-spacing:-.035em!important;margin-top:13px!important;white-space:nowrap!important;overflow-wrap:normal!important;word-break:keep-all!important}
+@media(min-width:901px){.trip-site .trip-feature{grid-template-columns:minmax(270px,30%) minmax(0,1fr)!important}.trip-site .trip-feature>header{padding-left:clamp(24px,3vw,48px)!important;padding-right:12px!important}}
+@media(max-width:900px){.trip-site .trip-feature>header>h2 small{font-size:clamp(14px,3.2vw,20px)!important}}
 `;
