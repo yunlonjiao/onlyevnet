@@ -896,7 +896,7 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
 
 /* Unified 27% editorial title rail for every standard homepage content block.
    Full-screen Hero, moving ribbon and four-column event facts retain their own layouts. */
-@media(min-width:901px){
+@media(min-width:761px){
 .trip-site{--oe-home-rail:minmax(250px,27%) minmax(0,1fr);--oe-home-rail-pad:clamp(34px,4vw,66px) clamp(24px,3vw,48px)}
 .trip-site #event-introduction,
 .trip-site .trip-news,
@@ -917,9 +917,24 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
 .trip-site .trip-feature>header,.trip-site .trip-ticket-cover,.trip-site .trip-map-copy{padding:var(--oe-home-rail-pad)!important}
 }
 /* Mobile retains vertical stacking across all sections. */
-@media(max-width:900px){
+@media(max-width:760px){
 .trip-site #event-introduction,.trip-site .trip-news,.trip-site .trip-index,.trip-site .trip-feature,.trip-site .trip-ticket-section,.trip-site .trip-map{grid-template-columns:minmax(0,1fr)!important}
 .trip-site #event-introduction>aside,.trip-site #event-introduction .trip-intro-copy{grid-column:1!important;padding:25px 23px!important}
 .trip-site #event-introduction>aside{border-right:0!important}
+}
+
+/* Studio frame often lies between 761–900 CSS px: override old mobile single-column rules there. */
+@media(min-width:761px) and (max-width:900px){
+.trip-site #event-introduction,.trip-site .trip-news,.trip-site .trip-index,.trip-site .trip-feature,.trip-site .trip-ticket-section,.trip-site .trip-map{display:grid!important;grid-template-columns:minmax(200px,27%) minmax(0,1fr)!important;gap:0!important}
+.trip-site #event-introduction{padding:0!important}
+.trip-site #event-introduction>aside,.trip-site #event-introduction .trip-intro-copy{padding:34px 20px!important;border-bottom:0!important}
+.trip-site #event-introduction>aside{border-right:1px solid #c9d0cb!important}
+.trip-site .trip-news>header{grid-column:1!important;grid-row:1 / span 2!important;min-height:0!important}
+.trip-site .trip-news-columns{display:grid!important;grid-column:2!important;grid-row:1!important}
+.trip-site .trip-news .updates-list{grid-column:2!important;grid-row:2!important}
+.trip-site .trip-index>header{grid-column:1!important;grid-row:1!important;border-bottom:0!important}
+.trip-site .trip-index .quick-grid{grid-column:2!important;grid-row:1!important}
+.trip-site .trip-feature>header,.trip-site .trip-ticket-cover,.trip-site .trip-map-copy{padding:34px 20px!important;width:100%!important}
+.trip-site .trip-feature>.featured-activity-grid,.trip-site .trip-ticket-list,.trip-site .trip-map-paper{grid-column:2!important;min-width:0!important}
 }
 `;
