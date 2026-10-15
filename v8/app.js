@@ -990,7 +990,15 @@ function openTicketSettingsInspector(){
  bindInspectorStateInput($('#ticketUrlInput'),'ticketUrl',{clean:true});
  $('#testTicketUrl').onclick=()=>{const url=String(state.ticketUrl||'').trim();if(/^https?:\/\//i.test(url))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
 }
+function openNavPositionInspector(){
+ const value=Math.max(0,Math.min(85,Number(state.navVerticalOffset??18)));
+ setInspector('导航','左侧导航位置','<label><span>上下位置 · <b id="navPositionValue">'+value+'%</b></span><input type="range" min="0" max="85" step="1" data-sync-path="navVerticalOffset" value="'+value+'"></label><p class="inspector-note">调整左侧整组导航的垂直起始位置，不改变各页面的链接或顺序。</p>');
+ const input=inspector.querySelector('[data-sync-path="navVerticalOffset"]');
+ bindInspectorStateInput(input,'navVerticalOffset',{number:true});
+ input.addEventListener('input',()=>{const label=$('#navPositionValue');if(label)label.textContent=input.value+'%'});
+}
 function openFieldInspector(path){
+ if(path==='navVerticalOffset'){openNavPositionInspector();return}
  if(path.startsWith('ribbonItems.')){
    const i=Number(path.split('.')[1])||0;
    setWorkspace('pages');syncStudioPageUI('home',{openContent:false});renderPageContentNav('home',{openDefault:false});
