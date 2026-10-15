@@ -953,4 +953,11 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
 .trip-site .trip-map.oe-editorial-section>.trip-map-paper{grid-column:2!important;grid-row:1!important;min-width:0!important;margin:0!important}
 }
 @media(max-width:760px){.trip-site .oe-editorial-section{display:grid!important;grid-template-columns:minmax(0,1fr)!important}.trip-site .oe-editorial-section>.oe-editorial-rail{grid-column:1!important;grid-row:auto!important;min-width:0!important}}
+
+/* Browser-measured regression fix: legacy .trip-feature has 6vw horizontal
+   padding, shifting its entire 27% rail by 87px at 1450px viewport. */
+@media(min-width:761px){
+.trip-site .oe-editorial-section{padding:0!important;gap:0!important;margin-left:0!important;margin-right:0!important}
+.trip-site .trip-feature.oe-editorial-section{padding:0!important;gap:0!important}
+}
 `;
