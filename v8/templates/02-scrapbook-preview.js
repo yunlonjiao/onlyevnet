@@ -64,8 +64,8 @@ export const previewBody=`
       <div class="trip-event-fact"><span>EVENT STATUS</span><strong data-oe-status="event">活动未开始</strong></div>
     </section>
 
-    <section class="trip-intro oe-home-only" id="event-introduction">
-      <aside><span>活动简介</span><small>INTRODUCTION</small></aside>
+    <section class="trip-intro oe-home-only oe-editorial-section" id="event-introduction">
+      <aside class="oe-editorial-rail"><span>活动简介</span><small>INTRODUCTION</small></aside>
       <div class="trip-intro-copy">
         <h2>关于本次活动<small>ABOUT THE EVENT</small></h2>
         <p data-oe-field="tagline">一次相遇，一段值得珍藏的旅程。</p>
@@ -79,8 +79,8 @@ export const previewBody=`
       </div>
     </section>
 
-    <section class="trip-news oe-home-only" id="updates">
-      <header><span>最新公告</span><b>最新公告</b><small>NEWS / UPDATES</small></header>
+    <section class="trip-news oe-home-only oe-editorial-section" id="updates">
+      <header class="oe-editorial-rail"><span>最新公告</span><b>最新公告</b><small>NEWS / UPDATES</small></header>
       <div class="trip-news-columns"><span>DATE</span><span>TYPE</span><span>REMARKS</span></div>
       <div data-oe-mount="updates" class="updates-list"></div>
     </section>
@@ -91,26 +91,26 @@ export const previewBody=`
       <i>→</i>
     </section>
 
-    <section class="trip-index oe-home-only">
-      <header><span>快速导航 / DIRECTORY</span><b>你想去哪里？</b></header>
+    <section class="trip-index oe-home-only oe-editorial-section">
+      <header class="oe-editorial-rail"><span>快速导航 / DIRECTORY</span><b>你想去哪里？</b></header>
       <div data-oe-mount="quick" class="quick-grid"></div>
     </section>
 
-    <section class="trip-feature oe-home-only" id="participation">
-      <header><span>活动精选 / PICK UP</span><h2>精彩活动<small>JOURNEY HIGHLIGHTS</small></h2></header>
+    <section class="trip-feature oe-home-only oe-editorial-section" id="participation">
+      <header class="oe-editorial-rail"><span>活动精选 / PICK UP</span><h2>精彩活动<small>JOURNEY HIGHLIGHTS</small></h2></header>
       <div data-oe-mount="featured-activities" class="featured-activity-grid"></div>
     </section>
 
-    <section class="trip-ticket-section oe-home-only" id="tickets">
-      <div class="trip-ticket-cover"><small>票务信息 / ADMISSION</small><b>入场票<br><i>TICKETS</i></b></div>
+    <section class="trip-ticket-section oe-home-only oe-editorial-section" id="tickets">
+      <div class="trip-ticket-cover oe-editorial-rail"><small>票务信息 / ADMISSION</small><b>入场票<br><i>TICKETS</i></b></div>
       <div class="trip-ticket-list">
         <div data-oe-mount="tickets" class="ticket-grid"></div>
         <div data-oe-mount="ticket-actions" class="ticket-actions"></div>
       </div>
     </section>
 
-    <section class="trip-map oe-home-only" id="map-home">
-      <div class="trip-map-copy"><span>场地导览 / DESTINATION</span><h2>场地图<small>VENUE MAP</small></h2><div data-oe-mount="map-links" class="map-link-list"></div></div>
+    <section class="trip-map oe-home-only oe-editorial-section" id="map-home">
+      <div class="trip-map-copy oe-editorial-rail"><span>场地导览 / DESTINATION</span><h2>场地图<small>VENUE MAP</small></h2><div data-oe-mount="map-links" class="map-link-list"></div></div>
       <div class="trip-map-paper"><div data-oe-mount="map" id="venueMap" class="map-static"></div></div>
     </section>
 
@@ -937,4 +937,20 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
 .trip-site .trip-feature>header,.trip-site .trip-ticket-cover,.trip-site .trip-map-copy{padding:34px 20px!important;width:100%!important}
 .trip-site .trip-feature>.featured-activity-grid,.trip-site .trip-ticket-list,.trip-site .trip-map-paper{grid-column:2!important;min-width:0!important}
 }
+
+/* Shared structural rail: every homepage editorial section uses the exact feature
+   layout instead of separate widths inherited from legacy section CSS. */
+@media(min-width:761px){
+.trip-site .oe-editorial-section{display:grid!important;grid-template-columns:minmax(0,27%) minmax(0,73%)!important;column-gap:0!important;row-gap:0!important;width:100%!important;min-width:0!important;margin-inline:0!important;box-sizing:border-box!important}
+.trip-site .oe-editorial-section>.oe-editorial-rail{grid-column:1!important;grid-row:1!important;width:100%!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important;margin:0!important;align-self:stretch!important;padding:clamp(34px,4vw,66px) clamp(24px,3vw,48px)!important}
+.trip-site .trip-news.oe-editorial-section>.oe-editorial-rail{grid-row:1 / span 2!important}
+.trip-site .trip-news.oe-editorial-section>.trip-news-columns{grid-column:2!important;grid-row:1!important}
+.trip-site .trip-news.oe-editorial-section>.updates-list{grid-column:2!important;grid-row:2!important}
+.trip-site .trip-intro.oe-editorial-section>.trip-intro-copy{grid-column:2!important;grid-row:1!important;margin:0!important;min-width:0!important}
+.trip-site .trip-index.oe-editorial-section>.quick-grid,
+.trip-site .trip-feature.oe-editorial-section>.featured-activity-grid,
+.trip-site .trip-ticket-section.oe-editorial-section>.trip-ticket-list,
+.trip-site .trip-map.oe-editorial-section>.trip-map-paper{grid-column:2!important;grid-row:1!important;min-width:0!important;margin:0!important}
+}
+@media(max-width:760px){.trip-site .oe-editorial-section{display:grid!important;grid-template-columns:minmax(0,1fr)!important}.trip-site .oe-editorial-section>.oe-editorial-rail{grid-column:1!important;grid-row:auto!important;min-width:0!important}}
 `;
