@@ -16,7 +16,7 @@ import {createParticipation} from '/v8/renderer/participation.js?v=8.40.26';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {createRouter} from '/v8/renderer/router.js?v=8.40.22';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createFields} from '/v8/renderer/fields.js?v=8.40.23';
+import {createFields} from '/v8/renderer/fields.js?v=8.40.29';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {createRuntime} from '/v8/renderer/runtime.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
