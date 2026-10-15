@@ -29,7 +29,7 @@ export const previewBody=`
       <b data-oe-field="eventName">ONLY EVENT</b>
     </a>
     
-    <nav class="trip-nav" data-oe-mount="nav-links">
+    <nav class="trip-nav" data-oe-mount="nav-links"><button type="button" class="trip-nav-position-edit" data-nav-position-edit title="调整导航上下位置">↕ 调整位置</button>
       <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small><strong>摊位</strong><em>BOOTH</em></a>
       <a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small><strong>活动</strong><em>EVENT</em></a>
       <a href="#guests" data-target-mode="page" data-page-link="guests"><small>03</small><strong>嘉宾</strong><em>GUEST</em></a>
@@ -861,4 +861,13 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-n
 .trip-site .trip-feature>header>h2 small{font-size:clamp(14px,1.08vw,18px)!important;white-space:nowrap!important;letter-spacing:-.045em!important}
 
 @media(max-width:900px){.trip-site .trip-feature>header>h2 small{font-size:clamp(14px,3.2vw,20px)!important}}
+
+/* One shared grid size for the three editorial rails, including nested map links */
+.trip-site .trip-feature,.trip-site .trip-ticket-section,.trip-site .trip-map{grid-template-columns:minmax(250px,27%) minmax(0,1fr)!important}
+.trip-site .trip-feature>header,.trip-site .trip-ticket-cover,.trip-site .trip-map-copy{width:100%!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important;padding:clamp(34px,4vw,66px) clamp(24px,3vw,48px)!important}
+.trip-site .trip-map-copy .map-link-list{width:100%!important;max-width:100%!important;min-width:0!important}
+body[data-oe-current-page="home"] .trip-site .trip-nav,body:not([data-oe-current-page]) .trip-site .trip-nav{top:clamp(0px,var(--oe-nav-position,18vh),85vh)!important}
+.trip-site .trip-nav-position-edit{display:none!important}
+body.oe-edit .trip-site .trip-nav-position-edit,.oe-edit .trip-site .trip-nav-position-edit{display:block!important;position:static!important;padding:7px 8px!important;margin-bottom:10px!important;color:#fff!important;background:#24333aab!important;border:1px solid #ffffff99!important;font:600 11px/1.3 sans-serif!important;cursor:pointer!important}
+@media(max-width:900px){.trip-site .trip-feature,.trip-site .trip-ticket-section,.trip-site .trip-map{grid-template-columns:minmax(0,1fr)!important}}
 `;
