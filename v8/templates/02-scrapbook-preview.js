@@ -830,4 +830,7 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-n
 .trip-site .scrap-pass-watermark .stamp-clover{display:block!important;width:55px!important;height:55px!important;color:inherit}
 @media(max-width:900px){.trip-site .trip-ticket-section{grid-template-columns:1fr!important}.trip-site .trip-ticket-list .scrap-pass{grid-template-columns:minmax(0,1fr) 95px 125px!important}}
 @media(max-width:560px){.trip-site .trip-ticket-list .scrap-pass{grid-template-columns:minmax(0,1fr) 100px!important}.trip-site .trip-ticket-list .scrap-pass-art{display:none!important}.trip-site .trip-ticket-list .scrap-pass-watermark{right:90px!important;width:96px!important;height:96px!important}.trip-site .scrap-pass-watermark .stamp-clover{width:38px!important;height:38px!important}.trip-site .trip-ticket-list .scrap-pass aside{border-top:0!important;border-left:1px dashed #b7acaa!important;justify-content:center!important}}
+
+.trip-site .trip-ticket-list .scrap-pass-watermark .stamp-svg{display:block;width:100%;height:100%;overflow:visible;color:#648678}
+.trip-site .trip-ticket-list .scrap-pass-watermark{background:none!important}
 `;
