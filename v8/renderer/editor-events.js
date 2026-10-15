@@ -7,7 +7,6 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
       return;
     }
     if(getMode()!=='edit')return;
-    if(e.target.closest?.('[data-nav-position-edit]')){e.preventDefault();e.stopPropagation();send({type:'OE_SELECT_FIELD',path:'navVerticalOffset'});return}
     const eventStatusFact=e.target.closest?.('.trip-event-fact [data-oe-status]');
     if(eventStatusFact){e.preventDefault();e.stopPropagation();send({type:'OE_SELECT_FIELD',path:'eventStatus'});return}
     const activitySelect=e.target.closest?.('[data-activity-select]');
