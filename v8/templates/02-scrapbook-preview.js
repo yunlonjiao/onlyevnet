@@ -833,4 +833,18 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-n
 
 .trip-site .trip-ticket-list .scrap-pass-watermark .stamp-svg{display:block;width:100%;height:100%;overflow:visible;color:#648678}
 .trip-site .trip-ticket-list .scrap-pass-watermark{background:none!important}
+
+/* Matched editorial rail across PICK UP / ADMISSION / DESTINATION */
+.trip-site .trip-feature,.trip-site .trip-ticket-section,.trip-site .trip-map{display:grid!important;grid-template-columns:minmax(215px,27%) minmax(0,1fr)!important;align-items:stretch!important;gap:0!important}
+.trip-site .trip-feature>header,.trip-site .trip-ticket-cover,.trip-site .trip-map-copy{min-width:0!important;padding:clamp(34px,4vw,66px) clamp(24px,3vw,48px)!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;gap:0!important;box-sizing:border-box!important}
+.trip-site .trip-feature>header>span,.trip-site .trip-ticket-cover>small,.trip-site .trip-map-copy>span{display:block!important;font:800 clamp(11px,.85vw,14px)/1.5 "Courier New",monospace!important;letter-spacing:.08em!important;margin:0 0 clamp(21px,2.8vw,44px)!important;color:inherit!important}
+.trip-site .trip-feature>header>h2,.trip-site .trip-ticket-cover>b,.trip-site .trip-map-copy>h2{font:850 clamp(37px,3.3vw,58px)/1.13 "Microsoft YaHei","PingFang SC",sans-serif!important;letter-spacing:0!important;overflow-wrap:anywhere!important;margin:0!important;color:inherit!important}
+.trip-site .trip-feature>header>h2 small,.trip-site .trip-ticket-cover>b i,.trip-site .trip-map-copy>h2 small{display:block!important;margin-top:13px!important;font:850 clamp(17px,1.4vw,24px)/1.25 Arial,sans-serif!important;letter-spacing:.015em!important;font-style:normal!important;color:inherit!important}
+.trip-site .trip-feature>header{position:static!important;align-self:stretch!important}
+.trip-site .trip-ticket-cover{min-height:0!important;justify-content:flex-start!important}
+.trip-site .trip-map-copy{min-height:0!important}
+.trip-site .trip-feature>.featured-activity-grid,.trip-site .trip-ticket-list,.trip-site .trip-map-paper{min-width:0!important;align-self:start!important}
+.trip-site .trip-event-fact [data-oe-field],.trip-site .trip-event-fact [data-oe-status]{cursor:pointer!important}
+.trip-site .trip-event-fact [data-oe-status]:hover{outline:2px solid #f3e45d;outline-offset:4px}
+@media(max-width:900px){.trip-site .trip-feature,.trip-site .trip-ticket-section,.trip-site .trip-map{grid-template-columns:1fr!important}.trip-site .trip-feature>header,.trip-site .trip-ticket-cover,.trip-site .trip-map-copy{padding:32px 23px!important}.trip-site .trip-feature>header>span,.trip-site .trip-ticket-cover>small,.trip-site .trip-map-copy>span{margin-bottom:16px!important}}
 `;
