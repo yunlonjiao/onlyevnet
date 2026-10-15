@@ -868,6 +868,6 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-n
 .trip-site .trip-map-copy .map-link-list{width:100%!important;max-width:100%!important;min-width:0!important}
 body[data-oe-current-page="home"] .trip-site .trip-nav,body:not([data-oe-current-page]) .trip-site .trip-nav{top:clamp(0px,var(--oe-nav-position,18vh),85vh)!important}
 .trip-site .trip-nav-position-edit{display:none!important}
-body.oe-edit .trip-site .trip-nav-position-edit,.oe-edit .trip-site .trip-nav-position-edit{display:block!important;position:static!important;padding:7px 8px!important;margin-bottom:10px!important;color:#fff!important;background:#24333aab!important;border:1px solid #ffffff99!important;font:600 11px/1.3 sans-serif!important;cursor:pointer!important}
+html:not(.oe-preview) .trip-site .trip-nav-position-edit{display:block!important;position:static!important;padding:7px 8px!important;margin-bottom:10px!important;color:#fff!important;background:#24333aab!important;border:1px solid #ffffff99!important;font:600 11px/1.3 sans-serif!important;cursor:pointer!important}
 @media(max-width:900px){.trip-site .trip-feature,.trip-site .trip-ticket-section,.trip-site .trip-map{grid-template-columns:minmax(0,1fr)!important}}
 `;
