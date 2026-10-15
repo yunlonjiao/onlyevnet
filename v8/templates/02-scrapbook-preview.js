@@ -871,16 +871,14 @@ body[data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-n
 
 @media(max-width:900px){.trip-site .trip-feature,.trip-site .trip-ticket-section,.trip-site .trip-map{grid-template-columns:minmax(0,1fr)!important}}
 
-/* Persistent rail: stay at the same viewport coordinates while scrolling homepage. */
+/* Hero-local navigation: anchored beside KV, scrolls away with the home hero. */
 @media(min-width:901px){
 body[data-oe-current-page="home"] .trip-site .trip-nav,
 body:not([data-oe-current-page]) .trip-site .trip-nav{
-position:fixed!important;left:clamp(22px,3.4vw,68px)!important;top:clamp(95px,14vh,175px)!important;
-z-index:95!important;height:auto!important;max-height:calc(100dvh - 115px)!important;
-overflow-y:auto!important;overscroll-behavior:contain!important;
+position:absolute!important;left:clamp(22px,3.4vw,68px)!important;top:clamp(95px,14vh,175px)!important;
+bottom:auto!important;right:auto!important;z-index:95!important;
+height:auto!important;max-height:none!important;overflow:visible!important;
 }
-body[data-oe-current-page="home"] .trip-site .trip-nav a,
-body:not([data-oe-current-page]) .trip-site .trip-nav a{color:#fff!important;text-shadow:0 1px 8px #152a35,0 2px 16px #152a35cc!important}
 }
 
 /* Clean pinned navigation and masthead, without residual dividers or lettering shadows. */
