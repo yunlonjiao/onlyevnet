@@ -967,11 +967,15 @@ function openAddressInspector(){
  setInspector('基础信息','时间、场馆与导航','<div class="item-fields">'+
   '<label><span>活动开始时间</span><input type="datetime-local" data-sync-path="eventStartDateTime" value="'+esc(state.eventStartDateTime||'')+'"></label>'+
   '<label><span>活动结束时间</span><input type="datetime-local" data-sync-path="eventEndDateTime" value="'+esc(state.eventEndDateTime||'')+'"></label>'+
+  '<label><span>活动日期</span><input data-sync-path="date" value="'+esc(state.date||'')+'"></label>'+ 
+  '<label><span>举办城市</span><input data-sync-path="location" value="'+esc(state.location||'')+'"></label>'+ 
   '<label><span>场馆地址</span><input data-sync-path="edition" value="'+esc(state.edition||'')+'"></label>'+
   '<label><span>导航链接</span><input type="url" data-sync-path="navigationUrl" value="'+esc(state.navigationUrl||'')+'" placeholder="https://"></label>'+
  '</div><div class="row"><button id="testNavigation" type="button">打开导航 ↗</button></div><p class="inspector-note">活动状态默认自动判断：开始前为未开始，活动时间内为进行中，超过结束时间后自动变为已结束。</p>');
  bindInspectorStateInput(inspector.querySelector('[data-sync-path="eventStartDateTime"]'),'eventStartDateTime',{clean:true});
  bindInspectorStateInput(inspector.querySelector('[data-sync-path="eventEndDateTime"]'),'eventEndDateTime',{clean:true});
+ bindInspectorStateInput(inspector.querySelector('[data-sync-path="date"]'),'date',{clean:true});
+ bindInspectorStateInput(inspector.querySelector('[data-sync-path="location"]'),'location',{clean:true});
  bindInspectorStateInput(inspector.querySelector('[data-sync-path="edition"]'),'edition',{clean:true});
  bindInspectorStateInput(inspector.querySelector('[data-sync-path="navigationUrl"]'),'navigationUrl',{clean:true});
  $('#testNavigation').onclick=()=>{const url=String(state.navigationUrl||'').trim();if(url.startsWith('https://')||url.startsWith('http://'))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
@@ -993,7 +997,7 @@ function openFieldInspector(path){
    openCollectionManager('ribbonItems',i);setPageContentActive({collection:'ribbonItems'});openItemInspector('ribbonItems',i);return
  }
  if(path==='ticketUrl'||path==='ticketLinkLabel'){openTicketSettingsInspector();return}
- if(path==='edition'||path==='navigationUrl'){openAddressInspector();return}
+ if(['date','location','edition','navigationUrl'].includes(path)){openAddressInspector();return}
  if(path==='eventStatus'){openLifecycleInspector();return}
  if(path.startsWith('seo.')){openSeoInspector();return}
  if(path.startsWith('heroTitle')||['heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile'].includes(path)){openHeroTitleInspector();return}
