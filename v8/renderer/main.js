@@ -20,7 +20,7 @@ import {createFields} from '/v8/renderer/fields.js?v=8.40.23';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {createRuntime} from '/v8/renderer/runtime.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.38.3';
+import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.40.26';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
