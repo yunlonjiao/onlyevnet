@@ -139,7 +139,7 @@ export const previewBody=`
       <div class="guide-detail-grid" data-oe-mount="guide-detail"></div>
     </section>
 
-    <section class="trip-community" id="community"><div class="trip-social-wallpaper" aria-hidden="true"><span class="trip-wallpaper-top">COMMUNITY</span><span class="trip-wallpaper-bottom">TOGETHER</span></div><header><span>STAY CONNECTED</span><h2>LINK <i>↗</i></h2></header><div data-oe-mount="community" class="community"></div></section>
+    <section class="trip-community" id="community"><div class="trip-social-wallpaper" aria-hidden="true"><span class="trip-wallpaper-top">COMMUNITY</span><span class="trip-wallpaper-bottom">COMMUNITY</span></div><header><span>STAY CONNECTED</span><h2>LINK <i>↗</i></h2></header><div data-oe-mount="community" class="community"></div></section>
     <section class="trip-sponsors" id="sponsors"><header><span>TRAVEL PARTNERS</span><h2>PARTNERS</h2></header><div data-oe-mount="sponsors" class="sponsors"></div></section>
   </main>
 
@@ -1099,5 +1099,51 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
       to { opacity:1; translate:0 0; }
     }
   }
+}
+
+/* Seamless typography: lower half of COMMUNITY at top, upper half at bottom.
+   Matching font, size, letterspacing, and x coordinate forms one cyclic word. */
+.trip-site .trip-social-wallpaper .trip-wallpaper-top,
+.trip-site .trip-social-wallpaper .trip-wallpaper-bottom{
+  left:0!important;width:max-content!important;
+  font:900 clamp(160px,24vw,385px)/1 Arial,Helvetica,sans-serif!important;
+  letter-spacing:-.075em!important;white-space:nowrap!important;
+}
+.trip-site .trip-social-wallpaper .trip-wallpaper-top{top:-.50em!important}
+.trip-site .trip-social-wallpaper .trip-wallpaper-bottom{bottom:-.50em!important}
+@media(max-width:760px){
+.trip-site .trip-social-wallpaper .trip-wallpaper-top,
+.trip-site .trip-social-wallpaper .trip-wallpaper-bottom{font-size:clamp(110px,33vw,195px)!important}
+}
+/* Lightweight entrance motion for homepage groups and title rails. */
+@supports(animation-timeline:view()){
+@media(prefers-reduced-motion:no-preference){
+.trip-site .trip-event-fact,
+.trip-site .trip-intro>aside,
+.trip-site .trip-news .scrap-update,
+.trip-site .trip-index .quick-grid>*,
+.trip-site .trip-feature .featured-activity-grid>*,
+.trip-site .trip-ticket-list .scrap-pass,
+.trip-site .trip-map .map-link-list a,
+.trip-site .trip-community .scrap-social{
+ animation:oe-scroll-rise 1ms linear both!important;
+ animation-timeline:view(block)!important;
+ animation-range:entry 0% entry 65%!important;
+}
+@keyframes oe-scroll-rise{
+ from{opacity:.45;translate:0 18px}
+ to{opacity:1;translate:0 0}
+}
+}
+}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+.trip-site .trip-index .quick-grid>*{transition:translate .26s ease,filter .26s ease!important}
+.trip-site .trip-index .quick-grid>*:hover{translate:0 -5px;filter:brightness(1.04)}
+.trip-site .trip-ticket-section .scrap-pass:hover{filter:brightness(1.035)}
+.trip-site .trip-map .map-static img{transition:scale .45s ease!important}
+.trip-site .trip-map .map-static:hover img{scale:1.012}
+}
+@media(prefers-reduced-motion:reduce){
+.trip-site .trip-index .quick-grid>*,.trip-site .trip-map .map-static img{transition:none!important}
 }
 `;
