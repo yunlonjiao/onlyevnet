@@ -1351,6 +1351,52 @@ body:not([data-oe-current-page]) .trip-site .trip-header{z-index:90!important}
 }
 }
 
+/* v8.40.52: no overlapping copy — alternating poster cards with balanced text.
+   Earlier negative margins collided with variable-length CMS activity descriptions. */
+@media(min-width:901px){
+.trip-site .trip-feature.oe-editorial-section>.featured-activity-grid{
+ row-gap:clamp(22px,3vw,42px)!important;
+ padding:clamp(24px,3vw,48px)!important;
+}
+.trip-site .trip-feature .featured-activity-grid>:nth-child(1){
+ grid-column:1 / 11!important;grid-row:1!important;margin:0!important;z-index:1;
+}
+.trip-site .trip-feature .featured-activity-grid>:nth-child(2){
+ grid-column:3 / 13!important;grid-row:2!important;margin:0!important;z-index:1;
+}
+.trip-site .trip-feature .featured-activity-grid>:nth-child(3){
+ grid-column:2 / 12!important;grid-row:3!important;margin:0!important;z-index:1;
+}
+}
+.trip-site .trip-feature .featured-activity-grid>.featured-activity-card,
+.trip-site .trip-feature .featured-activity-grid>.scrap-activity{
+ overflow:visible!important;box-sizing:border-box!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy{
+ position:relative!important;inset:auto!important;transform:none!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ height:auto!important;max-height:none!important;overflow:visible!important;
+ box-sizing:border-box!important;background:#fff!important;
+ color:#293946!important;text-shadow:none!important;
+ padding:clamp(20px,2.4vw,32px)!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy *,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy *{
+ position:relative;max-width:100%;overflow-wrap:break-word;
+ color:#293946!important;text-shadow:none!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy h2,
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy h3,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy h2,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy h3{
+ font-size:clamp(24px,2.5vw,38px)!important;line-height:1.25!important;
+ letter-spacing:-.025em!important;margin:8px 0 12px!important;
+}
+@media(max-width:900px){
+.trip-site .trip-feature .featured-activity-grid>*{margin:0!important}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
