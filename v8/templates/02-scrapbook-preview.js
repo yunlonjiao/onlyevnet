@@ -1397,6 +1397,73 @@ body:not([data-oe-current-page]) .trip-site .trip-header{z-index:90!important}
 .trip-site .trip-feature .featured-activity-grid>*{margin:0!important}
 }
 
+/* v8.40.53: compact overlapping editorial activities and shorter staggered tickets.
+   Preserve content height and editing hooks; only visual surfaces overlap. */
+@media(min-width:901px){
+.trip-site .trip-feature.oe-editorial-section>.featured-activity-grid{
+ padding:clamp(16px,2vw,28px)!important;
+ row-gap:0!important;
+}
+.trip-site .trip-feature .featured-activity-grid>:nth-child(1){
+ grid-column:1 / 11!important;grid-row:1!important;margin:0!important;z-index:1;
+}
+.trip-site .trip-feature .featured-activity-grid>:nth-child(2){
+ grid-column:4 / 13!important;grid-row:2!important;margin-top:-58px!important;z-index:2;
+}
+.trip-site .trip-feature .featured-activity-grid>:nth-child(3){
+ grid-column:1 / 11!important;grid-row:3!important;margin-top:-58px!important;z-index:3;
+}
+.trip-site .trip-feature .featured-activity-grid>.featured-activity-card,
+.trip-site .trip-feature .featured-activity-grid>.scrap-activity{
+ display:grid!important;grid-template-columns:minmax(0,45%) minmax(0,55%)!important;
+ align-items:stretch!important;min-height:0!important;
+ overflow:hidden!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-media,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-photo{
+ grid-column:1!important;grid-row:1!important;aspect-ratio:auto!important;
+ height:100%!important;min-height:190px!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy{
+ grid-column:2!important;grid-row:1!important;align-self:center!important;
+ padding:clamp(15px,1.6vw,25px)!important;
+}
+.trip-site .trip-feature .featured-activity-grid h2,
+.trip-site .trip-feature .featured-activity-grid h3{
+ font-size:clamp(21px,2vw,31px)!important;line-height:1.22!important;
+ margin:5px 0 9px!important;
+}
+.trip-site .trip-feature .featured-activity-grid p{
+ font-size:clamp(12px,.95vw,15px)!important;
+ line-height:1.5!important;margin:5px 0 10px!important;
+}
+/* Ticket display: stacked offset passes with a compact horizontal silhouette. */
+.trip-site .trip-ticket-list{padding:clamp(20px,2.6vw,36px)!important}
+.trip-site .trip-ticket-list .ticket-grid{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ gap:12px!important;padding:0 5%!important;
+}
+.trip-site .trip-ticket-list .ticket-grid>.scrap-pass{
+ width:90%!important;min-height:112px!important;max-height:none!important;
+ margin:0!important;grid-template-columns:minmax(0,1fr) 16% 22%!important;
+ box-shadow:0 8px 22px #23382e14!important;
+}
+.trip-site .trip-ticket-list .ticket-grid>.scrap-pass:nth-child(odd){align-self:flex-start!important}
+.trip-site .trip-ticket-list .ticket-grid>.scrap-pass:nth-child(even){align-self:flex-end!important}
+.trip-site .trip-ticket-list .scrap-pass-main{padding:12px 18px!important;gap:4px!important}
+.trip-site .trip-ticket-list .scrap-pass aside{padding:10px 13px!important}
+.trip-site .trip-ticket-list .scrap-pass-art{max-height:140px!important}
+.trip-site .trip-ticket-list .scrap-pass-watermark{width:86px!important;height:86px!important}
+.trip-site .trip-ticket-list .ticket-grid h3{font-size:clamp(17px,1.5vw,23px)!important;line-height:1.25!important}
+}
+@media(max-width:900px){
+.trip-site .trip-feature .featured-activity-grid>*{margin:0!important}
+.trip-site .trip-ticket-list .ticket-grid{gap:12px!important}
+.trip-site .trip-ticket-list .scrap-pass{min-height:112px!important}
+.trip-site .trip-ticket-list .scrap-pass-main{padding:12px 15px!important}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
