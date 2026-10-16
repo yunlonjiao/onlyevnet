@@ -1476,7 +1476,7 @@ body:not([data-oe-current-page]) .trip-site .trip-header{z-index:90!important}
 }
 .trip-site .trip-feature .featured-activity-grid>.featured-activity-card,
 .trip-site .trip-feature .featured-activity-grid>.scrap-activity{
- grid-template-columns:minmax(0,56%) minmax(0,44%)!important;
+ grid-template-columns:minmax(0,65%) minmax(0,35%)!important;
 }
 .trip-site .trip-feature .featured-activity-grid .featured-activity-media,
 .trip-site .trip-feature .featured-activity-grid .scrap-activity-photo{
