@@ -1168,4 +1168,49 @@ body:not([data-oe-current-page]) .trip-site .trip-hero-visual .kv{
 @media(prefers-reduced-motion:reduce){
 .trip-site .trip-social-wallpaper .trip-wallpaper-marquee{animation:none!important;will-change:auto!important}
 }
+
+/* Distinct homepage animation language — native CSS only, no download delay. */
+@media(prefers-reduced-motion:no-preference){
+/* KV opens like two translucent travel shutters, without blocking interaction. */
+.trip-site .trip-hero:before,.trip-site .trip-hero:after{
+ content:"";position:absolute;top:0;bottom:0;width:51%;z-index:8;
+ background:#c5e0dd;pointer-events:none;transform:scaleX(0);
+}
+.trip-site .trip-hero:before{left:0;transform-origin:left;animation:oe-hero-curtain-left .85s cubic-bezier(.7,0,.2,1) both}
+.trip-site .trip-hero:after{right:0;transform-origin:right;animation:oe-hero-curtain-right .85s cubic-bezier(.7,0,.2,1) both}
+@keyframes oe-hero-curtain-left{0%{transform:scaleX(1)}100%{transform:scaleX(0)}}
+@keyframes oe-hero-curtain-right{0%{transform:scaleX(1)}100%{transform:scaleX(0)}}
+/* Intro: vertical clipping gives the editorial heading a subtitle-reveal quality. */
+.trip-site .trip-intro-copy.oe-motion-target{clip-path:inset(0 0 100% 0);transition:clip-path .85s cubic-bezier(.2,.8,.2,1),opacity .72s,translate .72s!important}
+.trip-site .trip-intro-copy.oe-motion-visible{clip-path:inset(0 0 0 0)}
+/* News: animated scan line at its header bottom rather than another image fade. */
+.trip-site .trip-news>header{position:relative;overflow:hidden}
+.trip-site .trip-news>header:after{content:"";position:absolute;left:0;bottom:0;width:100%;height:3px;background:#c8ff5a;transform:scaleX(0);transform-origin:left;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.trip-site .trip-news>header.oe-motion-visible:after{transform:scaleX(1)}
+/* Posters: paper-mask reveal, no alteration of event images themselves. */
+.trip-site .trip-feature .featured-activity-grid.oe-motion-target{clip-path:inset(0 0 100% 0);transition:clip-path .9s cubic-bezier(.15,.75,.2,1),opacity .72s,translate .72s!important}
+.trip-site .trip-feature .featured-activity-grid.oe-motion-visible{clip-path:inset(0 0 0 0)}
+/* Ticket: stamp presses down then rebounds after ticket enters viewport. */
+.trip-site .trip-ticket-list.oe-motion-target .scrap-pass-watermark{animation:none!important}
+.trip-site .trip-ticket-list.oe-motion-visible .scrap-pass-watermark{animation:oe-stamp-impact .7s cubic-bezier(.2,.8,.2,1) both!important}
+@keyframes oe-stamp-impact{0%{opacity:.2;transform:translateY(-24px) scale(1.4) rotate(-12deg)}55%{opacity:1;transform:translateY(2px) scale(.93) rotate(3deg)}77%{transform:translateY(-2px) scale(1.035) rotate(-2deg)}100%{transform:translateY(0) scale(1) rotate(0)}}
+/* Map: illustrated destination line draws across the heading, not over upload. */
+.trip-site .trip-map-copy{position:relative}
+.trip-site .trip-map-copy:after{content:"";display:block;margin-top:24px;width:min(185px,85%);height:4px;border-top:3px dashed #89a8a4;transform:scaleX(0);transform-origin:left;transition:transform .8s ease .2s}
+.trip-site .trip-map-copy.oe-motion-visible:after{transform:scaleX(1)}
+/* Collage: cards arrive with their existing quirky angle preserved. */
+.trip-site .trip-community .scrap-social{animation:oe-collage-drop .72s backwards;animation-play-state:paused}
+.trip-site .trip-community .community.oe-motion-visible .scrap-social{animation-play-state:running}
+.trip-site .trip-community .scrap-social:nth-child(2){animation-delay:.10s}
+.trip-site .trip-community .scrap-social:nth-child(3){animation-delay:.20s}
+.trip-site .trip-community .scrap-social:nth-child(4){animation-delay:.30s}
+@keyframes oe-collage-drop{from{opacity:0;translate:0 -28px}to{opacity:1;translate:0 0}}
+/* Quick directory responds with a slight tilt, without pointer tracking or CPU loops. */
+@media(hover:hover){.trip-site .trip-index .quick-grid>*:hover{rotate:-1.5deg}}
+}
+@media(prefers-reduced-motion:reduce){
+.trip-site .trip-hero:before,.trip-site .trip-hero:after,.trip-site .trip-news>header:after,.trip-site .trip-map-copy:after{display:none!important}
+.trip-site .trip-intro-copy,.trip-site .trip-feature .featured-activity-grid{clip-path:none!important}
+.trip-site .trip-community .scrap-social,.trip-site .trip-ticket-list .scrap-pass-watermark{animation:none!important}
+}
 `;
