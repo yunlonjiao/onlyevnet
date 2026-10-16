@@ -1180,13 +1180,54 @@ body:not([data-oe-current-page]) .trip-site .trip-hero-visual .kv{
 .trip-site .trip-hero:after{right:0;transform-origin:right;animation:oe-hero-curtain-right .85s cubic-bezier(.7,0,.2,1) both}
 @keyframes oe-hero-curtain-left{0%{transform:scaleX(1)}100%{transform:scaleX(0)}}
 @keyframes oe-hero-curtain-right{0%{transform:scaleX(1)}100%{transform:scaleX(0)}}
-/* Intro: vertical clipping gives the editorial heading a subtitle-reveal quality. */
-.trip-site .trip-intro-copy.oe-motion-target{clip-path:inset(0 0 100% 0);transition:clip-path .85s cubic-bezier(.2,.8,.2,1),opacity .72s,translate .72s!important}
-.trip-site .trip-intro-copy.oe-motion-visible{clip-path:inset(0 0 0 0)}
-/* News: animated scan line at its header bottom rather than another image fade. */
-.trip-site .trip-news>header{position:relative;overflow:hidden}
-.trip-site .trip-news>header:after{content:"";position:absolute;left:0;bottom:0;width:100%;height:3px;background:#c8ff5a;transform:scaleX(0);transform-origin:left;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
-.trip-site .trip-news>header.oe-motion-visible:after{transform:scaleX(1)}
+/* Clear, content-safe editorial animations. The containers remain readable even
+   if the observer never activates; only decorative elements animate. */
+.trip-site .trip-intro-copy.oe-motion-target,
+.trip-site .trip-intro-copy.oe-motion-visible,
+.trip-site .trip-news>header.oe-motion-target,
+.trip-site .trip-news>header.oe-motion-visible,
+.trip-site .trip-news .updates-list.oe-motion-target,
+.trip-site .trip-news .updates-list.oe-motion-visible,
+.trip-site .trip-map-copy.oe-motion-target,
+.trip-site .trip-map-copy.oe-motion-visible,
+.trip-site .trip-map-paper.oe-motion-target,
+.trip-site .trip-map-paper.oe-motion-visible{
+ opacity:1!important;translate:none!important;clip-path:none!important;
+}
+.trip-site .trip-news>header:after,.trip-site .trip-map-copy:after{content:none!important}
+@media(prefers-reduced-motion:no-preference){
+/* Intro: a bold editorial headline slides upward, followed by the copy. */
+.trip-site .trip-intro-copy.oe-motion-visible h2{
+ animation:oe-editorial-rise 1.15s cubic-bezier(.18,.85,.22,1) both!important;
+}
+.trip-site .trip-intro-copy.oe-motion-visible p{
+ animation:oe-editorial-rise 1s cubic-bezier(.18,.85,.22,1) .18s both!important;
+}
+@keyframes oe-editorial-rise{
+ from{opacity:.15;transform:translateY(58px) skewY(3deg)}
+ to{opacity:1;transform:translateY(0) skewY(0)}
+}
+/* News: each entry snaps into place like a magazine card. */
+.trip-site .trip-news .updates-list.oe-motion-visible .scrap-update{
+ animation:oe-news-arrive .9s cubic-bezier(.16,.8,.2,1) both!important;
+}
+.trip-site .trip-news .updates-list.oe-motion-visible .scrap-update:nth-child(2){animation-delay:.16s!important}
+.trip-site .trip-news .updates-list.oe-motion-visible .scrap-update:nth-child(3){animation-delay:.32s!important}
+.trip-site .trip-news .updates-list.oe-motion-visible .scrap-update:nth-child(4){animation-delay:.48s!important}
+@keyframes oe-news-arrive{
+ from{opacity:.18;transform:translateX(72px) rotate(1deg)}
+ to{opacity:1;transform:translateX(0) rotate(0)}
+}
+/* Map: the media opens like a horizontal travel poster. */
+.trip-site .trip-map-paper.oe-motion-visible .map-static{
+ animation:oe-map-unfold 1.25s cubic-bezier(.2,.82,.22,1) both!important;
+ transform-origin:left center;
+}
+@keyframes oe-map-unfold{
+ from{opacity:.35;clip-path:inset(0 85% 0 0);filter:saturate(.65)}
+ to{opacity:1;clip-path:inset(0 0 0 0);filter:saturate(1)}
+}
+}
 /* Posters: paper-mask reveal, no alteration of event images themselves. */
 /* Activity content must never depend on scroll-observer success to display.
    Animate cards, not the entire interactive/mount container. */
@@ -1214,10 +1255,6 @@ to{opacity:1;translate:0 0;scale:1}
 .trip-site .trip-ticket-list.oe-motion-target .scrap-pass-watermark{animation:none!important}
 .trip-site .trip-ticket-list.oe-motion-visible .scrap-pass-watermark{animation:oe-stamp-impact .7s cubic-bezier(.2,.8,.2,1) both!important}
 @keyframes oe-stamp-impact{0%{opacity:.2;transform:translateY(-24px) scale(1.4) rotate(-12deg)}55%{opacity:1;transform:translateY(2px) scale(.93) rotate(3deg)}77%{transform:translateY(-2px) scale(1.035) rotate(-2deg)}100%{transform:translateY(0) scale(1) rotate(0)}}
-/* Map: illustrated destination line draws across the heading, not over upload. */
-.trip-site .trip-map-copy{position:relative}
-.trip-site .trip-map-copy:after{content:"";display:block;margin-top:24px;width:min(185px,85%);height:4px;border-top:3px dashed #89a8a4;transform:scaleX(0);transform-origin:left;transition:transform .8s ease .2s}
-.trip-site .trip-map-copy.oe-motion-visible:after{transform:scaleX(1)}
 /* Collage: cards arrive with their existing quirky angle preserved. */
 .trip-site .trip-community .scrap-social{animation:oe-collage-drop .72s backwards;animation-play-state:paused}
 .trip-site .trip-community .community.oe-motion-visible .scrap-social{animation-play-state:running}
