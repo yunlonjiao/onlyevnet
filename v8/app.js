@@ -709,6 +709,7 @@ function openPageTool(tool){
  if(tool==='basic'){openAddressInspector();return}
  if(tool==='lifecycle'){openLifecycleInspector();return}
  if(tool==='hero'){openHeroTitleInspector();return}
+ if(tool==='intro'){openFieldInspector('tagline');return}
  if(tool==='seo'){openSeoInspector();return}
  if(tool==='map'){openImageInspector('venueMap.image');return}
  if(tool==='freewalk'||tool==='itasha'){openOptionalPageInspector(tool);return}
@@ -726,7 +727,9 @@ function renderPageContentNav(page,{openDefault=true}={}){
    if(openDefault){nav.querySelector('[data-custom-page-nav="items"]')?.classList.add('active');openCustomPageItemsManager(custom.id)}
    return;
  }
- const items=PAGE_CONTENT_CONFIG[page]||[];
+ const items=page==='home'&&state.templateId==='02-scrapbook'?
+   PAGE_CONTENT_CONFIG.home.filter(x=>x.collection!=='ribbonItems').map(x=>x.collection==='explore'?{...x,label:'场地图链接'}:x).flatMap(x=>x.tool==='hero'?[x,{tool:'intro',label:'活动简介'}]:[x]):
+   (PAGE_CONTENT_CONFIG[page]||[]);
  nav.innerHTML=items.map(x=>x.collection
    ?'<button type="button" data-page-content-manager="'+x.collection+'"><span>'+esc(x.label)+'</span><b data-content-count="'+x.collection+'">0</b></button>'
    :'<button type="button" data-page-tool="'+x.tool+'"><span>'+esc(x.label)+'</span></button>'
@@ -914,14 +917,16 @@ function bindInspectorStateInput(input,path,{clean=false,number=false}={}){
 function openHeroTitleInspector(){
  const desktop=String(state.heroImage||'').trim(),mobile=String(state.mobileHeroImage||'').trim();
  const media=(path,label,src,emptyLabel)=>'<div class="item-media hero-media-field"><span>'+label+'</span><div class="item-media-row">'+(src?'<img src="'+esc(src)+'" alt="">':'<div class="item-media-empty">'+emptyLabel+'</div>')+'<div><button type="button" data-hero-image="'+path+'">选择 / 裁剪</button>'+(src?'<button type="button" class="ghost" data-hero-image-remove="'+path+'">移除</button>':'')+'</div></div></div>';
- setInspector('主视觉','标题、图片与裁切','<div class="item-fields">'+
+ const isTravel=state.templateId==='02-scrapbook';
+ setInspector('主视觉',isTravel?'KV 图片与裁切':'标题、图片与裁切',(isTravel?'':'<div class="item-fields">')+
+ (isTravel?'':
   '<label><span>第一行</span><input data-sync-path="heroTitle1" value="'+esc(state.heroTitle1||'')+'"></label>'+
   '<label><span>第二行</span><input data-sync-path="heroTitle2" value="'+esc(state.heroTitle2||'')+'"></label>'+
   '<label><span>第三行</span><input data-sync-path="heroTitle3" value="'+esc(state.heroTitle3||'')+'"></label>'+
   '<label><span>字号 · <b id="heroTitleSizeValue">'+Number(state.heroTitleSize||126)+' px</b></span><input type="range" min="56" max="160" step="1" data-sync-path="heroTitleSize" value="'+Number(state.heroTitleSize||126)+'"></label>'+
   '<label><span>主文字颜色</span><input type="color" data-sync-path="heroTitleColor" value="'+esc(state.heroTitleColor||'#17151b')+'"></label>'+
-  '<label><span>强调色</span><input type="color" data-sync-path="heroTitleAccentColor" value="'+esc(state.heroTitleAccentColor||'#ff5f91')+'"></label>'+
- '</div>'+(state.templateId==='02-scrapbook'?'<label><span>KV 展示方式</span><select data-sync-path="heroDisplayMode"><option value="poster"'+(state.heroDisplayMode!=='wide'?' selected':'')+'>标准 3:4 海报（完整展示）</option><option value="wide"'+(state.heroDisplayMode==='wide'?' selected':'')+'>宽屏增强（整屏 KV）</option></select></label>':'')+media('heroImage','桌面 KV',desktop,'DESKTOP')+media('mobileHeroImage','手机 KV（可选）',mobile,'MOBILE')+
+  '<label><span>强调色</span><input type="color" data-sync-path="heroTitleAccentColor" value="'+esc(state.heroTitleAccentColor||'#ff5f91')+'"></label>')+
+ (isTravel?'':'</div>')+(state.templateId==='02-scrapbook'?'<label><span>KV 展示方式</span><select data-sync-path="heroDisplayMode"><option value="poster"'+(state.heroDisplayMode!=='wide'?' selected':'')+'>标准 3:4 海报（完整展示）</option><option value="wide"'+(state.heroDisplayMode==='wide'?' selected':'')+'>宽屏增强（整屏 KV）</option></select></label>':'')+media('heroImage','桌面 KV',desktop,'DESKTOP')+media('mobileHeroImage','手机 KV（可选）',mobile,'MOBILE')+
  '<div class="item-fields hero-focal-fields">'+
   '<label><span>桌面焦点</span><input data-sync-path="heroFocalDesktop" value="'+esc(state.heroFocalDesktop||'50% 50%')+'" placeholder="50% 50%"></label>'+
   '<label><span>手机焦点</span><input data-sync-path="heroFocalMobile" value="'+esc(state.heroFocalMobile||'50% 50%')+'" placeholder="50% 50%"></label>'+
@@ -1000,6 +1005,12 @@ function openFieldInspector(path){
  if(['date','location','edition','navigationUrl'].includes(path)){openAddressInspector();return}
  if(path==='eventStatus'){openLifecycleInspector();return}
  if(path.startsWith('seo.')){openSeoInspector();return}
+ if(path==='tagline'&&state.templateId==='02-scrapbook'){
+   setInspector('活动简介','简介正文','<label>活动介绍<textarea id="fieldInput" data-path="tagline">'+esc(state.tagline||'')+'</textarea></label>');
+   const input=$('#fieldInput');fitTextarea(input);let started=false;
+   input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep('tagline',e.target.value);send({type:'OE_PATCH_FIELD',path:'tagline',value:e.target.value});fitTextarea(e.target)});
+   input.addEventListener('blur',()=>save());return;
+ }
  if(path.startsWith('heroTitle')||['heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile'].includes(path)){openHeroTitleInspector();return}
  const value=getDeep(path);
  setInspector('内容','编辑文字','<label>内容<textarea id="fieldInput" data-path="'+esc(path)+'">'+esc(value)+'</textarea></label>');
