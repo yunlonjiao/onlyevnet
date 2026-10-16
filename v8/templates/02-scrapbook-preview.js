@@ -1284,6 +1284,73 @@ body:not([data-oe-current-page]) .trip-site .trip-header{z-index:90!important}
 .trip-site .trip-hero:before,.trip-site .trip-hero:after{animation:none!important;display:none!important}
 }
 
+/* Feature v8.40.51: consistent full-width editorial rail + three overlapping
+   activity posters. Keep all cards in document flow so variable copy is safe. */
+@media(min-width:901px){
+.trip-site .trip-feature.oe-editorial-section{
+  display:grid!important;grid-template-columns:minmax(0,27%) minmax(0,73%)!important;
+  padding:0!important;gap:0!important;align-items:stretch!important;
+  background:#e6f0eb!important;
+}
+.trip-site .trip-feature.oe-editorial-section>header{
+  grid-column:1!important;grid-row:1!important;position:relative!important;
+  background:#c9fb62!important;color:#293946!important;
+  border-right:1px solid #bdc9bd!important;
+  padding:clamp(34px,4vw,66px) clamp(24px,3vw,48px)!important;
+}
+.trip-site .trip-feature.oe-editorial-section>.featured-activity-grid{
+  grid-column:2!important;grid-row:1!important;display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  grid-template-rows:none!important;grid-auto-rows:auto!important;
+  gap:0!important;align-items:start!important;align-content:start!important;
+  min-height:0!important;padding:clamp(30px,4vw,64px)!important;
+  background:#e9f0ed!important;border:0!important;overflow:visible!important;
+}
+.trip-site .trip-feature .featured-activity-grid > :nth-child(1){grid-column:1 / 10!important;grid-row:1!important;z-index:1}
+.trip-site .trip-feature .featured-activity-grid > :nth-child(2){grid-column:6 / 13!important;grid-row:2!important;margin-top:-42px!important;z-index:2}
+.trip-site .trip-feature .featured-activity-grid > :nth-child(3){grid-column:2 / 11!important;grid-row:3!important;margin-top:-42px!important;z-index:3}
+}
+.trip-site .trip-feature .featured-activity-grid>.featured-activity-card,
+.trip-site .trip-feature .featured-activity-grid>.scrap-activity{
+  display:flex!important;flex-direction:column!important;width:100%!important;
+  min-width:0!important;max-width:none!important;height:auto!important;
+  padding:0!important;gap:0!important;overflow:hidden!important;
+  background:#fff!important;border:1px solid #cad4cf!important;
+  box-shadow:0 14px 34px rgba(34,55,51,.12)!important;
+}
+.trip-site .trip-feature .featured-activity-media,
+.trip-site .trip-feature .scrap-activity-photo{
+  display:block!important;position:relative!important;aspect-ratio:16/9!important;
+  width:100%!important;height:auto!important;max-height:none!important;
+  min-height:0!important;padding:0!important;margin:0!important;
+  border:0!important;background:#dbe7e2!important;overflow:hidden!important;
+}
+.trip-site .trip-feature .featured-activity-media img,
+.trip-site .trip-feature .scrap-activity-photo img{
+  display:block!important;position:absolute!important;inset:0!important;
+  width:100%!important;height:100%!important;max-width:none!important;
+  object-fit:cover!important;object-position:center!important;
+  background:transparent!important;padding:0!important;
+}
+.trip-site .trip-feature .featured-activity-copy,
+.trip-site .trip-feature .scrap-activity-copy{
+  background:#fff!important;color:#293946!important;padding:clamp(17px,2.2vw,30px)!important;
+}
+@media(max-width:900px){
+.trip-site .trip-feature.oe-editorial-section{display:grid!important;grid-template-columns:1fr!important;padding:0!important;gap:0!important}
+.trip-site .trip-feature.oe-editorial-section>header{grid-column:1!important;grid-row:1!important;background:#c9fb62!important}
+.trip-site .trip-feature.oe-editorial-section>.featured-activity-grid{
+  grid-column:1!important;grid-row:2!important;display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;gap:18px!important;
+  padding:clamp(18px,4vw,32px)!important;min-height:0!important;
+  background:#e9f0ed!important;border:0!important;
+}
+.trip-site .trip-feature .featured-activity-grid>*{
+  position:relative!important;grid-column:auto!important;grid-row:auto!important;
+  margin:0!important;width:100%!important;transform:none!important;
+}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
