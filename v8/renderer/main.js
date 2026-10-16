@@ -32,6 +32,37 @@ const send=m=>parent.postMessage(m,ORIGIN);
 const runtimeWindow=/** @type {Window & typeof globalThis & {__oeRenderLoadId?:number}} */(window);
 runtimeWindow.__oeRenderLoadId=(runtimeWindow.__oeRenderLoadId||0)+1;
 
+/* Template 02 homepage reveal: one observer, one animation path.
+   Replaces legacy conflicting CSS view-timeline rules. */
+let oeMotionObserver=null;
+function setupHomeMotion(){
+  if(currentTemplateId!=='02-scrapbook'||!('IntersectionObserver' in window))return;
+  const root=document.querySelector('.trip-site');
+  if(!root)return;
+  if(oeMotionObserver)oeMotionObserver.disconnect();
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const selectors=[
+    '.trip-intro>aside','.trip-intro-copy','.trip-news>header','.trip-news .updates-list',
+    '.trip-index>header','.trip-index .quick-grid','.trip-feature>header',
+    '.trip-feature .featured-activity-grid','.trip-ticket-cover','.trip-ticket-list',
+    '.trip-map-copy','.trip-map-paper','.trip-community>header','.trip-community .community'
+  ];
+  root.querySelectorAll(selectors.join(',')).forEach(el=>{
+    el.classList.add('oe-motion-target');
+    if(reduce){el.classList.add('oe-motion-visible');return;}
+    const bounds=el.getBoundingClientRect();
+    if(bounds.top<window.innerHeight*.8 && bounds.bottom>0)el.classList.add('oe-motion-visible');
+  });
+  if(reduce)return;
+  oeMotionObserver=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting)return;
+      entry.target.classList.add('oe-motion-visible');
+      oeMotionObserver?.unobserve(entry.target);
+    });
+  },{threshold:0.08,rootMargin:'0px 0px -8% 0px'});
+  root.querySelectorAll('.oe-motion-target:not(.oe-motion-visible)').forEach(el=>oeMotionObserver.observe(el));
+}
 const runtimeStyle=document.createElement('style');
 runtimeStyle.dataset.oeRuntime='1';
 document.head.appendChild(runtimeStyle);
@@ -209,9 +240,10 @@ window.addEventListener('message',e=>{
     fields.setMode(m.mode||'edit');
     runtime.initRuntime();
     router.showPage(router.getCurrentPage(),false);
+    requestAnimationFrame(setupHomeMotion);
   }
   if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value);if(m.path!=='heroImage'&&m.path!=='mobileHeroImage')applyEntryState();if(['eventStatus','eventStatusMode','eventStartDateTime','eventEndDateTime'].includes(m.path))applyLifecycleState()}
-  if(m.type==='OE_REPLACE_STATE'){mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);state=m.state||{};applyState(state);runtime.initRuntime()}
+  if(m.type==='OE_REPLACE_STATE'){mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);state=m.state||{};applyState(state);runtime.initRuntime();requestAnimationFrame(setupHomeMotion)}
   if(m.type==='OE_SET_MODE'){
     fields.setMode(m.mode);
     if(m.mode==='preview'&&state.entryAnimation?.enabled!==false)previewEntry({play:false});
@@ -222,6 +254,7 @@ window.addEventListener('message',e=>{
     fields.markEditable();
     router.applyModules();
     router.showPage(router.getCurrentPage(),false);
+    requestAnimationFrame(setupHomeMotion);
   }
   if(m.type==='OE_CROP_ACTIVE'){
     document.getAnimations().forEach(animation=>{try{m.active?animation.pause():animation.play()}catch{}});
@@ -229,7 +262,7 @@ window.addEventListener('message',e=>{
   }
   if(m.type==='OE_PREVIEW_ENTRY')previewEntry({play:!!m.play});
   if(m.type==='OE_HIDE_ENTRY_PREVIEW')hideEntryPreview();
-  if(m.type==='OE_SHOW_PAGE')router.showPage(m.page||'home');
+  if(m.type==='OE_SHOW_PAGE'){router.showPage(m.page||'home');requestAnimationFrame(setupHomeMotion)}
   if(m.type==='OE_EXPORT_HTML')send({type:'OE_EXPORT_HTML_RESULT',html:buildStandaloneHtml()});
 });
 send({type:'OE_READY'});
