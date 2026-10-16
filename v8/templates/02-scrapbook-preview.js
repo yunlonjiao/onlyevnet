@@ -1214,6 +1214,19 @@ body:not([data-oe-current-page]) .trip-site .trip-hero-visual .kv{
 .trip-site .trip-community .scrap-social,.trip-site .trip-ticket-list .scrap-pass-watermark{animation:none!important}
 }
 
+/* Hero paint-order repair: keep the entry curtain below all labels/nav.
+   The former z-index:8 overlay obscured the opening typography. */
+.trip-site .trip-hero{isolation:isolate!important}
+.trip-site .trip-hero-visual{z-index:0!important}
+.trip-site .trip-hero:before,.trip-site .trip-hero:after{z-index:1!important}
+.trip-site .trip-hero-copy{z-index:3!important}
+body[data-oe-current-page="home"] .trip-site .trip-header,
+body:not([data-oe-current-page]) .trip-site .trip-header{z-index:90!important}
+.trip-site .trip-logo,.trip-site .trip-logo b{position:relative;isolation:isolate}
+@media(prefers-reduced-motion:reduce){
+.trip-site .trip-hero:before,.trip-site .trip-hero:after{animation:none!important;display:none!important}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
