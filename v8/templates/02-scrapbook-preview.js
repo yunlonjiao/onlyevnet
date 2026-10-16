@@ -139,7 +139,7 @@ export const previewBody=`
       <div class="guide-detail-grid" data-oe-mount="guide-detail"></div>
     </section>
 
-    <section class="trip-community" id="community"><div class="trip-social-wallpaper" aria-hidden="true">LINK → LINK → LINK → LINK → LINK → LINK →</div><header><span>STAY CONNECTED</span><h2>LINK <i>↗</i></h2></header><div data-oe-mount="community" class="community"></div></section>
+    <section class="trip-community" id="community"><div class="trip-social-wallpaper" aria-hidden="true"><span class="trip-wallpaper-top">COMMUNITY</span><span class="trip-wallpaper-bottom">TOGETHER</span></div><header><span>STAY CONNECTED</span><h2>LINK <i>↗</i></h2></header><div data-oe-mount="community" class="community"></div></section>
     <section class="trip-sponsors" id="sponsors"><header><span>TRAVEL PARTNERS</span><h2>PARTNERS</h2></header><div data-oe-mount="sponsors" class="sponsors"></div></section>
   </main>
 
@@ -982,5 +982,47 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
   .trip-site .trip-map.oe-editorial-section>.trip-map-paper{
     padding:20px 23px!important;
   }
+}
+
+/* Community typography: one cropped word at each edge, no repeated LINK wallpaper. */
+.trip-site .trip-community{
+  padding:clamp(34px,4vw,56px) 2.5vw clamp(34px,4vw,56px)!important;
+  min-height:0!important;
+  overflow:hidden!important;
+}
+.trip-site .trip-social-wallpaper{
+  position:absolute!important;inset:0!important;
+  z-index:0!important;width:100%!important;height:100%!important;
+  overflow:hidden!important;pointer-events:none!important;
+  opacity:.72!important;font-size:inherit!important;line-height:normal!important;
+  letter-spacing:normal!important;word-break:normal!important;
+}
+.trip-site .trip-social-wallpaper span{
+  position:absolute;left:-.04em;display:block;white-space:nowrap;
+  font:900 clamp(160px,24vw,385px)/1 Arial,Helvetica,sans-serif;
+  letter-spacing:-.075em;color:#c8ff5a;
+  user-select:none;
+}
+.trip-site .trip-social-wallpaper .trip-wallpaper-top{top:-.51em}
+.trip-site .trip-social-wallpaper .trip-wallpaper-bottom{bottom:-.52em}
+.trip-site .trip-community>header{z-index:2!important;margin:0 0 clamp(8px,1.5vw,22px)!important}
+.trip-site .trip-community .community{padding:clamp(18px,2.5vw,35px) 3vw clamp(18px,2.5vw,35px)!important}
+/* Small interaction polish without moving cards until visitors engage. */
+@media(prefers-reduced-motion:no-preference){
+.trip-site .trip-community .scrap-social{transition:transform .45s cubic-bezier(.2,.8,.2,1),filter .35s ease!important}
+.trip-site .trip-community .scrap-social:hover{filter:brightness(1.035);z-index:5}
+.trip-site .trip-community .scrap-social-stamp{transition:transform .3s ease!important}
+.trip-site .trip-community .scrap-social:hover .scrap-social-stamp{transform:translate(3px,-4px) rotate(12deg)}
+.trip-site .trip-community>header h2 i{display:inline-block;animation:oe-community-arrow 2.8s ease-in-out infinite}
+@keyframes oe-community-arrow{0%,100%{transform:translate(0,0)}50%{transform:translate(5px,-5px)}}
+}
+@media(max-width:760px){
+.trip-site .trip-community{padding:34px 12px 38px!important}
+.trip-site .trip-social-wallpaper span{font-size:clamp(110px,33vw,195px)}
+.trip-site .trip-community .community{padding:16px 2vw 22px!important}
+}
+@media(prefers-reduced-motion:reduce){
+.trip-site .trip-community>header h2 i{animation:none!important}
+.trip-site .trip-community .scrap-social,.trip-site .trip-community .scrap-social-stamp{transition:none!important}
 }
 `;
