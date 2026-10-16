@@ -60,7 +60,7 @@ export const previewBody=`
     <section class="trip-event-facts oe-home-only" aria-label="活动基本信息">
       <div class="trip-event-fact"><span>EVENT DATE</span><strong data-oe-field="date">活动日期</strong></div>
       <div class="trip-event-fact"><span>DESTINATION</span><strong data-oe-field="location">举办城市</strong></div>
-      <div class="trip-event-fact"><span>VENUE</span><strong data-oe-field="edition">活动场馆</strong></div>
+      <div class="trip-event-fact"><span>VENUE</span><a class="venue-nav" href="#map-home" title="查看场馆位置"><strong data-oe-field="edition">活动场馆</strong><span aria-hidden="true"> ↗</span></a></div>
       <div class="trip-event-fact"><span>EVENT STATUS</span><strong data-oe-status="event">活动未开始</strong></div>
     </section>
 
@@ -1664,6 +1664,48 @@ body:not([data-oe-current-page]) .trip-site .trip-header{z-index:90!important}
 @media(max-width:900px){
 .trip-site .trip-ticket-list .ticket-grid>.ticket{
  min-height:175px!important;height:auto!important;
+}
+}
+
+/* v8.40.60: fully opaque, seam-free KV; do not tint artwork.
+   02 uses full-bleed hero exclusively, regardless of stale mode attributes. */
+body[data-oe-template="02-scrapbook"] .trip-site .trip-hero{
+ border:0!important;outline:0!important;margin:0!important;
+ background:transparent!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-hero-visual{
+ inset:-1px!important;width:calc(100% + 2px)!important;
+ height:calc(100% + 2px)!important;background:transparent!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-hero-visual .kv{
+ inset:0!important;width:100%!important;height:100%!important;
+ background-image:var(--oe-hero-image-desktop,none)!important;
+ background-size:cover!important;background-repeat:no-repeat!important;
+ background-position:var(--oe-hero-focal-desktop,center)!important;
+ filter:none!important;opacity:1!important;
+ border:0!important;outline:0!important;box-shadow:none!important;
+ transform:none!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-hero-visual .kv.empty{
+ background-image:none!important;background-color:#c7dedc!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-hero-visual .kv.empty .trip-kv-placeholder{
+ display:flex!important;position:absolute;inset:0;
+ align-items:center;justify-content:center;flex-direction:column;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-hero:before,
+body[data-oe-template="02-scrapbook"] .trip-site .trip-hero:after{display:none!important}
+.trip-site .trip-event-fact .venue-nav{
+ display:inline-flex!important;align-items:center;gap:5px;
+ color:inherit!important;text-decoration:none!important;
+ cursor:pointer!important;min-width:0;
+}
+.trip-site .trip-event-fact .venue-nav:hover{text-decoration:underline!important;text-underline-offset:3px}
+.trip-site .trip-event-fact .venue-nav strong{color:inherit;font:inherit;overflow-wrap:anywhere}
+@media(max-width:900px){
+body[data-oe-template="02-scrapbook"] .trip-site .trip-hero-visual .kv{
+ background-image:var(--oe-hero-image-mobile,var(--oe-hero-image-desktop,none))!important;
+ background-position:var(--oe-hero-focal-mobile,center)!important;
 }
 }
 
