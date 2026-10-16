@@ -1107,4 +1107,40 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
 @media(prefers-reduced-motion:reduce){
 .trip-site .oe-motion-target{animation:none!important;transition:none!important;opacity:1!important;translate:none!important}
 }
+
+/* Complete the original no-extra-assets animation plan. All use GPU-friendly
+   transform/opacity; editing / reduced-motion remain unaffected. */
+@media(prefers-reduced-motion:no-preference){
+/* Hero: once-only gentle settle, no loading gate or hidden content. */
+body[data-oe-current-page="home"] .trip-site .trip-hero-visual .kv,
+body:not([data-oe-current-page]) .trip-site .trip-hero-visual .kv{
+ animation:oe-kv-settle .95s cubic-bezier(.18,.7,.3,1) both!important;
+}
+@keyframes oe-kv-settle{from{opacity:.82;scale:1.035}to{opacity:1;scale:1}}
+/* Event facts: readable, staggered entrance without making them invisible. */
+.trip-site .trip-event-fact{animation:oe-fact-arrive .55s ease-out both!important}
+.trip-site .trip-event-fact:nth-child(2){animation-delay:.08s!important}
+.trip-site .trip-event-fact:nth-child(3){animation-delay:.16s!important}
+.trip-site .trip-event-fact:nth-child(4){animation-delay:.24s!important}
+@keyframes oe-fact-arrive{from{opacity:.5;translate:0 16px}to{opacity:1;translate:0 0}}
+/* Real card image zoom lives on the media container to avoid overwritten image transforms. */
+.trip-site .trip-feature .featured-activity-media{overflow:hidden!important}
+.trip-site .trip-feature .featured-activity-media img{transition:scale .4s ease!important}
+.trip-site .trip-feature .featured-activity-card:hover .featured-activity-media img,
+.trip-site .trip-feature .scrap-activity:hover .featured-activity-media img{scale:1.045}
+/* Ticket watermark seal gently reacts to ticket interaction. */
+.trip-site .trip-ticket-list .scrap-pass-watermark{transition:rotate .5s cubic-bezier(.2,.7,.2,1)!important}
+.trip-site .trip-ticket-list .scrap-pass:hover .scrap-pass-watermark{rotate:12deg}
+/* Link arrow / content response without layout reflow. */
+.trip-site .trip-map .map-link-list a{transition:translate .23s ease!important}
+.trip-site .trip-map .map-link-list a:hover{translate:6px 0}
+.trip-site .trip-news .scrap-update{transition:translate .2s ease!important}
+.trip-site .trip-news .scrap-update:hover{translate:4px 0}
+}
+@media(prefers-reduced-motion:reduce){
+.trip-site .trip-hero-visual .kv,.trip-site .trip-event-fact{animation:none!important}
+.trip-site .trip-feature .featured-activity-media img,
+.trip-site .trip-ticket-list .scrap-pass-watermark,
+.trip-site .trip-map .map-link-list a,.trip-site .trip-news .scrap-update{transition:none!important}
+}
 `;
