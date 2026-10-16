@@ -73,7 +73,7 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     }
     if(path==='navigationUrl'){
       const a=$('.venue-nav');
-      if(a)a.href=safeExternalUrl(value);
+      if(a){const url=safeExternalUrl(value);a.href=url==='#'?'#map-home':url;a.title=url==='#'?'查看场地图':'打开场馆导航';if(url!=='#')a.target='_blank';else a.removeAttribute('target');a.rel='noopener noreferrer';}
       return;
     }
     if(path==='ticketUrl'||path==='ticketLinkLabel'){
