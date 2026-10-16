@@ -1526,6 +1526,37 @@ body:not([data-oe-current-page]) .trip-site .trip-header{z-index:90!important}
 .trip-site .trip-map-paper .map-static{height:clamp(330px,60vw,540px)!important}
 }
 
+/* v8.40.55: taller feature cards with safe 3-line copy and top-right action.
+   Direct-child anchors stay within each card's right-hand content column. */
+@media(min-width:901px){
+.trip-site .trip-feature .featured-activity-grid .featured-activity-media,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-photo{
+ min-height:330px!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy{
+ position:relative!important;align-self:stretch!important;
+ display:flex!important;flex-direction:column!important;
+ justify-content:center!important;min-height:330px!important;
+ padding:65px clamp(24px,2.5vw,38px) 26px!important;
+ box-sizing:border-box!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy p,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy p{
+ min-height:calc(1.65em * 3)!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy > a,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy > a,
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy .featured-activity-link,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy .featured-activity-link{
+ position:absolute!important;top:22px!important;right:clamp(20px,2.4vw,36px)!important;
+ bottom:auto!important;left:auto!important;z-index:5!important;
+ margin:0!important;width:auto!important;max-width:55%!important;
+ font-size:12px!important;white-space:nowrap!important;
+ text-decoration:none!important;
+}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
