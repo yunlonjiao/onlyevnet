@@ -1615,6 +1615,58 @@ body:not([data-oe-current-page]) .trip-site .trip-header{z-index:90!important}
 .trip-site .trip-ticket-list .scrap-pass{min-height:175px!important}
 }
 
+/* v8.40.57 — undo mistaken full-width feature cards.
+   Restore three staggered magazine widths and increase only their height. */
+@media(min-width:901px){
+.trip-site .trip-feature .featured-activity-grid>:nth-child(1){
+ grid-column:1 / 11!important;
+}
+.trip-site .trip-feature .featured-activity-grid>:nth-child(2){
+ grid-column:4 / 13!important;
+}
+.trip-site .trip-feature .featured-activity-grid>:nth-child(3){
+ grid-column:1 / 11!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-media,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-photo,
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy{
+ min-height:395px!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy{
+ padding-top:72px!important;
+}
+/* Keep the admission layout in both editor and preview, including iframe. */
+.trip-site .trip-ticket-section .trip-ticket-list .ticket-grid{
+ display:flex!important;flex-direction:column!important;
+ align-items:stretch!important;gap:20px!important;
+}
+.trip-site .trip-ticket-section .trip-ticket-list .ticket-grid>.ticket,
+.trip-site .trip-ticket-section .trip-ticket-list .ticket-grid>.scrap-pass{
+ display:grid!important;box-sizing:border-box!important;
+ width:94%!important;min-height:222px!important;height:auto!important;
+ grid-template-columns:minmax(0,1fr) 23% 22%!important;
+ grid-auto-rows:minmax(222px,auto)!important;
+ flex:none!important;align-self:flex-start!important;
+}
+.trip-site .trip-ticket-section .trip-ticket-list .ticket-grid>:nth-child(even){
+ align-self:flex-end!important;
+}
+.trip-site .trip-ticket-list .scrap-pass-main,
+.trip-site .trip-ticket-list .ticket-top{min-height:0!important;align-self:stretch!important}
+}
+/* Ticket height is independent of edit / preview mode and visible card state. */
+.trip-site .trip-ticket-list .ticket-grid>.ticket{
+ box-sizing:border-box!important;
+ min-height:175px!important;
+}
+@media(max-width:900px){
+.trip-site .trip-ticket-list .ticket-grid>.ticket{
+ min-height:175px!important;height:auto!important;
+}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
