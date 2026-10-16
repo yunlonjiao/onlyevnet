@@ -139,7 +139,7 @@ export const previewBody=`
       <div class="guide-detail-grid" data-oe-mount="guide-detail"></div>
     </section>
 
-    <section class="trip-community" id="community"><div class="trip-social-wallpaper" aria-hidden="true"><div class="trip-wallpaper-top trip-wallpaper-marquee"><b>COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;</b><b aria-hidden="true">COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;</b></div><div class="trip-wallpaper-bottom trip-wallpaper-marquee"><b>COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;</b><b aria-hidden="true">COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;</b></div></div><header><span>STAY CONNECTED</span><h2>LINK <i>↗</i></h2></header><div data-oe-mount="community" class="community"></div></section>
+    <section class="trip-community" id="community"><div class="trip-social-wallpaper" aria-hidden="true"><div class="trip-wallpaper-top trip-wallpaper-marquee"><b>COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;</b><b aria-hidden="true">COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;</b></div><div class="trip-wallpaper-bottom trip-wallpaper-marquee"><b>COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;</b><b aria-hidden="true">COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;</b></div></div><header><span>STAY CONNECTED</span></header><div data-oe-mount="community" class="community"></div></section>
     <section class="trip-sponsors" id="sponsors"><header><span>TRAVEL PARTNERS</span><h2>PARTNERS</h2></header><div data-oe-mount="sponsors" class="sponsors"></div></section>
   </main>
 
@@ -1152,7 +1152,7 @@ body:not([data-oe-current-page]) .trip-site .trip-hero-visual .kv{
  white-space:nowrap!important;gap:0!important;
  font:900 clamp(160px,24vw,385px)/1 Arial,Helvetica,sans-serif!important;
  letter-spacing:-.075em!important;color:#c8ff5a!important;
- animation:oe-community-marquee 24s linear infinite!important;
+ animation:oe-community-marquee 36s linear infinite!important;
  will-change:transform;
 }
 .trip-site .trip-social-wallpaper .trip-wallpaper-marquee b{
@@ -1212,5 +1212,14 @@ body:not([data-oe-current-page]) .trip-site .trip-hero-visual .kv{
 .trip-site .trip-hero:before,.trip-site .trip-hero:after,.trip-site .trip-news>header:after,.trip-site .trip-map-copy:after{display:none!important}
 .trip-site .trip-intro-copy,.trip-site .trip-feature .featured-activity-grid{clip-path:none!important}
 .trip-site .trip-community .scrap-social,.trip-site .trip-ticket-list .scrap-pass-watermark{animation:none!important}
+}
+
+/* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
+.trip-site .trip-community>header{justify-content:flex-start!important}
+.trip-site .trip-community>header h2{display:none!important}
+/* Existing scroll observer owns enter animations. Never cover a card's
+   specialized animation with a parent-level blanket keyframe. */
+@media(prefers-reduced-motion:no-preference){
+.trip-site .trip-community .scrap-social{animation-fill-mode:both!important}
 }
 `;
