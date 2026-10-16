@@ -958,4 +958,29 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
 .trip-site .oe-editorial-section{padding:0!important;gap:0!important;margin-left:0!important;margin-right:0!important}
 .trip-site .trip-feature.oe-editorial-section{padding:0!important;gap:0!important}
 }
+
+/* Venue map: content-sized section with symmetrical image top/bottom inset. */
+.trip-site .trip-map.oe-editorial-section{
+  min-height:0!important;
+  height:auto!important;
+  align-items:stretch!important;
+  grid-auto-rows:auto!important;
+  padding-block:0!important;
+}
+.trip-site .trip-map.oe-editorial-section>.trip-map-paper{
+  align-self:stretch!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:clamp(20px,3vw,44px)!important;
+  box-sizing:border-box!important;
+}
+.trip-site .trip-map.oe-editorial-section>.trip-map-copy{
+  align-self:stretch!important;
+  min-height:0!important;
+}
+@media(max-width:760px){
+  .trip-site .trip-map.oe-editorial-section>.trip-map-paper{
+    padding:20px 23px!important;
+  }
+}
 `;
