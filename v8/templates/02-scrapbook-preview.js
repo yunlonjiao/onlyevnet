@@ -139,7 +139,7 @@ export const previewBody=`
       <div class="guide-detail-grid" data-oe-mount="guide-detail"></div>
     </section>
 
-    <section class="trip-community" id="community"><div class="trip-social-wallpaper" aria-hidden="true"><span class="trip-wallpaper-top">COMMUNITY</span><span class="trip-wallpaper-bottom">COMMUNITY</span></div><header><span>STAY CONNECTED</span><h2>LINK <i>↗</i></h2></header><div data-oe-mount="community" class="community"></div></section>
+    <section class="trip-community" id="community"><div class="trip-social-wallpaper" aria-hidden="true"><div class="trip-wallpaper-top trip-wallpaper-marquee"><b>COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;</b><b aria-hidden="true">COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;</b></div><div class="trip-wallpaper-bottom trip-wallpaper-marquee"><b>COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;</b><b aria-hidden="true">COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;COMMUNITY&nbsp; ✦ &nbsp;</b></div></div><header><span>STAY CONNECTED</span><h2>LINK <i>↗</i></h2></header><div data-oe-mount="community" class="community"></div></section>
     <section class="trip-sponsors" id="sponsors"><header><span>TRAVEL PARTNERS</span><h2>PARTNERS</h2></header><div data-oe-mount="sponsors" class="sponsors"></div></section>
   </main>
 
@@ -1142,5 +1142,30 @@ body:not([data-oe-current-page]) .trip-site .trip-hero-visual .kv{
 .trip-site .trip-feature .featured-activity-media img,
 .trip-site .trip-ticket-list .scrap-pass-watermark,
 .trip-site .trip-map .map-link-list a,.trip-site .trip-news .scrap-update{transition:none!important}
+}
+
+/* Two identically phased seamless marquees; top shows glyph lower half,
+   bottom glyph upper half. No JS, media requests, or extra libraries. */
+.trip-site .trip-social-wallpaper .trip-wallpaper-marquee{
+ position:absolute!important;left:0!important;right:auto!important;
+ display:flex!important;width:max-content!important;max-width:none!important;
+ white-space:nowrap!important;gap:0!important;
+ font:900 clamp(160px,24vw,385px)/1 Arial,Helvetica,sans-serif!important;
+ letter-spacing:-.075em!important;color:#c8ff5a!important;
+ animation:oe-community-marquee 24s linear infinite!important;
+ will-change:transform;
+}
+.trip-site .trip-social-wallpaper .trip-wallpaper-marquee b{
+ display:block!important;flex:0 0 auto!important;font:inherit!important;
+ letter-spacing:inherit!important;white-space:nowrap!important;
+}
+.trip-site .trip-social-wallpaper .trip-wallpaper-top{top:-.50em!important;bottom:auto!important}
+.trip-site .trip-social-wallpaper .trip-wallpaper-bottom{bottom:-.50em!important;top:auto!important}
+@keyframes oe-community-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(max-width:760px){
+.trip-site .trip-social-wallpaper .trip-wallpaper-marquee{font-size:clamp(110px,33vw,195px)!important}
+}
+@media(prefers-reduced-motion:reduce){
+.trip-site .trip-social-wallpaper .trip-wallpaper-marquee{animation:none!important;will-change:auto!important}
 }
 `;
