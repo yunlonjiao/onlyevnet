@@ -325,4 +325,24 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await expect.poll(async()=>target.evaluate(el=>Number(getComputedStyle(el).opacity))).toBeGreaterThan(.98);
   });
 
+  test('distinct motion treatments are mounted without external assets',async({page})=>{
+    await page.goto('/v8/?template=02-scrapbook&project=template02-distinct-motion');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('.trip-site')).toBeVisible();
+    const state=await frame.locator('.trip-site').evaluate(root=>{
+      const sheet=[...document.styleSheets].map(x=>{try{return [...x.cssRules].map(r=>r.cssText).join(' ')}catch{return ''}}).join(' ');
+      return {
+        hero:!!root.querySelector('.trip-hero'),
+        news:!!root.querySelector('.trip-news>header'),
+        map:!!root.querySelector('.trip-map-copy'),
+        marquee:!!root.querySelector('.trip-wallpaper-marquee'),
+        curtain:sheet.includes('oe-hero-curtain-left'),
+        stamp:sheet.includes('oe-stamp-impact'),
+        collage:sheet.includes('oe-collage-drop'),
+        mask:sheet.includes('clip-path')
+      };
+    });
+    expect(Object.values(state).every(Boolean),JSON.stringify(state)).toBe(true);
+  });
+
 });
