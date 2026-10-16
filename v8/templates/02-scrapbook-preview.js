@@ -1557,6 +1557,64 @@ body:not([data-oe-current-page]) .trip-site .trip-header{z-index:90!important}
 }
 }
 
+/* v8.40.56: wider feature cards at the SAME height, souvenir-ticket ratio,
+   and image-first venue map cover without the extra white letterbox. */
+@media(min-width:901px){
+.trip-site .trip-feature.oe-editorial-section>.featured-activity-grid{
+ padding:clamp(12px,1.8vw,25px)!important;
+}
+.trip-site .trip-feature .featured-activity-grid>:nth-child(1){
+ grid-column:1 / 13!important;
+}
+.trip-site .trip-feature .featured-activity-grid>:nth-child(2){
+ grid-column:2 / 13!important;
+}
+.trip-site .trip-feature .featured-activity-grid>:nth-child(3){
+ grid-column:1 / 13!important;
+}
+/* Preserve the present visual length and three-line copy area. */
+.trip-site .trip-feature .featured-activity-grid .featured-activity-media,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-photo,
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy{
+ min-height:330px!important;
+}
+/* Souvenir pass: less extreme width-to-height aspect, retaining editorial stagger. */
+.trip-site .trip-ticket-list .ticket-grid>.scrap-pass{
+ min-height:222px!important;width:94%!important;
+ grid-template-columns:minmax(0,1fr) 23% 22%!important;
+}
+.trip-site .trip-ticket-list .scrap-pass-main{
+ padding:24px 29px!important;gap:10px!important;
+}
+.trip-site .trip-ticket-list .scrap-pass aside{padding:20px!important}
+.trip-site .trip-ticket-list .scrap-pass-art{max-height:none!important;min-height:0!important}
+.trip-site .trip-ticket-list .scrap-pass-watermark{
+ width:130px!important;height:130px!important;
+}
+.trip-site .trip-ticket-list .ticket-grid h3{font-size:clamp(23px,2.05vw,32px)!important}
+}
+/* Map poster uses the whole white stage. Cover is intentional: slight edge
+   crop is preferable to empty horizontal/vertical bars. */
+.trip-site .trip-map.oe-editorial-section>.trip-map-paper{
+ padding:0!important;
+}
+.trip-site .trip-map-paper .map-static{
+ width:100%!important;height:clamp(370px,42vw,640px)!important;
+ max-height:640px!important;background:#e8eeec!important;
+ overflow:hidden!important;
+}
+.trip-site .trip-map-paper .map-static img{
+ display:block!important;width:100%!important;height:100%!important;
+ object-fit:cover!important;object-position:center!important;
+ padding:0!important;margin:0!important;max-width:none!important;
+}
+@media(max-width:900px){
+.trip-site .trip-map.oe-editorial-section>.trip-map-paper{padding:0!important}
+.trip-site .trip-map-paper .map-static{height:clamp(330px,60vw,540px)!important}
+.trip-site .trip-ticket-list .scrap-pass{min-height:175px!important}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
