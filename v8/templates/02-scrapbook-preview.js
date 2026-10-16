@@ -1188,8 +1188,28 @@ body:not([data-oe-current-page]) .trip-site .trip-hero-visual .kv{
 .trip-site .trip-news>header:after{content:"";position:absolute;left:0;bottom:0;width:100%;height:3px;background:#c8ff5a;transform:scaleX(0);transform-origin:left;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
 .trip-site .trip-news>header.oe-motion-visible:after{transform:scaleX(1)}
 /* Posters: paper-mask reveal, no alteration of event images themselves. */
-.trip-site .trip-feature .featured-activity-grid.oe-motion-target{clip-path:inset(0 0 100% 0);transition:clip-path .9s cubic-bezier(.15,.75,.2,1),opacity .72s,translate .72s!important}
-.trip-site .trip-feature .featured-activity-grid.oe-motion-visible{clip-path:inset(0 0 0 0)}
+/* Activity content must never depend on scroll-observer success to display.
+   Animate cards, not the entire interactive/mount container. */
+.trip-site .trip-feature .featured-activity-grid.oe-motion-target,
+.trip-site .trip-feature .featured-activity-grid.oe-motion-visible{
+  opacity:1!important;translate:none!important;clip-path:none!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-card,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity{
+  transition:transform .35s ease,box-shadow .35s ease,filter .35s ease!important;
+}
+@media(prefers-reduced-motion:no-preference){
+.trip-site .trip-feature .featured-activity-grid.oe-motion-visible .featured-activity-card,
+.trip-site .trip-feature .featured-activity-grid.oe-motion-visible .scrap-activity{
+  animation:oe-feature-card-reveal .8s cubic-bezier(.16,.8,.24,1) both;
+}
+.trip-site .trip-feature .featured-activity-grid.oe-motion-visible > :nth-child(2){animation-delay:.12s}
+.trip-site .trip-feature .featured-activity-grid.oe-motion-visible > :nth-child(3){animation-delay:.24s}
+@keyframes oe-feature-card-reveal{
+from{opacity:.65;translate:0 20px;scale:.975}
+to{opacity:1;translate:0 0;scale:1}
+}
+}
 /* Ticket: stamp presses down then rebounds after ticket enters viewport. */
 .trip-site .trip-ticket-list.oe-motion-target .scrap-pass-watermark{animation:none!important}
 .trip-site .trip-ticket-list.oe-motion-visible .scrap-pass-watermark{animation:oe-stamp-impact .7s cubic-bezier(.2,.8,.2,1) both!important}
