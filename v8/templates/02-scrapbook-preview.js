@@ -1025,4 +1025,50 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
 .trip-site .trip-community>header h2 i{animation:none!important}
 .trip-site .trip-community .scrap-social,.trip-site .trip-community .scrap-social-stamp{transition:none!important}
 }
+
+/* Low-cost homepage motion: compositor-only transforms/opacity; no libraries,
+   media requests, looping hero animations or loading gates. */
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+.trip-site .trip-feature .featured-activity-card,
+.trip-site .trip-feature .scrap-activity{
+  transition:transform .28s ease,box-shadow .28s ease!important;
+  will-change:auto;
+}
+.trip-site .trip-feature .featured-activity-card:hover,
+.trip-site .trip-feature .scrap-activity:hover{
+  transform:translateY(-5px)!important;
+}
+.trip-site .trip-feature .featured-activity-card img,
+.trip-site .trip-feature .scrap-activity img{
+  transition:transform .4s ease!important;
+}
+.trip-site .trip-feature .featured-activity-card:hover img,
+.trip-site .trip-feature .scrap-activity:hover img{
+  transform:scale(1.025)!important;
+}
+.trip-site .trip-ticket-section .scrap-pass{
+  transition:transform .28s ease!important;
+}
+.trip-site .trip-ticket-section .scrap-pass:hover{
+  transform:translateY(-4px)!important;
+}
+.trip-site .trip-map-copy .map-link-list a,
+.trip-site .trip-news .scrap-update{
+  transition:transform .22s ease!important;
+}
+.trip-site .trip-map-copy .map-link-list a:hover,
+.trip-site .trip-news .scrap-update:hover{
+  transform:translateX(4px)!important;
+}
+}
+@media(prefers-reduced-motion:reduce){
+.trip-site .trip-feature .featured-activity-card,
+.trip-site .trip-feature .scrap-activity,
+.trip-site .trip-feature img,
+.trip-site .trip-ticket-section .scrap-pass,
+.trip-site .trip-map-copy .map-link-list a,
+.trip-site .trip-news .scrap-update{
+  transition:none!important;
+}
+}
 `;
