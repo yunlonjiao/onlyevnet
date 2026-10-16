@@ -1464,6 +1464,68 @@ body:not([data-oe-current-page]) .trip-site .trip-header{z-index:90!important}
 .trip-site .trip-ticket-list .scrap-pass-main{padding:12px 15px!important}
 }
 
+/* v8.40.54: moderate size correction after compact v8.40.53.
+   Keep stagger and content flow, restore readable card and ticket proportions. */
+@media(min-width:901px){
+.trip-site .trip-feature.oe-editorial-section>.featured-activity-grid{
+ padding:clamp(23px,2.9vw,43px)!important;
+}
+.trip-site .trip-feature .featured-activity-grid>:nth-child(2),
+.trip-site .trip-feature .featured-activity-grid>:nth-child(3){
+ margin-top:-44px!important;
+}
+.trip-site .trip-feature .featured-activity-grid>.featured-activity-card,
+.trip-site .trip-feature .featured-activity-grid>.scrap-activity{
+ grid-template-columns:minmax(0,48%) minmax(0,52%)!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-media,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-photo{
+ min-height:265px!important;
+}
+.trip-site .trip-feature .featured-activity-grid .featured-activity-copy,
+.trip-site .trip-feature .featured-activity-grid .scrap-activity-copy{
+ padding:clamp(21px,2vw,31px)!important;
+}
+.trip-site .trip-feature .featured-activity-grid h2,
+.trip-site .trip-feature .featured-activity-grid h3{
+ font-size:clamp(25px,2.45vw,37px)!important;line-height:1.25!important;
+ margin:8px 0 13px!important;
+}
+.trip-site .trip-feature .featured-activity-grid p{
+ font-size:clamp(13px,1.12vw,17px)!important;line-height:1.65!important;
+ margin:7px 0 12px!important;
+}
+.trip-site .trip-ticket-list{padding:clamp(24px,3vw,43px)!important}
+.trip-site .trip-ticket-list .ticket-grid{gap:18px!important;padding:0 3%!important}
+.trip-site .trip-ticket-list .ticket-grid>.scrap-pass{
+ width:94%!important;min-height:155px!important;
+ grid-template-columns:minmax(0,1fr) 19% 22%!important;
+}
+.trip-site .trip-ticket-list .scrap-pass-main{padding:19px 23px!important;gap:6px!important}
+.trip-site .trip-ticket-list .scrap-pass aside{padding:16px 18px!important}
+.trip-site .trip-ticket-list .scrap-pass-art{max-height:180px!important}
+.trip-site .trip-ticket-list .scrap-pass-watermark{width:108px!important;height:108px!important}
+.trip-site .trip-ticket-list .ticket-grid h3{font-size:clamp(19px,1.7vw,27px)!important}
+}
+/* Enlarge the venue map's actual display area without cropping uploaded plans. */
+.trip-site .trip-map.oe-editorial-section>.trip-map-paper{
+ padding:clamp(12px,1.6vw,24px)!important;
+}
+.trip-site .trip-map-paper .map-static{
+ height:clamp(370px,42vw,640px)!important;
+ max-height:640px!important;
+}
+.trip-site .trip-map-paper .map-static img{
+ width:100%!important;height:100%!important;object-fit:contain!important;
+}
+@media(max-width:900px){
+.trip-site .trip-feature .featured-activity-grid{gap:20px!important}
+.trip-site .trip-ticket-list .scrap-pass{min-height:145px!important}
+.trip-site .trip-ticket-list .scrap-pass-main{padding:17px 19px!important}
+.trip-site .trip-map.oe-editorial-section>.trip-map-paper{padding:14px!important}
+.trip-site .trip-map-paper .map-static{height:clamp(330px,60vw,540px)!important}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
