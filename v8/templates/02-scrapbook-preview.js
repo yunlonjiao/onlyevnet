@@ -1146,4 +1146,34 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
 @media(prefers-reduced-motion:reduce){
 .trip-site .trip-index .quick-grid>*,.trip-site .trip-map .map-static img{transition:none!important}
 }
+
+/* Visible scroll motion: headings reveal first, content follows. */
+@supports (animation-timeline: view()) {
+@media (prefers-reduced-motion:no-preference) {
+.trip-site .trip-intro>aside,
+.trip-site .trip-news>header,
+.trip-site .trip-index>header,
+.trip-site .trip-feature>header,
+.trip-site .trip-ticket-cover,
+.trip-site .trip-map-copy,
+.trip-site .trip-community>header{
+ animation:oe-title-arrive 1s ease-out both!important;
+ animation-timeline:view(block)!important;
+ animation-range:entry 0% cover 26%!important;
+}
+.trip-site .trip-intro-copy,
+.trip-site .trip-news .updates-list,
+.trip-site .trip-index .quick-grid,
+.trip-site .trip-feature .featured-activity-grid,
+.trip-site .trip-ticket-list,
+.trip-site .trip-map-paper,
+.trip-site .trip-community .community{
+ animation:oe-content-arrive 1s ease-out both!important;
+ animation-timeline:view(block)!important;
+ animation-range:entry 8% cover 35%!important;
+}
+@keyframes oe-title-arrive{from{opacity:0;translate:0 45px}to{opacity:1;translate:0 0}}
+@keyframes oe-content-arrive{from{opacity:0;translate:0 65px}to{opacity:1;translate:0 0}}
+}
+}
 `;
