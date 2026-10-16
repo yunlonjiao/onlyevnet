@@ -1072,35 +1072,6 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
 }
 }
 
-/* Scroll-triggered entrance animation (native Chromium scroll-driven animations).
-   Progressive enhancement: if unsupported, content remains fully visible. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .trip-site .trip-intro-copy,
-    .trip-site .trip-news>header,
-    .trip-site .trip-index>header,
-    .trip-site .trip-feature>header,
-    .trip-site .trip-feature .featured-activity-grid,
-    .trip-site .trip-ticket-cover,
-    .trip-site .trip-ticket-list,
-    .trip-site .trip-map-copy,
-    .trip-site .trip-map-paper,
-    .trip-site .trip-community>header,
-    .trip-site .trip-community .community {
-      animation-name:oe-home-reveal;
-      animation-duration:1ms;
-      animation-timing-function:linear;
-      animation-fill-mode:both;
-      animation-timeline:view(block);
-      animation-range:entry 0% entry 75%;
-    }
-    @keyframes oe-home-reveal {
-      from { opacity:.4; translate:0 22px; }
-      to { opacity:1; translate:0 0; }
-    }
-  }
-}
-
 /* Seamless typography: lower half of COMMUNITY at top, upper half at bottom.
    Matching font, size, letterspacing, and x coordinate forms one cyclic word. */
 .trip-site .trip-social-wallpaper .trip-wallpaper-top,
@@ -1115,27 +1086,6 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
 .trip-site .trip-social-wallpaper .trip-wallpaper-top,
 .trip-site .trip-social-wallpaper .trip-wallpaper-bottom{font-size:clamp(110px,33vw,195px)!important}
 }
-/* Lightweight entrance motion for homepage groups and title rails. */
-@supports(animation-timeline:view()){
-@media(prefers-reduced-motion:no-preference){
-.trip-site .trip-event-fact,
-.trip-site .trip-intro>aside,
-.trip-site .trip-news .scrap-update,
-.trip-site .trip-index .quick-grid>*,
-.trip-site .trip-feature .featured-activity-grid>*,
-.trip-site .trip-ticket-list .scrap-pass,
-.trip-site .trip-map .map-link-list a,
-.trip-site .trip-community .scrap-social{
- animation:oe-scroll-rise 1ms linear both!important;
- animation-timeline:view(block)!important;
- animation-range:entry 0% entry 65%!important;
-}
-@keyframes oe-scroll-rise{
- from{opacity:.45;translate:0 18px}
- to{opacity:1;translate:0 0}
-}
-}
-}
 @media(hover:hover) and (prefers-reduced-motion:no-preference){
 .trip-site .trip-index .quick-grid>*{transition:translate .26s ease,filter .26s ease!important}
 .trip-site .trip-index .quick-grid>*:hover{translate:0 -5px;filter:brightness(1.04)}
@@ -1147,33 +1097,14 @@ body:not([data-oe-current-page]) .trip-site .trip-logo b{text-shadow:none!import
 .trip-site .trip-index .quick-grid>*,.trip-site .trip-map .map-static img{transition:none!important}
 }
 
-/* Visible scroll motion: headings reveal first, content follows. */
-@supports (animation-timeline: view()) {
-@media (prefers-reduced-motion:no-preference) {
-.trip-site .trip-intro>aside,
-.trip-site .trip-news>header,
-.trip-site .trip-index>header,
-.trip-site .trip-feature>header,
-.trip-site .trip-ticket-cover,
-.trip-site .trip-map-copy,
-.trip-site .trip-community>header{
- animation:oe-title-arrive 1s ease-out both!important;
- animation-timeline:view(block)!important;
- animation-range:entry 0% cover 26%!important;
+
+/* Single deterministic entry motion; renderer marks elements when visible.
+   Unlike CSS view-timelines, works in the editable iframe and preview mode. */
+@media(prefers-reduced-motion:no-preference){
+.trip-site .oe-motion-target{animation:none!important;transition:opacity .72s cubic-bezier(.2,.7,.2,1),translate .72s cubic-bezier(.2,.7,.2,1)!important;opacity:0!important;translate:0 48px!important}
+.trip-site .oe-motion-target.oe-motion-visible{opacity:1!important;translate:0 0!important}
 }
-.trip-site .trip-intro-copy,
-.trip-site .trip-news .updates-list,
-.trip-site .trip-index .quick-grid,
-.trip-site .trip-feature .featured-activity-grid,
-.trip-site .trip-ticket-list,
-.trip-site .trip-map-paper,
-.trip-site .trip-community .community{
- animation:oe-content-arrive 1s ease-out both!important;
- animation-timeline:view(block)!important;
- animation-range:entry 8% cover 35%!important;
-}
-@keyframes oe-title-arrive{from{opacity:0;translate:0 45px}to{opacity:1;translate:0 0}}
-@keyframes oe-content-arrive{from{opacity:0;translate:0 65px}to{opacity:1;translate:0 0}}
-}
+@media(prefers-reduced-motion:reduce){
+.trip-site .oe-motion-target{animation:none!important;transition:none!important;opacity:1!important;translate:none!important}
 }
 `;
