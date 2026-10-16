@@ -311,4 +311,18 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     }
   });
 
+  test('homepage scroll reveal is initiated and becomes visible after scroll',async({page})=>{
+    await page.setViewportSize({width:1440,height:900});
+    await page.goto('/v8/?template=02-scrapbook&project=template02-motion-qa');
+    const frame=page.frameLocator('#liveFrame');
+    await expect(frame.locator('.trip-site')).toBeVisible();
+    const target=frame.locator('.trip-map-copy');
+    await expect(target).toHaveClass(/oe-motion-target/);
+    await target.scrollIntoViewIfNeeded();
+    await expect(target).toHaveClass(/oe-motion-visible/,{timeout:5000});
+    const style=await target.evaluate(el=>({opacity:getComputedStyle(el).opacity,animation:getComputedStyle(el).animationName}));
+    expect(style.animation).toBe('none');
+    await expect.poll(async()=>target.evaluate(el=>Number(getComputedStyle(el).opacity))).toBeGreaterThan(.98);
+  });
+
 });
