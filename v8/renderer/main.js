@@ -10,7 +10,7 @@ import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createCollections} from '/v8/renderer/collections.js?v=8.40.74';
+import {createCollections} from '/v8/renderer/collections.js?v=8.40.75';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {createParticipation} from '/v8/renderer/participation.js?v=8.40.26';
 // @ts-ignore -- browser cache-busted absolute ESM URL
