@@ -729,7 +729,7 @@ function renderPageContentNav(page,{openDefault=true}={}){
    return;
  }
  const items=page==='home'&&state.templateId==='02-scrapbook'?
-   PAGE_CONTENT_CONFIG.home.filter(x=>x.collection!=='ribbonItems').map(x=>x.collection==='explore'?{...x,label:'场地图链接'}:x).flatMap(x=>x.tool==='hero'?[x,{tool:'intro',label:'活动简介'}]:x.tool==='map'?[x,{collection:'guests',label:'嘉宾阵容'}]:[x]):
+   PAGE_CONTENT_CONFIG.home.filter(x=>x.collection!=='ribbonItems'&&x.collection!=='explore').flatMap(x=>x.tool==='hero'?[x,{tool:'intro',label:'活动简介'}]:x.tool==='map'?[x,{collection:'guests',label:'嘉宾阵容'}]:[x]):
    (PAGE_CONTENT_CONFIG[page]||[]);
  nav.innerHTML=items.map(x=>x.collection
    ?'<button type="button" data-page-content-manager="'+x.collection+'"><span>'+esc(x.label)+'</span><b data-content-count="'+x.collection+'">0</b></button>'
@@ -1363,6 +1363,11 @@ function mutateItem(collection,index,op){
      collection==='sponsors'?{id:uid('sp'),name:'新赞助商',level:'合作伙伴',url:'',logo:''}:
      {id:uid('s'),time:'12:00',title:'新活动',stage:'MAIN STAGE',detail:'',participationId:'',guestIds:[],registrationUrl:''};
    arr.splice(index+1,0,fresh);index++;
+   if(collection==='sponsors'){
+     state.modules=state.modules||{};
+     state.modules.sponsors=true;
+     syncModuleControls();
+   }
  }
  save();send({type:'OE_REPLACE_STATE',state});syncContentCounts();openCollectionManager(collection,index);openItemInspector(collection,index);
 }
@@ -1402,6 +1407,10 @@ function openImageInspector(path){
      const btn=document.createElement('button');btn.type='button';btn.className='ghost';btn.textContent='编辑场地图关联链接 ↗';
      btn.addEventListener('click',()=>{syncStudioPageUI('home',{openContent:false});renderPageContentNav('home',{openDefault:false});openCollectionManager('explore');setPageContentActive({collection:'explore'})});
      inspector.querySelector('.map-image-actions')?.appendChild(btn);
+     const links=document.createElement('div');links.className='map-links-editor-preview';
+     links.style.cssText='margin-top:12px;display:grid;gap:7px';
+     (state.venueMap?.links||[]).forEach((item,i)=>{const b=document.createElement('button');b.type='button';b.className='ghost';b.textContent=(item.label||'链接 '+(i+1))+' ↗';b.addEventListener('click',()=>{openCollectionManager('explore',i);setPageContentActive({tool:'map'})});links.appendChild(b)});
+     inspector.querySelector('.map-image-actions')?.appendChild(links);
    }
    $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()};
    $('#removeImage')?.addEventListener('click',()=>{checkpoint();setDeep(path,'');save();send({type:'OE_REPLACE_STATE',state});openImageInspector(path)});
