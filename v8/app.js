@@ -814,10 +814,13 @@ function openGuideInspector(){
  });
 }
 function syncModuleControls(){
+ const guestPageRow=document.querySelector('[data-page-row="guests"]');
+ if(guestPageRow)guestPageRow.style.display=state.templateId==='02-scrapbook'?'none':'';
  document.querySelectorAll('[data-module]').forEach(input=>{input.checked=state.modules?.[input.dataset.module]!==false});
  document.querySelectorAll('[data-page-row]').forEach(row=>row.classList.toggle('is-disabled',state.modules?.[row.dataset.pageRow]===false));
 }
 function syncStudioPageUI(page,{openContent=true}={}){
+ if(page==='guests'&&state.templateId==='02-scrapbook')page='home';
  currentPage=page||'home';
  document.querySelectorAll('.page-nav [data-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.page===currentPage));
  document.querySelectorAll('[data-page-row]').forEach(row=>row.classList.toggle('active',row.dataset.pageRow===currentPage));
