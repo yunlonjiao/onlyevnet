@@ -7,45 +7,47 @@ export const previewBody=`
   <div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击播放动画，播放中点击立即进入首页">
     <div class="journey-scene-shell">
       <div class="journey-kicker">NOW LOADING<span class="journey-loading-dots">...</span></div>
-      <svg class="journey-simple journey-desktop" viewBox="0 0 1200 550" role="img" aria-label="小车沿着桌面横向虚线旅行">
-        <path class="journey-dash" d="M65 382 C235 382 215 125 430 195 S698 492 862 289 S1020 165 1140 196"/>
-        <g class="journey-car"><g transform="translate(-31 -23)">
-          <path d="M8 20 L17 6 Q20 2 27 2 H45 Q52 2 56 8 L64 20Z" fill="#fff" stroke="#354e60" stroke-width="3"/>
-          <rect x="0" y="18" width="68" height="25" rx="9" fill="#9acbd2" stroke="#354e60" stroke-width="3"/>
-          <path d="M20 9 H44 L52 19 H12Z" fill="#dff5fa"/>
-          <circle cx="16" cy="43" r="8" fill="#354e60"/><circle cx="53" cy="43" r="8" fill="#354e60"/>
-          <circle cx="16" cy="43" r="3" fill="#fff"/><circle cx="53" cy="43" r="3" fill="#fff"/>
-        </g></g>
-        <g class="journey-doodles" fill="none" stroke="#6c999b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M172 112v-42m-32 26h63m-57-12 27-27 26 27" />
-          <path d="M930 398c10-33 30-38 42-7 11-31 33-27 42 0m-46-15v47"/>
-          <path d="M546 86l10-29 10 29 29 10-29 10-10 29-10-29-29-10z"/>
-          <path d="M104 447c28-22 63-21 94 1m-88 13h90"/>
-        </g>
-        <circle cx="65" cy="382" r="8" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
-        <circle cx="1140" cy="196" r="9" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
-        
-        
-      </svg>
-      <svg class="journey-simple journey-mobile" viewBox="0 0 440 780" role="img" aria-label="小车沿着手机竖向虚线旅行">
-        <path class="journey-dash" d="M98 78 C348 56 355 244 198 291 S48 475 230 523 S344 653 270 711"/>
-        <g class="journey-car"><g transform="translate(-31 -23)">
-          <path d="M8 20 L17 6 Q20 2 27 2 H45 Q52 2 56 8 L64 20Z" fill="#fff" stroke="#354e60" stroke-width="3"/>
-          <rect x="0" y="18" width="68" height="25" rx="9" fill="#9acbd2" stroke="#354e60" stroke-width="3"/>
-          <path d="M20 9 H44 L52 19 H12Z" fill="#dff5fa"/>
-          <circle cx="16" cy="43" r="8" fill="#354e60"/><circle cx="53" cy="43" r="8" fill="#354e60"/>
-          <circle cx="16" cy="43" r="3" fill="#fff"/><circle cx="53" cy="43" r="3" fill="#fff"/>
-        </g></g>
-        <g class="journey-doodles" fill="none" stroke="#6c999b" stroke-width="2.5" stroke-linecap="round">
-          <path d="M70 250l19-30 22 30m-36-12h31m-15 7v27"/>
-          <path d="M324 438l11-26 11 26 26 11-26 11-11 26-11-26-26-11z"/>
-          <path d="M74 637q32-27 65 0m-58 13h61"/>
-        </g>
-        <circle cx="98" cy="78" r="8" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
-        <circle cx="270" cy="711" r="9" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
-        
-        
-      </svg>
+      <svg class="journey-simple journey-desktop" viewBox="0 0 1200 550" role="img" aria-label="夏日小车驶过山丘与桥梁">
+ <defs><linearGradient id="oe-journey-sky-d" x2="0" y2="1"><stop stop-color="#cbe9f1"/><stop offset="1" stop-color="#edf4dd"/></linearGradient></defs>
+ <rect width="1200" height="550" fill="url(#oe-journey-sky-d)"/>
+ <circle cx="997" cy="85" r="49" fill="#fff0a7"/>
+ <g fill="#fffdf0" opacity=".9"><ellipse cx="168" cy="86" rx="90" ry="23"/><ellipse cx="218" cy="67" rx="59" ry="32"/><ellipse cx="716" cy="108" rx="80" ry="22"/><ellipse cx="766" cy="91" rx="49" ry="26"/></g>
+ <path d="M0 300Q175 154 360 263T756 238T1200 254V550H0Z" fill="#c8d9b1"/>
+ <path d="M0 364Q192 240 377 347T805 285T1200 331V550H0Z" fill="#a8cbb1"/>
+ <path d="M0 446Q250 371 510 446T1014 388T1200 421V550H0Z" fill="#8ebaa5"/>
+ <path class="journey-road" d="M64 405 C216 414 272 295 433 336 S667 424 810 359 S1012 291 1152 324"/>
+ <path class="journey-dash" d="M64 405 C216 414 272 295 433 336 S667 424 810 359 S1012 291 1152 324"/>
+ <g class="journey-bridge"><path d="M681 406H903V428H681Z" fill="#d5ad81"/><path d="M710 428V480M756 428V480M805 428V473M864 428V452" stroke="#b4937a" stroke-width="14"/><path d="M681 406H903" stroke="#f5e7ca" stroke-width="9"/></g>
+ <g transform="translate(153 280) scale(0.8)"><path d="M0 0V55" stroke="#789789" stroke-width="8" stroke-linecap="round"/><circle cx="-14" cy="-4" r="29" fill="#a9c9aa"/><circle cx="13" cy="-17" r="31" fill="#8dbbad"/><circle cx="34" cy="2" r="22" fill="#b1d4b6"/></g><g transform="translate(1070 241) scale(0.77)"><path d="M0 0V55" stroke="#789789" stroke-width="8" stroke-linecap="round"/><circle cx="-14" cy="-4" r="29" fill="#a9c9aa"/><circle cx="13" cy="-17" r="31" fill="#8dbbad"/><circle cx="34" cy="2" r="22" fill="#b1d4b6"/></g><g transform="translate(1122 277) scale(0.52)"><path d="M0 0V55" stroke="#789789" stroke-width="8" stroke-linecap="round"/><circle cx="-14" cy="-4" r="29" fill="#a9c9aa"/><circle cx="13" cy="-17" r="31" fill="#8dbbad"/><circle cx="34" cy="2" r="22" fill="#b1d4b6"/></g>
+ <g class="journey-flowers" fill="#f5e7c5"><circle cx="230" cy="481" r="4"/><circle cx="252" cy="493" r="4"/><circle cx="1030" cy="464" r="4"/></g>
+ <g class="journey-car"><g transform="translate(-31 -23)">
+ <path d="M8 20L17 6Q20 2 27 2H45Q52 2 56 8L64 20Z" fill="#fff9dc" stroke="#627e79" stroke-width="2.8"/>
+ <rect x="0" y="18" width="68" height="25" rx="9" fill="#e8b871" stroke="#627e79" stroke-width="2.8"/>
+ <path d="M20 9H44L52 19H12Z" fill="#c9e9ed"/>
+ <circle cx="16" cy="43" r="8" fill="#587078"/><circle cx="53" cy="43" r="8" fill="#587078"/>
+ <circle cx="16" cy="43" r="3" fill="#fff9e5"/><circle cx="53" cy="43" r="3" fill="#fff9e5"/>
+ </g></g>
+ </svg>
+      <svg class="journey-simple journey-mobile" viewBox="0 0 440 780" role="img" aria-label="竖屏夏日小车驶过山丘和桥梁">
+ <defs><linearGradient id="oe-journey-sky-m" x2="0" y2="1"><stop stop-color="#cee9f2"/><stop offset="1" stop-color="#edf4dc"/></linearGradient></defs>
+ <rect width="440" height="780" fill="url(#oe-journey-sky-m)"/>
+ <circle cx="338" cy="88" r="48" fill="#fff0a7"/>
+ <g fill="#fffdf1"><ellipse cx="112" cy="126" rx="75" ry="22"/><ellipse cx="145" cy="111" rx="44" ry="29"/></g>
+ <path d="M0 252Q100 162 215 243T440 234V780H0Z" fill="#c8d9b1"/>
+ <path d="M0 340Q100 270 228 340T440 300V780H0Z" fill="#a7cbb1"/>
+ <path d="M0 520Q155 410 294 506T440 467V780H0Z" fill="#8ebaa5"/>
+ <path class="journey-road" d="M66 630 C310 635 360 485 210 411 S92 274 335 226"/>
+ <path class="journey-dash" d="M66 630 C310 635 360 485 210 411 S92 274 335 226"/>
+ <g class="journey-bridge"><path d="M127 448H345V462H127Z" fill="#d5ad81"/><path d="M158 462V527M207 462V541M256 462V526M312 462V500" stroke="#b4937a" stroke-width="13"/></g>
+ <g transform="translate(78 290) scale(0.66)"><path d="M0 0V55" stroke="#789789" stroke-width="8" stroke-linecap="round"/><circle cx="-14" cy="-4" r="29" fill="#a9c9aa"/><circle cx="13" cy="-17" r="31" fill="#8dbbad"/><circle cx="34" cy="2" r="22" fill="#b1d4b6"/></g><g transform="translate(349 573) scale(0.7)"><path d="M0 0V55" stroke="#789789" stroke-width="8" stroke-linecap="round"/><circle cx="-14" cy="-4" r="29" fill="#a9c9aa"/><circle cx="13" cy="-17" r="31" fill="#8dbbad"/><circle cx="34" cy="2" r="22" fill="#b1d4b6"/></g><g transform="translate(394 603) scale(0.4)"><path d="M0 0V55" stroke="#789789" stroke-width="8" stroke-linecap="round"/><circle cx="-14" cy="-4" r="29" fill="#a9c9aa"/><circle cx="13" cy="-17" r="31" fill="#8dbbad"/><circle cx="34" cy="2" r="22" fill="#b1d4b6"/></g>
+ <g class="journey-car"><g transform="translate(-31 -23)">
+ <path d="M8 20L17 6Q20 2 27 2H45Q52 2 56 8L64 20Z" fill="#fff9dc" stroke="#627e79" stroke-width="2.8"/>
+ <rect x="0" y="18" width="68" height="25" rx="9" fill="#e8b871" stroke="#627e79" stroke-width="2.8"/>
+ <path d="M20 9H44L52 19H12Z" fill="#c9e9ed"/>
+ <circle cx="16" cy="43" r="8" fill="#587078"/><circle cx="53" cy="43" r="8" fill="#587078"/>
+ <circle cx="16" cy="43" r="3" fill="#fff9e5"/><circle cx="53" cy="43" r="3" fill="#fff9e5"/>
+ </g></g>
+ </svg>
       
     </div>
   </div>
@@ -2708,6 +2710,22 @@ html:not(.oe-entry-preview) .scrap-entry.loader{display:none!important}
 .scrap-entry .journey-simple.journey-mobile{height:min(80dvh,850px)!important}
 .scrap-entry .skip{font:800 11px/1 Arial,sans-serif!important;letter-spacing:.12em}
 @media(prefers-reduced-motion:reduce){.scrap-entry .journey-loading-dots{animation:none!important}}
+
+/* v8.40.94: illustration-led landscape/bridge approach inspired by Lottie examples,
+   using original lightweight SVG rather than loading external animations. */
+.scrap-entry.loader{background:#d6ede8!important}
+.scrap-entry .journey-scene-shell::before{display:none!important}
+.scrap-entry .journey-scene-shell{padding:0!important;gap:10px!important}
+.scrap-entry .journey-simple{border-radius:0!important}
+.scrap-entry .journey-road{fill:none;stroke:#f7e9d2;stroke-width:48;stroke-linecap:round}
+.scrap-entry .journey-dash{fill:none;stroke:#cebba4!important;stroke-width:2.5!important;stroke-dasharray:8 16!important}
+.scrap-entry .journey-desktop .journey-car{offset-path:path("M64 405 C216 414 272 295 433 336 S667 424 810 359 S1012 291 1152 324")!important}
+.scrap-entry .journey-mobile .journey-car{offset-path:path("M66 630 C310 635 360 485 210 411 S92 274 335 226")!important}
+.scrap-entry .journey-simple.journey-desktop{width:min(100vw,1500px)!important;height:min(75dvh,690px)!important}
+.scrap-entry .journey-kicker{order:2!important;position:relative;z-index:2}
+@media(max-width:760px){
+.scrap-entry .journey-simple.journey-mobile{width:min(100vw,500px)!important;height:min(76dvh,850px)!important}
+}
 
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
