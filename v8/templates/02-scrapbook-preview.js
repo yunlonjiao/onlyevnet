@@ -5,18 +5,49 @@
 export const previewBody=`
 <div class="loader scrap-entry" id="loader">
   <div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击播放旅行小车动画">
-    <svg class="journey-simple" viewBox="0 0 960 440" role="img" aria-label="小车沿着虚线旅行">
-      <path class="journey-dash" d="M70 310 C210 310 205 110 372 174 S580 374 715 242 S817 135 896 149"/>
-      <g class="journey-car">
-        <g transform="translate(-31 -23)">
-          <path d="M8 20 L17 6 Q20 2 27 2 H45 Q52 2 56 8 L64 20Z" fill="#ffffff" stroke="#354e60" stroke-width="3"/>
+    <div class="journey-scene-shell">
+      <div class="journey-kicker">青春旅行日记 <span>—</span> LET'S GO!</div>
+      <svg class="journey-simple journey-desktop" viewBox="0 0 1200 550" role="img" aria-label="小车沿着桌面横向虚线旅行">
+        <path class="journey-dash" d="M65 382 C235 382 215 125 430 195 S698 492 862 289 S1020 165 1140 196"/>
+        <g class="journey-car"><g transform="translate(-31 -23)">
+          <path d="M8 20 L17 6 Q20 2 27 2 H45 Q52 2 56 8 L64 20Z" fill="#fff" stroke="#354e60" stroke-width="3"/>
           <rect x="0" y="18" width="68" height="25" rx="9" fill="#9acbd2" stroke="#354e60" stroke-width="3"/>
           <path d="M20 9 H44 L52 19 H12Z" fill="#dff5fa"/>
           <circle cx="16" cy="43" r="8" fill="#354e60"/><circle cx="53" cy="43" r="8" fill="#354e60"/>
-          <circle cx="16" cy="43" r="3" fill="#ffffff"/><circle cx="53" cy="43" r="3" fill="#ffffff"/>
+          <circle cx="16" cy="43" r="3" fill="#fff"/><circle cx="53" cy="43" r="3" fill="#fff"/>
+        </g></g>
+        <g class="journey-doodles" fill="none" stroke="#6c999b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M172 112v-42m-32 26h63m-57-12 27-27 26 27" />
+          <path d="M930 398c10-33 30-38 42-7 11-31 33-27 42 0m-46-15v47"/>
+          <path d="M546 86l10-29 10 29 29 10-29 10-10 29-10-29-29-10z"/>
+          <path d="M104 447c28-22 63-21 94 1m-88 13h90"/>
         </g>
-      </g>
-    </svg>
+        <circle cx="65" cy="382" r="8" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
+        <circle cx="1140" cy="196" r="9" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
+        <text x="93" y="420" class="journey-annotation">出发!</text>
+        <text x="966" y="146" class="journey-annotation">下一站 · 相遇</text>
+      </svg>
+      <svg class="journey-simple journey-mobile" viewBox="0 0 440 780" role="img" aria-label="小车沿着手机竖向虚线旅行">
+        <path class="journey-dash" d="M98 78 C348 56 355 244 198 291 S48 475 230 523 S344 653 270 711"/>
+        <g class="journey-car"><g transform="translate(-31 -23)">
+          <path d="M8 20 L17 6 Q20 2 27 2 H45 Q52 2 56 8 L64 20Z" fill="#fff" stroke="#354e60" stroke-width="3"/>
+          <rect x="0" y="18" width="68" height="25" rx="9" fill="#9acbd2" stroke="#354e60" stroke-width="3"/>
+          <path d="M20 9 H44 L52 19 H12Z" fill="#dff5fa"/>
+          <circle cx="16" cy="43" r="8" fill="#354e60"/><circle cx="53" cy="43" r="8" fill="#354e60"/>
+          <circle cx="16" cy="43" r="3" fill="#fff"/><circle cx="53" cy="43" r="3" fill="#fff"/>
+        </g></g>
+        <g class="journey-doodles" fill="none" stroke="#6c999b" stroke-width="2.5" stroke-linecap="round">
+          <path d="M70 250l19-30 22 30m-36-12h31m-15 7v27"/>
+          <path d="M324 438l11-26 11 26 26 11-26 11-11 26-11-26-26-11z"/>
+          <path d="M74 637q32-27 65 0m-58 13h61"/>
+        </g>
+        <circle cx="98" cy="78" r="8" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
+        <circle cx="270" cy="711" r="9" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
+        <text x="38" y="55" class="journey-annotation">START!</text>
+        <text x="288" y="743" class="journey-annotation">一起出发 ↗</text>
+      </svg>
+      <div class="journey-caption">去见想见的人，去看新的风景。</div>
+    </div>
   </div>
   <button class="skip" id="skip">跳过 ↗</button>
 </div>
@@ -2631,6 +2662,28 @@ html:not(.oe-entry-preview) .scrap-entry.loader{display:none!important}
 @keyframes oe-simple-car-exit{to{opacity:0;transform:scale(1.015)}}
 @media(max-width:760px){.scrap-entry .journey-simple{width:112vw;max-width:none;transform:rotate(-8deg)}}
 @media(prefers-reduced-motion:reduce){.scrap-entry.entry-playing .journey-car,.scrap-entry.entry-playing .scrap-entry-gate{animation:none!important}}
+
+/* v8.40.92: separate wide and portrait travel routes with light travel doodles. */
+.scrap-entry .journey-scene-shell{width:100%;height:100%;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:clamp(20px,4vh,50px) 0!important;box-sizing:border-box}
+.scrap-entry .journey-kicker{font:850 clamp(13px,1.5vw,20px)/1.5 "Microsoft YaHei",sans-serif;letter-spacing:.16em;color:#426b70;text-align:center}
+.scrap-entry .journey-kicker span{color:#e48c8f}
+.scrap-entry .journey-caption{font:600 clamp(12px,1.1vw,17px)/1.5 "Microsoft YaHei",sans-serif;color:#63858a;text-align:center}
+.scrap-entry .journey-simple.journey-desktop{display:block!important;width:min(96vw,1450px)!important;height:min(73dvh,680px)!important;max-height:none!important;transform:none!important}
+.scrap-entry .journey-simple.journey-mobile{display:none!important}
+.scrap-entry .journey-annotation{fill:#63858a;font:750 20px "Microsoft YaHei",sans-serif;letter-spacing:.06em}
+.scrap-entry .journey-doodles{opacity:.72}
+.scrap-entry .journey-desktop .journey-car{offset-path:path("M65 382 C235 382 215 125 430 195 S698 492 862 289 S1020 165 1140 196")!important}
+.scrap-entry.entry-playing .journey-desktop .journey-car{animation:oe-simple-car-drive 5.2s cubic-bezier(.37,.03,.57,.98) forwards!important}
+@media(max-width:760px){
+.scrap-entry .journey-scene-shell{padding:clamp(20px,4vh,42px) 0!important}
+.scrap-entry .journey-kicker{font-size:14px!important}
+.scrap-entry .journey-caption{font-size:12px!important}
+.scrap-entry .journey-simple.journey-desktop{display:none!important}
+.scrap-entry .journey-simple.journey-mobile{display:block!important;width:min(96vw,460px)!important;height:min(76dvh,790px)!important;max-height:none!important;transform:none!important}
+.scrap-entry .journey-mobile .journey-car{offset-path:path("M98 78 C348 56 355 244 198 291 S48 475 230 523 S344 653 270 711")!important}
+.scrap-entry.entry-playing .journey-mobile .journey-car{animation:oe-simple-car-drive 5.2s cubic-bezier(.37,.03,.57,.98) forwards!important}
+.scrap-entry .journey-annotation{font-size:17px}
+}
 
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
