@@ -295,7 +295,7 @@ export const previewStyle=`
 .trip-page#guests .scrap-guest :is(h3,h4){font-family:Arial,"Noto Sans SC",sans-serif;font-weight:850;letter-spacing:-.04em}
 .trip-page#activities{background:#f3f7f4}
 .trip-page#activities .trip-page-head h2{font-family:Arial,"Noto Sans SC",sans-serif;font-weight:850;letter-spacing:-.065em}
-.trip-page#activities .trip-activity-switch{padding:14px 0;border-block:1px solid #b7ccc7}
+.trip-page#activities .trip-activity-switch{padding:14px 0;border:0}
 .trip-page#activities .activity-view-tabs button{border-radius:0;font-weight:800;letter-spacing:.06em}
 @media(max-width:780px){.trip-page#guests .guest-grid{grid-template-columns:1fr}.trip-page#guests .scrap-guest{padding:22px 16px}.trip-page#guests .trip-page-head h2{font-size:clamp(52px,14vw,85px)}}
 @media(max-width:430px){.trip-page#guests .scrap-guest{grid-template-columns:120px minmax(0,1fr);gap:14px}.trip-page#guests .scrap-polaroid{max-width:100%}}
@@ -2280,6 +2280,36 @@ body[data-oe-template="02-scrapbook"] .trip-site :is(#booths,#activities,#guide,
 body[data-oe-template="02-scrapbook"] .trip-site :is(#booths,#activities,#guide,.custom-page-view).oe-page-view:not(.oe-page-hidden) .section-back{
  border:1px solid #9aa9a9!important;background:#fff!important;
  color:#293946!important;border-radius:0!important;
+}
+
+/* v8.40.83: activity tabs are controls, not a second framed page header.
+   Remove both redundant separator lines; preserve the single title divider. */
+body[data-oe-template="02-scrapbook"] .trip-site #activities .trip-activity-switch{
+ border:0!important;border-top:0!important;border-bottom:0!important;
+ box-shadow:none!important;
+ padding:0!important;margin:0 0 28px!important;min-height:0!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #activities .activity-view-tabs{
+ border:0!important;box-shadow:none!important;
+}
+/* Custom templates keep their individual content layouts, but share precisely
+   the same section canvas, title-divider spacing and return control as inner pages. */
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view.oe-page-view:not(.oe-page-hidden){
+ background:#f8f8f1!important;color:#293342!important;
+ padding:clamp(20px,2.6vw,38px) clamp(20px,3.8vw,60px) 80px!important;
+ width:100%!important;max-width:100%!important;margin:0!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .head{
+ margin-bottom:30px!important;padding-bottom:24px!important;
+ border-bottom:1px solid #aebfc0!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-grid,
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-intro{
+ max-width:none!important;width:100%!important;box-sizing:border-box!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .head .section-back{
+ border:1px solid #9aa9a9!important;border-radius:0!important;
+ background:#fff!important;color:#293946!important;
 }
 
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
