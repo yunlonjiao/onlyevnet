@@ -1725,6 +1725,27 @@ body[data-oe-template="02-scrapbook"][data-oe-current-page="guide"] .trip-site #
  display:block!important;visibility:visible!important;
 }
 
+/* v8.40.62: ID selectors on editorial homepage sections previously beat
+   .oe-page-hidden even with !important. Enforce router state at ID specificity. */
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site #event-introduction,
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site #updates,
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site #participation,
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site #tickets,
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site #map-home,
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-index,
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-event-facts,
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-route-ticker,
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-hero{
+ display:none!important;visibility:hidden!important;
+}
+/* Never let dormant page descendants bleed into the active route. */
+body[data-oe-template="02-scrapbook"] .trip-site #booths.oe-page-hidden,
+body[data-oe-template="02-scrapbook"] .trip-site #activities.oe-page-hidden,
+body[data-oe-template="02-scrapbook"] .trip-site #guests.oe-page-hidden,
+body[data-oe-template="02-scrapbook"] .trip-site #guide.oe-page-hidden{
+ display:none!important;
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
