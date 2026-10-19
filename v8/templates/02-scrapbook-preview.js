@@ -58,7 +58,7 @@ export const previewBody=`
     <section class="trip-event-facts oe-home-only" aria-label="活动基本信息">
       <div class="trip-event-fact"><span>EVENT DATE</span><strong data-oe-field="date">活动日期</strong></div>
       <div class="trip-event-fact"><span>DESTINATION</span><strong data-oe-field="location">举办城市</strong></div>
-      <div class="trip-event-fact"><span>VENUE</span><a class="venue-nav" href="#map-home" title="查看场馆位置"><strong data-oe-field="edition">活动场馆</strong><span aria-hidden="true"> ↗</span></a></div>
+      <div class="trip-event-fact"><span>VENUE</span><a class="venue-nav" href="#map-home" title="查看场馆位置"><strong data-oe-field="edition">活动场馆</strong></a></div>
       <div class="trip-event-fact"><span>EVENT STATUS</span><strong data-oe-status="event">活动未开始</strong></div>
     </section>
 
@@ -1837,6 +1837,25 @@ body[data-oe-template="02-scrapbook"] #booths [data-directory-grid][hidden],
 body[data-oe-template="02-scrapbook"] #booths [data-directory-context][hidden],
 body[data-oe-template="02-scrapbook"] #booths .booth-no-result[hidden]{display:none!important}
 @media(max-width:900px){.trip-site #home-guests{grid-template-columns:1fr!important}.trip-site #home-guests .scrap-guest{flex-basis:min(86vw,380px)!important;flex-direction:column!important}.trip-site #home-guests .scrap-polaroid{width:100%!important}}
+
+/* v8.40.65: close editorial rail top gap, hide guest track scrollbar. */
+@media(min-width:901px){
+.trip-site .trip-feature.oe-editorial-section{align-items:stretch!important}
+.trip-site .trip-feature.oe-editorial-section>header{
+ align-self:stretch!important;min-height:100%!important;
+ margin:0!important;top:0!important;bottom:0!important;
+ box-sizing:border-box!important;background:#c9fb62!important;
+}
+}
+.trip-site #home-guests .trip-guest-carousel,
+.trip-site #home-guests .guest-grid{
+ scrollbar-width:none!important;-ms-overflow-style:none!important;
+}
+.trip-site #home-guests .trip-guest-carousel::-webkit-scrollbar,
+.trip-site #home-guests .guest-grid::-webkit-scrollbar{
+ display:none!important;width:0!important;height:0!important;
+}
+.trip-site #home-guests .guest-grid{padding-bottom:0!important}
 
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
