@@ -117,12 +117,12 @@ export const previewBody=`
       <div class="trip-guest-carousel"><div class="guest-grid" data-oe-mount="guests" tabindex="0" aria-label="嘉宾列表，左右滑动浏览"></div></div>
     </section>
     <section class="trip-page oe-page-view" id="booths">
-      <header class="trip-page-head"><span>ROUTE 01 / BOOTH</span><h2>BOOTH DIRECTORY</h2><a class="section-back" href="#home" data-page-link="home">BACK TO TOP</a></header>
+      <header class="trip-page-head"><span>ROUTE 01 / BOOTH</span><h2>BOOTH DIRECTORY</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
       <div class="booth-directory-rich" data-oe-mount="booths"></div>
     </section>
 
     <section class="trip-page oe-page-view" id="activities">
-      <header class="trip-page-head"><span>ROUTE 02 / EVENT</span><h2>EVENT / SCHEDULE</h2><a class="section-back" href="#home" data-page-link="home">BACK TO TOP</a></header>
+      <header class="trip-page-head"><span>ROUTE 02 / EVENT</span><h2>EVENT / SCHEDULE</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
       <div class="trip-activity-switch">
         <div class="activity-view-tabs"><button type="button" class="active" data-activity-view="timeline">TIMELINE</button><button type="button" data-activity-view="programs">PROGRAM</button></div>
         <div data-oe-mount="activity-days" class="activity-day-tabs"></div>
@@ -134,7 +134,7 @@ export const previewBody=`
 
 
     <section class="trip-page oe-page-view" id="guide">
-      <header class="trip-page-head"><span>ROUTE 04 / GUIDE</span><h2>VISITOR GUIDE</h2><a class="section-back" href="#home" data-page-link="home">BACK TO TOP</a></header>
+      <header class="trip-page-head"><span>ROUTE 04 / GUIDE</span><h2>VISITOR GUIDE</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
       <div class="guide-detail-grid" data-oe-mount="guide-detail"></div>
     </section>
 
@@ -1856,6 +1856,60 @@ body[data-oe-template="02-scrapbook"] #booths .booth-no-result[hidden]{display:n
  display:none!important;width:0!important;height:0!important;
 }
 .trip-site #home-guests .guest-grid{padding-bottom:0!important}
+
+/* v8.40.66: consistent inner-page return, no duplicated masthead or giant route banners. */
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-header,
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-mobile-nav{display:none!important}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page:not(.oe-page-hidden),
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view:not(.oe-page-hidden){
+ margin:0!important;max-width:100%!important;width:100%!important;
+ min-height:70vh!important;padding:clamp(20px,2.6vw,38px) clamp(20px,3.8vw,60px) 80px!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page:not(.oe-page-hidden)>.trip-page-head{
+ display:flex!important;justify-content:flex-end!important;align-items:center!important;
+ margin:0 0 24px!important;padding:0!important;min-height:38px!important;
+ border:0!important;max-width:none!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page-head>span,
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page-head>h2,
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page:before{display:none!important;content:none!important}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page-head .section-back{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ position:static!important;margin:0!important;padding:10px 16px!important;
+ border:1px solid #9aa9a9!important;border-radius:0!important;
+ background:#fff!important;color:#293946!important;
+ font:750 13px/1.4 "Microsoft YaHei",sans-serif!important;text-decoration:none!important;
+}
+/* No large unused space below sparse booth details. */
+body[data-oe-template="02-scrapbook"] #booths .scrap-booth{
+ min-height:0!important;height:auto!important;
+ padding-top:clamp(14px,2vw,22px)!important;
+ padding-bottom:clamp(14px,2vw,22px)!important;
+ align-content:start!important;
+}
+body[data-oe-template="02-scrapbook"] #booths .scrap-booth footer{margin-top:12px!important}
+body[data-oe-template="02-scrapbook"] #booths .booth-directory-grid{align-items:start!important}
+/* Guests inherit venue-map title rail typography and placement. */
+body[data-oe-template="02-scrapbook"] .trip-site #home-guests>.oe-editorial-rail{
+ background:#dcebf1!important;padding:clamp(34px,4vw,66px) clamp(24px,3vw,48px)!important;
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+ justify-content:flex-start!important;box-sizing:border-box!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #home-guests>.oe-editorial-rail>span{
+ font:800 clamp(11px,.85vw,14px)/1.5 "Courier New",monospace!important;
+ letter-spacing:.08em!important;margin:0 0 clamp(21px,2.8vw,44px)!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #home-guests>.oe-editorial-rail h2{
+ font:850 clamp(37px,3.3vw,58px)/1.13 "Microsoft YaHei","PingFang SC",sans-serif!important;
+ margin:0!important;letter-spacing:0!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #home-guests>.oe-editorial-rail h2 small{
+ display:block!important;font:850 clamp(17px,1.4vw,24px)/1.25 Arial,sans-serif!important;
+ letter-spacing:0!important;margin-top:13px!important;
+}
+@media(max-width:900px){
+body[data-oe-template="02-scrapbook"] .trip-site #home-guests>.oe-editorial-rail{padding:32px 22px!important}
+}
 
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
