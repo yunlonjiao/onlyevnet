@@ -32,7 +32,6 @@ export const previewBody=`
     <nav class="trip-nav" data-oe-mount="nav-links">
       <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small><strong>摊位</strong><em>BOOTH</em></a>
       <a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small><strong>活动</strong><em>EVENT</em></a>
-      <a href="#guests" data-target-mode="page" data-page-link="guests"><small>03</small><strong>嘉宾</strong><em>GUEST</em></a>
       <a href="#guide" data-target-mode="page" data-page-link="guide"><small>04</small><strong>指南</strong><em>GUIDE</em></a>
     </nav>
     
@@ -42,7 +41,6 @@ export const previewBody=`
     <a href="#home" data-page-link="home"><small>00</small><strong>首页</strong><em>HOME</em></a>
     <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small><strong>摊位</strong><em>BOOTH</em></a>
     <a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small><strong>活动</strong><em>EVENT</em></a>
-    <a href="#guests" data-target-mode="page" data-page-link="guests"><small>03</small><strong>嘉宾</strong><em>GUEST</em></a>
     <a href="#guide" data-target-mode="page" data-page-link="guide"><small>04</small><strong>指南</strong><em>GUIDE</em></a>
   </nav>
 
@@ -114,6 +112,10 @@ export const previewBody=`
       <div class="trip-map-paper"><div data-oe-mount="map" id="venueMap" class="map-static"></div></div>
     </section>
 
+    <section class="trip-home-guests oe-home-only oe-editorial-section" id="home-guests">
+      <header class="oe-editorial-rail"><span>嘉宾阵容 / GUESTS</span><h2>嘉宾<small>GUEST / CHARACTER</small></h2></header>
+      <div class="trip-guest-carousel"><div class="guest-grid" data-oe-mount="guests" tabindex="0" aria-label="嘉宾列表，左右滑动浏览"></div></div>
+    </section>
     <section class="trip-page oe-page-view" id="booths">
       <header class="trip-page-head"><span>ROUTE 01 / BOOTH</span><h2>BOOTH DIRECTORY</h2><a class="section-back" href="#home" data-page-link="home">BACK TO TOP</a></header>
       <div class="booth-directory-rich" data-oe-mount="booths"></div>
@@ -129,10 +131,7 @@ export const previewBody=`
       <div class="activity-page-block" data-activity-panel="programs" hidden><div data-oe-mount="activity-projects" class="activity-project-list participation-list"></div></div>
     </section>
 
-    <section class="trip-page oe-page-view" id="guests">
-      <header class="trip-page-head"><span>ROUTE 03 / GUEST</span><h2>GUEST / CHARACTER</h2><a class="section-back" href="#home" data-page-link="home">BACK TO TOP</a></header>
-      <div class="trip-guest-carousel"><div class="guest-grid" data-oe-mount="guests" tabindex="0" aria-label="嘉宾列表，左右滑动浏览"></div></div>
-    </section>
+
 
     <section class="trip-page oe-page-view" id="guide">
       <header class="trip-page-head"><span>ROUTE 04 / GUIDE</span><h2>VISITOR GUIDE</h2><a class="section-back" href="#home" data-page-link="home">BACK TO TOP</a></header>
@@ -1821,6 +1820,23 @@ body[data-oe-template="02-scrapbook"] #booths .scrap-product{
  padding:14px 14px 14px 21px!important;gap:12px!important;
 }
 }
+
+/* v8.40.64: guest carousel immediately after homepage venue map. */
+.trip-site #home-guests{display:grid!important;grid-template-columns:minmax(250px,27%) minmax(0,1fr)!important;gap:0!important;background:#e9f1ef!important;min-height:0!important}
+.trip-site #home-guests>.oe-editorial-rail{padding:clamp(34px,4vw,66px) clamp(24px,3vw,48px)!important;background:#c9fb62!important;min-width:0!important}
+.trip-site #home-guests>.oe-editorial-rail h2{font:850 clamp(36px,3.3vw,58px)/1.12 "Microsoft YaHei",sans-serif!important;margin:14px 0!important}
+.trip-site #home-guests>.oe-editorial-rail h2 small{display:block;font:800 17px/1.5 Arial,sans-serif!important;margin-top:12px}
+.trip-site #home-guests>.trip-guest-carousel{min-width:0!important;padding:clamp(20px,3vw,42px)!important;box-sizing:border-box!important}
+.trip-site #home-guests .guest-grid{display:flex!important;gap:24px!important;overflow-x:auto!important;scroll-snap-type:x mandatory!important;padding-bottom:15px!important}
+.trip-site #home-guests .scrap-guest{flex:0 0 min(75vw,470px)!important;scroll-snap-align:start!important;display:flex!important;gap:0!important;background:#fff!important;min-width:0!important}
+.trip-site #home-guests .scrap-polaroid{width:44%!important;flex-shrink:0!important;transform:none!important;padding:12px!important}
+.trip-site #home-guests .scrap-guest-note{flex:1!important;min-width:0!important;padding:22px!important}
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site #home-guests{display:none!important}
+body[data-oe-template="02-scrapbook"] .trip-site #home-guests.oe-page-hidden{display:none!important}
+body[data-oe-template="02-scrapbook"] #booths [data-directory-grid][hidden],
+body[data-oe-template="02-scrapbook"] #booths [data-directory-context][hidden],
+body[data-oe-template="02-scrapbook"] #booths .booth-no-result[hidden]{display:none!important}
+@media(max-width:900px){.trip-site #home-guests{grid-template-columns:1fr!important}.trip-site #home-guests .scrap-guest{flex-basis:min(86vw,380px)!important;flex-direction:column!important}.trip-site #home-guests .scrap-polaroid{width:100%!important}}
 
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
