@@ -627,7 +627,7 @@ function syncCanvasSelection(path){
    [/^tickets\.|^ticketUrl$|^ticketLinkLabel$/,'home','tickets'],
    [/^venueMap\.links\./,'home','explore'],
    [/^updates\./,'home','updates'],
-   [/^guests\./,'guests','guests'],
+   [/^guests\./,state.templateId==='02-scrapbook'?'home':'guests','guests'],
    [/^socialLinks\./,'home','socialLinks'],
    [/^sponsors\./,'home','sponsors'],
    [/^booths\./,'booths','booths'],
@@ -729,7 +729,7 @@ function renderPageContentNav(page,{openDefault=true}={}){
    return;
  }
  const items=page==='home'&&state.templateId==='02-scrapbook'?
-   PAGE_CONTENT_CONFIG.home.filter(x=>x.collection!=='ribbonItems').map(x=>x.collection==='explore'?{...x,label:'场地图链接'}:x).flatMap(x=>x.tool==='hero'?[x,{tool:'intro',label:'活动简介'}]:[x]):
+   PAGE_CONTENT_CONFIG.home.filter(x=>x.collection!=='ribbonItems').map(x=>x.collection==='explore'?{...x,label:'场地图链接'}:x).flatMap(x=>x.tool==='hero'?[x,{tool:'intro',label:'活动简介'}]:x.tool==='map'?[x,{collection:'guests',label:'嘉宾阵容'}]:[x]):
    (PAGE_CONTENT_CONFIG[page]||[]);
  nav.innerHTML=items.map(x=>x.collection
    ?'<button type="button" data-page-content-manager="'+x.collection+'"><span>'+esc(x.label)+'</span><b data-content-count="'+x.collection+'">0</b></button>'
