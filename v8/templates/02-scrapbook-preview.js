@@ -2009,6 +2009,22 @@ body[data-oe-template="02-scrapbook"] #activities .activity-project-list{
 }
 }
 
+/* v8.40.69: the legacy ::before label was a real CSS grid item and
+   shifted the first two activity cards into staggered positions. */
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list::before{
+ content:none!important;display:none!important;
+}
+@media(min-width:901px){
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list{
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ grid-auto-flow:row!important;align-items:start!important;
+}
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list>.activity-feature{
+ grid-column:auto!important;grid-row:auto!important;
+ margin-top:0!important;transform:none!important;
+}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
