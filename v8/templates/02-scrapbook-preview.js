@@ -2522,7 +2522,7 @@ body[data-oe-template="02-scrapbook"] .trip-site .trip-header{grid-template-colu
  border:0!important;background:white;box-shadow:8px 12px 0 #29394622;
  transform:rotate(4deg) scale(.93);opacity:0;animation:oe-journey-photo .85s cubic-bezier(.18,.8,.2,1) 1.25s forwards}
 .scrap-entry .entry-photo{min-height:0!important;width:100%;height:calc(100% - 25px);
- background:#d2e6e5 center/cover no-repeat!important}
+ background-color:#d2e6e5!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
 .scrap-entry .journey-photo-caption{display:block;padding-top:9px;font:850 10px/1 Arial,sans-serif;letter-spacing:.12em}
 .scrap-entry .journey-legacy{display:none!important}
 .scrap-entry .skip{z-index:5;right:clamp(15px,3vw,46px);bottom:clamp(60px,6vw,110px);
@@ -2565,6 +2565,12 @@ body[data-oe-template="02-scrapbook"] .trip-site .trip-header{grid-template-colu
  animation:oe-journey-depart .45s ease 2.45s both!important;
 }
 
+/* Entrance fields use the new freeform composition; legacy ticket controls don't gate them. */
+.scrap-entry .journey-copy .entry-ticket-label,
+.scrap-entry .journey-copy .entry-ticket-title,
+.scrap-entry .journey-copy .entry-ticket-subtitle,
+.scrap-entry .journey-copy .entry-ticket-date,
+.scrap-entry .journey-copy .entry-ticket-location{max-width:100%}
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
