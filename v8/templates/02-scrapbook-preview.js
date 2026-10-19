@@ -1956,6 +1956,59 @@ body[data-oe-template="02-scrapbook"] #activities .activity-project-list .activi
 body[data-oe-template="02-scrapbook"] .trip-site .trip-page-head>h2{font-size:clamp(34px,9vw,62px)!important}
 }
 
+/* v8.40.68: separate guest event links, center guest portraits, 2-column activity details. */
+body[data-oe-template="02-scrapbook"] #home-guests .guest-related-note{
+ display:block!important;margin-top:18px!important;
+ padding-top:15px!important;border-top:1px solid #c6d4d1!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .guest-related-links{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ gap:12px!important;margin-top:12px!important;min-width:0!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .guest-related-links>a{
+ display:block!important;width:100%!important;min-width:0!important;
+ box-sizing:border-box!important;padding:14px 16px!important;
+ margin:0!important;border:1px solid #ccd6d5!important;border-radius:12px!important;
+ background:#f7f9f7!important;color:#293946!important;
+ text-decoration:none!important;line-height:1.5!important;
+ overflow-wrap:anywhere!important;white-space:normal!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .guest-related-links>a:hover{
+ background:#ebf5f1!important;border-color:#869f9b!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid{
+ display:flex!important;flex-direction:column!important;justify-content:center!important;
+ align-items:center!important;position:relative!important;
+ padding:22px 16px!important;box-sizing:border-box!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid .guest-image{
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ margin:auto!important;aspect-ratio:4/5!important;
+ flex:0 0 auto!important;overflow:hidden!important;border-radius:18px!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid>span{
+ position:absolute!important;bottom:5px!important;left:16px!important;
+ margin:0!important;font-size:9px!important;
+}
+@media(min-width:901px){
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:22px!important;align-items:start!important;
+ border:0!important;
+}
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list>.activity-feature,
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list>.scrap-activity{
+ min-width:0!important;width:100%!important;height:auto!important;
+ box-sizing:border-box!important;border:1px solid #c2c8c8!important;
+ align-self:start!important;
+}
+}
+@media(max-width:900px){
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list{
+ grid-template-columns:minmax(0,1fr)!important;gap:16px!important;
+}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
