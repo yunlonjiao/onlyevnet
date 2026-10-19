@@ -1401,16 +1401,26 @@ function openImageInspector(path){
    const guideMatch=path.match(/^guide\.items\.(\d+)\.image$/),guideItem=guideMatch?state.guide?.items?.[Number(guideMatch[1])]:null;
    const isGuideRoute=!!guideItem&&guideItem.preset==='traffic';
    const title=isGuideRoute?'入口示意图 / 交通路线图':'场地图';
-   setInspector(title,title,
-     '<div class="map-image-actions"><button id="replaceImage" type="button">'+(current?'替换'+title:'上传'+title)+'</button>'+(current?'<button id="removeImage" type="button" class="danger ghost">删除'+title+'</button>':'')+'</div>');
-   if(path==='venueMap.image'&&state.templateId==='02-scrapbook'){
-     const btn=document.createElement('button');btn.type='button';btn.className='ghost';btn.textContent='编辑场地图关联链接 ↗';
-     btn.addEventListener('click',()=>{syncStudioPageUI('home',{openContent:false});renderPageContentNav('home',{openDefault:false});openCollectionManager('explore');setPageContentActive({collection:'explore'})});
-     inspector.querySelector('.map-image-actions')?.appendChild(btn);
-     const links=document.createElement('div');links.className='map-links-editor-preview';
-     links.style.cssText='margin-top:12px;display:grid;gap:7px';
-     (state.venueMap?.links||[]).forEach((item,i)=>{const b=document.createElement('button');b.type='button';b.className='ghost';b.textContent=(item.label||'链接 '+(i+1))+' ↗';b.addEventListener('click',()=>{openCollectionManager('explore',i);setPageContentActive({tool:'map'})});links.appendChild(b)});
-     inspector.querySelector('.map-image-actions')?.appendChild(links);
+   const isHomeMap=path==='venueMap.image'&&state.templateId==='02-scrapbook';
+   const markup=isHomeMap?
+     '<div class="item-media hero-media-field"><span>场地图 KV</span><div class="item-media-row">'+
+     (current?'<img src="'+esc(current)+'" alt="场地图预览">':'<div class="item-media-empty">＋</div>')+
+     '<div><button id="replaceImage" type="button">'+(current?'选择 / 裁剪':'选择 / 裁剪')+'</button>'+
+     (current?'<button id="removeImage" type="button" class="ghost danger">移除</button>':'')+
+     '</div></div></div>'+
+     '<div class="item-media"><span>地图关联入口</span><div class="map-links-editor-preview">'+
+     (state.venueMap?.links||[]).map((x,i)=>'<button type="button" class="ghost map-link-edit" data-map-link-index="'+i+'"><span>'+esc(x.label||'链接 '+(i+1))+'</span><span>编辑 ↗</span></button>').join('')+
+     '<button type="button" class="ghost" id="addMapLink">＋ 添加关联入口</button></div></div>':
+     '<div class="item-media"><span>'+esc(title)+'</span><div class="item-media-row">'+
+     (current?'<img src="'+esc(current)+'" alt="">':'<div class="item-media-empty">＋</div>')+
+     '<div><button id="replaceImage" type="button">'+(current?'替换图片':'选择 / 裁剪')+'</button>'+
+     (current?'<button id="removeImage" type="button" class="ghost danger">移除</button>':'')+'</div></div></div>';
+   setInspector(title,isHomeMap?'图片与关联链接':title,markup);
+   if(isHomeMap){
+     inspector.querySelectorAll('[data-map-link-index]').forEach(btn=>btn.addEventListener('click',()=>{
+       openCollectionManager('explore',Number(btn.dataset.mapLinkIndex));setPageContentActive({tool:'map'});
+     }));
+     $('#addMapLink')?.addEventListener('click',()=>mutateItem('explore',(state.venueMap?.links||[]).length-1,'add'));
    }
    $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()};
    $('#removeImage')?.addEventListener('click',()=>{checkpoint();setDeep(path,'');save();send({type:'OE_REPLACE_STATE',state});openImageInspector(path)});
