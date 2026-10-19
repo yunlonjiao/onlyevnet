@@ -2025,6 +2025,37 @@ body[data-oe-template="02-scrapbook"] #activities .activity-project-list>.activi
 }
 }
 
+/* v8.40.70: compact related-event pills and restrained guest KV proportions. */
+body[data-oe-template="02-scrapbook"] #home-guests .guest-related-note{
+ margin-top:15px!important;padding-top:12px!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .guest-related-links{
+ display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;
+ align-items:center!important;justify-content:flex-start!important;
+ gap:9px!important;margin-top:10px!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .guest-related-links>a{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ width:auto!important;max-width:100%!important;min-width:0!important;
+ padding:8px 14px!important;margin:0!important;
+ border:1px solid #d3d7d6!important;border-radius:999px!important;
+ background:#fff!important;box-shadow:none!important;
+ color:#293946!important;font:750 12px/1.4 "Microsoft YaHei",sans-serif!important;
+ text-decoration:none!important;white-space:normal!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid{
+ justify-content:center!important;align-items:center!important;
+ padding:16px!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid .guest-image{
+ width:100%!important;max-width:100%!important;max-height:310px!important;
+ aspect-ratio:3/4!important;margin:auto!important;
+ border-radius:12px!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid .guest-image img{
+ width:100%!important;height:100%!important;object-fit:cover!important;
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
