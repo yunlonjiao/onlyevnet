@@ -1746,6 +1746,82 @@ body[data-oe-template="02-scrapbook"] .trip-site #guide.oe-page-hidden{
  display:none!important;
 }
 
+/* v8.40.63: horizontal inner-page navigation and readable product cards.
+   Scoped to Template 02 inner pages; homepage hero/navigation remain unchanged. */
+@media(min-width:901px){
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-header{
+ position:relative!important;inset:auto!important;width:100%!important;
+ height:auto!important;min-height:84px!important;
+ display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;
+ align-items:center!important;justify-content:space-between!important;
+ padding:12px clamp(22px,3vw,52px)!important;gap:20px!important;
+ background:#293341!important;box-sizing:border-box!important;
+}
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-logo{
+ position:static!important;inset:auto!important;display:flex!important;
+ flex-direction:column!important;align-items:flex-start!important;
+ margin:0!important;padding:0!important;max-width:42%!important;
+ color:#fff!important;white-space:normal!important;
+}
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-nav{
+ position:static!important;inset:auto!important;z-index:auto!important;
+ display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;
+ width:auto!important;max-width:none!important;height:auto!important;
+ align-items:center!important;justify-content:flex-end!important;
+ gap:clamp(15px,2vw,35px)!important;margin:0!important;padding:0!important;
+ overflow:visible!important;background:transparent!important;
+}
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-nav a{
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+ min-width:0!important;width:auto!important;padding:6px 0!important;
+ margin:0!important;color:#fff!important;white-space:nowrap!important;
+}
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .trip-page,
+body[data-oe-template="02-scrapbook"][data-oe-current-page]:not([data-oe-current-page="home"]) .trip-site .custom-page-view{
+ margin-left:0!important;max-width:100%!important;width:100%!important;
+ box-sizing:border-box!important;
+}
+}
+/* Cards need real room for information, not four squeezed columns. */
+body[data-oe-template="02-scrapbook"] #booths .product-directory-grid{
+ display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))!important;
+ gap:20px!important;align-items:stretch!important;
+}
+body[data-oe-template="02-scrapbook"] #booths .scrap-product{
+ display:grid!important;grid-template-columns:clamp(115px,12vw,160px) minmax(0,1fr)!important;
+ column-gap:20px!important;align-items:start!important;
+ width:100%!important;min-width:0!important;height:auto!important;
+ box-sizing:border-box!important;padding:20px 22px 20px 28px!important;
+ background:#fffdf8!important;
+}
+body[data-oe-template="02-scrapbook"] #booths .scrap-product .directory-product-image{
+ width:100%!important;max-width:160px!important;min-width:0!important;
+ aspect-ratio:1!important;
+}
+body[data-oe-template="02-scrapbook"] #booths .scrap-product>div,
+body[data-oe-template="02-scrapbook"] #booths .scrap-product>section{
+ min-width:0!important;max-width:100%!important;
+}
+body[data-oe-template="02-scrapbook"] #booths .scrap-product b,
+body[data-oe-template="02-scrapbook"] #booths .scrap-product h3{
+ overflow-wrap:break-word!important;word-break:normal!important;
+ line-height:1.3!important;
+}
+body[data-oe-template="02-scrapbook"] #booths .scrap-product footer{
+ display:flex!important;flex-wrap:wrap!important;justify-content:flex-start!important;
+ align-items:center!important;gap:12px!important;
+}
+body[data-oe-template="02-scrapbook"] #booths .scrap-product footer button{
+ flex-shrink:0!important;white-space:nowrap!important;
+}
+@media(max-width:700px){
+body[data-oe-template="02-scrapbook"] #booths .product-directory-grid{grid-template-columns:1fr!important}
+body[data-oe-template="02-scrapbook"] #booths .scrap-product{
+ grid-template-columns:minmax(92px,32%) minmax(0,1fr)!important;
+ padding:14px 14px 14px 21px!important;gap:12px!important;
+}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
