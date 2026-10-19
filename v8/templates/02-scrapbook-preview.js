@@ -4,24 +4,37 @@
 
 export const previewBody=`
 <div class="loader scrap-entry" id="loader">
-  <div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站">
-    <section class="scrap-entry-photo ticket-half left"><div class="entry-photo" aria-label="活动KV"></div></section>
-    <aside class="scrap-entry-info ticket-half right">
-      <div class="entry-ticket-label">SPECIAL JOURNEY</div>
-      <div class="entry-ticket-title" data-oe-field="eventName">ONLY EVENT</div>
-      <div class="entry-ticket-subtitle"></div>
-      <div class="entry-ticket-meta">
-        <div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date" data-oe-field="date">EVENT DATE</b></div>
-        <div class="entry-ticket-time-wrap"><span>TIME</span><b class="entry-ticket-time"></b></div>
-        <div class="entry-ticket-location-wrap"><span>DESTINATION</span><b class="entry-ticket-location" data-oe-field="location">EVENT CITY</b></div>
+  <div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击开启旅程，进入活动网站">
+    <div class="journey-sky" aria-hidden="true"><span class="journey-sun"></span><span class="journey-cloud c1"></span><span class="journey-cloud c2"></span></div>
+    <div class="journey-topline"><span>ONLY EVENT · JOURNEY</span><span>青春的下一站 / YOUR NEXT STORY</span></div>
+    <div class="journey-layout">
+      <div class="journey-copy">
+        <p class="entry-ticket-label">A NEW JOURNEY BEGINS</p>
+        <h1 class="entry-ticket-title" data-oe-field="eventName">ONLY EVENT</h1>
+        <p class="entry-ticket-subtitle">一起出发，去见想见的人。</p>
+        <div class="journey-destination"><span>下一站 / DESTINATION</span><strong class="entry-ticket-location" data-oe-field="location">活动城市</strong></div>
+        <div class="journey-day"><span>出发日期 / DATE</span><strong class="entry-ticket-date" data-oe-field="date">活动日期</strong></div>
+        <span class="journey-invite">点击开启这趟旅程 <span aria-hidden="true">↗</span></span>
       </div>
-      <div class="stub-barcode" aria-hidden="true"></div>
-      <div class="stub-code"><span class="entry-serial stub-number">MEMORY / 001</span></div>
-    </aside>
+      <div class="journey-scene">
+        <div class="journey-map" aria-hidden="true">
+          <svg viewBox="0 0 520 350" preserveAspectRatio="xMidYMid meet">
+            <path class="journey-map-contour" d="M0 75 Q76 8 149 65 T308 54 T520 82 M-20 268 Q90 174 190 226 T365 203 T540 235 M0 330 Q90 290 150 316 T360 300 T520 312"/>
+            <path class="journey-track" d="M55 265 C100 260 82 145 174 161 S276 272 342 200 S394 74 462 91" />
+            <circle class="journey-station" cx="55" cy="265" r="10"/>
+            <circle class="journey-station journey-endpoint" cx="462" cy="91" r="11"/>
+            <g class="journey-traveler"><path d="M-12 5 12 -1 -3 0 0 -12 -4 -10 -6 1Z" fill="#293946"/></g>
+          </svg>
+          <span class="journey-map-label start">START · HERE</span><span class="journey-map-label end">OUR DESTINATION ✦</span>
+        </div>
+        <div class="scrap-entry-photo"><div class="entry-photo" aria-label="活动KV"></div><span class="journey-photo-caption">A DAY TO REMEMBER ↗</span></div>
+      </div>
+    </div>
+    <div class="journey-bottomline"><span>LET'S GO SOMEWHERE NEW.</span><span>SCROLL THE MEMORIES · 01 / 01</span></div>
+    <div class="journey-legacy" hidden aria-hidden="true"><span class="entry-ticket-time"></span><span class="entry-serial"></span><span class="stub-barcode"></span><span class="stub-code"></span><span class="entry-ticket-time-wrap"></span><span class="entry-ticket-date-wrap"></span><span class="entry-ticket-location-wrap"></span></div>
   </div>
-  <button class="skip" id="skip">SKIP →</button>
+  <button class="skip" id="skip">跳过动画 ↗</button>
 </div>
-
 <div class="trip-site">
   <header class="trip-header">
     <a class="trip-logo" href="#home" data-page-link="home">
@@ -29,11 +42,7 @@ export const previewBody=`
       <b data-oe-field="eventName">ONLY EVENT</b>
     </a>
     
-    <nav class="trip-nav" data-oe-mount="nav-links">
-      <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small><strong>摊位</strong><em>BOOTH</em></a>
-      <a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small><strong>活动</strong><em>EVENT</em></a>
-      <a href="#guide" data-target-mode="page" data-page-link="guide"><small>04</small><strong>指南</strong><em>GUIDE</em></a>
-    </nav>
+
     
   </header>
 
@@ -2443,6 +2452,108 @@ body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide p{
  overflow-wrap:anywhere!important;
  word-break:normal!important;
 }
+/* v8.40.87 — youthful journey entrance, not a ticket or cassette. */
+body[data-oe-template="02-scrapbook"] .trip-site .trip-nav{display:none!important}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-header{grid-template-columns:minmax(0,1fr)!important}
+.scrap-entry.loader{
+ --journey-ink:#293946;--journey-green:#d6ff79;--journey-blue:#b7dfed;
+ display:grid!important;place-items:stretch!important;
+ padding:0!important;background:#e9f5ee!important;
+ overflow:hidden!important;color:var(--journey-ink)!important;
+}
+.scrap-entry .scrap-entry-gate{
+ position:relative!important;isolation:isolate!important;display:flex!important;
+ flex-direction:column!important;justify-content:space-between!important;
+ width:100%!important;max-width:none!important;min-height:100dvh!important;
+ height:100dvh!important;margin:0!important;padding:clamp(22px,3.4vw,56px)!important;
+ border:0!important;border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;transform:none!important;overflow:hidden!important;
+ color:var(--journey-ink)!important;box-sizing:border-box!important;
+}
+.scrap-entry .journey-sky{position:absolute;inset:0;z-index:-1;pointer-events:none;
+ background:linear-gradient(145deg,#e7f4f0 0%,#d9eaf6 49%,#e5f5db 100%)}
+.scrap-entry .journey-sky:before{content:"";position:absolute;inset:0;opacity:.35;
+ background-image:radial-gradient(#fff 1px,transparent 1px);background-size:22px 22px}
+.scrap-entry .journey-sun{position:absolute;right:9%;top:6%;width:clamp(140px,23vw,340px);
+ aspect-ratio:1;border-radius:50%;background:#eeffab;filter:blur(2px)}
+.scrap-entry .journey-cloud{position:absolute;width:clamp(210px,30vw,450px);height:80px;
+ border-radius:50%;background:#ffffff80;filter:blur(18px);animation:oe-journey-cloud 9s ease-in-out infinite alternate}
+.scrap-entry .journey-cloud.c1{left:4%;top:21%}
+.scrap-entry .journey-cloud.c2{right:8%;bottom:17%;animation-delay:-4s}
+.scrap-entry .journey-topline,.scrap-entry .journey-bottomline{
+ display:flex;justify-content:space-between;align-items:center;gap:16px;
+ position:relative;z-index:2;width:100%;font:800 clamp(10px,.85vw,13px)/1.5 Arial,sans-serif;
+ letter-spacing:.11em}
+.scrap-entry .journey-topline{border-bottom:1px solid #46626c55;padding-bottom:14px}
+.scrap-entry .journey-bottomline{border-top:1px solid #46626c55;padding-top:14px}
+.scrap-entry .journey-layout{display:grid!important;grid-template-columns:minmax(0,.98fr) minmax(0,1.02fr);
+ gap:clamp(15px,4vw,70px);width:min(100%,1380px);flex:1;align-self:center;align-items:center;
+ min-height:0;position:relative;z-index:1}
+.scrap-entry .journey-copy{display:flex;flex-direction:column;align-items:flex-start;min-width:0;
+ gap:clamp(10px,1.5vw,22px)}
+.scrap-entry .entry-ticket-label{color:#4a7181!important;font:850 clamp(10px,1vw,15px)/1.4 Arial,sans-serif!important;letter-spacing:.15em!important}
+.scrap-entry .entry-ticket-title{font:900 clamp(48px,7.1vw,112px)/1.03 "Microsoft YaHei",Arial,sans-serif!important;
+ max-width:100%;letter-spacing:-.06em!important;color:#293946!important;overflow-wrap:anywhere;margin:0!important}
+.scrap-entry .entry-ticket-subtitle{font:650 clamp(16px,1.6vw,24px)/1.5 "Microsoft YaHei",sans-serif!important;
+ color:#426b70!important;letter-spacing:.04em!important}
+.scrap-entry .journey-destination,.scrap-entry .journey-day{display:flex;flex-wrap:wrap;align-items:baseline;
+ gap:8px 20px;font:700 clamp(12px,1vw,16px)/1.5 "Microsoft YaHei",sans-serif}
+.scrap-entry .journey-destination span,.scrap-entry .journey-day span{opacity:.7;font-size:12px}
+.scrap-entry .journey-destination strong,.scrap-entry .journey-day strong{font:800 clamp(16px,1.6vw,23px)/1.4 "Microsoft YaHei",sans-serif}
+.scrap-entry .journey-invite{display:inline-flex;align-items:center;gap:24px;
+ padding:13px 18px;margin-top:12px;border:1px solid #293946;border-radius:50px;
+ font:850 13px/1.3 "Microsoft YaHei",sans-serif;background:var(--journey-green);
+ transition:transform .3s ease,background .3s ease}
+.scrap-entry .scrap-entry-gate:hover .journey-invite{transform:translateY(-3px);background:#c4f750}
+.scrap-entry .journey-scene{position:relative;min-width:0;aspect-ratio:1.34;display:grid;align-items:center}
+.scrap-entry .journey-map{position:absolute;inset:0;opacity:.95}
+.scrap-entry .journey-map svg{width:100%;height:100%;overflow:visible}
+.scrap-entry .journey-map-contour{fill:none;stroke:#8ebbbd;stroke-width:1.5;stroke-dasharray:5 11;opacity:.65}
+.scrap-entry .journey-track{fill:none;stroke:#e87a7a;stroke-width:5;stroke-linecap:round;
+ stroke-dasharray:650;stroke-dashoffset:650;animation:oe-journey-trail 2s cubic-bezier(.2,.6,.1,1) forwards}
+.scrap-entry .journey-station{fill:#fff;stroke:#e87a7a;stroke-width:4}
+.scrap-entry .journey-endpoint{fill:var(--journey-green);stroke:#293946}
+.scrap-entry .journey-traveler{offset-path:path("M55 265 C100 260 82 145 174 161 S276 272 342 200 S394 74 462 91");
+ offset-rotate:auto;animation:oe-journey-move 2s ease-in-out forwards}
+.scrap-entry .journey-map-label{position:absolute;font:850 10px/1 Arial,sans-serif;letter-spacing:.13em}
+.scrap-entry .journey-map-label.start{bottom:15%;left:1%}
+.scrap-entry .journey-map-label.end{right:1%;top:16%}
+.scrap-entry .scrap-entry-photo{position:absolute;inset:13% 13% 12% 23%;z-index:2;padding:clamp(8px,1vw,15px)!important;
+ border:0!important;background:white;box-shadow:8px 12px 0 #29394622;
+ transform:rotate(4deg) scale(.93);opacity:0;animation:oe-journey-photo .85s cubic-bezier(.18,.8,.2,1) 1.25s forwards}
+.scrap-entry .entry-photo{min-height:0!important;width:100%;height:calc(100% - 25px);
+ background:#d2e6e5 center/cover no-repeat!important}
+.scrap-entry .journey-photo-caption{display:block;padding-top:9px;font:850 10px/1 Arial,sans-serif;letter-spacing:.12em}
+.scrap-entry .journey-legacy{display:none!important}
+.scrap-entry .skip{z-index:5;right:clamp(15px,3vw,46px);bottom:clamp(60px,6vw,110px);
+ border:0;background:transparent;color:#293946;font:800 12px/1 Arial,sans-serif;
+ padding:10px 14px}
+.scrap-entry.entry-playing .scrap-entry-gate{animation:oe-journey-depart .55s ease-in forwards}
+.scrap-entry:not(.entry-playing) .scrap-entry-gate{transition:none}
+@keyframes oe-journey-trail{to{stroke-dashoffset:0}}
+@keyframes oe-journey-move{from{offset-distance:0%}to{offset-distance:100%}}
+@keyframes oe-journey-photo{to{opacity:1;transform:rotate(-4deg) scale(1)}}
+@keyframes oe-journey-cloud{to{transform:translateX(38px)}}
+@keyframes oe-journey-depart{to{transform:scale(1.035);filter:brightness(1.07)}}
+@media(max-width:760px){
+.scrap-entry .scrap-entry-gate{height:100dvh;min-height:0;padding:22px 20px 48px!important;overflow:auto!important}
+.scrap-entry .journey-topline,.scrap-entry .journey-bottomline{font-size:9px}
+.scrap-entry .journey-topline span:last-child,.scrap-entry .journey-bottomline span:last-child{display:none}
+.scrap-entry .journey-layout{grid-template-columns:1fr!important;gap:16px!important;align-content:center}
+.scrap-entry .journey-copy{gap:9px!important}
+.scrap-entry .entry-ticket-title{font-size:clamp(37px,10vw,65px)!important}
+.scrap-entry .entry-ticket-subtitle{font-size:15px!important}
+.scrap-entry .journey-scene{aspect-ratio:1.65!important;min-height:160px}
+.scrap-entry .scrap-entry-photo{inset:9% 16% 9% 20%}
+.scrap-entry .skip{bottom:15px;right:14px}
+}
+@media(prefers-reduced-motion:reduce){
+.scrap-entry .journey-cloud,.scrap-entry .journey-track,.scrap-entry .journey-traveler,
+.scrap-entry .scrap-entry-photo,.scrap-entry.entry-playing .scrap-entry-gate{
+ animation:none!important;transform:none!important;opacity:1!important}
+.scrap-entry .journey-track{stroke-dashoffset:0!important}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
