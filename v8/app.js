@@ -571,7 +571,7 @@ function openCustomPageItemInspector(pageId,index){
    '<label><span>'+esc(preset.metaLabel)+'</span><input data-custom-item-field="meta" value="'+esc(item.meta||'')+'"></label>'+
    '<label><span>'+esc(preset.textLabel)+'</span><textarea data-custom-item-field="text" rows="4">'+esc(item.text||'')+'</textarea></label>'+
    '<label><span>外部链接（可选）</span><input data-custom-item-field="url" value="'+esc(item.url||'')+'"></label>'+
-   '</div><div class="item-media"><span>展示图片</span><div class="item-media-row">'+image+'<div><button type="button" data-custom-item-image aria-label="选择或裁剪图片" title="选择或裁剪图片">+</button>'+(item.image?'<button type="button" class="ghost" data-custom-item-image-remove>移除</button>':'')+'</div></div></div>'+
+   '</div><div class="item-media"><span>展示图片</span><div class="item-media-row">'+image+'<div><button type="button" data-custom-item-image>选择 / 裁剪</button>'+(item.image?'<button type="button" class="ghost" data-custom-item-image-remove>移除</button>':'')+'</div></div></div>'+
    '<div class="item-actions"><button data-custom-item-op="add">＋ 添加</button><button data-custom-item-op="delete" class="danger">删除</button></div>');
  inspector.querySelectorAll('[data-custom-item-field]').forEach(input=>{
    let started=false;
@@ -606,7 +606,7 @@ function openOptionalPageInspector(key){
    '</div>'+
    '<div class="item-media"><span>页面图片</span><div class="item-media-row">'+
    (page.image?'<img src="'+esc(page.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+
-   '<div><button type="button" data-optional-image aria-label="选择或裁剪图片" title="选择或裁剪图片">+</button>'+
+   '<div><button type="button" data-optional-image>选择 / 裁剪</button>'+
    (page.image?'<button type="button" class="ghost" data-optional-image-remove>移除</button>':'')+
    '</div></div></div>');
  inspector.querySelectorAll('[data-optional-field]').forEach(input=>bindInspectorStateInput(input,key+'.'+input.dataset.optionalField,{clean:true}));
@@ -656,7 +656,7 @@ function openEntryAnimationInspector(){
    '</div>'+
    '<div class="item-media"><span>票根 KV</span><div class="item-media-row">'+
    (imageSrc?'<img src="'+esc(imageSrc)+'" alt="">':'<div class="item-media-empty">＋</div>')+
-   '<div><button type="button" data-entry-image aria-label="选择或裁剪图片" title="选择或裁剪图片">+</button>'+
+   '<div><button type="button" data-entry-image>选择 / 裁剪</button>'+
    (customImage?'<button type="button" class="ghost" data-entry-image-remove>移除单独 KV</button>':'')+
    '</div></div></div>'+
    '<div class="item-fields">'+
@@ -920,7 +920,7 @@ function bindInspectorStateInput(input,path,{clean=false,number=false}={}){
 
 function openHeroTitleInspector(){
  const desktop=String(state.heroImage||'').trim(),mobile=String(state.mobileHeroImage||'').trim();
- const media=(path,label,src,emptyLabel)=>'<div class="item-media hero-media-field"><span>'+label+'</span><div class="item-media-row">'+(src?'<img src="'+esc(src)+'" alt="">':'<div class="item-media-empty">'+emptyLabel+'</div>')+'<div><button type="button" data-hero-image="'+path+'" aria-label="选择或裁剪图片" title="选择或裁剪图片">+</button>'+(src?'<button type="button" class="ghost" data-hero-image-remove="'+path+'">移除</button>':'')+'</div></div></div>';
+ const media=(path,label,src,emptyLabel)=>'<div class="item-media hero-media-field"><span>'+label+'</span><div class="item-media-row">'+(src?'<img src="'+esc(src)+'" alt="">':'<div class="item-media-empty">'+emptyLabel+'</div>')+'<div><button type="button" data-hero-image="'+path+'">选择 / 裁剪</button>'+(src?'<button type="button" class="ghost" data-hero-image-remove="'+path+'">移除</button>':'')+'</div></div></div>';
  const isTravel=state.templateId==='02-scrapbook';
  setInspector('主视觉',isTravel?'KV 图片与裁切':'标题、图片与裁切',(isTravel?'':'<div class="item-fields">')+
  (isTravel?'':
@@ -965,7 +965,7 @@ function openSeoInspector(){
   '<label><span>标准网址 Canonical</span><input type="url" data-seo-field="canonical" value="'+esc(seo.canonical||'')+'" placeholder="https://example.onlyevent.cn/"></label>'+
   '<label><span>分享标题</span><input data-seo-field="ogTitle" value="'+esc(seo.ogTitle||'')+'" placeholder="留空则使用页面标题"></label>'+
   '<label><span>分享描述</span><textarea data-seo-field="ogDescription" rows="3" placeholder="留空则使用页面描述">'+esc(seo.ogDescription||'')+'</textarea></label>'+
- '</div><div class="item-media"><span>分享封面</span><div class="item-media-row">'+(seo.ogImage?'<img src="'+esc(seo.ogImage)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-seo-image aria-label="选择或裁剪图片" title="选择或裁剪图片">+</button>'+(seo.ogImage?'<button type="button" class="ghost" data-seo-image-remove>移除</button>':'')+'</div></div></div>'+
+ '</div><div class="item-media"><span>分享封面</span><div class="item-media-row">'+(seo.ogImage?'<img src="'+esc(seo.ogImage)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-seo-image>选择 / 裁剪</button>'+(seo.ogImage?'<button type="button" class="ghost" data-seo-image-remove>移除</button>':'')+'</div></div></div>'+
  '<p class="inspector-note">分享封面留空时正式导出会回退到活动 KV。SEO 信息会写入导出的游客 HTML。</p>');
  inspector.querySelectorAll('[data-seo-field]').forEach(input=>bindInspectorStateInput(input,'seo.'+input.dataset.seoField,{clean:true}));
  inspector.querySelector('[data-seo-image]')?.addEventListener('click',()=>{$('#imageInput').dataset.path='seo.ogImage';$('#imageInput').click()});
@@ -1089,7 +1089,7 @@ function extraInspector(collection,index,item){
    const linkedIndex=(state.participation||[]).findIndex(a=>a.id===item.participationId);
    const image=item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>';
    return '<div class="reference-panel featured-slot-panel"><b>精选活动 '+String(index+1).padStart(2,'0')+'</b>'+
-     '<div class="item-media featured-slot-media"><span>首页专用图片</span><div class="item-media-row">'+image+'<div><button type="button" data-media-path="featuredActivities.'+index+'.image" aria-label="选择或裁剪图片" title="选择或裁剪图片">+</button>'+(item.image?'<button type="button" data-remove-media="featuredActivities.'+index+'.image" class="ghost">移除</button>':'')+'</div></div><small>只用于首页活动精选，不影响活动详情页。</small></div>'+
+     '<div class="item-media featured-slot-media"><span>首页专用图片</span><div class="item-media-row">'+image+'<div><button type="button" data-media-path="featuredActivities.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button type="button" data-remove-media="featuredActivities.'+index+'.image" class="ghost">移除</button>':'')+'</div></div><small>只用于首页活动精选，不影响活动详情页。</small></div>'+
      '<label><span>选择已有活动</span><select data-featured-activity-select><option value="">未选择</option>'+options+'</select></label><p class="inspector-note">这里只决定首页展示哪一个活动，活动内容仍在「活动」里统一维护。</p>'+(linkedIndex>=0?'<button type="button" class="sidebar-content-row" data-edit-featured-source="'+linkedIndex+'"><span class="sidebar-content-copy"><b>编辑</b><small>'+esc((state.participation||[])[linkedIndex]?.title||'活动')+'</small></span><i>›</i></button>':'')+'</div>';
  }
  if(collection==='schedule'){
@@ -1106,7 +1106,7 @@ function extraInspector(collection,index,item){
    const socialPanel='<div class="reference-panel guest-social-editor"><div class="guest-social-editor-head"><b>个人平台</b><button type="button" data-guest-social-add>＋ 添加平台</button></div>'+
      '<div class="guest-social-editor-list">'+(socialLinks.length?socialLinks.map((link,j)=>'<div class="guest-social-editor-row"><span class="guest-platform-detected">'+esc(guestPlatformName(link.url))+'</span><input data-guest-social-url="'+j+'" value="'+esc(link.url||'')+'" placeholder="粘贴个人主页地址"><button type="button" class="ghost" data-guest-social-remove="'+j+'">×</button></div>').join(''):'<p class="inspector-note">添加个人主页地址后会自动识别平台；一个平台一条地址。</p>')+'</div></div>';
    return '<div class="reference-panel guest-type-panel"><b>嘉宾类型</b><div class="guest-type-presets">'+guestTypes.map(([key,label])=>'<button type="button" data-guest-type="'+key+'" class="'+((item.guestType||'person')===key?'active':'')+'">'+label+'</button>').join('')+'</div><p class="inspector-note">类型只影响展示结构和图片比例；名称、成员、身份与文案仍可自由修改。</p></div>'+
-     '<div class="item-media"><span>嘉宾宣传图</span><div class="item-media-row">'+image+'<div><button data-media-path="guests.'+index+'.image" aria-label="选择或裁剪图片" title="选择或裁剪图片">+</button>'+(item.image?'<button data-remove-media="guests.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>'+
+     '<div class="item-media"><span>嘉宾宣传图</span><div class="item-media-row">'+image+'<div><button data-media-path="guests.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="guests.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>'+
      socialPanel+
      '<div class="reference-panel guest-link-panel"><b>关联活动</b><div class="reference-list"><span>活动企划</span>'+(plans.length?plans.map(a=>'<label class="check-row"><input type="checkbox" data-guest-plan-ref="'+esc(a.id)+'" '+((a.guestIds||[]).includes(item.id)?'checked':'')+'><span>'+esc(a.title||'活动')+'</span></label>').join(''):'<span class="muted">暂无活动企划</span>')+'</div><div class="reference-list"><span>当天日程</span>'+(schedule.length?schedule.map(a=>'<label class="check-row"><input type="checkbox" data-guest-schedule-ref="'+esc(a.id)+'" '+((a.guestIds||[]).includes(item.id)?'checked':'')+'><span>'+esc((a.time?a.time+' ':'')+(a.title||'日程'))+'</span></label>').join(''):'<span class="muted">暂无当天日程</span>')+'</div></div>';
  }
@@ -1180,7 +1180,7 @@ function openProductInspector(boothIndex,productIndex,{focusImage=false}={}){
  const image=product.image?'<img src="'+esc(product.image)+'" alt="">':'<div class="item-media-empty">＋</div>';
  setInspector('制品','编辑制品',
    '<div class="product-direct-head"><button type="button" class="ghost" data-direct-product-back>← 返回制品列表</button><span>'+esc((booth.no?booth.no+' · ':'')+(booth.name||'所属摊位'))+'</span><b>'+esc(product.name||'未命名制品')+'</b></div>'+
-   '<div class="item-media product-direct-media"><span>制品图片</span><div class="item-media-row">'+image+'<div><button type="button" data-direct-product-image aria-label="选择或裁剪图片" title="选择或裁剪图片">+</button>'+(product.image?'<button type="button" data-direct-product-crop class="ghost">重新裁剪</button><button type="button" data-direct-product-remove-image class="ghost">移除</button>':'')+'</div></div></div>'+
+   '<div class="item-media product-direct-media"><span>制品图片</span><div class="item-media-row">'+image+'<div><button type="button" data-direct-product-image>选择 / 裁剪</button>'+(product.image?'<button type="button" data-direct-product-crop class="ghost">重新裁剪</button><button type="button" data-direct-product-remove-image class="ghost">移除</button>':'')+'</div></div></div>'+
    '<div class="item-fields product-direct-fields">'+
      '<label><span>制品名称</span><input data-direct-product-key="name" value="'+esc(product.name||'')+'"></label>'+
      '<label><span>Tag（选填）</span><input data-direct-product-key="tag" value="'+esc(product.tag||'')+'" placeholder="如：亚克力 立牌"></label>'+
@@ -1232,8 +1232,8 @@ function openItemInspector(collection,index){
  const isLong=k=>['text','gift','note','detail','rules','requirements','intro','works','appearance'].includes(k);
  const inspectorFields=collection==='participation'?participationInspectorFields(item):meta.fields;
  const media=collection==='participation'
-   ?'<div class="item-media"><span>活动宣传图</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="participation.'+index+'.image" aria-label="选择或裁剪图片" title="选择或裁剪图片">+</button>'+(item.image?'<button data-remove-media="participation.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>'
-   :collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image" aria-label="选择或裁剪图片" title="选择或裁剪图片">+</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image" aria-label="选择或裁剪图片" title="选择或裁剪图片">+</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='sponsors'?'<div class="item-media"><span>Logo</span><div class="item-media-row">'+(item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="sponsors.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="sponsors.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>':'';
+   ?'<div class="item-media"><span>活动宣传图</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="participation.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="participation.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>'
+   :collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='sponsors'?'<div class="item-media"><span>Logo</span><div class="item-media-row">'+(item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="sponsors.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="sponsors.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>':'';
  const guideMedia=collection==='guide'&&item.preset==='traffic'
    ?(item.image
      ?'<div class="item-media"><span>路线图 / 入口示意图</span><div class="item-media-row"><img src="'+esc(item.image)+'" alt=""><div><button data-media-path="guide.items.'+index+'.image">替换图片</button><button data-remove-media="guide.items.'+index+'.image" class="ghost">移除</button></div></div></div>'
