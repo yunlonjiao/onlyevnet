@@ -164,9 +164,9 @@ function applyEntryState(){
     photo.style.backgroundImage=src?'url("'+src.replace(/"/g,'%22')+'")':'';
     photo.classList.toggle('empty',!src);
   }
-  set('.entry-ticket-label',String(a.labelText||'MEMORIAL TICKET'));
+  set('.entry-ticket-label',String(a.labelText||(state.templateId==='02-scrapbook'?'A NEW JOURNEY BEGINS':'MEMORIAL TICKET')));
   set('.entry-ticket-title',title);
-  set('.entry-ticket-subtitle',String(a.subtitleText||''));
+  set('.entry-ticket-subtitle',String(a.subtitleText||(state.templateId==='02-scrapbook'?'一起出发，去见想见的人。':'')));
   set('.entry-ticket-date',date);
   set('.entry-ticket-time',time);
   set('.entry-ticket-location',location);
@@ -190,7 +190,7 @@ function previewEntry({play=false}={}){
   if(play){
     void loader.offsetWidth;
     loader.classList.add('entry-playing');
-    const delay=Math.max(900,Math.min(3200,Number(state.entryAnimation?.duration)||1800));
+    const delay=state.templateId==='02-scrapbook'?3000:Math.max(900,Math.min(3200,Number(state.entryAnimation?.duration)||1800));
     entryPreviewTimer=setTimeout(()=>{
       loader.classList.remove('entry-playing');
       loader.classList.add('hide');
