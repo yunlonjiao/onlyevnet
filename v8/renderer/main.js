@@ -205,10 +205,11 @@ function bindEntryTicket(){
   const loader=$('#loader'),gate=$('.gate'),skip=$('#skip');
   if(!loader||!gate||gate.dataset.oeEntryBound==='1')return;
   gate.dataset.oeEntryBound='1';
-  const play=()=>{if(mode==='preview'&&!loader.classList.contains('entry-playing'))previewEntry({play:true})};
+  const finish=()=>{clearTimeout(entryPreviewTimer);loader.classList.remove('entry-playing');loader.classList.add('hide')};
+  const play=()=>{if(loader.classList.contains('entry-playing')){if(state.templateId==='02-scrapbook')finish();return}if(mode==='preview')previewEntry({play:true})};
   gate.addEventListener('click',play);
   gate.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();play()}});
-  skip?.addEventListener('click',e=>{e.stopPropagation();loader.classList.add('hide')});
+  skip?.addEventListener('click',e=>{e.stopPropagation();finish()});
 }
 
 function applyState(next){
