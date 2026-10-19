@@ -1911,6 +1911,51 @@ body[data-oe-template="02-scrapbook"] .trip-site #home-guests>.oe-editorial-rail
 body[data-oe-template="02-scrapbook"] .trip-site #home-guests>.oe-editorial-rail{padding:32px 22px!important}
 }
 
+/* v8.40.67: keep full-size inner page headings, only remove dark masthead. */
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page:not(.oe-page-hidden)>.trip-page-head{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) auto!important;
+ align-items:end!important;justify-content:stretch!important;
+ gap:12px 24px!important;
+ padding:0 0 24px!important;margin:0 0 30px!important;
+ min-height:0!important;border-bottom:1px solid #aebfc0!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page-head>span{
+ display:block!important;content:normal!important;
+ grid-column:1 / -1!important;
+ font:800 12px/1.5 "Courier New",monospace!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page-head>h2{
+ display:block!important;content:normal!important;
+ grid-column:1!important;
+ font:900 clamp(45px,6vw,100px)/.95 Arial,"Microsoft YaHei",sans-serif!important;
+ margin:0!important;letter-spacing:-.065em!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page-head .section-back{
+ grid-column:2!important;align-self:end!important;
+}
+/* Media/cards must size to actual poster, not preserve stale stretched tracks. */
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list{
+ align-items:start!important;grid-auto-rows:auto!important;
+}
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list .scrap-activity,
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list .activity-feature{
+ min-height:0!important;height:auto!important;
+ align-self:start!important;align-content:start!important;
+}
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list .scrap-activity-photo,
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list .activity-feature-media{
+ max-height:440px!important;
+}
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list .scrap-activity-note,
+body[data-oe-template="02-scrapbook"] #activities .activity-project-list .activity-feature-copy{
+ min-height:0!important;height:auto!important;flex:0 1 auto!important;
+ padding-bottom:0!important;
+}
+@media(max-width:900px){
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page-head>h2{font-size:clamp(34px,9vw,62px)!important}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
