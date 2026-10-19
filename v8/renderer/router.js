@@ -94,6 +94,8 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
     });
   }
   function showPage(page,updateHash=true){
+    const guestHome=getState().templateId==='02-scrapbook'&&page==='guests';
+    if(guestHome)page='home';
     if(page!=='home'&&!isStandalonePage(page))page='home';
     if(page!=='home'&&!moduleOn(page)&&getMode?.()!=='edit')page='home';
     const changed=currentPage!==page;
@@ -104,7 +106,10 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
     $('.ribbon')?.classList.toggle('oe-page-hidden',page!=='home'||!moduleOn('ribbon'));
     homeSections.forEach(([id,key])=>{const el=$('#'+id);if(el)el.classList.toggle('oe-page-hidden',page!=='home'||!moduleOn(key))});
     standalonePages().forEach(id=>{const el=$('#'+id);if(el)el.classList.toggle('oe-page-hidden',page!==id||(!moduleOn(id)&&getMode?.()!=='edit'))});
+    const homeGuests=$('#home-guests');if(homeGuests)homeGuests.classList.toggle('oe-page-hidden',page!=='home'||!moduleOn('guests'));
+
     $('.footer')?.classList.toggle('oe-page-hidden',false);
+    if(guestHome)requestAnimationFrame(()=>$('#home-guests')?.scrollIntoView({behavior:'smooth',block:'start'}));
     if(updateHash){
       const hash=page==='home'?'#home':'#'+page;
       history.replaceState(null,'',location.pathname+location.search+hash);
