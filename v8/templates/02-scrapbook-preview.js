@@ -2571,6 +2571,41 @@ body[data-oe-template="02-scrapbook"] .trip-site .trip-header{grid-template-colu
 .scrap-entry .journey-copy .entry-ticket-subtitle,
 .scrap-entry .journey-copy .entry-ticket-date,
 .scrap-entry .journey-copy .entry-ticket-location{max-width:100%}
+/* v8.40.88: same preview/play/exit choreography contract as Template 01.
+   Static preview is composed and fully visible; all motion starts only on click. */
+.scrap-entry .journey-track{
+ animation:none!important;stroke-dashoffset:0!important;
+}
+.scrap-entry .journey-traveler{animation:none!important;offset-distance:0%!important}
+.scrap-entry .scrap-entry-photo{
+ animation:none!important;opacity:1!important;transform:rotate(-4deg) scale(1)!important;
+}
+.scrap-entry .journey-cloud{animation:none!important}
+.scrap-entry.entry-playing .journey-track{
+ stroke-dashoffset:650!important;
+ animation:oe-journey-trail 1.7s .15s cubic-bezier(.2,.6,.1,1) both!important;
+}
+.scrap-entry.entry-playing .journey-traveler{
+ animation:oe-journey-move 1.7s .15s ease-in-out both!important;
+}
+.scrap-entry.entry-playing .scrap-entry-photo{
+ animation:oe-journey-photo .8s 1.25s cubic-bezier(.18,.8,.2,1) both!important;
+}
+.scrap-entry.entry-playing .journey-cloud{
+ animation:oe-journey-cloud 3s ease-in-out both!important;
+}
+.scrap-entry.entry-playing .scrap-entry-gate{
+ animation:oe-journey-depart .52s 2.2s ease both!important;
+}
+@media(prefers-reduced-motion:reduce){
+.scrap-entry.entry-playing .journey-track,
+.scrap-entry.entry-playing .journey-traveler,
+.scrap-entry.entry-playing .scrap-entry-photo,
+.scrap-entry.entry-playing .journey-cloud,
+.scrap-entry.entry-playing .scrap-entry-gate{animation:none!important}
+.scrap-entry .journey-track{stroke-dashoffset:0!important}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
