@@ -2457,7 +2457,7 @@ body[data-oe-template="02-scrapbook"] .trip-site .trip-nav{display:none!importan
 body[data-oe-template="02-scrapbook"] .trip-site .trip-header{grid-template-columns:minmax(0,1fr)!important}
 .scrap-entry.loader{
  --journey-ink:#293946;--journey-green:#d6ff79;--journey-blue:#b7dfed;
- display:grid!important;place-items:stretch!important;
+ display:none!important;place-items:stretch!important;
  padding:0!important;background:#e9f5ee!important;
  overflow:hidden!important;color:var(--journey-ink)!important;
 }
@@ -2606,6 +2606,11 @@ body[data-oe-template="02-scrapbook"] .trip-site .trip-header{grid-template-colu
 .scrap-entry .journey-track{stroke-dashoffset:0!important}
 }
 
+/* v8.40.89: Template 01-compatible entrance visibility gate.
+   Editor/normal site never shows the entrance; only explicit preview
+   (or animation editor) enables it. Playback still requires entry-playing. */
+html.oe-entry-preview .scrap-entry.loader{display:grid!important}
+html:not(.oe-entry-preview) .scrap-entry.loader{display:none!important}
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
