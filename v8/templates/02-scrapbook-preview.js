@@ -1709,6 +1709,22 @@ body[data-oe-template="02-scrapbook"] .trip-site .trip-hero-visual .kv{
 }
 }
 
+/* v8.40.61: Router visibility must win over legacy full-screen home styling.
+   Without this, the 100svh hero survives page switches and covers inner pages. */
+body[data-oe-template="02-scrapbook"] .trip-site .oe-page-hidden,
+body[data-oe-template="02-scrapbook"] .trip-site .oe-module-off,
+body[data-oe-template="02-scrapbook"] .trip-site .trip-hero.oe-page-hidden,
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page.oe-page-hidden,
+body[data-oe-template="02-scrapbook"] .trip-site .oe-home-only.oe-page-hidden{
+ display:none!important;visibility:hidden!important;
+}
+body[data-oe-template="02-scrapbook"][data-oe-current-page="booths"] .trip-site #booths,
+body[data-oe-template="02-scrapbook"][data-oe-current-page="activities"] .trip-site #activities,
+body[data-oe-template="02-scrapbook"][data-oe-current-page="guests"] .trip-site #guests,
+body[data-oe-template="02-scrapbook"][data-oe-current-page="guide"] .trip-site #guide{
+ display:block!important;visibility:visible!important;
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
