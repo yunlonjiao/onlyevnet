@@ -2056,6 +2056,47 @@ body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid .guest-image 
  width:100%!important;height:100%!important;object-fit:cover!important;
 }
 
+/* v8.40.71: restore pre-move guest polaroid proportions and frame.
+   Widen the whole editorial card rather than shrinking the portrait. */
+@media(min-width:901px){
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-guest{
+ flex:0 0 min(94%,840px)!important;min-height:0!important;
+ align-items:stretch!important;background:#eaf0ed!important;
+ border:1px solid #90aaa9!important;box-sizing:border-box!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid{
+ width:43%!important;flex:0 0 43%!important;
+}
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid{
+ background:#dbe8e5!important;box-shadow:none!important;
+ padding:24px 18px 42px!important;position:relative!important;
+ display:flex!important;flex-direction:column!important;
+ justify-content:center!important;align-items:center!important;
+ box-sizing:border-box!important;transform:none!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid .guest-image{
+ width:100%!important;max-width:none!important;max-height:none!important;
+ height:auto!important;aspect-ratio:3/4!important;
+ flex:none!important;margin:0!important;border-radius:18px!important;
+ background:#f4f1f3!important;overflow:hidden!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid>span{
+ position:absolute!important;left:18px!important;bottom:13px!important;
+ margin:0!important;font:800 10px/1.4 Georgia,serif!important;
+}
+@media(max-width:900px){
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-guest{
+ flex-basis:min(88vw,560px)!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid{
+ width:100%!important;flex-basis:auto!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid .guest-image{
+ max-width:360px!important;
+}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
