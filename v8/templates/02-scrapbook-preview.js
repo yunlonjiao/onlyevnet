@@ -117,12 +117,12 @@ export const previewBody=`
       <div class="trip-guest-carousel"><div class="guest-grid" data-oe-mount="guests" tabindex="0" aria-label="嘉宾列表，左右滑动浏览"></div></div>
     </section>
     <section class="trip-page oe-page-view" id="booths">
-      <header class="trip-page-head"><span>ROUTE 01 / BOOTH</span><h2>BOOTH DIRECTORY</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
+      <header class="trip-page-head"><span>ROUTE 01 / BOOTH</span><h2>摊位与制品</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
       <div class="booth-directory-rich" data-oe-mount="booths"></div>
     </section>
 
     <section class="trip-page oe-page-view" id="activities">
-      <header class="trip-page-head"><span>ROUTE 02 / EVENT</span><h2>EVENT / SCHEDULE</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
+      <header class="trip-page-head"><span>ROUTE 02 / EVENT</span><h2>活动与日程</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
       <div class="trip-activity-switch">
         <div class="activity-view-tabs"><button type="button" class="active" data-activity-view="timeline">TIMELINE</button><button type="button" data-activity-view="programs">PROGRAM</button></div>
         <div data-oe-mount="activity-days" class="activity-day-tabs"></div>
@@ -134,7 +134,7 @@ export const previewBody=`
 
 
     <section class="trip-page oe-page-view" id="guide">
-      <header class="trip-page-head"><span>ROUTE 04 / GUIDE</span><h2>VISITOR GUIDE</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
+      <header class="trip-page-head"><span>ROUTE 04 / GUIDE</span><h2>观展指南</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
       <div class="guide-detail-grid" data-oe-mount="guide-detail"></div>
     </section>
 
@@ -2254,6 +2254,32 @@ body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-
 body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .head h2{
  font-size:clamp(34px,9vw,62px)!important;
 }
+}
+
+/* v8.40.81: one visual system for all Template 02 first-level pages.
+   Override older page-specific and generic custom-page backgrounds. */
+body[data-oe-template="02-scrapbook"] .trip-site :is(#booths,#activities,#guide,.custom-page-view).oe-page-view:not(.oe-page-hidden){
+ --oe-page-surface:#f8f8f1;
+ --oe-page-ink:#293342;
+ --oe-page-divider:#aebfc0;
+ background:var(--oe-page-surface)!important;color:var(--oe-page-ink)!important;
+ box-shadow:none!important;border:0!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site :is(#booths,#activities,#guide,.custom-page-view).oe-page-view:not(.oe-page-hidden) :is(.trip-page-head,.head){
+ border-bottom:1px solid #aebfc0!important;background:transparent!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site :is(#booths,#activities,#guide,.custom-page-view).oe-page-view:not(.oe-page-hidden) :is(.trip-page-head h2,.head h2){
+ color:#293342!important;text-transform:none!important;
+ font-family:Arial,"Microsoft YaHei","PingFang SC",sans-serif!important;
+ font-weight:900!important;line-height:1.1!important;
+ letter-spacing:-.04em!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site :is(#booths,#activities,#guide,.custom-page-view).oe-page-view:not(.oe-page-hidden) :is(.trip-page-head>span,.head .ey){
+ color:#e46b73!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site :is(#booths,#activities,#guide,.custom-page-view).oe-page-view:not(.oe-page-hidden) .section-back{
+ border:1px solid #9aa9a9!important;background:#fff!important;
+ color:#293946!important;border-radius:0!important;
 }
 
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
