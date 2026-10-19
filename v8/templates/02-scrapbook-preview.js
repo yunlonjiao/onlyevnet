@@ -2203,6 +2203,59 @@ body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid{
 }
 }
 
+/* v8.40.80: custom first-level pages share the regular BOOTH/EVENT/GUIDE masthead.
+   Scope strictly to Template 02; preserve custom content layout choices. */
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view:not(.oe-page-hidden){
+ background:var(--trip-bg,#f7f7f2)!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view:not(.oe-page-hidden)>.wrap{
+ width:100%!important;max-width:none!important;
+ margin:0!important;padding:0!important;box-sizing:border-box!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .head{
+ display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
+ align-items:end!important;gap:12px 24px!important;
+ padding:0 0 24px!important;margin:0 0 30px!important;
+ min-height:0!important;max-width:none!important;
+ border:0!important;border-bottom:1px solid #aebfc0!important;
+ background:transparent!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .head>div{
+ min-width:0!important;display:contents!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .head .ey{
+ display:block!important;grid-column:1 / -1!important;
+ font:800 12px/1.5 "Courier New",monospace!important;
+ color:#e46b73!important;letter-spacing:.15em!important;
+ margin:0!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .head h2{
+ display:block!important;grid-column:1!important;
+ font:900 clamp(45px,6vw,100px)/.95 Arial,"Microsoft YaHei",sans-serif!important;
+ color:#293342!important;letter-spacing:-.065em!important;
+ margin:0!important;padding:0!important;text-transform:uppercase!important;
+ overflow-wrap:anywhere!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .head .section-back{
+ display:inline-flex!important;grid-column:2!important;
+ align-self:end!important;align-items:center!important;justify-content:center!important;
+ position:static!important;margin:0!important;padding:10px 16px!important;
+ border:1px solid #9aa9a9!important;border-radius:0!important;
+ background:#fff!important;color:#293946!important;
+ text-decoration:none!important;
+ font:750 13px/1.4 "Microsoft YaHei",sans-serif!important;
+ white-space:nowrap!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-intro{
+ margin:0 0 30px!important;max-width:1100px!important;
+ color:#4b5960!important;line-height:1.8!important;
+}
+@media(max-width:900px){
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .head h2{
+ font-size:clamp(34px,9vw,62px)!important;
+}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
