@@ -2312,6 +2312,67 @@ body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .head .sectio
  background:#fff!important;color:#293946!important;
 }
 
+/* v8.40.84 — single Template 02 first-level page visual language.
+   Hide duplicate prose and legacy pseudo-headings without deleting editable data. */
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-intro,
+body[data-oe-template="02-scrapbook"] .trip-site #guide .guide-detail-grid::before,
+body[data-oe-template="02-scrapbook"] .trip-site #booths .booth-directory-rich::before,
+body[data-oe-template="02-scrapbook"] .trip-site #activities .activity-detail-list::before,
+body[data-oe-template="02-scrapbook"] .trip-site #activities .activity-project-list::before{
+ content:none!important;display:none!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .head::before,
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .head::after,
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-grid::before,
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-grid::after{
+ content:none!important;display:none!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view.oe-page-view:not(.oe-page-hidden)>.wrap{
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+/* All custom content presets share the neutral page's card surfaces.
+   Grid layout variants (gallery/product/reading/activity/etc.) stay intact. */
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-grid{
+ background:transparent!important;color:#293342!important;
+ border:0!important;box-shadow:none!important;
+ gap:clamp(16px,2vw,26px)!important;
+ padding:0!important;margin:0!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-card{
+ background:#fffefa!important;color:#293342!important;
+ border:1px solid #c9d2cf!important;border-radius:0!important;
+ box-shadow:none!important;transform:none!important;
+ min-width:0!important;box-sizing:border-box!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-card::before,
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-card::after{
+ content:none!important;display:none!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-card-copy{
+ background:transparent!important;color:#293342!important;
+ padding:clamp(16px,2vw,26px)!important;min-width:0!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-card-copy>b{
+ color:#293342!important;font-family:Arial,"Microsoft YaHei","PingFang SC",sans-serif!important;
+ font-weight:800!important;line-height:1.25!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-card-copy p,
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-meta{
+ color:#56636a!important;line-height:1.65!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-image{
+ background:#e6eeeb!important;border:0!important;border-radius:0!important;
+ overflow:hidden!important;box-shadow:none!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-image img{
+ width:100%!important;height:100%!important;object-fit:cover!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-action{
+ color:#293342!important;background:transparent!important;
+ border:0!important;border-bottom:1px solid currentColor!important;border-radius:0!important;
+ box-shadow:none!important;
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
