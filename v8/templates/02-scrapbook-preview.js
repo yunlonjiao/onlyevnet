@@ -2698,7 +2698,8 @@ html:not(.oe-entry-preview) .scrap-entry.loader{display:none!important}
  order:2!important;font:850 clamp(13px,1.35vw,18px)/1.5 Arial,sans-serif!important;
  letter-spacing:.24em!important;color:#496d75!important;margin-top:4px!important;
 }
-.scrap-entry .journey-loading-dots{display:inline-block;min-width:1.8em;letter-spacing:.12em;animation:oe-loading-dots 1.6s steps(3,end) infinite}
+.scrap-entry .journey-loading-dots{display:inline-block;min-width:1.8em;letter-spacing:.12em;animation:none}
+.scrap-entry.entry-playing .journey-loading-dots{animation:oe-loading-dots 1.6s steps(3,end) infinite}
 @keyframes oe-loading-dots{0%{opacity:.2}50%{opacity:1}100%{opacity:.2}}
 .scrap-entry .journey-caption{display:none!important}
 .scrap-entry .journey-annotation{display:none!important}
