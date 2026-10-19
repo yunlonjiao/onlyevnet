@@ -2,7 +2,7 @@
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.40.61';
+import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.40.62';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
@@ -16,7 +16,7 @@ import {createParticipation} from '/v8/renderer/participation.js?v=8.40.26';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {createRouter} from '/v8/renderer/router.js?v=8.40.22';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createFields} from '/v8/renderer/fields.js?v=8.40.61';
+import {createFields} from '/v8/renderer/fields.js?v=8.40.62';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {createRuntime} from '/v8/renderer/runtime.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
