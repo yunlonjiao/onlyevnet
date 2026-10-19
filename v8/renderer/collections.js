@@ -397,7 +397,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
   function renderUpdates(){
     const state=getState(),box=mount('updates','#updates .updates-list');if(!box)return;
     const items=state.templateId==='02-scrapbook'?(state.updates||[]):(state.updates||[]).slice(0,3);
-    box.innerHTML=items.map((u,i)=>{const target=({passport:'activities','guide-home':'guide'}[u.target]||u.target||'top'),mode=['booths','activities','guests','guide'].includes(target)||String(target).startsWith('custom-')?'page':'home';const adapted=updateMarkup({state,u,i,field,esc,target,mode});return adapted||'<a class="update-item" href="#'+esc(target)+'" data-target-mode="'+mode+'" data-page-link="'+esc(target)+'" data-oe-item="updates" data-oe-index="'+i+'"><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<span>→</span></a>'}).join('');
+    box.innerHTML=items.map((u,i)=>{const target=({passport:'activities','guide-home':'guide','schedule-home':'activities'}[u.target]||u.target||'top'),mode=['booths','activities','guests','guide'].includes(target)||String(target).startsWith('custom-')?'page':'home';const adapted=updateMarkup({state,u,i,field,esc,target,mode});return adapted||'<a class="update-item" href="#'+esc(target)+'" data-target-mode="'+mode+'" data-page-link="'+esc(target)+'" data-oe-item="updates" data-oe-index="'+i+'"><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<span>→</span></a>'}).join('');
     $('#updates')?.classList.toggle('oe-page-hidden',items.length===0);
   }
 
