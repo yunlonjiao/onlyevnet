@@ -2121,6 +2121,47 @@ body[data-oe-template="02-scrapbook"] .trip-site .trip-page::after{
  content:none!important;display:none!important;
 }
 
+/* v8.40.76: sponsor identity wall, not oversized product cards. */
+body[data-oe-template="02-scrapbook"] .trip-sponsors .sponsors{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:14px!important;background:transparent!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-sponsors .sponsor-card{
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ justify-content:center!important;gap:10px!important;
+ box-sizing:border-box!important;min-width:0!important;min-height:145px!important;
+ height:auto!important;padding:20px 14px!important;
+ border:1px solid #ffffff26!important;border-radius:14px!important;
+ background:#fff!important;box-shadow:none!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-sponsors .sponsor-logo{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ width:100%!important;max-width:190px!important;height:82px!important;
+ max-height:82px!important;padding:0!important;margin:0!important;
+ border:0!important;background:transparent!important;flex:none!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-sponsors .sponsor-logo img,
+body[data-oe-template="02-scrapbook"] .trip-sponsors .sponsor-card img{
+ display:block!important;width:auto!important;max-width:100%!important;
+ height:auto!important;max-height:82px!important;object-fit:contain!important;
+ padding:0!important;margin:auto!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-sponsors .sponsor-card b{
+ color:#293946!important;font:650 13px/1.35 "Microsoft YaHei",sans-serif!important;
+ margin:0!important;text-align:center!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-sponsors .sponsor-card small{
+ color:#69777e!important;font-size:11px!important;text-align:center!important;
+}
+@media(max-width:900px){
+body[data-oe-template="02-scrapbook"] .trip-sponsors .sponsors{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:430px){
+body[data-oe-template="02-scrapbook"] .trip-sponsors .sponsor-card{min-height:122px!important;padding:14px 8px!important}
+body[data-oe-template="02-scrapbook"] .trip-sponsors .sponsor-logo{height:65px!important}
+body[data-oe-template="02-scrapbook"] .trip-sponsors .sponsor-logo img{max-height:65px!important}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
