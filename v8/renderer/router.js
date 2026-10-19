@@ -112,7 +112,8 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
     if(guestHome)requestAnimationFrame(()=>$('#home-guests')?.scrollIntoView({behavior:'smooth',block:'start'}));
     if(updateHash){
       const hash=page==='home'?'#home':'#'+page;
-      history.replaceState(null,'',location.pathname+location.search+hash);
+      if(changed)history.pushState({oePage:page},'',location.pathname+location.search+hash);
+      else history.replaceState({oePage:page},'',location.pathname+location.search+hash);
       window.scrollTo({top:0,left:0,behavior:'auto'});
     }
   }
