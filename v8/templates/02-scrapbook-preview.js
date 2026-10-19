@@ -2436,6 +2436,13 @@ body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide>.guide-acce
 }
 }
 
+/* v8.40.86: preserve organizer-authored line breaks in visitor guide text. */
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide p[data-oe-field],
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide p{
+ white-space:pre-wrap!important;
+ overflow-wrap:anywhere!important;
+ word-break:normal!important;
+}
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
