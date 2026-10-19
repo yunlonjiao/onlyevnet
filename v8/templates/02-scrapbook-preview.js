@@ -2165,19 +2165,19 @@ body[data-oe-template="02-scrapbook"] .trip-sponsors .sponsor-logo img{max-heigh
 /* v8.40.77: guests section uses a warm editorial palette, visibly distinct
    from the cool blue venue map. Guest cards keep their own framing. */
 body[data-oe-template="02-scrapbook"] .trip-site #home-guests{
- background:#f5eee9!important;
- border-top:1px solid #decfc5!important;
+ background:#f2f0ff!important;
+ border-top:1px solid #d4cdec!important;
 }
 body[data-oe-template="02-scrapbook"] .trip-site #home-guests>.oe-editorial-rail{
- background:#eedbd3!important;color:#293946!important;
- border-right:1px solid #dcc9bf!important;
+ background:#ddd5ff!important;color:#293946!important;
+ border-right:1px solid #c5b9f2!important;
 }
 body[data-oe-template="02-scrapbook"] .trip-site #home-guests>.trip-guest-carousel{
- background:#f5eee9!important;
+ background:#f2f0ff!important;
 }
 @media(max-width:900px){
 body[data-oe-template="02-scrapbook"] .trip-site #home-guests>.oe-editorial-rail{
- border-right:0!important;border-bottom:1px solid #dcc9bf!important;
+ border-right:0!important;border-bottom:1px solid #c5b9f2!important;
 }
 }
 
