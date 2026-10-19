@@ -164,7 +164,7 @@ function applyEntryState(){
     photo.style.backgroundImage=src?'url("'+src.replace(/"/g,'%22')+'")':'';
     photo.classList.toggle('empty',!src);
   }
-  set('.entry-ticket-label',String(a.labelText||(state.templateId==='02-scrapbook'?'A NEW JOURNEY BEGINS':'MEMORIAL TICKET')));
+  set('.entry-ticket-label',state.templateId==='02-scrapbook'?'A NEW JOURNEY BEGINS':String(a.labelText||'MEMORIAL TICKET'));
   set('.entry-ticket-title',title);
   set('.entry-ticket-subtitle',String(a.subtitleText||(state.templateId==='02-scrapbook'?'一起出发，去见想见的人。':'')));
   set('.entry-ticket-date',date);
@@ -173,7 +173,7 @@ function applyEntryState(){
   set('.entry-serial',String(a.ticketPrefix||'NO.')+' '+ticketNo);
   show('.entry-ticket-label',a.showLabel!==false);
   show('.entry-ticket-title',a.showTitle!==false&&!!title);
-  show('.entry-ticket-subtitle',a.showSubtitle===true&&!!String(a.subtitleText||'').trim());
+  show('.entry-ticket-subtitle',state.templateId==='02-scrapbook'||(a.showSubtitle===true&&!!String(a.subtitleText||'').trim()));
   show('.entry-ticket-date-wrap',a.showDate!==false&&!!date);
   show('.entry-ticket-time-wrap',a.showTime===true&&!!time);
   show('.entry-ticket-location-wrap',a.showLocation!==false&&!!location);
@@ -190,7 +190,7 @@ function previewEntry({play=false}={}){
   if(play){
     void loader.offsetWidth;
     loader.classList.add('entry-playing');
-    const delay=state.templateId==='02-scrapbook'?3000:Math.max(900,Math.min(3200,Number(state.entryAnimation?.duration)||1800));
+    const delay=state.templateId==='02-scrapbook'?2500:Math.max(900,Math.min(3200,Number(state.entryAnimation?.duration)||1800));
     entryPreviewTimer=setTimeout(()=>{
       loader.classList.remove('entry-playing');
       loader.classList.add('hide');
