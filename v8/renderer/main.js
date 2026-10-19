@@ -2,7 +2,7 @@
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.40.65';
+import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.40.66';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
@@ -10,13 +10,13 @@ import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createCollections} from '/v8/renderer/collections.js?v=8.40.65';
+import {createCollections} from '/v8/renderer/collections.js?v=8.40.66';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {createParticipation} from '/v8/renderer/participation.js?v=8.40.26';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRouter} from '/v8/renderer/router.js?v=8.40.65';
+import {createRouter} from '/v8/renderer/router.js?v=8.40.66';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createFields} from '/v8/renderer/fields.js?v=8.40.65';
+import {createFields} from '/v8/renderer/fields.js?v=8.40.66';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {createRuntime} from '/v8/renderer/runtime.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
@@ -264,5 +264,13 @@ window.addEventListener('message',e=>{
   if(m.type==='OE_HIDE_ENTRY_PREVIEW')hideEntryPreview();
   if(m.type==='OE_SHOW_PAGE'){router.showPage(m.page||'home');requestAnimationFrame(setupHomeMotion)}
   if(m.type==='OE_EXPORT_HTML')send({type:'OE_EXPORT_HTML_RESULT',html:buildStandaloneHtml()});
+});
+// Synchronize native browser Back/Forward with the in-page router.
+window.addEventListener('popstate',()=>{
+  const requested=decodeURIComponent((location.hash||'#home').slice(1)||'home');
+  const page=requested==='home'||router.isStandalonePage(requested)?requested:'home';
+  router.showPage(page,false);
+  window.scrollTo({top:0,left:0,behavior:'auto'});
+  requestAnimationFrame(setupHomeMotion);
 });
 send({type:'OE_READY'});
