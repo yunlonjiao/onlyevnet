@@ -2097,6 +2097,30 @@ body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid .guest-image{
 }
 }
 
+/* v8.40.74: constrain guest personal-platform logos and remove leftover floating ornament. */
+body[data-oe-template="02-scrapbook"] #home-guests .guest-platform-list{
+ display:flex!important;flex-wrap:wrap!important;gap:8px 12px!important;
+ align-items:center!important;min-width:0!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .guest-platform-list>a{
+ display:inline-flex!important;align-items:center!important;gap:7px!important;
+ width:auto!important;max-width:100%!important;min-width:0!important;
+ padding:7px 10px!important;text-decoration:none!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .guest-platform-logo{
+ display:block!important;width:22px!important;height:22px!important;
+ min-width:22px!important;max-width:22px!important;
+ min-height:22px!important;max-height:22px!important;
+ object-fit:contain!important;flex:0 0 22px!important;
+ border-radius:0!important;position:static!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .guest-platform-list>a span{
+ font-size:13px!important;line-height:1.4!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site .trip-page::after{
+ content:none!important;display:none!important;
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
