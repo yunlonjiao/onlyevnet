@@ -2554,6 +2554,17 @@ body[data-oe-template="02-scrapbook"] .trip-site .trip-header{grid-template-colu
 .scrap-entry .journey-track{stroke-dashoffset:0!important}
 }
 
+/* Trigger journey on direct click, not during static preview/editor loading. */
+.scrap-entry:not(.entry-playing) .journey-track,
+.scrap-entry:not(.entry-playing) .journey-traveler,
+.scrap-entry:not(.entry-playing) .scrap-entry-photo{animation-play-state:paused!important}
+.scrap-entry.entry-playing .journey-track,
+.scrap-entry.entry-playing .journey-traveler,
+.scrap-entry.entry-playing .scrap-entry-photo{animation-play-state:running!important}
+.scrap-entry.entry-playing .scrap-entry-gate{
+ animation:oe-journey-depart .45s ease 2.45s both!important;
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
