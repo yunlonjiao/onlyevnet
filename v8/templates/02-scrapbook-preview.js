@@ -2373,6 +2373,69 @@ body[data-oe-template="02-scrapbook"] .trip-site .custom-page-view .custom-page-
  box-shadow:none!important;
 }
 
+/* v8.40.85: guide page follows the same clean inner-page visual system.
+   Detail mount has an extra .guide-detail-content wrapper; constrain that
+   wrapper, not only its parent. Remove old decorative pseudo-labels. */
+body[data-oe-template="02-scrapbook"] .trip-site #guide .guide-detail-grid,
+body[data-oe-template="02-scrapbook"] .trip-site #guide .guide-detail-content{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ gap:22px!important;width:100%!important;max-width:none!important;
+ margin:0!important;padding:0!important;min-width:0!important;
+ border:0!important;background:transparent!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #guide .guide-detail-content::before,
+body[data-oe-template="02-scrapbook"] .trip-site #guide .guide-detail-grid::before,
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide::before,
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide::after{
+ display:none!important;content:none!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide{
+ display:grid!important;grid-template-columns:84px minmax(0,1fr)!important;
+ column-gap:clamp(18px,2.5vw,40px)!important;row-gap:20px!important;
+ align-items:start!important;min-width:0!important;
+ padding:clamp(20px,3vw,42px)!important;
+ background:#fffefa!important;border:1px solid #c9d2cf!important;
+ border-radius:0!important;box-shadow:none!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide>span{
+ grid-column:1!important;color:#73868b!important;
+ font:800 12px/1.5 monospace!important;letter-spacing:.09em!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide>div{
+ grid-column:2!important;min-width:0!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide h3{
+ margin:8px 0 18px!important;color:#293342!important;
+ font:800 clamp(26px,2.6vw,42px)/1.3 "Microsoft YaHei","PingFang SC",sans-serif!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide p{
+ margin:0 0 16px!important;color:#48515a!important;
+ font:400 clamp(14px,1.05vw,17px)/1.85 "Microsoft YaHei","PingFang SC",sans-serif!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide>.guide-access-media{
+ grid-column:2!important;display:block!important;box-sizing:border-box!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ height:auto!important;min-height:220px!important;
+ padding:0!important;margin:0!important;overflow:hidden!important;
+ aspect-ratio:16/9!important;background:#e6eeeb!important;
+ border:0!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide>.guide-access-media img{
+ display:block!important;width:100%!important;height:100%!important;
+ max-width:none!important;min-height:0!important;aspect-ratio:auto!important;
+ object-fit:contain!important;
+}
+@media(max-width:900px){
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide{
+ grid-template-columns:minmax(0,1fr)!important;padding:20px 17px!important;gap:12px!important;
+}
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide>span,
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide>div,
+body[data-oe-template="02-scrapbook"] .trip-site #guide .scrap-guide>.guide-access-media{
+ grid-column:1!important;
+}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
