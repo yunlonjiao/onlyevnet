@@ -4,34 +4,21 @@
 
 export const previewBody=`
 <div class="loader scrap-entry" id="loader">
-  <div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击开启旅程，进入活动网站">
-    <div class="journey-sky" aria-hidden="true"><span class="journey-sun"></span><span class="journey-cloud c1"></span><span class="journey-cloud c2"></span></div>
-    <div class="journey-topline"><span>OUR JOURNEY / 青春出发</span></div>
-    <div class="journey-layout">
-      <div class="journey-copy">
-        <p class="entry-ticket-label">A NEW JOURNEY BEGINS</p>
-        <h1 class="entry-ticket-title" data-oe-field="eventName">ONLY EVENT</h1>
-        <div class="journey-destination"><span>下一站 / DESTINATION</span><strong class="entry-ticket-location" data-oe-field="location">活动城市</strong></div>
-        <span class="journey-invite">点击开启这趟旅程 <span aria-hidden="true">↗</span></span>
-      </div>
-      <div class="journey-scene">
-        <div class="journey-map" aria-hidden="true">
-          <svg viewBox="0 0 520 350" preserveAspectRatio="xMidYMid meet">
-            <path class="journey-map-contour" d="M0 75 Q76 8 149 65 T308 54 T520 82 M-20 268 Q90 174 190 226 T365 203 T540 235 M0 330 Q90 290 150 316 T360 300 T520 312"/>
-            <path class="journey-track" d="M55 265 C100 260 82 145 174 161 S276 272 342 200 S394 74 462 91" />
-            <circle class="journey-station" cx="55" cy="265" r="10"/>
-            <circle class="journey-station journey-endpoint" cx="462" cy="91" r="11"/>
-            <g class="journey-traveler"><path d="M-12 5 12 -1 -3 0 0 -12 -4 -10 -6 1Z" fill="#293946"/></g>
-          </svg>
-          <span class="journey-map-label start">START · HERE</span><span class="journey-map-label end">OUR DESTINATION ✦</span>
-        </div>
-        <div class="scrap-entry-photo"><div class="entry-photo" aria-label="活动KV"></div><span class="journey-photo-caption">A DAY TO REMEMBER ↗</span></div>
-      </div>
-    </div>
-    <div class="journey-bottomline"><span>下一站，与你相见。</span></div>
-    <div class="journey-legacy" hidden aria-hidden="true"><span class="entry-ticket-time"></span><span class="entry-serial"></span><span class="stub-barcode"></span><span class="stub-code"></span><span class="entry-ticket-time-wrap"></span><span class="entry-ticket-date-wrap"></span><span class="entry-ticket-location-wrap"></span></div>
+  <div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击播放旅行小车动画">
+    <svg class="journey-simple" viewBox="0 0 960 440" role="img" aria-label="小车沿着虚线旅行">
+      <path class="journey-dash" d="M70 310 C210 310 205 110 372 174 S580 374 715 242 S817 135 896 149"/>
+      <g class="journey-car">
+        <g transform="translate(-31 -23)">
+          <path d="M8 20 L17 6 Q20 2 27 2 H45 Q52 2 56 8 L64 20Z" fill="#ffffff" stroke="#354e60" stroke-width="3"/>
+          <rect x="0" y="18" width="68" height="25" rx="9" fill="#9acbd2" stroke="#354e60" stroke-width="3"/>
+          <path d="M20 9 H44 L52 19 H12Z" fill="#dff5fa"/>
+          <circle cx="16" cy="43" r="8" fill="#354e60"/><circle cx="53" cy="43" r="8" fill="#354e60"/>
+          <circle cx="16" cy="43" r="3" fill="#ffffff"/><circle cx="53" cy="43" r="3" fill="#ffffff"/>
+        </g>
+      </g>
+    </svg>
   </div>
-  <button class="skip" id="skip">跳过动画 ↗</button>
+  <button class="skip" id="skip">跳过 ↗</button>
 </div>
 <div class="trip-site">
   <header class="trip-header">
@@ -2630,6 +2617,20 @@ html:not(.oe-entry-preview) .scrap-entry.loader{display:none!important}
 .scrap-entry.entry-playing .scrap-entry-gate{
  animation:oe-journey-depart .7s 5.2s ease both!important;
 }
+
+/* v8.40.91: minimal dashed road and single moving car. */
+.scrap-entry.loader{background:#e6f3ee!important}
+.scrap-entry .scrap-entry-gate{display:grid!important;place-items:center!important;padding:0!important}
+.scrap-entry .journey-simple{display:block;width:min(92vw,1080px);height:auto;max-height:75dvh;overflow:visible}
+.scrap-entry .journey-dash{fill:none;stroke:#638f91;stroke-width:4;stroke-linecap:round;stroke-dasharray:4 17}
+.scrap-entry .journey-car{transform-box:view-box;transform-origin:0 0;offset-path:path("M70 310 C210 310 205 110 372 174 S580 374 715 242 S817 135 896 149");offset-rotate:auto;offset-distance:0%;animation:none!important}
+.scrap-entry.entry-playing .journey-car{animation:oe-simple-car-drive 5.2s cubic-bezier(.37,.03,.57,.98) forwards!important}
+.scrap-entry.entry-playing .scrap-entry-gate{animation:oe-simple-car-exit .5s 5.35s ease both!important}
+.scrap-entry .skip{position:fixed!important;bottom:24px!important;right:28px!important}
+@keyframes oe-simple-car-drive{from{offset-distance:0%}to{offset-distance:100%}}
+@keyframes oe-simple-car-exit{to{opacity:0;transform:scale(1.015)}}
+@media(max-width:760px){.scrap-entry .journey-simple{width:112vw;max-width:none;transform:rotate(-8deg)}}
+@media(prefers-reduced-motion:reduce){.scrap-entry.entry-playing .journey-car,.scrap-entry.entry-playing .scrap-entry-gate{animation:none!important}}
 
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
