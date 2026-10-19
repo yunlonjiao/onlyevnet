@@ -4,9 +4,9 @@
 
 export const previewBody=`
 <div class="loader scrap-entry" id="loader">
-  <div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击播放旅行小车动画">
+  <div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击播放动画，播放中点击立即进入首页">
     <div class="journey-scene-shell">
-      <div class="journey-kicker">青春旅行日记 <span>—</span> LET'S GO!</div>
+      <div class="journey-kicker">NOW LOADING<span class="journey-loading-dots">...</span></div>
       <svg class="journey-simple journey-desktop" viewBox="0 0 1200 550" role="img" aria-label="小车沿着桌面横向虚线旅行">
         <path class="journey-dash" d="M65 382 C235 382 215 125 430 195 S698 492 862 289 S1020 165 1140 196"/>
         <g class="journey-car"><g transform="translate(-31 -23)">
@@ -24,8 +24,8 @@ export const previewBody=`
         </g>
         <circle cx="65" cy="382" r="8" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
         <circle cx="1140" cy="196" r="9" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
-        <text x="93" y="420" class="journey-annotation">出发!</text>
-        <text x="966" y="146" class="journey-annotation">下一站 · 相遇</text>
+        
+        
       </svg>
       <svg class="journey-simple journey-mobile" viewBox="0 0 440 780" role="img" aria-label="小车沿着手机竖向虚线旅行">
         <path class="journey-dash" d="M98 78 C348 56 355 244 198 291 S48 475 230 523 S344 653 270 711"/>
@@ -43,13 +43,13 @@ export const previewBody=`
         </g>
         <circle cx="98" cy="78" r="8" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
         <circle cx="270" cy="711" r="9" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
-        <text x="38" y="55" class="journey-annotation">START!</text>
-        <text x="288" y="743" class="journey-annotation">一起出发 ↗</text>
+        
+        
       </svg>
-      <div class="journey-caption">去见想见的人，去看新的风景。</div>
+      
     </div>
   </div>
-  <button class="skip" id="skip">跳过 ↗</button>
+  <button class="skip" id="skip">SKIP ↗</button>
 </div>
 <div class="trip-site">
   <header class="trip-header">
@@ -2684,6 +2684,29 @@ html:not(.oe-entry-preview) .scrap-entry.loader{display:none!important}
 .scrap-entry.entry-playing .journey-mobile .journey-car{animation:oe-simple-car-drive 5.2s cubic-bezier(.37,.03,.57,.98) forwards!important}
 .scrap-entry .journey-annotation{font-size:17px}
 }
+
+/* v8.40.93: summer picture-book ambience; NOW LOADING is the only copy. */
+.scrap-entry.loader{background:linear-gradient(180deg,#cfedf3 0%,#e7f4ec 65%,#d9ebcd 100%)!important}
+.scrap-entry .scrap-entry-gate{background:transparent!important}
+.scrap-entry .journey-scene-shell{position:relative}
+.scrap-entry .journey-scene-shell:before{
+ content:"";position:absolute;top:12%;right:12%;width:clamp(60px,9vw,135px);
+ aspect-ratio:1;border-radius:50%;background:#fff4bb;
+ box-shadow:0 0 0 18px #fff4bb28;pointer-events:none
+}
+.scrap-entry .journey-kicker{
+ order:2!important;font:850 clamp(13px,1.35vw,18px)/1.5 Arial,sans-serif!important;
+ letter-spacing:.24em!important;color:#496d75!important;margin-top:4px!important;
+}
+.scrap-entry .journey-loading-dots{display:inline-block;min-width:1.8em;letter-spacing:.12em;animation:oe-loading-dots 1.6s steps(3,end) infinite}
+@keyframes oe-loading-dots{0%{opacity:.2}50%{opacity:1}100%{opacity:.2}}
+.scrap-entry .journey-caption{display:none!important}
+.scrap-entry .journey-annotation{display:none!important}
+.scrap-entry .journey-doodles{opacity:.56!important}
+.scrap-entry .journey-simple.journey-desktop{height:min(78dvh,730px)!important}
+.scrap-entry .journey-simple.journey-mobile{height:min(80dvh,850px)!important}
+.scrap-entry .skip{font:800 11px/1 Arial,sans-serif!important;letter-spacing:.12em}
+@media(prefers-reduced-motion:reduce){.scrap-entry .journey-loading-dots{animation:none!important}}
 
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
