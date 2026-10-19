@@ -28,7 +28,7 @@ export const previewBody=`
         <div class="scrap-entry-photo"><div class="entry-photo" aria-label="活动KV"></div><span class="journey-photo-caption">A DAY TO REMEMBER ↗</span></div>
       </div>
     </div>
-    <div class="journey-bottomline"><span>LET'S GO SOMEWHERE NEW.</span><span>SCROLL THE MEMORIES · 01 / 01</span></div>
+    <div class="journey-bottomline"><span>下一站，与你相见。</span></div>
     <div class="journey-legacy" hidden aria-hidden="true"><span class="entry-ticket-time"></span><span class="entry-serial"></span><span class="stub-barcode"></span><span class="stub-code"></span><span class="entry-ticket-time-wrap"></span><span class="entry-ticket-date-wrap"></span><span class="entry-ticket-location-wrap"></span></div>
   </div>
   <button class="skip" id="skip">跳过动画 ↗</button>
