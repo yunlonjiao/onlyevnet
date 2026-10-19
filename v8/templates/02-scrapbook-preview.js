@@ -124,7 +124,7 @@ export const previewBody=`
     <section class="trip-page oe-page-view" id="activities">
       <header class="trip-page-head"><span>ROUTE 02 / EVENT</span><h2>活动与日程</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
       <div class="trip-activity-switch">
-        <div class="activity-view-tabs"><button type="button" class="active" data-activity-view="timeline">TIMELINE</button><button type="button" data-activity-view="programs">PROGRAM</button></div>
+        <div class="activity-view-tabs"><button type="button" class="active" data-activity-view="timeline">当天日程</button><button type="button" data-activity-view="programs">活动详情</button></div>
         <div data-oe-mount="activity-days" class="activity-day-tabs"></div>
       </div>
       <div class="activity-page-block" data-activity-panel="timeline"><div data-oe-mount="schedule" class="activity-detail-list"></div></div>
