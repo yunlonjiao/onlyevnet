@@ -6,14 +6,12 @@ export const previewBody=`
 <div class="loader scrap-entry" id="loader">
   <div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击开启旅程，进入活动网站">
     <div class="journey-sky" aria-hidden="true"><span class="journey-sun"></span><span class="journey-cloud c1"></span><span class="journey-cloud c2"></span></div>
-    <div class="journey-topline"><span>ONLY EVENT · JOURNEY</span><span>青春的下一站 / YOUR NEXT STORY</span></div>
+    <div class="journey-topline"><span>OUR JOURNEY / 青春出发</span></div>
     <div class="journey-layout">
       <div class="journey-copy">
         <p class="entry-ticket-label">A NEW JOURNEY BEGINS</p>
         <h1 class="entry-ticket-title" data-oe-field="eventName">ONLY EVENT</h1>
-        <p class="entry-ticket-subtitle">一起出发，去见想见的人。</p>
         <div class="journey-destination"><span>下一站 / DESTINATION</span><strong class="entry-ticket-location" data-oe-field="location">活动城市</strong></div>
-        <div class="journey-day"><span>出发日期 / DATE</span><strong class="entry-ticket-date" data-oe-field="date">活动日期</strong></div>
         <span class="journey-invite">点击开启这趟旅程 <span aria-hidden="true">↗</span></span>
       </div>
       <div class="journey-scene">
@@ -2611,6 +2609,28 @@ body[data-oe-template="02-scrapbook"] .trip-site .trip-header{grid-template-colu
    (or animation editor) enables it. Playback still requires entry-playing. */
 html.oe-entry-preview .scrap-entry.loader{display:grid!important}
 html:not(.oe-entry-preview) .scrap-entry.loader{display:none!important}
+/* v8.40.90: simpler travel intro with room for a slower journey.
+   Timeline: 0.4-4.0s route, 2.8-4.4s photo reveal, 5.2-5.9s exit. */
+.scrap-entry .journey-copy{gap:clamp(15px,2vw,30px)!important}
+.scrap-entry .journey-layout{gap:clamp(25px,5vw,85px)!important}
+.scrap-entry .journey-topline,.scrap-entry .journey-bottomline{opacity:.75!important}
+.scrap-entry.entry-playing .journey-track{
+ stroke-dashoffset:650!important;
+ animation:oe-journey-trail 3.6s .4s cubic-bezier(.4,.05,.18,1) both!important;
+}
+.scrap-entry.entry-playing .journey-traveler{
+ animation:oe-journey-move 3.6s .4s ease-in-out both!important;
+}
+.scrap-entry.entry-playing .scrap-entry-photo{
+ animation:oe-journey-photo 1.6s 2.8s cubic-bezier(.18,.8,.2,1) both!important;
+}
+.scrap-entry.entry-playing .journey-cloud{
+ animation:oe-journey-cloud 5.2s ease-in-out both!important;
+}
+.scrap-entry.entry-playing .scrap-entry-gate{
+ animation:oe-journey-depart .7s 5.2s ease both!important;
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
