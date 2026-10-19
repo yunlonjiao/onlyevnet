@@ -2181,6 +2181,28 @@ body[data-oe-template="02-scrapbook"] .trip-site #home-guests>.oe-editorial-rail
 }
 }
 
+/* v8.40.79: lavender admission-ticket inspired two-tone guest card.
+   Keep the established geometry and portrait crop unchanged. */
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-guest{
+ background:#f9f7ff!important;border:1px solid #bcb1df!important;
+ box-shadow:0 8px 22px rgba(94,79,146,.075)!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid{
+ background:#e3dcf8!important;
+ border-right:1px solid #c8bde5!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-guest-note{
+ background:#f9f7ff!important;color:#293946!important;
+}
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid>span{
+ color:#514973!important;
+}
+@media(max-width:900px){
+body[data-oe-template="02-scrapbook"] #home-guests .scrap-polaroid{
+ border-right:0!important;border-bottom:1px solid #c8bde5!important;
+}
+}
+
 /* QA: remove legacy header spacing reserved for the eliminated LINK headline. */
 .trip-site .trip-community>header{justify-content:flex-start!important}
 .trip-site .trip-community>header h2{display:none!important}
