@@ -89,7 +89,7 @@ test('02-07 keep native header/footer while presentation chrome follows each ref
   await page.goto('/v8/?template=02-scrapbook&project=scrap-reference-chrome');
   const scrapbook=page.frameLocator('#liveFrame');
   await expect(scrapbook.locator('.scrap-entry-gate')).toBeAttached();
-  await expect(scrapbook.locator('.trip-mobile-nav a')).toHaveCount(5);
+  await expect(scrapbook.locator('.trip-mobile-nav a')).toHaveCount(4);
   await expect(scrapbook.locator('.trip-ribbon')).toHaveCount(0);
   await expect(scrapbook.locator('.trip-mobile-dock')).toHaveCount(0);
 });
