@@ -1,9 +1,14 @@
 import {test,expect} from '@playwright/test';
 async function navigate02(page,frame,destination){
-  await page.locator('#liveFrame').evaluate((iframe,pageId)=>{
-    iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:pageId==='guests'?'home':pageId},location.origin);
-  },destination);
-  await expect(frame.locator(destination==='guests'?'#home-guests':destination==='home'?'#home':'#'+destination)).toBeVisible();
+  const pageId=destination==='guests'?'home':destination;
+  const target=destination==='guests'?'#home-guests':destination==='home'?'#home':'#'+destination;
+  // Allow the iframe router to become ready before asserting its transition.
+  await expect.poll(async()=>{
+    await page.locator('#liveFrame').evaluate((iframe,id)=>{
+      iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:id},location.origin);
+    },pageId);
+    return frame.locator(target).isVisible();
+  },{timeout:10000,intervals:[150,300,500,750]}).toBe(true);
 }
 
 
