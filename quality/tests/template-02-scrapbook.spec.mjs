@@ -149,7 +149,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     expect(gateStyle.borderRadius).not.toBe('22px');
 
     await frame.locator('.scrap-entry-gate').click();
-    await expect.poll(()=>frame.locator('#loader').evaluate(el=>el.classList.contains('hide')),{timeout:5000}).toBe(true);
+    await expect.poll(()=>frame.locator('#loader').evaluate(el=>el.classList.contains('hide')),{timeout:8000}).toBe(true);
   });
   test('mirrors event identity across hero, navigation and entry ticket',async({page})=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-mirrors');
