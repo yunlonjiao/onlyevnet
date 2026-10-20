@@ -56,15 +56,16 @@ test('six added templates have genuinely different visual fingerprints',async({p
     await expect(frame.locator('.hero')).toBeVisible();
     const fp=await frame.locator('.hero').evaluate(el=>{
       const h=getComputedStyle(el);
-      const title=getComputedStyle(document.querySelector('.hero h1'));
+      const titleNode=document.querySelector('.hero h1');
+      const title=titleNode?getComputedStyle(titleNode):null;
       const kv=getComputedStyle(document.querySelector('.kv'));
       const quick=document.querySelector('[data-oe-mount="quick"] > *');
-      const card=getComputedStyle(quick);
+      const card=quick?getComputedStyle(quick):null;
       return [
         h.backgroundColor,h.minHeight,
-        title.fontFamily,title.fontSize,title.fontStyle,
+        title?.fontFamily||'no-title',title?.fontSize||'none',title?.fontStyle||'none',
         kv.borderRadius,kv.boxShadow,
-        card.borderRadius,card.backgroundColor
+        card?.borderRadius||'none',card?.backgroundColor||'none'
       ].join('|');
     });
     fingerprints.set(id,fp);
