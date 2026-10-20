@@ -17,10 +17,10 @@ for(const [id,ticket,guest,schedule,activity] of systems){
 
     await expect(frame.locator(ticket).first()).toBeVisible();
 
-    await page.locator('.page-nav [data-page="guests"]').click();
+    await (id==='02-scrapbook' ? frame.locator('[data-page-link="guests"]:visible').first() : page.locator('.page-nav [data-page="guests"]')).click();
     await expect(frame.locator(guest).first()).toBeVisible();
 
-    await page.locator('.page-nav [data-page="activities"]').click();
+    await (id==='02-scrapbook' ? frame.locator('[data-page-link="activities"]:visible').first() : page.locator('.page-nav [data-page="activities"]')).click();
     await expect(frame.locator(schedule).first()).toBeVisible();
     await frame.locator('.activity-view-tabs [data-activity-view="programs"]').click();
     await expect(frame.locator(activity).first()).toBeVisible();
