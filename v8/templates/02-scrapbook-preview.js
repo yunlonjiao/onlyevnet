@@ -7,46 +7,25 @@ export const previewBody=`
   <div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击播放动画，播放中点击立即进入首页">
     <div class="journey-scene-shell">
       <div class="journey-kicker">NOW LOADING<span class="journey-loading-dots">...</span></div>
-      <svg class="journey-simple journey-desktop" viewBox="0 0 1200 550" role="img" aria-label="小车沿着桌面横向虚线旅行">
-        <path class="journey-dash" d="M65 382 C235 382 215 125 430 195 S698 492 862 289 S1020 165 1140 196"/>
-        <g class="journey-car"><g transform="translate(-31 -23)">
-          <path d="M8 20 L17 6 Q20 2 27 2 H45 Q52 2 56 8 L64 20Z" fill="#fff" stroke="#354e60" stroke-width="3"/>
-          <rect x="0" y="18" width="68" height="25" rx="9" fill="#9acbd2" stroke="#354e60" stroke-width="3"/>
-          <path d="M20 9 H44 L52 19 H12Z" fill="#dff5fa"/>
-          <circle cx="16" cy="43" r="8" fill="#354e60"/><circle cx="53" cy="43" r="8" fill="#354e60"/>
-          <circle cx="16" cy="43" r="3" fill="#fff"/><circle cx="53" cy="43" r="3" fill="#fff"/>
-        </g></g>
-        <g class="journey-doodles" fill="none" stroke="#6c999b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M172 112v-42m-32 26h63m-57-12 27-27 26 27" />
-          <path d="M930 398c10-33 30-38 42-7 11-31 33-27 42 0m-46-15v47"/>
-          <path d="M546 86l10-29 10 29 29 10-29 10-10 29-10-29-29-10z"/>
-          <path d="M104 447c28-22 63-21 94 1m-88 13h90"/>
-        </g>
-        <circle cx="65" cy="382" r="8" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
-        <circle cx="1140" cy="196" r="9" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
-        
-        
-      </svg>
-      <svg class="journey-simple journey-mobile" viewBox="0 0 440 780" role="img" aria-label="小车沿着手机竖向虚线旅行">
-        <path class="journey-dash" d="M98 78 C348 56 355 244 198 291 S48 475 230 523 S344 653 270 711"/>
-        <g class="journey-car"><g transform="translate(-31 -23)">
-          <path d="M8 20 L17 6 Q20 2 27 2 H45 Q52 2 56 8 L64 20Z" fill="#fff" stroke="#354e60" stroke-width="3"/>
-          <rect x="0" y="18" width="68" height="25" rx="9" fill="#9acbd2" stroke="#354e60" stroke-width="3"/>
-          <path d="M20 9 H44 L52 19 H12Z" fill="#dff5fa"/>
-          <circle cx="16" cy="43" r="8" fill="#354e60"/><circle cx="53" cy="43" r="8" fill="#354e60"/>
-          <circle cx="16" cy="43" r="3" fill="#fff"/><circle cx="53" cy="43" r="3" fill="#fff"/>
-        </g></g>
-        <g class="journey-doodles" fill="none" stroke="#6c999b" stroke-width="2.5" stroke-linecap="round">
-          <path d="M70 250l19-30 22 30m-36-12h31m-15 7v27"/>
-          <path d="M324 438l11-26 11 26 26 11-26 11-11 26-11-26-26-11z"/>
-          <path d="M74 637q32-27 65 0m-58 13h61"/>
-        </g>
-        <circle cx="98" cy="78" r="8" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
-        <circle cx="270" cy="711" r="9" fill="#d6ff79" stroke="#354e60" stroke-width="3"/>
-        
-        
-      </svg>
-      
+      <div class="oe-clover-scene" aria-label="四叶草开屏动画">
+        <svg class="oe-clover-svg" viewBox="0 0 460 480" role="img" aria-label="四叶草四片叶子和一根无分枝的茎">
+          <g class="oe-clover-lines" stroke="#27312b" stroke-width="3.2" fill="none" stroke-linejoin="round" stroke-linecap="round">
+            <g transform="translate(230 211)">
+              <path class="oe-clover-leaf oe-leaf-1" d="M0 0 C-24 -8 -50 -34 -36 -58 C-24 -78 -5 -67 0 -47 C5 -67 24 -78 36 -58 C50 -34 24 -8 0 0Z" transform="rotate(-45)"/>
+              <path class="oe-clover-leaf oe-leaf-2" d="M0 0 C-24 -8 -50 -34 -36 -58 C-24 -78 -5 -67 0 -47 C5 -67 24 -78 36 -58 C50 -34 24 -8 0 0Z" transform="rotate(45)"/>
+              <path class="oe-clover-leaf oe-leaf-3" d="M0 0 C-24 -8 -50 -34 -36 -58 C-24 -78 -5 -67 0 -47 C5 -67 24 -78 36 -58 C50 -34 24 -8 0 0Z" transform="rotate(135)"/>
+              <path class="oe-clover-leaf oe-leaf-4" d="M0 0 C-24 -8 -50 -34 -36 -58 C-24 -78 -5 -67 0 -47 C5 -67 24 -78 36 -58 C50 -34 24 -8 0 0Z" transform="rotate(225)"/>
+            </g>
+            <path class="oe-clover-stem" d="M232 220 C252 274 255 329 224 407"/>
+            <circle class="oe-clover-center" cx="230" cy="211" r="4"/>
+            <g class="oe-clover-twinkles" stroke-width="2">
+              <path d="M87 143v19m-9-9h18M376 188v22m-11-11h22M113 328v16m-8-8h16M344 335v18m-9-9h18"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="oe-clover-progress" aria-hidden="true"><span></span></div>
+      <span class="oe-clover-prompt" aria-hidden="true">TAP TO START</span>
     </div>
   </div>
   <button class="skip" id="skip">SKIP ↗</button>
@@ -2717,4 +2696,36 @@ html:not(.oe-entry-preview) .scrap-entry.loader{display:none!important}
 @media(prefers-reduced-motion:no-preference){
 .trip-site .trip-community .scrap-social{animation-fill-mode:both!important}
 }
+
+/* Four-leaf opening, plain unbranched stem. No stem leaves. */
+.scrap-entry.loader{background:#d2ff79!important;color:#27312b!important;padding:0!important}
+.scrap-entry .scrap-entry-gate{width:100%!important;height:100dvh!important;min-height:100vh!important;max-height:none!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important;box-shadow:none!important;border:0!important;transform:none!important;background:transparent!important;filter:none!important;animation:none!important}
+.scrap-entry .journey-scene-shell{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;gap:16px!important;padding:20px!important}
+.scrap-entry .journey-scene-shell::before,.scrap-entry .journey-scene-shell::after{display:none!important}
+.scrap-entry .journey-kicker{order:2!important;position:static!important;margin:0!important;color:#27312b!important;font:800 clamp(12px,1.4vw,16px)/1.4 Arial,sans-serif!important;letter-spacing:.28em!important}
+.scrap-entry .oe-clover-scene{order:1;width:min(78vw,390px);aspect-ratio:460/480;display:grid;place-items:center}
+.scrap-entry .oe-clover-svg{width:100%;height:100%;display:block;overflow:visible}
+.scrap-entry .oe-clover-leaf,.scrap-entry .oe-clover-stem{stroke-dasharray:600;stroke-dashoffset:600}
+.scrap-entry .oe-clover-center,.scrap-entry .oe-clover-twinkles{opacity:0}
+.scrap-entry .oe-clover-progress{order:3;width:min(50vw,290px);max-width:75vw;height:2px;background:#27312b38;overflow:hidden}
+.scrap-entry .oe-clover-progress span{display:block;width:100%;height:100%;background:#27312b;transform:scaleX(0);transform-origin:left}
+.scrap-entry .oe-clover-prompt{order:4;color:#27312b;font:600 10px/1.3 Arial,sans-serif;letter-spacing:.22em;opacity:.7}
+.scrap-entry.entry-playing .oe-leaf-1{animation:oe-clover-stroke .72s .1s ease-out forwards}
+.scrap-entry.entry-playing .oe-leaf-2{animation:oe-clover-stroke .72s .48s ease-out forwards}
+.scrap-entry.entry-playing .oe-leaf-3{animation:oe-clover-stroke .72s .86s ease-out forwards}
+.scrap-entry.entry-playing .oe-leaf-4{animation:oe-clover-stroke .72s 1.24s ease-out forwards}
+.scrap-entry.entry-playing .oe-clover-stem{animation:oe-clover-stroke 1s 1.85s ease-out forwards}
+.scrap-entry.entry-playing .oe-clover-center{animation:oe-clover-show .3s 1.8s forwards}
+.scrap-entry.entry-playing .oe-clover-twinkles{animation:oe-clover-show .55s 2.8s forwards}
+.scrap-entry.entry-playing .oe-clover-scene{animation:oe-clover-breathe .75s 3s ease-in-out both}
+.scrap-entry.entry-playing .oe-clover-progress span{animation:oe-clover-progress 3.9s linear forwards}
+.scrap-entry.entry-playing .oe-clover-prompt{opacity:0}
+.scrap-entry.entry-playing .scrap-entry-gate{animation:oe-clover-fade .4s 4.1s ease-in forwards!important}
+.scrap-entry .skip{color:#27312b!important;background:transparent!important;border:0!important}
+@keyframes oe-clover-stroke{to{stroke-dashoffset:0}}
+@keyframes oe-clover-show{to{opacity:1}}
+@keyframes oe-clover-breathe{50%{transform:scale(1.035)}100%{transform:scale(1)}}
+@keyframes oe-clover-progress{to{transform:scaleX(1)}}
+@keyframes oe-clover-fade{to{opacity:0}}
+@media(max-width:760px){.scrap-entry .oe-clover-scene{width:min(84vw,350px)}.scrap-entry .oe-clover-progress{width:min(65vw,280px)}}
 `;
