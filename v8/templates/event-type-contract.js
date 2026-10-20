@@ -6,7 +6,7 @@ export const EVENT_TYPE_DEFINITIONS=Object.freeze([
     description:'单 IP、同好主题、ONLY 活动',
     requiredModules:Object.freeze(['tickets','booths','activities','guests','guide','map']),
     optionalModules:Object.freeze(['ribbon','community','sponsors','customPages','freewalk','itasha']),
-    templateIds:Object.freeze(['01-ip-only','02-scrapbook','03-school-festival','04-museum-editorial','05-live-poster','06-expo-catalogue','07-immersive-character'])
+    templateIds:Object.freeze(['01-ip-only','02-scrapbook'])
   }),
   Object.freeze({
     id:'tea-party',label:'同好茶会',status:'planned',
