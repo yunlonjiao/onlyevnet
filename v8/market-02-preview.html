@@ -22,6 +22,45 @@ main section{padding:85px 5vw}
 .tile .details{padding:12px 0}.tile h3{font-size:19px}
 }
 @media(max-width:900px){.hero{background:#36421a;color:#d7ff53;padding:40px 20px}.hero h1{color:#d7ff53;font-family:Impact,"Arial Black",sans-serif;font-style:normal;font-size:clamp(59px,12vw,105px);letter-spacing:-.07em}.hero-art{background:#d7ff53}.hero .primary-link{background:#d7ff53;color:#263310}.section-head h2{font-family:Impact,"Arial Black",sans-serif;font-size:45px;font-weight:900}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* MARKET 02: anime-circle festival visual, inspired by Japanese illustrated event sites.
+   Its site-wide composition is intentionally not the shared fair grid. */
+:root{--j-ink:#24214d;--j-paper:#f8f8ff;--j-purple:#6558c9;--j-lilac:#d9caff}
+body{background:var(--j-paper);color:var(--j-ink)}
+@media(min-width:901px){
+body{padding:0}
+.shell{max-width:none;padding:0}
+header{position:sticky;top:0;z-index:30;left:0;right:0;width:100%;height:76px;display:flex;flex-direction:row;align-items:center;justify-content:space-between;background:#fff;padding:0 4vw;border:0;border-bottom:2px solid var(--j-ink)}
+header nav{display:flex;flex-direction:row;gap:8px;align-items:center}
+header nav a{writing-mode:horizontal-tb;font-weight:900;font-size:13px;letter-spacing:0;padding:11px 15px;border-radius:30px;transition:background .2s}
+header nav a:hover{background:#ebe5ff}
+header .mast{writing-mode:horizontal-tb;transform:none;font-size:21px;border:0;letter-spacing:.04em;background:var(--j-ink);color:white}
+main section{padding:90px 5vw}
+.hero{min-height:780px;display:grid;grid-template-columns:42% 58%;align-items:stretch;gap:0;background:#f2edff;color:var(--j-ink);overflow:hidden;padding:0;border:0}
+.hero>div:first-child{z-index:5;align-self:center;padding:80px 0 80px 5vw;max-width:none}
+.hero h1{font-family:"Arial Black","Noto Sans SC",sans-serif;font-weight:1000;font-style:normal;font-size:clamp(70px,7vw,138px);letter-spacing:-.085em;line-height:.91;color:var(--j-ink);margin:24px -12vw 38px 0;max-width:none;text-shadow:4px 4px 0 #fff}
+.hero-art{position:relative;width:100%;height:100%;min-height:780px;top:auto;right:auto;background:radial-gradient(circle at 60% 35%,#fff0 0 30%,#e7dbff 31% 33%,transparent 34%),linear-gradient(138deg,#afa2ee,#e5c1f8 44%,#a8e5e3);opacity:1;border:0;transform:none;clip-path:ellipse(92% 82% at 75% 48%)}
+.hero-art span{transform:rotate(-12deg);color:#fff;font-family:"Arial Black","Noto Sans SC",sans-serif;font-size:clamp(88px,11vw,175px);line-height:.93;letter-spacing:-.08em;text-shadow:8px 9px 0 var(--j-purple);-webkit-text-stroke:0}
+.hero .info-strip{border-color:var(--j-ink);color:var(--j-ink)}
+.hero .primary-link{background:var(--j-ink);color:#fff}
+.section-head{border:0}.section-head h2{font-family:"Arial Black","Noto Sans SC",sans-serif;font-weight:900;color:var(--j-ink);font-size:clamp(48px,6vw,90px)}
+#catalogue{background:#eae5ff;position:relative}#catalogue:before{content:"CIRCLE CATALOGUE";position:absolute;right:4vw;top:20px;letter-spacing:.25em;font-weight:900;color:#a394d6}
+.book{border:0;box-shadow:15px 15px 0 #a399e1;background:#fff;max-width:1180px;margin:auto;min-height:540px;transform:rotate(-.5deg)}
+.book .page-left{background:#cfdbff}.book .page-right{background:#fff}.page-no{color:#594fc3}
+#creators{background:#fff9fa}#products{background:#fff}#map{background:#e4f4f0}
+.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.tile{border:0;background:white;border-radius:22px;box-shadow:0 8px 26px #30296112}
+.tile .media{aspect-ratio:4/5;background:#f7e7ff;border:0;border-radius:20px 20px 0 0}
+.tile .details{padding:22px}
+}
+@media(max-width:900px){
+.hero{background:#f2edff;color:var(--j-ink)}
+.hero h1{font-family:"Arial Black","Noto Sans SC",sans-serif;font-style:normal;color:var(--j-ink);font-size:clamp(57px,12vw,90px)}
+.hero-art{background:linear-gradient(135deg,#afa2ee,#e5c1f8);min-height:310px}
+.hero-art span{color:white;text-shadow:5px 6px 0 var(--j-purple)}
+.hero .primary-link{background:var(--j-ink);color:white}
+.section-head h2{font-family:"Arial Black","Noto Sans SC",sans-serif;font-weight:900}
+}
 </style></head><body><div class="shell"><header><span class="mast">CIRCLE / BOOK</span><nav><a href="#about">ABOUT</a><a href="#catalogue">CATALOGUE</a><a href="#creators">CIRCLES</a><a href="#products">WORKS</a><a href="#map">FLOOR</a><a href="#guide">GUIDE</a></nav></header><main><section class="hero" id="about"><div><small>BOOK FAIR / EXHIBITOR DIRECTORY / 2026</small><h1>DOUJIN<br>BOOK FAIR.</h1><p data-event-name></p><p data-description></p><div class="info-strip"><b data-date></b><b data-location></b></div><p><a id="ticket" class="primary-link" href="#guide">查看入场说明</a></p></div><div class="hero-art"><span>BOOK<br>FAIR</span></div></section><section id="catalogue"><div class="section-head"><h2>WEB CATALOGUE</h2><small>電子場刊 / ELECTRONIC BOOK</small></div><div class="book"><div class="page-left"><small class="overline">CIRCLE DIRECTORY</small><div class="page-no" id="pageNo">01</div><h3 id="bookTitle"></h3><p id="bookDescription"></p><p id="bookBooth"></p></div><div class="page-right"><small class="overline">FEATURED WORKS</small><div id="bookWorks"></div><div class="book-nav"><button id="bookPrev" class="button" aria-label="上一页">← PREV</button><span id="pageCount"></span><button id="bookNext" class="button" aria-label="下一页">NEXT →</button></div></div></div></section><section id="creators"><div class="section-head"><h2>CIRCLE INDEX</h2><small><span data-creator-count></span> CIRCLES</small></div><div class="controls"><input id="search" type="search" aria-label="搜索社团、制品或摊位" placeholder="社团 / 制品 / 标签 / 摊位号"></div><div id="creatorList" class="grid"></div></section><section id="products"><div class="section-head"><h2>WORKS & GOODS</h2><small>作品・頒布物</small></div><div id="productList" class="grid"></div></section><section id="map"><div class="section-head"><h2>FLOOR GUIDE</h2><small>会場案内</small></div><div class="map-grid" id="mapList"></div></section><section id="news"><div class="section-head"><h2>INFORMATION</h2><small>お知らせ</small></div><div id="newsList"></div></section><section id="guide"><div class="section-head"><h2>VISITOR GUIDE</h2><small>来場案内</small></div><div class="info-strip"><b data-date></b><b data-location></b></div><p id="guideText"></p></section><section id="sponsors"><div class="section-head"><h2>SUPPORTERS</h2><small>協賛</small></div><div class="sponsors" id="sponsorList"></div></section></main><footer class="footer">CREATOR MARKET · OnlyEvent · Market 02 visual study</footer></div><dialog class="modal" id="mapDialog"><div><button id="closeMap" class="button">关闭 ×</button><img id="largeMap" alt="放大查看场地图"></div></dialog><script type="module">const demo={eventName:'原创同人创作展',date:'2026.11.08',location:'城市艺术空间',description:'一次以创作者和作品为主角的小型同人创作展。',ticketUrl:'',creators:[{id:'c1',name:'浮光工房',description:'原创插画与画集。',tags:['原创','画集'],booth:'A01',image:''},{id:'c2',name:'月见社',description:'漫画、明信片与手作。',tags:['漫画','周边'],booth:'A02',image:''},{id:'c3',name:'星野制作所',description:'独立出版与原创作品。',tags:['原创','同人志'],booth:'B03',image:''}],products:[{id:'p1',name:'星空画集',creatorId:'c1',tags:['画集'],price:'¥45',image:''},{id:'p2',name:'春日明信片',creatorId:'c2',tags:['周边'],price:'¥20',image:''},{id:'p3',name:'原创同人志',creatorId:'c3',tags:['同人志'],price:'¥50',image:''}],maps:[],sponsors:[],news:[],guide:'请以主办方发布的最新场地与入场通知为准。'};
 const params=new URLSearchParams(location.search);let data=demo;try{const injected=JSON.parse(localStorage.getItem('onlyevent-creator-fair-demo')||'null');if(injected&&typeof injected==='object')data={...demo,...injected}}catch{}
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
