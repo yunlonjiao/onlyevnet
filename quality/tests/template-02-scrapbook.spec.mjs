@@ -1,9 +1,9 @@
 import {test,expect} from '@playwright/test';
 async function navigate02(page,frame,destination){
   await page.locator('#liveFrame').evaluate((iframe,pageId)=>{
-    iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:pageId},location.origin);
+    iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:pageId==='guests'?'home':pageId},location.origin);
   },destination);
-  await expect(frame.locator(destination==='home'?'#home':'#'+destination)).toBeVisible();
+  await expect(frame.locator(destination==='guests'?'#home-guests':destination==='home'?'#home':'#'+destination)).toBeVisible();
 }
 
 
@@ -204,7 +204,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-guests-qa');
     const frame=page.frameLocator('#liveFrame');
     await navigate02(page,frame,'guests');
-    const layout=await frame.locator('#guests .guest-grid').evaluate(el=>{
+    const layout=await frame.locator('#home-guests .guest-grid').evaluate(el=>{
       const style=getComputedStyle(el);
       return {display:style.display,overflowX:style.overflowX,snap:style.scrollSnapType};
     });
