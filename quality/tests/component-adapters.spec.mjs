@@ -16,20 +16,20 @@ for(const [id,ticket,guest,schedule,booth,product,activity,guide] of cases){
     await expect(frame.locator('.hero')).toBeVisible();
     await expect(frame.locator('.'+ticket).first()).toBeVisible();
 
-    await page.locator('.page-nav [data-page="guests"]').click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p==='guests'?'home':p},location.origin),'guests'); else await page.locator('.page-nav [data-page="guests"]').click();
     await expect(frame.locator('.'+guest).first()).toBeVisible();
 
-    await page.locator('.page-nav [data-page="activities"]').click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p==='guests'?'home':p},location.origin),'activities'); else await page.locator('.page-nav [data-page="activities"]').click();
     await expect(frame.locator('.'+schedule).first()).toBeVisible();
     await frame.locator('[data-activity-view="programs"]').click();
     await expect(frame.locator('.'+activity).first()).toBeVisible();
 
-    await page.locator('.page-nav [data-page="booths"]').click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p==='guests'?'home':p},location.origin),'booths'); else await page.locator('.page-nav [data-page="booths"]').click();
     await expect(frame.locator('.'+booth).first()).toBeVisible();
     await frame.locator('[data-directory-view-btn="products"]').click();
     await expect(frame.locator('.'+product).first()).toBeVisible();
 
-    await page.locator('.page-nav [data-page="guide"]').click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p==='guests'?'home':p},location.origin),'guide'); else await page.locator('.page-nav [data-page="guide"]').click();
     await expect(frame.locator('.'+guide).first()).toBeVisible();
   });
 }
