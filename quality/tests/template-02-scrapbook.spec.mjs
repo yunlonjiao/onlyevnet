@@ -94,6 +94,9 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
   test('keeps booth search, favorites and product wishlist',async({page})=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-directory');
     const frame=page.frameLocator('#liveFrame');
+    await page.locator('#previewBtn').click();
+    await frame.locator('#skip').click();
+    await expect(frame.locator('#loader')).toBeHidden();
 
     await navigate02(page,frame,'booths');
     await expect(frame.locator('.scrap-booth').first()).toBeVisible();
