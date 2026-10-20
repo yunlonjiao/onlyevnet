@@ -185,7 +185,9 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
   test('Template 02 honors hidden purchase links regardless of layout CSS',async({page})=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-hidden');
     const frame=page.frameLocator('#liveFrame');
-    await frame.locator('.trip-ticket-list .ticket-grid').evaluate(el=>el.setAttribute('hidden',''));\n    await expect(frame.locator('.trip-ticket-list .ticket-grid')).toBeHidden();\n    await frame.locator('.trip-ticket-list .ticket-grid').evaluate(el=>el.removeAttribute('hidden'));
+    await frame.locator('.trip-ticket-list .ticket-grid').evaluate(el=>el.setAttribute('hidden',''));
+    await expect(frame.locator('.trip-ticket-list .ticket-grid')).toBeHidden();
+    await frame.locator('.trip-ticket-list .ticket-grid').evaluate(el=>el.removeAttribute('hidden'));
   });
 
   test('lime announcement strip is mounted from editable CMS ribbons',async({page})=>{
