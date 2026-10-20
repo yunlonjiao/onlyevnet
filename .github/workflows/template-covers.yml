@@ -22,7 +22,7 @@ jobs:
       - name: Install browser
         working-directory: quality
         run: |
-          npm ci
+          npm install
           npx playwright install --with-deps chromium
       - name: Serve real Studio pages
         run: |
