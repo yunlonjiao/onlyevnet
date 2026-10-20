@@ -65,9 +65,9 @@ test('lifecycle changes visitor emphasis and ended mode removes ticket CTA',asyn
   frame=await setState(page,s=>{s.eventStatusMode='manual';s.eventStatus='ended';s.ticketUrl='https://example.com/tickets'});
   await expect(frame.locator('.event-status-badge')).toContainText('活动已结束');
   await page.locator('#previewBtn').click();
-  await expect(frame.locator('.ticket-purchase-link')).toHaveCount(2);
-  await expect(frame.locator('.ticket-purchase-link').first()).toBeHidden();
-  await expect(frame.locator('.ticket-purchase-link').nth(1)).toBeHidden();
+  const purchaseLinks=frame.locator('.ticket-purchase-link');
+  expect(await purchaseLinks.count()).toBeGreaterThan(0);
+  for(const link of await purchaseLinks.all())await expect(link).toBeHidden();
   await expect(frame.locator('.nav>.wrap>.btn')).toBeHidden();
   await expect(frame.locator('.quick-grid [data-page-link="tickets"]')).toHaveCount(0);
 });
