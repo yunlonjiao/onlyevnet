@@ -36,13 +36,13 @@ for(const [id,art] of templates){
     await expect(page.locator('#projectTemplateName')).not.toHaveText('');
     const active=await frame.locator('html').getAttribute('data-oe-template');
     expect(active).toBe(id);
-    await (id==='02-scrapbook' ? frame.locator('[data-page-link="booths"]:visible').first() : page.locator('.page-nav [data-page="booths"]')).click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'booths'); else await page.locator('.page-nav [data-page="booths"]').click();
     await expect(frame.locator('#booths')).toBeVisible();
-    await (id==='02-scrapbook' ? frame.locator('[data-page-link="activities"]:visible').first() : page.locator('.page-nav [data-page="activities"]')).click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'activities'); else await page.locator('.page-nav [data-page="activities"]').click();
     await expect(frame.locator('#activities')).toBeVisible();
-    await (id==='02-scrapbook' ? frame.locator('[data-page-link="guests"]:visible').first() : page.locator('.page-nav [data-page="guests"]')).click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'guests'); else await page.locator('.page-nav [data-page="guests"]').click();
     await expect(frame.locator('#guests')).toBeVisible();
-    await (id==='02-scrapbook' ? frame.locator('[data-page-link="guide"]:visible').first() : page.locator('.page-nav [data-page="guide"]')).click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'guide'); else await page.locator('.page-nav [data-page="guide"]').click();
     await expect(frame.locator('#guide')).toBeVisible();
     expect(errors,'template '+id+' should not produce renderer errors').toEqual([]);
   });
