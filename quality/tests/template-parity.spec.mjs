@@ -17,23 +17,23 @@ for(const id of templates){
     await expect(frame.locator('[data-oe-mount="featured-activities"]')).toBeVisible();
     await expect(frame.locator('[data-oe-mount="map"]')).toBeVisible();
 
-    await (id==='02-scrapbook' ? frame.locator('[data-page-link="booths"]:visible').first() : page.locator('.page-nav [data-page="booths"]')).click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'booths'); else await page.locator('.page-nav [data-page="booths"]').click();
     expect(await frame.locator('[data-oe-mount="booths"] [data-directory-card][data-kind="booth"]').count()).toBeGreaterThan(0);
     const search=frame.locator('[data-oe-mount="booths"] [data-directory-search]');
     await search.fill('星屑工房');
     await expect(frame.locator('[data-oe-mount="booths"] [data-directory-card][data-kind="booth"]:visible')).toHaveCount(1);
 
-    await (id==='02-scrapbook' ? frame.locator('[data-page-link="activities"]:visible').first() : page.locator('.page-nav [data-page="activities"]')).click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'activities'); else await page.locator('.page-nav [data-page="activities"]').click();
     await expect(frame.locator('[data-oe-mount="schedule"] [data-oe-item="schedule"]')).not.toHaveCount(0);
     await expect(frame.locator('[data-oe-mount="activity-projects"]')).toBeAttached();
 
-    await (id==='02-scrapbook' ? frame.locator('[data-page-link="guests"]:visible').first() : page.locator('.page-nav [data-page="guests"]')).click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'guests'); else await page.locator('.page-nav [data-page="guests"]').click();
     await expect(frame.locator('[data-oe-mount="guests"] [data-oe-item="guests"]')).not.toHaveCount(0);
 
-    await (id==='02-scrapbook' ? frame.locator('[data-page-link="guide"]:visible').first() : page.locator('.page-nav [data-page="guide"]')).click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'guide'); else await page.locator('.page-nav [data-page="guide"]').click();
     await expect(frame.locator('[data-oe-mount="guide-detail"]')).toContainText('交通');
 
-    await (id==='02-scrapbook' ? frame.locator('[data-page-link="home"]:visible').first() : page.locator('.page-nav [data-page="home"]')).click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'home'); else await page.locator('.page-nav [data-page="home"]').click();
     await expect(frame.locator('[data-oe-mount="community"]')).toBeAttached();
     await expect(frame.locator('[data-oe-mount="footer-brand"]')).toContainText('STARDUST ONLY 2026');
     expect(errors,'renderer errors in '+id).toEqual([]);
