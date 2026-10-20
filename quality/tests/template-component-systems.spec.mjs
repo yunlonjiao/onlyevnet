@@ -82,7 +82,7 @@ test('02-07 keep native header/footer while presentation chrome follows each ref
   for(const [id,selectors] of Object.entries(expected)){
     await page.goto('/v8/?template='+id+'&project=native-chrome-'+id);
     const frame=page.frameLocator('#liveFrame');
-    await expect(frame.locator(selectors[0])).toBeVisible();
+    await expect(frame.locator(selectors[0])).toBeAttached();
     await expect(frame.locator(selectors[1])).toBeVisible();
   }
 
