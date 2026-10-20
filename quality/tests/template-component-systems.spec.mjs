@@ -17,10 +17,10 @@ for(const [id,ticket,guest,schedule,activity] of systems){
 
     await expect(frame.locator(ticket).first()).toBeVisible();
 
-    await (id==='02-scrapbook' ? frame.locator('[data-page-link="guests"]:visible').first() : page.locator('.page-nav [data-page="guests"]')).click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'guests'); else await page.locator('.page-nav [data-page="guests"]').click();
     await expect(frame.locator(guest).first()).toBeVisible();
 
-    await (id==='02-scrapbook' ? frame.locator('[data-page-link="activities"]:visible').first() : page.locator('.page-nav [data-page="activities"]')).click();
+    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'activities'); else await page.locator('.page-nav [data-page="activities"]').click();
     await expect(frame.locator(schedule).first()).toBeVisible();
     await frame.locator('.activity-view-tabs [data-activity-view="programs"]').click();
     await expect(frame.locator(activity).first()).toBeVisible();
