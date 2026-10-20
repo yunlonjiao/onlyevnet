@@ -2744,4 +2744,10 @@ html:not(.oe-entry-preview) .scrap-entry.loader{display:none!important}
   grid-column:2!important;grid-row:1!important;min-width:0!important;
  }
 }
+
+/* Respect semantic hidden state even when earlier layout rules force grid/flex. */
+body[data-oe-template="02-scrapbook"] .trip-ticket-list [hidden],
+body[data-oe-template="02-scrapbook"] .trip-ticket-section [hidden]{
+ display:none!important;
+}
 `;
