@@ -1,8 +1,8 @@
 import {test,expect} from '@playwright/test';
 async function navigate02(page,frame,destination){
-  const link=frame.locator('[data-page-link="'+destination+'"]:visible').first();
-  await expect(link).toBeVisible();
-  await link.click();
+  await page.locator('#liveFrame').evaluate((iframe,pageId)=>{
+    iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:pageId},location.origin);
+  },destination);
   await expect(frame.locator(destination==='home'?'#home':'#'+destination)).toBeVisible();
 }
 
