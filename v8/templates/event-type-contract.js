@@ -9,24 +9,24 @@ export const EVENT_TYPE_DEFINITIONS=Object.freeze([
     templateIds:Object.freeze(['01-ip-only','02-scrapbook','03-school-festival','04-museum-editorial','05-live-poster','06-expo-catalogue','07-immersive-character'])
   }),
   Object.freeze({
-    id:'creator-market',label:'创作者 / 同人市集',status:'planned',
-    description:'原创创作者、同人社团、独立刊物、手作与周边市集',
-    requiredModules:Object.freeze(['organizers','creators','products','boothMap','visitorGuide']),
+    id:'tea-party',label:'同好茶会',status:'planned',
+    description:'小型同好交流、茶会、CP ONLY 类聚会；具体活动名称由主办方填写',
+    requiredModules:Object.freeze(['eventInformation','registration','agenda','venue','participationGuide']),
+    optionalModules:Object.freeze(['guests','announcements','gallery','community','tickets']),
+    templateIds:Object.freeze([])
+  }),
+  Object.freeze({
+    id:'creator-market',label:'同人创作展',status:'planned',
+    description:'同人创作展与创作者市集共用一类，支持社团、作品与摊位目录',
+    requiredModules:Object.freeze(['creators','booths','products','boothMap','visitorGuide']),
     optionalModules:Object.freeze(['tickets','news','featuredCreators','favorites','wishlist','community']),
     templateIds:Object.freeze([])
   }),
   Object.freeze({
-    id:'live-stage',label:'Live / 舞台活动',status:'planned',
-    description:'演出、音乐 Live、声优活动和多场次舞台专题',
+    id:'live-stage',label:'舞台活动',status:'planned',
+    description:'乐队Live、演出、嘉宾见面会等以出演及节目日程为核心的活动',
     requiredModules:Object.freeze(['performers','shows','setlist','admission','visitorGuide']),
     optionalModules:Object.freeze(['tickets','news','venueMap','merchandise','community']),
-    templateIds:Object.freeze([])
-  }),
-  Object.freeze({
-    id:'game-theme',label:'游戏 / 主题企划',status:'planned',
-    description:'游戏联动、体验活动、主题企划及沉浸式专题',
-    requiredModules:Object.freeze(['chapters','experiences','participationRules','schedule','visitorGuide']),
-    optionalModules:Object.freeze(['characters','tickets','news','venueMap','merchandise','community']),
     templateIds:Object.freeze([])
   })
 ]);
