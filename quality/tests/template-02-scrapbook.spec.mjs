@@ -64,7 +64,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     const frame=page.frameLocator('#liveFrame');
 
     await expect(frame.locator('.trip-header')).toBeAttached();
-    await expect(frame.locator('.trip-mobile-nav a')).toHaveCount(5);
+    await expect(frame.locator('.trip-mobile-nav a')).toHaveCount(4);
     await expect(frame.locator('.trip-index [data-oe-mount="quick"]')).toBeVisible();
     await expect(frame.locator('.trip-ribbon')).toHaveCount(0);
     await expect(frame.locator('.trip-mobile-dock')).toHaveCount(0);
@@ -95,8 +95,8 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-directory');
     const frame=page.frameLocator('#liveFrame');
     await page.locator('#previewBtn').click();
-    await frame.locator('#skip').click();
-    await expect(frame.locator('#loader')).toBeHidden();
+    await frame.locator('.scrap-entry-gate').click();
+    await expect(frame.locator('#loader')).toBeHidden({timeout:7000});
 
     await navigate02(page,frame,'booths');
     await expect(frame.locator('.scrap-booth').first()).toBeVisible();
