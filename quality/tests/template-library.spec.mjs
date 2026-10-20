@@ -41,7 +41,7 @@ for(const [id,art] of templates){
     if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'activities'); else await page.locator('.page-nav [data-page="activities"]').click();
     await expect(frame.locator('#activities')).toBeVisible();
     if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'guests'); else await page.locator('.page-nav [data-page="guests"]').click();
-    await expect(frame.locator('#guests')).toBeVisible();
+    await expect(frame.locator(id==='02-scrapbook'?'#home-guests':'#guests')).toBeVisible();
     if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p},location.origin),'guide'); else await page.locator('.page-nav [data-page="guide"]').click();
     await expect(frame.locator('#guide')).toBeVisible();
     expect(errors,'template '+id+' should not produce renderer errors').toEqual([]);
