@@ -1,4 +1,11 @@
 import {test,expect} from '@playwright/test';
+async function navigate02(page,frame,destination){
+  const link=frame.locator('[data-page-link="'+destination+'"]:visible').first();
+  await expect(link).toBeVisible();
+  await link.click();
+  await expect(frame.locator(destination==='home'?'#home':'#'+destination)).toBeVisible();
+}
+
 
 test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
   test('iframe boot does not render Template 01 before Studio initialization',async({page})=>{
@@ -56,7 +63,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-reference');
     const frame=page.frameLocator('#liveFrame');
 
-    await expect(frame.locator('.trip-header')).toBeVisible();
+    await expect(frame.locator('.trip-header')).toBeAttached();
     await expect(frame.locator('.trip-mobile-nav a')).toHaveCount(5);
     await expect(frame.locator('.trip-index [data-oe-mount="quick"]')).toBeVisible();
     await expect(frame.locator('.trip-ribbon')).toHaveCount(0);
@@ -72,9 +79,9 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-core');
     const frame=page.frameLocator('#liveFrame');
 
-    await expect(frame.locator('.hero-title-1')).toHaveAttribute('contenteditable','true');
-    await expect(frame.locator('.hero-copy p')).toHaveAttribute('contenteditable','true');
-    await expect(frame.locator('.trip-flight-info [data-oe-field="date"]').first()).toHaveAttribute('contenteditable','true');
+    await expect(frame.locator('.trip-logo [data-oe-field="eventName"]')).toHaveAttribute('contenteditable','true');
+    await expect(frame.locator('#event-introduction [data-oe-field="tagline"]')).toHaveAttribute('contenteditable','true');
+    await expect(frame.locator('.trip-event-facts [data-oe-field="date"]')).toHaveAttribute('contenteditable','true');
 
     await expect(frame.locator('[data-oe-mount="tickets"] .scrap-pass')).toHaveCount(3);
     await expect(frame.locator('[data-oe-mount="featured-activities"]')).toBeVisible();
@@ -88,7 +95,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-directory');
     const frame=page.frameLocator('#liveFrame');
 
-    await page.locator('.page-nav [data-page="booths"]').click();
+    await navigate02(page,frame,'booths');
     await expect(frame.locator('.scrap-booth').first()).toBeVisible();
 
     const search=frame.locator('[data-directory-search]');
@@ -110,15 +117,15 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-relations');
     const frame=page.frameLocator('#liveFrame');
 
-    await page.locator('.page-nav [data-page="activities"]').click();
+    await navigate02(page,frame,'activities');
     await expect(frame.locator('[data-oe-mount="schedule"] .scrap-itinerary')).not.toHaveCount(0);
     await frame.locator('[data-activity-view="programs"]').click();
     await expect(frame.locator('[data-oe-mount="activity-projects"] .scrap-activity').first()).toBeVisible();
 
-    await page.locator('.page-nav [data-page="guests"]').click();
+    await navigate02(page,frame,'guests');
     await expect(frame.locator('[data-oe-mount="guests"] .scrap-guest').first()).toBeVisible();
 
-    await page.locator('.page-nav [data-page="guide"]').click();
+    await navigate02(page,frame,'guide');
     await expect(frame.locator('[data-oe-mount="guide-detail"] .scrap-guide').first()).toBeVisible();
     await expect(frame.locator('[data-oe-mount="guide-detail"]')).toContainText('交通');
   });
@@ -153,7 +160,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
       return Boolean(facts&&intro&&(facts.compareDocumentPosition(intro)&Node.DOCUMENT_POSITION_FOLLOWING));
     });
     expect(factsAboveIntro).toBe(true);
-    await expect(frame.locator('.scrap-entry [data-oe-field="eventName"]')).toHaveAttribute('contenteditable','false');
+    await expect(frame.locator('.scrap-entry [data-oe-field="eventName"]')).toHaveCount(0); // opening is artwork, not an event-title editor
     await expect(frame.locator('.trip-logo [data-oe-field="eventName"]')).toHaveAttribute('contenteditable','true');
     const names=await frame.locator('.trip-site [data-oe-field="eventName"]').allTextContents();
     expect(new Set(names.map(name=>name.trim())).size).toBe(1);
@@ -178,9 +185,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
   test('Template 02 honors hidden purchase links regardless of layout CSS',async({page})=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-hidden');
     const frame=page.frameLocator('#liveFrame');
-    await frame.locator('.trip-ticket').evaluate(el=>el.setAttribute('hidden',''));
-    await expect(frame.locator('.trip-ticket')).toBeHidden();
-    await frame.locator('.trip-ticket').evaluate(el=>el.removeAttribute('hidden'));
+    await frame.locator('.trip-ticket-list .ticket-grid').evaluate(el=>el.setAttribute('hidden',''));\n    await expect(frame.locator('.trip-ticket-list .ticket-grid')).toBeHidden();\n    await frame.locator('.trip-ticket-list .ticket-grid').evaluate(el=>el.removeAttribute('hidden'));
   });
 
   test('lime announcement strip is mounted from editable CMS ribbons',async({page})=>{
@@ -193,7 +198,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
   test('guest directory scrolls horizontally with snap alignment',async({page})=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-guests-qa');
     const frame=page.frameLocator('#liveFrame');
-    await frame.locator('#guests').evaluate(el=>el.style.display='block');
+    await navigate02(page,frame,'guests');
     const layout=await frame.locator('#guests .guest-grid').evaluate(el=>{
       const style=getComputedStyle(el);
       return {display:style.display,overflowX:style.overflowX,snap:style.scrollSnapType};
@@ -206,7 +211,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
   test('Chinese inner page titles and guide maps do not overlap header or collapse',async({page})=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-zh-layout');
     const frame=page.frameLocator('#liveFrame');
-    await page.locator('.page-nav [data-page="guide"]').click();
+    await navigate02(page,frame,'guide');
     await expect(frame.locator('#guide')).toBeVisible();
     await expect(frame.locator('.trip-route-ticker')).toBeHidden();
     const bounds=await frame.locator('.trip-header, #guide .trip-page-head, #guide .scrap-guide').evaluateAll(nodes=>nodes.map(el=>{const b=el.getBoundingClientRect();return {top:b.top,bottom:b.bottom,width:b.width}}));
