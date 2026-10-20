@@ -2728,4 +2728,20 @@ html:not(.oe-entry-preview) .scrap-entry.loader{display:none!important}
 @keyframes oe-clover-progress{to{transform:scaleX(1)}}
 @keyframes oe-clover-fade{to{opacity:0}}
 @media(max-width:760px){.scrap-entry .oe-clover-scene{width:min(84vw,350px)}.scrap-entry .oe-clover-progress{width:min(65vw,280px)}}
+
+/* QA 2026-10-20: enforce consistent editorial rail at Studio iframe widths. */
+@media(min-width:761px) and (max-width:900px){
+ body[data-oe-template="02-scrapbook"] .trip-site .trip-feature.oe-editorial-section{
+  display:grid!important;
+  grid-template-columns:minmax(0,27%) minmax(0,73%)!important;
+  gap:0!important;
+  padding:0!important;
+ }
+ body[data-oe-template="02-scrapbook"] .trip-site .trip-feature.oe-editorial-section>.oe-editorial-rail{
+  grid-column:1!important;grid-row:1!important;width:100%!important;
+ }
+ body[data-oe-template="02-scrapbook"] .trip-site .trip-feature.oe-editorial-section>.featured-activity-grid{
+  grid-column:2!important;grid-row:1!important;min-width:0!important;
+ }
+}
 `;
