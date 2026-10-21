@@ -80,5 +80,24 @@ $('#publishOpen').onclick=()=>{if(publication.url)window.open(publication.url,'_
 $('#publishCopy').onclick=async()=>{if(publication.url)await navigator.clipboard.writeText(publication.url)};
 
 $('#saveState').onclick=persist;
-const css=document.createElement('style');css.textContent='.oe-market-preview-mode #studioSidebar,.oe-market-preview-mode #inspector{display:none!important}.oe-market-preview-mode .studio-shell{grid-template-columns:1fr!important}#pageContentNav [data-section]{display:block;padding:10px 13px;margin:4px 0;width:100%;text-align:left}#pageContentNav [data-section].active{background:#eee8ff;border-radius:8px}';document.head.appendChild(css);
+const css=document.createElement('style');css.textContent='.page-workspace .page-nav{display:none!important}.page-workspace #createCustomPageBtn{display:none!important}.oe-market-preview-mode #studioSidebar,.oe-market-preview-mode #inspector{display:none!important}.oe-market-preview-mode .studio-shell{grid-template-columns:1fr!important}#pageContentNav [data-section]{display:block;padding:10px 13px;margin:4px 0;width:100%;text-align:left}#pageContentNav [data-section].active{background:#eee8ff;border-radius:8px}';document.head.appendChild(css);
+
+// In-canvas editing follows the existing Studio convention: select a visible block,
+// then edit its properties in the right inspector. No second editor UI.
+const regionMap={top:'images',about:'basic',ads:'products',randomSix:'products',news:'news',tickets:'tickets',community:'community',sponsors:'sponsors',creators:'creators',products:'products',map:'maps',guide:'guide',catalogue:'creators'};
+iframe.addEventListener('load',()=>{try{
+  iframe.contentDocument.addEventListener('click',e=>{
+    if(preview)return;
+    const target=e.target.closest('[id]');
+    let node=target;
+    while(node&&!regionMap[node.id])node=node.parentElement;
+    if(!node)return;
+    section=regionMap[node.id];selected=-1;render();
+    iframe.contentDocument.querySelectorAll('.oe-selected-edit-target').forEach(el=>el.classList.remove('oe-selected-edit-target'));
+    node.classList.add('oe-selected-edit-target');
+  });
+  const css=iframe.contentDocument.createElement('style');
+  css.textContent='.oe-selected-edit-target{outline:3px solid #e6bc22;outline-offset:4px}';
+  iframe.contentDocument.head.appendChild(css);
+}catch(e){console.warn('market canvas selection unavailable',e)}});
 persist();render();
