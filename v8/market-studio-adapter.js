@@ -41,8 +41,8 @@ async function generateHtml(){
   const src=await (await fetch('/v8/market-'+(t.id==='03-creator-market'?'01':'02')+'-preview.html')).text();
   const common=await (await fetch('/v8/market-shared.js')).text();
   const standaloneData=JSON.stringify(state).replace(/</g,'\\u003c');
-  const script=common.replace(/^export /gm,'')+'\\nconst __oeSnapshot='+standaloneData+';\\n';
-  let html=src.replace(/import\\s*\\{[^}]+\\}\\s*from\\s*['"]\\/v8\\/market-shared\\.js['"];?/,'\\n'+script);
+  const script=common.replace(/^export /gm,'')+'\nconst __oeSnapshot='+standaloneData+';\n';
+  let html=src.replace(/import\s*\{[^}]+\}\s*from\s*['"]\/v8\/market-shared\.js['"];?/,'\n'+script);
   html=html.replace('const d=getData()','const d=__oeSnapshot');
   if(!html.includes('const d=__oeSnapshot'))throw new Error('单文件生成未成功替换活动数据');
   return html;
