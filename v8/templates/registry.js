@@ -3,10 +3,12 @@ import {validateIpOnlyTemplateDefinition} from '/v8/templates/ip-only-core-contr
 import {template01} from '/v8/templates/01-ip-only.js?v=8.40.96';
 import {template02} from '/v8/templates/02-scrapbook.js?v=8.40.95';
 
+import {template03,template04} from '/v8/templates/creator-market-templates.js?v=8.41.1';
+
 export const DEFAULT_TEMPLATE_ID='01-ip-only';
 
-const all=[template01,template02];
-const contractErrors=all.flatMap(template=>validateIpOnlyTemplateDefinition(template).map(message=>template.id+': '+message));
+const all=[template01,template02,template03,template04];
+const contractErrors=all.filter(t=>t.eventType!=='creator-market').flatMap(template=>validateIpOnlyTemplateDefinition(template).map(message=>template.id+': '+message));
 if(contractErrors.length)console.error('[OnlyEvent IP ONLY Core Contract]',contractErrors);
 
 export const templateRegistry=Object.freeze(Object.fromEntries(
