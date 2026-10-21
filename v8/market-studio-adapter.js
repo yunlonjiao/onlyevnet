@@ -9,6 +9,7 @@ if(q.get('name')&&!hasSaved)state.eventName=q.get('name');
 document.querySelector('#projectTemplateName').textContent=t.label;
 document.querySelector('#workspaceTemplateName').textContent=t.label;
 const defs=[['basic','活动信息'],['images','主视觉'],['tickets','入场票'],['creators','社团管理'],['products','制品管理'],['maps','场地图'],['news','公告'],['community','社群'],['sponsors','赞助'],['guide','观展指南']];
+const pageDefs=[['home','首页','basic'],['animation','动画','images'],['booths','摊位','creators'],['map','场地图','maps'],['guide','观展指南','guide']];
 const frame=$('#canvas');frame.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/market-'+(t.id==='03-creator-market'?'01':'02')+'-preview.html?project='+encodeURIComponent(project)+'&template='+encodeURIComponent(t.id)+'" title="同人创作展实时预览"></iframe>';
 let iframe=$('#liveFrame');
 function persist(){try{localStorage.setItem(storage,JSON.stringify(state));const key='onlyevent-market-preview:'+t.id+':'+project;localStorage.setItem(key,JSON.stringify(state));iframe.contentWindow.location.reload();$('#saveState').textContent='已保存';}catch(e){$('#saveState').textContent='保存失败：图片过大或浏览器存储不足';}}
@@ -18,7 +19,9 @@ function change(path,value){const keys=path.split('.');let o=state;for(const k o
 function input(label,path,multiline=false){const val=path.split('.').reduce((o,k)=>o?.[k],state)??'';return '<label style="display:block;margin:15px 0;font-size:13px">'+esc(label)+(multiline?'<textarea data-key="'+esc(path)+'" style="display:block;width:100%;min-height:90px;margin-top:6px">'+esc(val)+'</textarea>':'<input data-key="'+esc(path)+'" value="'+esc(val)+'" style="display:block;width:100%;padding:10px;margin-top:6px">')+'</label>';}
 function upload(label,path){return '<div style="margin:18px 0"><b>'+esc(label)+'</b>'+input('图片链接',path)+'<input type="file" accept="image/*" data-file="'+esc(path)+'" style="width:100%"></div>'}
 function collection(key){const records=state[key]||[];let html='<button data-add="'+key+'" type="button" style="margin:12px 0">＋ 新增</button>';html+=records.map((r,i)=>'<div style="display:flex;gap:6px;margin:7px 0"><button data-select="'+i+'" style="flex:1;text-align:left">'+esc(r.name||r.title||r.label||('记录 '+(i+1)))+'</button><button data-delete="'+i+'">删除</button></div>').join('');if(records[selected]){let prefix=key+'.'+selected+'.';let columns=key==='creators'?['name','booth','description','image']:key==='products'?['name','creatorId','description','price','image']:key==='maps'?['title','image']:key==='news'?['date','title']:key==='community'?['label','url']:['name','image'];html+='<hr>';for(let k of columns)html+=k==='image'?upload('图片',prefix+k):input(({name:'名称',booth:'摊位号',description:'简介',creatorId:'关联社团 ID',price:'价格',date:'日期',title:'标题',label:'显示名称',url:'外链'})[k]||k,prefix+k,k==='description');}return html}
-function render(){const nav=$('#pageContentNav'),panel=$('#inspector');const html=defs.map(([id,label])=>'<button data-section="'+id+'" type="button" class="'+(id===section?'active':'')+'">'+label+'</button>').join('');nav.innerHTML=html;const title=defs.find(x=>x[0]===section)?.[1]||'属性';let fields='';
+function render(){const nav=$('#pageContentNav'),panel=$('#inspector');
+  const tree=document.querySelector('.page-nav');if(tree){tree.innerHTML=pageDefs.map(([page,label,sectionId])=>'<div class="page-tree-row is-fixed"><button type="button" data-market-page="'+page+'" class="'+(section===sectionId?'active':'')+'"><span class="nav-icon">'+({home:'⌂',animation:'✦',booths:'⌘',map:'▤',guide:'i'}[page])+'</span><span>'+label+'</span></button></div>').join('')}
+  const leftName=document.querySelector('#marketOrganizerEventName');if(leftName)leftName.textContent=state.eventName||'未命名活动';const html=defs.map(([id,label])=>'<button data-section="'+id+'" type="button" class="'+(id===section?'active':'')+'">'+label+'</button>').join('');nav.innerHTML=html;const title=defs.find(x=>x[0]===section)?.[1]||'属性';let fields='';
 if(section==='basic')fields=input('活动名称','eventName')+input('活动介绍','description',true)+input('时间','date')+input('地址','location');
 else if(section==='images')fields=upload('桌面 KV','heroImage')+upload('手机 KV','mobileHeroImage');
 else if(section==='tickets')fields=input('外部购票链接','ticketUrl');
@@ -26,6 +29,7 @@ else if(section==='guide')fields=input('观展指南','guide',true);
 else fields=collection(section);
 panel.innerHTML='<div class="inspector-header"><b>'+title+'</b></div><div class="inspector-body">'+fields+'</div>';
 $('#pageContentTitle').textContent=title;$('#projectEventName').textContent=state.eventName||'同人创作展';}
+document.querySelector('.page-nav')?.addEventListener('click',e=>{const b=e.target.closest('[data-market-page]');if(!b)return;const page=pageDefs.find(x=>x[0]===b.dataset.marketPage);if(!page)return;section=page[2];selected=-1;render();const hash={home:'#top',animation:'#top',booths:'#creators',map:'#map',guide:'#guide'}[page[0]];try{const doc=iframe.contentDocument;const target=doc.querySelector(hash);if(target){doc.querySelector('#directory')?.setAttribute('open','');target.scrollIntoView({behavior:'smooth',block:'start'})}}catch{}});
 $('#pageContentNav').addEventListener('click',e=>{let b=e.target.closest('[data-section]');if(!b)return;section=b.dataset.section;selected=-1;render();});
 $('#inspector').addEventListener('focusin',e=>{if(e.target.matches('[data-key]')&&!e.target.dataset.snap){checkpoint();e.target.dataset.snap='1'}});
 $('#inspector').addEventListener('input',e=>{const k=e.target.dataset.key;if(k)change(k,e.target.value)});
@@ -80,7 +84,7 @@ $('#publishOpen').onclick=()=>{if(publication.url)window.open(publication.url,'_
 $('#publishCopy').onclick=async()=>{if(publication.url)await navigator.clipboard.writeText(publication.url)};
 
 $('#saveState').onclick=persist;
-const css=document.createElement('style');css.textContent='.page-workspace .page-nav{display:none!important}.page-workspace #createCustomPageBtn{display:none!important}.oe-market-preview-mode #studioSidebar,.oe-market-preview-mode #inspector{display:none!important}.oe-market-preview-mode .studio-shell{grid-template-columns:1fr!important}#pageContentNav [data-section]{display:block;padding:10px 13px;margin:4px 0;width:100%;text-align:left}#pageContentNav [data-section].active{background:#eee8ff;border-radius:8px}';document.head.appendChild(css);
+const css=document.createElement('style');css.textContent='.page-workspace #createCustomPageBtn{display:none!important}.page-workspace .page-nav{display:block!important}.page-workspace .page-tree-row button.active{background:#eee8ff;color:#5142a6}.market-organizer-name{padding:12px 15px;margin:8px 0 14px;border-radius:9px;background:#f5f4fa;font-size:14px;font-weight:800;overflow-wrap:anywhere}.page-workspace #customPageRows{display:none!important}.oe-market-preview-mode #studioSidebar,.oe-market-preview-mode #inspector{display:none!important}.oe-market-preview-mode .studio-shell{grid-template-columns:1fr!important}#pageContentNav [data-section]{display:block;padding:10px 13px;margin:4px 0;width:100%;text-align:left}#pageContentNav [data-section].active{background:#eee8ff;border-radius:8px}';document.head.appendChild(css);
 
 // In-canvas editing follows the existing Studio convention: select a visible block,
 // then edit its properties in the right inspector. No second editor UI.
@@ -100,4 +104,5 @@ iframe.addEventListener('load',()=>{try{
   css.textContent='.oe-selected-edit-target{outline:3px solid #e6bc22;outline-offset:4px}';
   iframe.contentDocument.head.appendChild(css);
 }catch(e){console.warn('market canvas selection unavailable',e)}});
+const nameSlot=document.createElement('div');nameSlot.className='market-organizer-name';nameSlot.id='marketOrganizerEventName';const header=document.querySelector('.sidebar-head');if(header)header.insertAdjacentElement('afterend',nameSlot);
 persist();render();
