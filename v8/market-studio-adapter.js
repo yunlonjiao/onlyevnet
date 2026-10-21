@@ -4,8 +4,8 @@ import {createSite,updateSite,cleanSlug,suggestSlug,isValidSlug} from '/v8/publi
 const $=s=>document.querySelector(s),q=new URLSearchParams(location.search),t=getTemplate(q.get('template')),project=q.get('project')||'default';
 const storage='onlyevent-studio-v8:'+t.id+':'+project+':iframe';
 let state=structuredClone(t.defaults),history=[],future=[],section='basic',selected=-1,delay=0,preview=false;
-try{const saved=JSON.parse(localStorage.getItem(storage)||'null');if(saved)state={...state,...saved};}catch{}
-if(q.get('name')&&!state.eventName)state.eventName=q.get('name');
+let hasSaved=false;try{const saved=JSON.parse(localStorage.getItem(storage)||'null');if(saved){state={...state,...saved};hasSaved=true}}catch{}
+if(q.get('name')&&!hasSaved)state.eventName=q.get('name');
 document.querySelector('#projectTemplateName').textContent=t.label;
 document.querySelector('#workspaceTemplateName').textContent=t.label;
 const defs=[['basic','活动信息'],['images','主视觉'],['tickets','入场票'],['creators','社团管理'],['products','制品管理'],['maps','场地图'],['news','公告'],['community','社群'],['sponsors','赞助'],['guide','观展指南']];
