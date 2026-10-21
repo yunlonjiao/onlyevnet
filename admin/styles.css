@@ -114,3 +114,9 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 
 /* Real browser-captured thumbnails for finished IP ONLY templates. */
 .template-preview .template-real-cover{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;object-position:top center;background:#fff}
+
+/* Market 03/04 design preview thumbnails: render the actual prototype, never a fake generic cover. */
+.template-market-preview .template-preview{height:245px;padding:0;background:#fff;overflow:hidden}
+.template-market-preview .market-thumbnail{border:0;width:320%;height:320%;transform:scale(.3125);transform-origin:top left;pointer-events:none}
+.template-market-preview .market-preview-link{display:inline-flex;align-items:center;justify-content:center;padding:11px 14px;background:#18181d;color:#fff;text-decoration:none;border-radius:10px;font-size:12px;font-weight:800}
+.template-market-preview .market-preview-link:hover{background:#393947}
