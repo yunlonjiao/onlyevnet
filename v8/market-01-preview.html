@@ -46,4 +46,84 @@ main section{padding:58px 0 18px}
 footer{background:#fff;color:#777;border-top:1px solid #e3e5e7;text-align:center;margin-top:50px}
 @media(max-width:1100px){#creators .tiles,#products .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.kv{grid-template-columns:57% 43%}}
 @media(max-width:700px){header{padding:0 14px;gap:10px}.brand{font-size:17px!important}.brand small{display:none}nav{gap:10px;font-size:11px}nav a{font-size:11px}.header-cta{padding:7px 9px;font-size:12px}.hero{padding:12px}.kv{display:flex;flex-direction:column;height:auto;min-height:0;gap:10px}.kv .character{min-height:245px;order:0}.kv .hero-copy{padding:18px;order:1}.hero-copy h1{font-size:28px}.hero-copy .date{font-size:14px}.ribbon{padding:12px}.wrap{padding:0 13px}.section-head h2{font-size:23px}.feature-body{display:grid;grid-template-columns:1fr}.feature-art{height:235px}.feature-info{padding:20px}.feature-info h3{font-size:23px}#creators .tiles,#products .tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}}
-</style></head><body><header><a href="#top" class="brand">ONLY<span style="color:#00a7de">EVENT</span> <small>创作者展</small></a><nav><a href="#top">首页</a><a href="#creators">社团</a><a href="#products">制品</a><a href="#map">场地图</a><a href="#guide">指南</a></nav><a class="header-cta" data-ticket href="#guide">票务 ↗</a></header><div id="top" class="hero"><div class="kv"><div class="character" id="kvArtwork"><strong>同人<br>创作展</strong></div><div class="hero-copy"><span class="hero-kicker">CREATOR MARKET · 2026</span><h1 data-event-name></h1><p data-description></p><p class="date"><span data-date></span><span data-location></span></p><a class="cta" data-ticket href="#guide">查看票务与入场指南 ↗</a></div></div></div><div class="ribbon"><span>同人创作展 · 官方信息</span><span>社团资讯　/　作品宣传　/　展位地图</span></div><main class="wrap"><section id="ads" class="feature"><div class="section-head"><h2>制品推荐 <small>大家正在看</small></h2><span>FEATURED GOODS</span></div><div class="feature-body"><div class="feature-art" id="adVisual"></div><div class="feature-info"><span class="ad-label">精选制品 / FEATURED</span><small id="adNumber"></small><h3 id="adTitle"></h3><p id="adMeta"></p><a class="featured-link" href="#products">查看全部制品 ↗</a><div class="ad-controls"><button id="adPrev" aria-label="上一件制品">←</button><button id="adNext" aria-label="下一件制品">→</button></div></div></div></section><section id="creators"><div class="section-head"><h2>参展社团</h2><span>CIRCLES</span></div><input id="search" class="search" type="search" placeholder="搜索社团、制品、标签、摊位号" aria-label="搜索社团和制品"><div id="creatorList" class="tiles"></div></section><section id="products"><div class="section-head"><h2>作品与制品</h2><span>WORKS & GOODS</span></div><div id="productList" class="tiles"></div></section><section id="map"><div class="section-head"><h2>场地图</h2><span>MAP</span></div><div class="maps" id="mapList"></div></section><section id="news"><div class="section-head"><h2>最新消息</h2><span>NEWS</span></div><div id="newsList"></div></section><section id="guide"><div class="section-head"><h2>观展指南</h2><span>GUIDE</span></div><p id="guideText"></p></section><section id="sponsors"><div class="section-head"><h2>合作伙伴</h2><span>SPONSORS</span></div><div id="sponsorList" class="sponsors"></div></section></main><footer>OnlyEvent · CREATOR MARKET 01 / 原型</footer><dialog class="zoom" id="zoom"><button id="closeZoom">关闭 ×</button><img id="zoomImage" alt="放大场地图"></dialog><script type="module">import{getData,mountCommon,img}from'/v8/market-shared.js';const d=getData(),{ps,cs,$}=mountCommon(d);if(d.heroImage){$('kvArtwork').innerHTML='<img alt="活动宣传主视觉" src="'+d.heroImage+'">'}let n=0;function draw(){if(!ps.length){$('adTitle').textContent='暂无制品';return}const p=ps[n];$('adVisual').innerHTML=img(p.image,p.name);$('adTitle').textContent=p.name;$('adMeta').textContent=(cs.find(c=>c.id===p.creatorId)?.name||'')+'　'+(p.price||'');$('adNumber').textContent=(n+1)+' / '+ps.length}function shift(v){n=(n+v+ps.length)%ps.length;draw()}$('adPrev').onclick=()=>shift(-1);$('adNext').onclick=()=>shift(1);draw();if(ps.length>1)setInterval(()=>{if(!document.hidden)shift(1)},5000);</script></body></html>
+
+/* Market 01 homepage revision: Bilibili-inspired 1+6 recommendation grid */
+.home-recommend{padding:22px 0 14px!important;display:grid;grid-template-columns:minmax(0,2.08fr) minmax(0,3fr);gap:18px;align-items:stretch}
+.home-recommend .feature{margin:0;min-width:0}
+.home-recommend .feature-body{display:flex;flex-direction:column;min-height:0;height:100%;position:relative;border:0;background:#141414;border-radius:12px}
+.home-recommend .feature-art{height:100%;min-height:420px;flex:1;background:linear-gradient(135deg,#b6d6ee,#ebb9d9)}
+.home-recommend .feature-art img{width:100%;height:100%;object-fit:cover}
+.home-recommend .feature-info{background:linear-gradient(transparent,#15151cdb);color:white;position:absolute;bottom:0;left:0;right:0;padding:48px 25px 20px;display:block}
+.home-recommend .feature-info h3{margin:5px 0;font-size:23px}.home-recommend .feature-info .ad-label,.home-recommend .feature-info .featured-link{display:none}
+.home-recommend .ad-controls{position:absolute;right:18px;bottom:18px}.home-recommend .ad-controls button{color:#fff;background:#ffffff30;border:0}
+.home-recommend #adMeta{color:#fff}.home-recommend #adNumber{opacity:.75}
+.home-recommend .feature-art .placeholder{font-size:52px}
+.recommend-six{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:14px}
+.recommend-six .tile{background:transparent!important;box-shadow:none!important;min-height:0}
+.recommend-six .tile-visual{aspect-ratio:16/9;background:#f0e8ff;border:0;overflow:hidden}
+.recommend-six .tile-visual img{object-fit:cover}
+.recommend-six .tile-text{padding:8px 0 0}
+.recommend-six .tile-text strong{font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.recommend-six .tile-text p{display:none}
+.home-intro{background:#fff;border-radius:12px;padding:28px!important;margin:25px 0}
+.home-intro h2{margin:0 0 14px}
+.home-ticket{background:#fff;border-radius:12px;padding:28px!important}
+.home-ticket .ticket-button{display:inline-block;background:#55ace8;color:#fff;padding:15px 26px;border-radius:9px;font-weight:800}
+.home-community{background:#fff;border-radius:12px;padding:28px!important;margin:22px 0}
+.home-community-links{display:flex;gap:12px;flex-wrap:wrap}
+.home-community-links a{padding:10px 16px;background:#f4f6fa;border-radius:8px}
+.catalogue-details{margin-top:38px;border-top:1px solid #e3e5e7}
+.catalogue-details>summary{cursor:pointer;padding:22px 0;color:#00a7de;font-weight:800}
+.catalogue-details section{scroll-margin-top:90px}
+.mobile-intro{display:none}
+.mobile-opening{display:none}
+@media(max-width:800px){
+.home-recommend{grid-template-columns:1fr;gap:14px;padding-top:14px!important}
+.home-recommend .feature-art{height:260px;min-height:260px}
+.recommend-six{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto}
+.recommend-six .tile-visual{aspect-ratio:16/9}
+.mobile-opening{display:flex;position:fixed;inset:0;z-index:1000;background:#17142c;align-items:center;justify-content:center;flex-direction:column;color:#fff}
+.mobile-opening img{width:100%;height:100%;object-fit:contain}
+.mobile-opening button{position:absolute;bottom:24px;right:20px;border:0;background:#0009;color:white;border-radius:30px;padding:12px 20px}
+.mobile-opening.is-hidden{display:none}
+.hero{display:none}
+.ribbon{display:none}
+.home-intro,.home-ticket,.home-community{padding:23px!important}
+}
+</style></head><body><header><a href="#top" class="brand">ONLY<span style="color:#00a7de">EVENT</span> <small>创作者展</small></a><nav><a href="#top">首页</a><a href="#creators">社团</a><a href="#products">制品</a><a href="#map">场地图</a><a href="#guide">指南</a></nav><a class="header-cta" data-ticket href="#guide">外部购票 ↗</a></header><div id="top" class="hero"><div class="kv"><div class="character" id="kvArtwork"><strong>同人<br>创作展</strong></div><div class="hero-copy"><span class="hero-kicker">CREATOR MARKET</span><h1 data-event-name></h1><p data-description></p><p class="date"><span data-date></span><span data-location></span></p></div></div></div>
+<div class="ribbon"><span>同人创作展 · 官方信息</span><span>社团资讯 / 作品宣传 / 展位地图</span></div>
+<div id="mobileOpening" class="mobile-opening is-hidden" role="dialog" aria-label="活动手机开场"><div id="mobileOpeningArt"></div><button id="skipOpening">跳过动画 →</button></div>
+<main class="wrap">
+<section class="home-recommend" aria-label="随机推荐制品">
+<div id="ads" class="feature"><div class="feature-body"><div class="feature-art" id="adVisual"></div><div class="feature-info"><small id="adNumber"></small><h3 id="adTitle"></h3><p id="adMeta"></p><div class="ad-controls"><button id="adPrev" aria-label="上一件制品">←</button><button id="adNext" aria-label="下一件制品">→</button></div></div></div></div>
+<div id="randomSix" class="recommend-six" aria-label="六件随机制品"></div>
+</section>
+<section id="about" class="home-intro"><h2>关于本次同人创作展</h2><h3 data-event-name></h3><p data-description></p><p><strong data-date></strong> · <span data-location></span></p></section>
+<section id="news"><div class="section-head"><h2>最新公告</h2><span>NEWS</span></div><div id="newsList"></div></section>
+<section id="tickets" class="home-ticket"><div class="section-head"><h2>入场票</h2><span>ADMISSION</span></div><p>票务及入场规则以主办方指定平台为准。</p><a class="ticket-button" data-ticket href="#guide">外部购票 ↗</a></section>
+<section id="community" class="home-community"><div class="section-head"><h2>社群</h2><span>COMMUNITY</span></div><div id="communityLinks" class="home-community-links"></div></section>
+<section id="sponsors"><div class="section-head"><h2>合作伙伴</h2><span>SPONSORS</span></div><div id="sponsorList" class="sponsors"></div></section>
+<details class="catalogue-details" id="directory"><summary>浏览社团、制品、场地图及观展指南 ↓</summary>
+<section id="creators"><div class="section-head"><h2>参展社团</h2><span>CIRCLES</span></div><input id="search" class="search" type="search" placeholder="搜索社团、制品、标签、摊位号" aria-label="搜索社团和制品"><div id="creatorList" class="tiles"></div></section>
+<section id="products"><div class="section-head"><h2>作品与制品</h2><span>WORKS & GOODS</span></div><div id="productList" class="tiles"></div></section>
+<section id="map"><div class="section-head"><h2>场地图</h2><span>MAP</span></div><div class="maps" id="mapList"></div></section>
+<section id="guide"><div class="section-head"><h2>观展指南</h2><span>GUIDE</span></div><p id="guideText"></p></section>
+</details></main><footer>OnlyEvent · CREATOR MARKET 01 / 原型</footer><dialog class="zoom" id="zoom"><button id="closeZoom">关闭 ×</button><img id="zoomImage" alt="放大场地图"></dialog><script type="module">import{getData,mountCommon,img,esc}from'/v8/market-shared.js';
+const d=getData(),{ps,cs,$}=mountCommon(d);
+if(d.heroImage){$('kvArtwork').innerHTML='<img alt="活动 KV" src="'+esc(d.heroImage)+'">';}
+const external=typeof d.ticketUrl==='string'&&/^https:\/\//i.test(d.ticketUrl);
+document.querySelectorAll('[data-ticket]').forEach(a=>{a.href=external?d.ticketUrl:'#guide';a.textContent=external?'前往外部购票 ↗':'查看入场指南 ↗';if(external){a.target='_blank';a.rel='noopener noreferrer';}});
+const communities=Array.isArray(d.community)?d.community:[];
+$('communityLinks').innerHTML=communities.filter(c=>/^https:\/\//i.test(c.url||'')).map(c=>'<a href="'+esc(c.url)+'" target="_blank" rel="noopener noreferrer">'+esc(c.label||c.name||'社群')+' ↗</a>').join('')||'<p class="empty">主办方尚未添加社群入口。</p>';
+function shuffle(items){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+let current=shuffle(ps);
+let six=current.slice(0,6);
+$('randomSix').innerHTML=six.length?six.map(p=>{const c=cs.find(x=>x.id===p.creatorId);return '<a class="tile" href="#products"><div class="tile-visual">'+img(p.image,p.name)+'</div><div class="tile-text"><strong>'+esc(p.name)+'</strong><small>'+esc(c?.name||'')+' · '+esc(p.price||'')+'</small></div></a>'}).join(''):'<p class="empty">暂无可推荐制品。</p>';
+let n=0;function draw(){if(!current.length){$('adTitle').textContent='暂无制品';return}const p=current[n];$('adVisual').innerHTML=img(p.image,p.name);$('adTitle').textContent=p.name;$('adMeta').textContent=(cs.find(c=>c.id===p.creatorId)?.name||'')+' · '+(p.price||'');$('adNumber').textContent=(n+1)+' / '+current.length;}
+function step(v){n=(n+v+current.length)%current.length;draw()}$('adPrev').onclick=()=>step(-1);$('adNext').onclick=()=>step(1);draw();
+const ad=$('ads');let startX=null;ad.addEventListener('touchstart',e=>{startX=e.touches[0]?.clientX??null},{passive:true});ad.addEventListener('touchend',e=>{if(startX===null)return;const dx=(e.changedTouches[0]?.clientX??startX)-startX;if(Math.abs(dx)>45&&current.length>1)step(dx<0?1:-1);startX=null},{passive:true});
+if(current.length>1)setInterval(()=>{if(!document.hidden)step(1)},5500);
+const mobile=matchMedia('(max-width:800px)').matches;
+if(mobile&&(d.mobileHeroImage||d.heroImage)){const ov=$('mobileOpening');const art=$('mobileOpeningArt');art.innerHTML='<img src="'+esc(d.mobileHeroImage||d.heroImage)+'" alt="活动移动端主视觉">';ov.classList.remove('is-hidden');const close=()=>{ov.classList.add('is-hidden');ov.setAttribute('aria-hidden','true')};$('skipOpening').onclick=close;ov.addEventListener('click',e=>{if(e.target===ov)close()});setTimeout(close,2500)}
+document.querySelectorAll('nav a[href^="#"]').forEach(a=>a.addEventListener('click',()=>{const hash=a.getAttribute('href');if(['#creators','#products','#map','#guide'].includes(hash))$('directory').open=true;}));
+</script></body></html>
