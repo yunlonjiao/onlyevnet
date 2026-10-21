@@ -90,23 +90,12 @@ function renderTemplates(){
     card.className='template-card template-art-'+String(template.artDirection||'default').replace(/[^a-z0-9-]/gi,'');
     card.dataset.templateId=template.id;
     const coverFile=template.id==='01-ip-only'?'template-01.png':template.id==='02-scrapbook'?'template-02.png':'';
+    const marketUrl=template.id==='03-creator-market'?'/v8/market-01-preview.html':template.id==='04-creator-catalogue'?'/v8/market-02-preview.html':'';
     card.innerHTML='<div class="template-preview"><div class="template-preview-window"><span class="bar"></span><div class="hero"><b>STAR<br>BEAT<br>ONLY</b><span class="art"></span><em>'+String(template.structureProfile||'portal').toUpperCase()+'</em></div><div class="rows"><i></i><i></i><i></i></div></div>'+(coverFile?'<img class="template-real-cover" src="/admin/covers/'+coverFile+'" alt="'+template.name+' 真实网页首屏截图" loading="lazy" onerror="this.remove()">':'')+'</div>'+
       '<div class="template-card-body"><span>TEMPLATE '+String(index+1).padStart(2,'0')+'</span><h2>'+template.label+'</h2><p>'+template.description+'</p><div class="template-card-footer"><span class="template-tag">'+template.artDirection+'</span><button class="use-template" data-template="'+template.id+'" type="button">使用此模板</button></div></div>';
     grid.appendChild(card);
   });
-  // Market 01/02 are independent visual prototypes, not yet wired to the existing Studio editor.
-  // Show their actual preview in the library without creating an invalid project or opening IP ONLY by mistake.
-  for(const [id,label,description,url] of [
-    ['03-creator-market','同人创作展','国内二次元内容门户、随机制品推荐、社团目录与场地图。','/v8/market-01-preview.html'],
-    ['04-creator-catalogue','创作者场刊','插画主视觉、电子场刊与社团作品目录。','/v8/market-02-preview.html']
-  ]){
-    const card=document.createElement('article');
-    card.className='template-card template-market-preview';
-    card.dataset.templateId=id;
-    card.innerHTML='<div class="template-preview"><iframe class="market-thumbnail" src="'+url+'" title="'+label+'设计预览" tabindex="-1" loading="lazy" aria-hidden="true"></iframe></div>'+
-      '<div class="template-card-body"><span>TEMPLATE '+id.slice(0,2)+'</span><h2>'+label+'</h2><p>'+description+'</p><div class="template-card-footer"><span class="template-tag">设计预览 · 待接入编辑器</span><a class="market-preview-link" href="'+url+'" target="_blank" rel="noopener noreferrer">查看设计预览 ↗</a></div></div>';
-    grid.appendChild(card);
-  }
+
 }
 function renderProjects(filter=''){
   const term=filter.trim().toLocaleLowerCase(),grid=$('#projectGrid'),empty=$('#emptyProjects');
