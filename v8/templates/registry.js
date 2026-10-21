@@ -1,6 +1,6 @@
 export {listEventTypes,getEventType,getEventTypeForTemplate} from '/v8/templates/event-type-contract.js?v=8.40.94';
 import {validateIpOnlyTemplateDefinition} from '/v8/templates/ip-only-core-contract.js?v=8.38.3';
-import {template01} from '/v8/templates/01-ip-only.js?v=8.38.3';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.40.96';
 import {template02} from '/v8/templates/02-scrapbook.js?v=8.40.95';
 
 export const DEFAULT_TEMPLATE_ID='01-ip-only';
