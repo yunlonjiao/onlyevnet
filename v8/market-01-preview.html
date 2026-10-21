@@ -52,7 +52,7 @@ footer{background:#fff;color:#777;border-top:1px solid #e3e5e7;text-align:center
 .home-recommend .feature{margin:0;min-width:0}
 .home-recommend .feature-body{display:flex;flex-direction:column;min-height:0;height:100%;position:relative;border:0;background:#141414;border-radius:12px}
 .home-recommend .feature-art{height:100%;min-height:420px;flex:1;background:linear-gradient(135deg,#b6d6ee,#ebb9d9)}
-.home-recommend .feature-art img{width:100%;height:100%;object-fit:cover}
+.home-recommend .feature-art img{width:100%;height:100%;object-fit:cover}.home-recommend .feature-art{touch-action:pan-y;cursor:grab}.home-recommend .feature-art:active{cursor:grabbing}
 .home-recommend .feature-info{background:linear-gradient(transparent,#15151cdb);color:white;position:absolute;bottom:0;left:0;right:0;padding:48px 25px 20px;display:block}
 .home-recommend .feature-info h3{margin:5px 0;font-size:23px}.home-recommend .feature-info .ad-label,.home-recommend .feature-info .featured-link{display:none}
 .home-recommend .ad-controls{position:absolute;right:18px;bottom:18px}.home-recommend .ad-controls button{color:#fff;background:#ffffff30;border:0}
@@ -85,7 +85,7 @@ footer{background:#fff;color:#777;border-top:1px solid #e3e5e7;text-align:center
 .mobile-opening{display:flex;position:fixed;inset:0;z-index:1000;background:#17142c;align-items:center;justify-content:center;flex-direction:column;color:#fff}
 .mobile-opening img{width:100%;height:100%;object-fit:contain}
 .mobile-opening button{position:absolute;bottom:24px;right:20px;border:0;background:#0009;color:white;border-radius:30px;padding:12px 20px}
-.mobile-opening.is-hidden{display:none}
+.mobile-opening.is-hidden{display:none}.mobile-opening:not(.is-hidden){animation:mobileOpen .35s ease-out both}@keyframes mobileOpen{from{opacity:0}to{opacity:1}}
 .hero{display:none}
 .ribbon{display:none}
 .home-intro,.home-ticket,.home-community{padding:23px!important}
@@ -124,6 +124,7 @@ $('randomSix').innerHTML=six.length?six.map(p=>{const c=cs.find(x=>x.id===p.crea
 let n=0;function draw(){if(!current.length){$('adTitle').textContent='暂无制品';return}const p=current[n];$('adVisual').innerHTML=img(p.image,p.name);$('adTitle').textContent=p.name;$('adMeta').textContent=(cs.find(c=>c.id===p.creatorId)?.name||'')+' · '+(p.price||'');$('adNumber').textContent=(n+1)+' / '+current.length;}
 function step(v){n=(n+v+current.length)%current.length;draw()}$('adPrev').onclick=()=>step(-1);$('adNext').onclick=()=>step(1);draw();
 const ad=$('ads');let startX=null;ad.addEventListener('touchstart',e=>{startX=e.touches[0]?.clientX??null},{passive:true});ad.addEventListener('touchend',e=>{if(startX===null)return;const dx=(e.changedTouches[0]?.clientX??startX)-startX;if(Math.abs(dx)>45&&current.length>1)step(dx<0?1:-1);startX=null},{passive:true});
+const frame=$('adVisual');let downX=null;frame.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;downX=e.clientX});frame.addEventListener('pointerup',e=>{if(downX===null)return;const delta=e.clientX-downX;if(Math.abs(delta)>50&&current.length>1)step(delta<0?1:-1);downX=null});frame.addEventListener('pointercancel',()=>downX=null);
 if(current.length>1)setInterval(()=>{if(!document.hidden)step(1)},5500);
 const mobile=matchMedia('(max-width:800px)').matches;
 if(mobile&&d.mobileHeroImage){const ov=$('mobileOpening');const art=$('mobileOpeningArt');art.innerHTML='<img src="'+esc(d.mobileHeroImage)+'" alt="活动移动端主视觉">';ov.classList.remove('is-hidden');const close=()=>{ov.classList.add('is-hidden');ov.setAttribute('aria-hidden','true')};$('skipOpening').onclick=close;ov.addEventListener('click',e=>{if(e.target===ov)close()});setTimeout(close,2500)}
