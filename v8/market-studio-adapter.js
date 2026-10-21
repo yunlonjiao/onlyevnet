@@ -1,5 +1,6 @@
 import {getTemplate} from '/v8/templates/registry.js?v=8.41.1';
 import {esc} from '/v8/market-shared.js';
+import {createSite,updateSite,cleanSlug,suggestSlug,isValidSlug} from '/v8/publisher.js';
 const $=s=>document.querySelector(s),q=new URLSearchParams(location.search),t=getTemplate(q.get('template')),project=q.get('project')||'default';
 const storage='onlyevent-studio-v8:'+t.id+':'+project+':iframe';
 let state=structuredClone(t.defaults),history=[],future=[],section='basic',selected=-1,delay=0,preview=false;
@@ -34,7 +35,50 @@ $('#undoBtn').onclick=()=>{if(!history.length)return;future.push(structuredClone
 $('#deviceDesktopBtn').onclick=()=>{frame.classList.remove('device-mobile');iframe.style.maxWidth='100%';};$('#deviceMobileBtn').onclick=()=>{iframe.style.maxWidth='390px';};
 $('#previewBtn').onclick=()=>{preview=!preview;document.body.classList.toggle('oe-market-preview-mode',preview);$('#previewLabel').textContent=preview?'返回编辑':'预览'};
 $('#backAdminBtn').onclick=()=>location.assign('/admin/');
-$('#publishBtn').onclick=()=>alert('Market 模板已接入统一编辑器，正式发布与导出仍在适配，暂不可发布。');
+const publishKey='onlyevent-studio-publish:'+t.id+':'+project+':iframe';
+let publication={};try{publication=JSON.parse(localStorage.getItem(publishKey)||'{}')}catch{}
+async function generateHtml(){
+  const src=await (await fetch('/v8/market-'+(t.id==='03-creator-market'?'01':'02')+'-preview.html')).text();
+  const common=await (await fetch('/v8/market-shared.js')).text();
+  const standaloneData=JSON.stringify(state).replace(/</g,'\\u003c');
+  const script=common.replace(/^export /gm,'')+'\\nconst __oeSnapshot='+standaloneData+';\\n';
+  let html=src.replace(/import\\s*\\{[^}]+\\}\\s*from\\s*['"]\\/v8\\/market-shared\\.js['"];?/,'\\n'+script);
+  html=html.replace('const d=getData()','const d=__oeSnapshot');
+  if(!html.includes('const d=__oeSnapshot'))throw new Error('单文件生成未成功替换活动数据');
+  return html;
+}
+function publishDialog(){
+  const dialog=$('#publishDialog');
+  $('#publishSlug').value=publication.slug||suggestSlug(state.eventName,state.date);
+  $('#publishSlug').readOnly=!!publication.siteId;
+  $('#publishStatus').textContent=publication.siteId?'已发布，可更新当前网站':'输入网站地址后发布';
+  $('#publishResult').hidden=!publication.url;
+  $('#publishUrl').textContent=publication.url||'';
+  dialog.showModal();
+}
+$('#publishBtn').onclick=publishDialog;
+$('#publishClose').onclick=()=>$('#publishDialog').close();
+$('#publishCancel').onclick=()=>$('#publishDialog').close();
+$('#publishDownload').onclick=async()=>{
+  try{persist();const html=await generateHtml();const blob=new Blob([html],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='onlyevent-market-'+project+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){$('#publishStatus').textContent='导出失败：'+e.message;}
+};
+$('#publishPrimary').onclick=async()=>{
+  const slug=cleanSlug($('#publishSlug').value);if(!isValidSlug(slug)){$('#publishStatus').textContent='请输入3–63位字母、数字或连字符';return}
+  $('#publishPrimary').disabled=true;$('#publishStatus').textContent='正在生成并发布网站…';
+  try{
+    persist();const html=await generateHtml(),payload={html,title:state.eventName,slug,templateId:t.id};
+    const result=publication.siteId?await updateSite({...payload,siteId:publication.siteId,editToken:publication.editToken}):await createSite(payload);
+    if(!result.siteId||!(result.editToken||publication.editToken))throw new Error('发布平台未返回有效站点凭证');
+    publication={siteId:result.siteId,editToken:result.editToken||publication.editToken,slug:result.slug||slug,url:result.url||('https://'+slug+'.onlyevent.cn'),publishedAt:new Date().toISOString()};
+    localStorage.setItem(publishKey,JSON.stringify(publication));
+    $('#publishStatus').textContent='网站已发布';$('#publishResult').hidden=false;$('#publishUrl').textContent=publication.url;
+    const projects=JSON.parse(localStorage.getItem('onlyevent-admin-projects-v1')||'[]');
+    const item=projects.find(p=>p.id===project);if(item){item.siteUrl=publication.url;item.status='published';item.updatedAt=new Date().toISOString();localStorage.setItem('onlyevent-admin-projects-v1',JSON.stringify(projects));}
+  }catch(e){$('#publishStatus').textContent='发布失败：'+(e?.message||e);}finally{$('#publishPrimary').disabled=false;}
+};
+$('#publishOpen').onclick=()=>{if(publication.url)window.open(publication.url,'_blank','noopener')};
+$('#publishCopy').onclick=async()=>{if(publication.url)await navigator.clipboard.writeText(publication.url)};
+
 $('#saveState').onclick=persist;
 const css=document.createElement('style');css.textContent='.oe-market-preview-mode #studioSidebar,.oe-market-preview-mode #inspector{display:none!important}.oe-market-preview-mode .studio-shell{grid-template-columns:1fr!important}#pageContentNav [data-section]{display:block;padding:10px 13px;margin:4px 0;width:100%;text-align:left}#pageContentNav [data-section].active{background:#eee8ff;border-radius:8px}';document.head.appendChild(css);
 persist();render();
