@@ -20,7 +20,7 @@ export const EVENT_TYPE_DEFINITIONS=Object.freeze([
     description:'同人创作展与创作者市集共用一类，支持社团、作品与摊位目录',
     requiredModules:Object.freeze(['creators','booths','products','boothMap','visitorGuide']),
     optionalModules:Object.freeze(['tickets','news','featuredCreators','favorites','wishlist','community']),
-    templateIds:Object.freeze([])
+    templateIds:Object.freeze(['03-creator-market','04-creator-catalogue'])
   }),
   Object.freeze({
     id:'live-stage',label:'舞台活动',status:'planned',
