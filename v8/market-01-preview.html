@@ -117,6 +117,8 @@ const communities=Array.isArray(d.community)?d.community:[];
 $('communityLinks').innerHTML=communities.filter(c=>/^https:\/\//i.test(c.url||'')).map(c=>'<a href="'+esc(c.url)+'" target="_blank" rel="noopener noreferrer">'+esc(c.label||c.name||'社群')+' ↗</a>').join('')||'<p class="empty">主办方尚未添加社群入口。</p>';
 function shuffle(items){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 let current=shuffle(ps);
+// Avoid an identical recommendation order across consecutive reloads when alternatives exist.
+try{const previous=JSON.parse(sessionStorage.getItem('oe-market01-last-products')||'[]');if(current.length>1){for(let attempt=0;attempt<8&&current.map(p=>p.id).join('|')===previous.join('|');attempt++)current=shuffle(ps);if(current.map(p=>p.id).join('|')===previous.join('|'))current.push(current.shift());}sessionStorage.setItem('oe-market01-last-products',JSON.stringify(current.map(p=>p.id)));}catch{}
 let six=current.slice(0,6);
 $('randomSix').innerHTML=six.length?six.map(p=>{const c=cs.find(x=>x.id===p.creatorId);return '<a class="tile" href="#products"><div class="tile-visual">'+img(p.image,p.name)+'</div><div class="tile-text"><strong>'+esc(p.name)+'</strong><small>'+esc(c?.name||'')+' · '+esc(p.price||'')+'</small></div></a>'}).join(''):'<p class="empty">暂无可推荐制品。</p>';
 let n=0;function draw(){if(!current.length){$('adTitle').textContent='暂无制品';return}const p=current[n];$('adVisual').innerHTML=img(p.image,p.name);$('adTitle').textContent=p.name;$('adMeta').textContent=(cs.find(c=>c.id===p.creatorId)?.name||'')+' · '+(p.price||'');$('adNumber').textContent=(n+1)+' / '+current.length;}
@@ -124,6 +126,6 @@ function step(v){n=(n+v+current.length)%current.length;draw()}$('adPrev').onclic
 const ad=$('ads');let startX=null;ad.addEventListener('touchstart',e=>{startX=e.touches[0]?.clientX??null},{passive:true});ad.addEventListener('touchend',e=>{if(startX===null)return;const dx=(e.changedTouches[0]?.clientX??startX)-startX;if(Math.abs(dx)>45&&current.length>1)step(dx<0?1:-1);startX=null},{passive:true});
 if(current.length>1)setInterval(()=>{if(!document.hidden)step(1)},5500);
 const mobile=matchMedia('(max-width:800px)').matches;
-if(mobile&&(d.mobileHeroImage||d.heroImage)){const ov=$('mobileOpening');const art=$('mobileOpeningArt');art.innerHTML='<img src="'+esc(d.mobileHeroImage||d.heroImage)+'" alt="活动移动端主视觉">';ov.classList.remove('is-hidden');const close=()=>{ov.classList.add('is-hidden');ov.setAttribute('aria-hidden','true')};$('skipOpening').onclick=close;ov.addEventListener('click',e=>{if(e.target===ov)close()});setTimeout(close,2500)}
+if(mobile&&d.mobileHeroImage){const ov=$('mobileOpening');const art=$('mobileOpeningArt');art.innerHTML='<img src="'+esc(d.mobileHeroImage)+'" alt="活动移动端主视觉">';ov.classList.remove('is-hidden');const close=()=>{ov.classList.add('is-hidden');ov.setAttribute('aria-hidden','true')};$('skipOpening').onclick=close;ov.addEventListener('click',e=>{if(e.target===ov)close()});setTimeout(close,2500)}
 document.querySelectorAll('nav a[href^="#"]').forEach(a=>a.addEventListener('click',()=>{const hash=a.getAttribute('href');if(['#creators','#products','#map','#guide'].includes(hash))$('directory').open=true;}));
 </script></body></html>
