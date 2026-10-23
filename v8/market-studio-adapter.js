@@ -88,7 +88,7 @@ $('#cropApply').onclick=async()=>{
 };
 $('#undoBtn').onclick=()=>{if(!history.length)return;future.push(structuredClone(state));state=history.pop();schedule();render()};$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(structuredClone(state));state=future.pop();schedule();render()};
 $('#deviceDesktopBtn').onclick=()=>{frame.classList.remove('device-mobile');iframe.style.maxWidth='100%';};$('#deviceMobileBtn').onclick=()=>{iframe.style.maxWidth='390px';};
-$('#previewBtn').onclick=()=>{preview=!preview;document.body.classList.toggle('oe-market-preview-mode',preview);$('#previewLabel').textContent=preview?'返回编辑':'预览'};
+$('#previewBtn').onclick=()=>{preview=!preview;document.body.classList.toggle('oe-market-preview-mode',preview);$('#previewLabel').textContent=preview?'返回编辑':'预览';try{iframe.contentDocument.querySelectorAll('[data-market-edit-path]').forEach(el=>el.contentEditable=preview?'false':'true')}catch{}};
 $('#backAdminBtn').onclick=()=>location.assign('/admin/');
 const publishKey='onlyevent-studio-publish:'+t.id+':'+project+':iframe';
 let publication={};try{publication=JSON.parse(localStorage.getItem(publishKey)||'{}')}catch{}
@@ -147,7 +147,7 @@ iframe.addEventListener('load',()=>{try{
   const doc=iframe.contentDocument;
   for(const [selector,path] of editableFields){
     doc.querySelectorAll(selector).forEach(el=>{
-      el.contentEditable='true';el.dataset.marketEditPath=path;el.spellcheck=false;
+      el.contentEditable=preview?'false':'true';el.dataset.marketEditPath=path;el.spellcheck=false;
       el.setAttribute('role','textbox');el.setAttribute('aria-label','直接编辑'+({eventName:'活动名称',description:'活动介绍',date:'活动时间',location:'活动地址'}[path]));
       el.addEventListener('focus',()=>{if(preview)return;checkpoint();section='basic';selected=-1;render();el.classList.add('oe-market-editing')});
       el.addEventListener('blur',()=>{el.classList.remove('oe-market-editing');const value=el.textContent.trim();if(value!==String(state[path]??'')){change(path,value);render()}});
