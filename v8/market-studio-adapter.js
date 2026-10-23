@@ -157,6 +157,8 @@ iframe.addEventListener('load',()=>{try{
   iframe.contentDocument.addEventListener('click',e=>{
     if(preview)return;
     if(e.target.closest('[data-market-edit-path]'))return;
+    const record=e.target.closest('[data-market-record]');
+    if(record){const key=record.dataset.marketRecord,items=Array.isArray(state[key])?state[key]:[];const index=items.findIndex(item=>String(item.id)===record.dataset.marketRecordId);if(index>=0){section=key;selected=index;render();iframe.contentDocument.querySelectorAll('.oe-selected-edit-target').forEach(n=>n.classList.remove('oe-selected-edit-target'));record.classList.add('oe-selected-edit-target');return}}
     const target=e.target.closest('[id]');
     let node=target;
     while(node&&!regionMap[node.id])node=node.parentElement;
