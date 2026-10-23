@@ -8,7 +8,7 @@ for(const [slug,feature] of [['market-01','ad'],['market-02','book']]){
   if(feature==='ad') await page.locator('#directory summary').click();
   await page.locator('#search').fill('月见');
   await expect(page.locator('#creatorList .tile')).toHaveCount(1);
-  await expect(page.locator('#productList .tile')).toHaveCount(feature==='ad'?3:1);
+  await expect(page.locator('#productList .tile')).toHaveCount(3);
   await page.locator('#search').fill('不存在的社团');
   await expect(page.locator('#creatorList .tile')).toHaveCount(0);
   await page.locator('#search').fill('');
