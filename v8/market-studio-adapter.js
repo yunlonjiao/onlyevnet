@@ -39,8 +39,8 @@ let marketCropper=null,marketCropUrl='',marketCropPath='',marketCropConfig=null;
 const getCropConfig=path=>{
  if(path==='heroImage')return {label:'桌面宣传 KV',ratio:16/9,width:1920,height:1080};
  if(path==='mobileHeroImage')return {label:'手机开场 KV',ratio:3/4,width:1080,height:1440};
- if(/^maps\\.\\d+\\.image$/.test(path))return {label:'场地图',ratio:null,maxSize:2000};
- if(/^creators\\.\\d+\\.image$/.test(path))return {label:'社团摊宣',ratio:null,maxSize:1600};
+ if(/^maps\.\d+\.image$/.test(path))return {label:'场地图',ratio:null,maxSize:2000};
+ if(/^creators\.\d+\.image$/.test(path))return {label:'社团摊宣',ratio:null,maxSize:1600};
  return {label:'制品图片',ratio:null,maxSize:1600};
 };
 function closeMarketCrop(){
