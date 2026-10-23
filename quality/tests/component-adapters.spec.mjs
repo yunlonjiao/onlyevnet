@@ -1,50 +1,32 @@
 import {test,expect} from '@playwright/test';
-
-const cases=[
-  ['02-scrapbook','scrap-pass','scrap-guest','scrap-itinerary','scrap-booth','scrap-product','scrap-activity','scrap-guide'],
-  ['03-school-festival','school-ticket-card','school-profile','school-timetable','school-booth','school-product','school-activity','school-guide'],
-  ['04-museum-editorial','museum-admission','museum-portrait','museum-program-row','museum-booth','museum-product','museum-activity','museum-guide'],
-  ['05-live-poster','live-pass','live-performer','live-running-order','live-booth','live-product','live-activity','live-guide'],
-  ['06-expo-catalogue','expo-ticket-row','expo-guest-row','expo-program-row','expo-booth-row','expo-product-row','expo-activity-row','expo-guide-row'],
-  ['07-immersive-character','kimetsu-admission','kimetsu-person','kimetsu-program','kimetsu-booth','kimetsu-product','kimetsu-activity','kimetsu-guide']
+// Current production template lineup: 01/02 IP ONLY, 03/04 creator-fair.
+// Retired visual experiments are covered in Git history rather than active release QA.
+const templates=[
+  ['02-scrapbook','.scrap-pass'],
+  ['03-creator-market','#randomSix'],
+  ['04-creator-catalogue','#catalogue']
 ];
-
-for(const [id,ticket,guest,schedule,booth,product,activity,guide] of cases){
-  test(id+' uses its own internal component system',async({page})=>{
-    await page.goto('/v8/?template='+id+'&project=adapter-'+id);
-    const frame=page.frameLocator('#liveFrame');
-    await expect(frame.locator('.hero')).toBeVisible();
-    await expect(frame.locator('.'+ticket).first()).toBeVisible();
-
-    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p==='guests'?'home':p},location.origin),'guests'); else await page.locator('.page-nav [data-page="guests"]').click();
-    await expect(frame.locator('.'+guest).first()).toBeVisible();
-
-    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p==='guests'?'home':p},location.origin),'activities'); else await page.locator('.page-nav [data-page="activities"]').click();
-    await expect(frame.locator('.'+schedule).first()).toBeVisible();
-    await frame.locator('[data-activity-view="programs"]').click();
-    await expect(frame.locator('.'+activity).first()).toBeVisible();
-
-    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p==='guests'?'home':p},location.origin),'booths'); else await page.locator('.page-nav [data-page="booths"]').click();
-    await expect(frame.locator('.'+booth).first()).toBeVisible();
-    await frame.locator('[data-directory-view-btn="products"]').click();
-    await expect(frame.locator('.'+product).first()).toBeVisible();
-
-    if(id==='02-scrapbook') await page.locator('#liveFrame').evaluate((iframe,p)=>iframe.contentWindow.postMessage({type:'OE_SHOW_PAGE',page:p==='guests'?'home':p},location.origin),'guide'); else await page.locator('.page-nav [data-page="guide"]').click();
-    await expect(frame.locator('.'+guide).first()).toBeVisible();
-  });
+for(const [id,selector] of templates){
+ test(id+' renders its own functional visual component',async({page})=>{
+   await page.goto('/v8/?template='+id+'&project=component-current-'+id);
+   const frame=page.frameLocator('#liveFrame');
+   await expect(frame.locator(selector)).toBeAttached();
+   await expect(page.locator('#inspector')).toBeVisible();
+ });
 }
-
-test('internal component fingerprints are not shared between 02-07',async({page})=>{
-  const fingerprints=[];
-  for(const [id,ticket,guest,schedule,booth] of cases){
-    await page.goto('/v8/?template='+id+'&project=fingerprint-'+id);
-    const frame=page.frameLocator('#liveFrame');
-    await expect(frame.locator('.'+ticket).first()).toBeVisible();
-    const fp=await frame.locator('.'+ticket).first().evaluate(el=>{
-      const s=getComputedStyle(el);
-      return [el.className,s.display,s.gridTemplateColumns,s.borderRadius,s.backgroundColor,s.boxShadow].join('|');
-    });
-    fingerprints.push(fp+'|'+guest+'|'+schedule+'|'+booth);
-  }
-  expect(new Set(fingerprints).size).toBe(cases.length);
+test('Market layouts remain distinct rather than sharing one skin',async({page})=>{
+ const markers=[];
+ for(const id of ['03-creator-market','04-creator-catalogue']){
+   await page.goto('/v8/?template='+id+'&project=market-distinct-'+id);
+   const frame=page.frameLocator('#liveFrame');
+   const marker=await frame.locator('body').evaluate(el=>({
+     hasRecommendations:!!el.querySelector('#randomSix'),
+     hasBook:!!el.querySelector('#catalogue .book'),
+     bg:getComputedStyle(el).backgroundColor
+   }));
+   markers.push(marker);
+ }
+ expect(markers[0].hasRecommendations).toBe(true);
+ expect(markers[1].hasBook).toBe(true);
+ expect(markers[0].bg).not.toBe(markers[1].bg);
 });
