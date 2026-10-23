@@ -11,8 +11,14 @@ for(const id of ['03-creator-market','04-creator-catalogue']){
   await page.locator('#pageContentNav [data-section="images"]').click();
   await expect(page.locator('[data-market-upload="heroImage"]')).toBeVisible();
   await expect(page.locator('input[data-file="heroImage"]')).toBeHidden();
+  await expect(page.frameLocator('#liveFrame').locator('[data-market-edit-path="eventName"]').first()).toHaveAttribute('contenteditable','true');
   await page.locator('#pageContentNav [data-section="creators"]').click();
   await expect(page.locator('#inspector')).toContainText('社团管理');
+  await page.locator('[data-add="creators"]').click();
+  await expect(page.locator('[data-market-tags]')).toHaveCount(1);
+  await page.locator('#pageContentNav [data-section="products"]').click();
+  await page.locator('[data-add="products"]').click();
+  await expect(page.locator('select[data-key$=".creatorId"]')).toHaveCount(1);
   await page.locator('#pageContentNav [data-section="basic"]').click();
   await page.locator('#inspector [data-key="eventName"]').fill('社团创作展集成测试');
   await expect(page.locator('#marketOrganizerEventName')).toHaveText('社团创作展集成测试');
