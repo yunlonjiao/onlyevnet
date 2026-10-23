@@ -8,6 +8,9 @@ for(const id of ['03-creator-market','04-creator-catalogue']){
   for(const label of ['首页','动画','摊位','场地图','观展指南'])await expect(page.locator('.page-nav [data-market-page]').filter({hasText:label})).toHaveCount(1);
   await expect(page.locator('#createCustomPageBtn')).toBeHidden();
   await expect(page.locator('#marketOrganizerEventName')).toBeVisible();
+  await page.locator('#pageContentNav [data-section="images"]').click();
+  await expect(page.locator('[data-market-upload="heroImage"]')).toBeVisible();
+  await expect(page.locator('input[data-file="heroImage"]')).toBeHidden();
   await page.locator('#pageContentNav [data-section="creators"]').click();
   await expect(page.locator('#inspector')).toContainText('社团管理');
   await page.locator('#pageContentNav [data-section="basic"]').click();
