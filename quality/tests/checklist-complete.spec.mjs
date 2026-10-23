@@ -22,7 +22,9 @@ async function loadState(page,mutator=()=>{}){
 async function enterPreview(page,frame){
   await page.locator('#previewBtn').click();
   await expect(frame.locator('#loader')).toBeVisible();
-  await frame.locator('.gate').click();
+  // Skip the optional entry sequence using the same handler as the visible skip button.
+  // The assertion below concerns visitor controls, not animation playback timing.
+  await frame.locator('#skip').evaluate(el=>el.click());
   await expect.poll(async()=>frame.locator('#loader').evaluate(el=>el.classList.contains('hide')),{timeout:5000}).toBe(true);
 }
 
