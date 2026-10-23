@@ -34,7 +34,58 @@ $('#pageContentNav').addEventListener('click',e=>{let b=e.target.closest('[data-
 $('#inspector').addEventListener('focusin',e=>{if(e.target.matches('[data-key]')&&!e.target.dataset.snap){checkpoint();e.target.dataset.snap='1'}});
 $('#inspector').addEventListener('input',e=>{const k=e.target.dataset.key;if(k)change(k,e.target.value)});
 $('#inspector').addEventListener('click',e=>{let upload=e.target.closest('[data-market-upload]');if(upload){$('#inspector [data-file="'+upload.dataset.marketUpload+'"]')?.click();return}let remove=e.target.closest('[data-market-remove-image]');if(remove){checkpoint();change(remove.dataset.marketRemoveImage,'');render();return}let b=e.target.closest('[data-add],[data-select],[data-delete]');if(!b)return;if(b.dataset.add){checkpoint();const key=b.dataset.add;state[key]??=[];state[key].push({id:'item-'+Date.now().toString(36),name:'新项目',title:'新项目'});selected=state[key].length-1;schedule();}else if(b.dataset.select!==undefined){selected=Number(b.dataset.select)}else if(b.dataset.delete!==undefined){checkpoint();state[section].splice(Number(b.dataset.delete),1);selected=-1;schedule()}render()});
-$('#inspector').addEventListener('change',e=>{const key=e.target.dataset.file;if(!key||!e.target.files?.length)return;const file=e.target.files[0];if(file.size>900000){alert('请先压缩图片到 900KB 以下，后续将接入云端存储');return}const reader=new FileReader();reader.onload=()=>{checkpoint();change(key,reader.result);render()};reader.readAsDataURL(file);});
+// The Market templates use the original Studio crop dialog and Cropper.js interaction.
+let marketCropper=null,marketCropUrl='',marketCropPath='',marketCropConfig=null;
+const getCropConfig=path=>{
+ if(path==='heroImage')return {label:'桌面宣传 KV',ratio:16/9,width:1920,height:1080};
+ if(path==='mobileHeroImage')return {label:'手机开场 KV',ratio:3/4,width:1080,height:1440};
+ if(/^maps\\.\\d+\\.image$/.test(path))return {label:'场地图',ratio:null,maxSize:2000};
+ if(/^creators\\.\\d+\\.image$/.test(path))return {label:'社团摊宣',ratio:null,maxSize:1600};
+ return {label:'制品图片',ratio:null,maxSize:1600};
+};
+function closeMarketCrop(){
+ $('#imageCropDialog').close();marketCropper?.destroy?.();marketCropper=null;
+ if(marketCropUrl)URL.revokeObjectURL(marketCropUrl);
+ marketCropUrl='';marketCropPath='';$('#cropStage').classList.remove('loading');
+}
+$('#inspector').addEventListener('change',async e=>{
+ const key=e.target.dataset.file;if(!key||!e.target.files?.length)return;
+ const file=e.target.files[0];e.target.value='';
+ if(!file.type.startsWith('image/'))return;
+ marketCropPath=key;marketCropConfig=getCropConfig(key);
+ if(marketCropUrl)URL.revokeObjectURL(marketCropUrl);
+ marketCropUrl=URL.createObjectURL(file);
+ $('#cropSlotLabel').textContent=marketCropConfig.label;
+ $('#cropRatioLabel').textContent=marketCropConfig.ratio?'固定裁剪比例 '+marketCropConfig.ratio.toFixed(2):'自由裁剪比例';
+ $('#cropImage').src=marketCropUrl;
+ $('#imageCropDialog').showModal();
+ $('#cropStage').classList.add('loading');
+ try{
+  const mod=await import('https://cdn.jsdelivr.net/npm/cropperjs@2.2.0/+esm');
+  const Cropper=mod.default||mod.Cropper;
+  marketCropper?.destroy?.();
+  const ratio=marketCropConfig.ratio;
+  marketCropper=new Cropper($('#cropImage'),{container:'#cropStage',template:'<cropper-canvas background><cropper-image initial-center-size="contain" rotatable></cropper-image><cropper-shade hidden></cropper-shade><cropper-selection initial-coverage="0.8" movable resizable outlined'+(ratio?' aspect-ratio="'+ratio+'"':'')+'><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair><cropper-handle action="move"></cropper-handle><cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle></cropper-selection></cropper-canvas>'});
+ }catch(err){console.error('[Market cropper]',err);$('#saveState').textContent='图片裁剪加载失败';closeMarketCrop();return}
+ $('#cropStage').classList.remove('loading');
+});
+$('#cropCancel').onclick=closeMarketCrop;$('#cropClose').onclick=closeMarketCrop;
+$('#imageCropDialog').addEventListener('cancel',e=>{e.preventDefault();closeMarketCrop()});
+$('#cropRotateLeft').onclick=()=>marketCropper?.getCropperImage?.()?.$rotate('-90deg');
+$('#cropReset').onclick=()=>marketCropper?.getCropperImage?.()?.$resetTransform?.();
+$('#cropApply').onclick=async()=>{
+ const selection=marketCropper?.getCropperSelection?.();if(!selection||!marketCropPath)return;
+ const button=$('#cropApply');button.disabled=true;
+ try{
+  const cfg=marketCropConfig;
+  let width=cfg.width,height=cfg.height;
+  if(!cfg.ratio){const ratio=Math.max(.1,Number(selection.width||1)/Math.max(1,Number(selection.height||1)));const max=cfg.maxSize||1600;width=ratio>=1?max:Math.max(1,Math.round(max*ratio));height=ratio>=1?Math.max(1,Math.round(max/ratio)):max}
+  const canvas=await selection.$toCanvas({width,height});
+  const blob=await new Promise((resolve,reject)=>canvas.toBlob(x=>x?resolve(x):reject(new Error('图片编码失败')),'image/webp',.86));
+  const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob)});
+  checkpoint();change(marketCropPath,data);closeMarketCrop();render();
+ }catch(err){console.error('[Market image apply]',err);$('#saveState').textContent='图片裁剪失败'}finally{button.disabled=false}
+};
 $('#undoBtn').onclick=()=>{if(!history.length)return;future.push(structuredClone(state));state=history.pop();schedule();render()};$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(structuredClone(state));state=future.pop();schedule();render()};
 $('#deviceDesktopBtn').onclick=()=>{frame.classList.remove('device-mobile');iframe.style.maxWidth='100%';};$('#deviceMobileBtn').onclick=()=>{iframe.style.maxWidth='390px';};
 $('#previewBtn').onclick=()=>{preview=!preview;document.body.classList.toggle('oe-market-preview-mode',preview);$('#previewLabel').textContent=preview?'返回编辑':'预览'};
