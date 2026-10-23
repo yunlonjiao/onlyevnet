@@ -10,7 +10,7 @@ for(const [id,selector] of templates){
  test(id+' renders its own functional visual component',async({page})=>{
    await page.goto('/v8/?template='+id+'&project=component-current-'+id);
    const frame=page.frameLocator('#liveFrame');
-   await expect(frame.locator(selector)).toBeAttached();
+   await expect(frame.locator(selector).first()).toBeAttached();
    await expect(page.locator('#inspector')).toBeVisible();
  });
 }
