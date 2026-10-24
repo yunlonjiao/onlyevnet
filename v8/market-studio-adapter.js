@@ -23,7 +23,12 @@ function refreshMarketFrame(){
  try{const doc=iframe.contentDocument;pendingScrollPosition=doc?.scrollingElement?.scrollTop??null;}catch{pendingScrollPosition=null}
  iframe.contentWindow.location.reload();
 }
-iframe.addEventListener('load',()=>{if(pendingScrollPosition===null)return;const position=pendingScrollPosition;pendingScrollPosition=null;try{iframe.contentWindow.scrollTo(0,position)}catch{}});
+iframe.addEventListener('load',()=>{
+ try{const doc=iframe.contentDocument;doc?.documentElement.classList.toggle('oe-studio-preview',preview)}catch{}
+ if(pendingScrollPosition===null)return;
+ const position=pendingScrollPosition;pendingScrollPosition=null;
+ try{iframe.contentWindow.scrollTo(0,position)}catch{}
+});
 const LIVE_FIELDS={eventName:'[data-event-name]',description:'[data-description]',date:'[data-date]',location:'[data-location]'};
 function patchPreviewField(path,value){
  try{
