@@ -93,6 +93,7 @@ else fields=collection(section);
    renderStudioCollectionPanel(list,items,{
     escape:esc,title,selected,
     item:entry=>[entry.name||entry.title||entry.label||'未命名',entry.booth||entry.price||entry.date||''],
+    thumbnail:(entry,i)=>'<span class="sidebar-content-thumb">'+(entry.image?'<img src="'+esc(entry.image)+'" alt="">':String(i+1).padStart(2,'0'))+'</span>',
     empty:'尚无'+title,addLabel:'添加'+title
    });
   }else list.innerHTML='';
