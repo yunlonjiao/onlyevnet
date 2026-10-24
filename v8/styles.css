@@ -261,7 +261,7 @@ button{color:inherit}
 
 .inspector h3{margin:14px 2px 10px;font-size:12px}
 .inspector label{display:grid;gap:7px;margin:14px 0;font-size:10px;font-weight:760;color:#676771}
-.inspector input,.inspector textarea{
+.inspector input,.inspector textarea,.inspector select{
   width:100%;
   border:1px solid #dedee5;
   border-radius:11px;
@@ -271,7 +271,7 @@ button{color:inherit}
   outline:none;
   transition:border .15s ease,box-shadow .15s ease;
 }
-.inspector input:focus,.inspector textarea:focus{border-color:#a895ff;box-shadow:0 0 0 3px rgba(124,92,255,.10)}
+.inspector input:focus,.inspector textarea:focus,.inspector select:focus{border-color:#a895ff;box-shadow:0 0 0 3px rgba(124,92,255,.10)}
 .inspector textarea{min-height:106px;resize:vertical;line-height:1.55}
 .inspector .row{display:flex;gap:7px;flex-wrap:wrap}
 .inspector button{border:1px solid #dedee5;background:#fff;border-radius:10px;padding:8px 10px;cursor:pointer;font-size:10px;font-weight:750;transition:.15s ease}
@@ -1176,3 +1176,6 @@ body.previewing .canvas-stage:before{display:none}
   .mobile-edit-group button{padding:0 8px}
   .mobile-edit-group button span:last-child{display:none}
 }
+
+/* Event identity in the existing Studio sidebar (shared markup, no template override). */
+.market-organizer-name{padding:12px 15px;margin:8px 0 14px;border-radius:9px;background:#f5f4fa;font-size:14px;font-weight:800;overflow-wrap:anywhere}

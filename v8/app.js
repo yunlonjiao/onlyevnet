@@ -1,3 +1,10 @@
+import {setStudioDevice,setStudioPreviewChrome} from '/v8/editor/studio-controls.js';
+import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
+import {createStudioHistory} from '/v8/editor/studio-history.js';
+import {downloadStudioHtml} from '/v8/editor/studio-publish.js';
+import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
+import {bindStudioField} from '/v8/editor/studio-field.js';
+import {renderInspector} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.40.1';
 import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.40.1';
 const $=s=>document.querySelector(s);
@@ -20,7 +27,7 @@ const CUSTOM_PAGE_LAYOUTS={
  comic:'reading',novel:'reading',
  gameDemo:'activity',tabletop:'activity',cardGame:'activity',support:'activity'
 };
-let state=structuredClone(activeTemplate.defaults),preview=false,history=[],future=[],saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home',publishIntent='site',publishRecord={};
+let state=structuredClone(activeTemplate.defaults),preview=false,saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home',publishIntent='site',publishRecord={};
 let hasSavedProject=false;
 try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&activeTemplate.id===DEFAULT_TEMPLATE_ID?localStorage.getItem(LEGACY_STORAGE):null);if(saved){state={...state,...JSON.parse(saved)};hasSavedProject=true}}catch{}
 if(!hasSavedProject&&initialProjectName)state.eventName=initialProjectName;
@@ -253,13 +260,14 @@ function syncAdminProject(extra={}){
  localStorage.setItem(ADMIN_PROJECTS_KEY,JSON.stringify(rows));
 }
 function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject();saveState.textContent='已保存'},180)}
-function checkpoint(){history.push(JSON.stringify(state));if(history.length>80)history.shift();future.length=0;syncHistory()}
-function syncHistory(){$('#undoBtn').disabled=!history.length;$('#redoBtn').disabled=!future.length}
+const studioHistory=createStudioHistory({limit:80,onChange:()=>syncHistory()});
+function checkpoint(){studioHistory.checkpoint(state)}
+function syncHistory(){$('#undoBtn').disabled=!studioHistory.canUndo;$('#redoBtn').disabled=!studioHistory.canRedo}
 function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a.length-1;i++)o=o[/^\d+$/.test(a[i])?Number(a[i]):a[i]];const k=a.at(-1);o[/^\d+$/.test(k)?Number(k):k]=value;save()}
 function getDeep(path){return path.split('.').reduce((o,k)=>o?.[/^\d+$/.test(k)?Number(k):k],state)}
 function send(message){if(frameReady&&iframe?.contentWindow)iframe.contentWindow.postMessage(message,ORIGIN)}
 function setInspector(kicker,title,html){
- inspector.innerHTML='<div class="inspector-header"><div><span class="inspector-kicker">'+esc(kicker||'属性')+'</span><b>'+esc(title||'未选择内容')+'</b></div><span class="inspector-status"><i></i>自动保存</span></div><div class="inspector-body">'+html+'</div>';
+ renderInspector(inspector,esc,kicker,title,html);
 }
 function showInspectorEmpty(){
  setInspector('属性','未选择内容','<div class="inspector-empty"><div class="empty-visual"><span></span><span></span><span></span></div><b>从画布或左侧内容库选择内容</b></div>');
@@ -781,10 +789,7 @@ function openCollectionManager(collection,selectedIndex=-1){
  const meta=contentManagerMeta[collection],arr=collectionArray(collection),panel=$('#contentListPanel');if(!meta||!Array.isArray(arr)||!panel)return;
  document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.toggle('active',x.dataset.contentManager===collection));
  setPageContentActive({collection});
- const rows=arr.map((item,i)=>{
-   const [title,sub]=meta.item(item,i),search=(title+' '+sub).toLowerCase();
-   return '<button type="button" class="sidebar-content-row '+(i===selectedIndex?'active':'')+'" data-open-item="'+i+'" data-search="'+esc(search)+'">'+contentThumb(collection,item)+'<span class="sidebar-content-copy"><b>'+esc(title)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</span><i>›</i></button>';
- }).join('');
+ const rows=renderStudioCollectionRows(arr,{escape:esc,selected:selectedIndex,item:meta.item,thumbnail:item=>contentThumb(collection,item)});
  const guidePresets=collection==='guide'?'<div class="preset-add"><span>常用预设</span><div>'+Object.entries(GUIDE_PRESETS).map(([key,x])=>'<button type="button" data-add-preset="'+key+'">'+esc(x.title)+'</button>').join('')+'</div></div>':'';
  const activityPresets=collection==='participation'?'<div class="preset-add"><span>常用活动</span><div>'+Object.entries(PARTICIPATION_PRESETS).map(([key,x])=>'<button type="button" data-add-preset="'+key+'">'+esc(x.title)+'</button>').join('')+'</div></div>':'';
  const addLabel=collection==='guide'?'＋ 添加自定义指南':collection==='participation'?'＋ 添加自定义活动':'＋ 添加'+meta.title;
@@ -898,23 +903,17 @@ window.addEventListener('message',e=>{
  if(m.type==='OE_EXPORT_HTML_RESULT'){if(publishIntent==='download'){publishIntent='site';downloadPublishedHtml(m.html)}else publishGeneratedHtml(m.html);return}
 });
 function downloadPublishedHtml(html){
- const blob=new Blob([html],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
- const name=(state.eventName||'onlyevent').replace(/[\\/:*?"<>|]+/g,'-').trim()||'onlyevent';
- a.href=url;a.download=name+'.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('已生成游客站');
+ downloadStudioHtml(html,state.eventName||'onlyevent');
+ toast('已生成游客站');
 }
 
 function bindInspectorStateInput(input,path,{clean=false,number=false}={}){
- let started=false;
- input.addEventListener('input',e=>{
-   if(!started){checkpoint();started=true}
-   const value=number?Number(e.target.value):e.target.value;
-   setDeep(path,value);send({type:'OE_PATCH_FIELD',path,value});
-   if(path==='heroTitleSize'){const out=$('#heroTitleSizeValue');if(out)out.textContent=value+' px'}
- });
- if(clean)input.addEventListener('blur',e=>{
-   const value=cleanValue(e.target.value);
-   if(value!==e.target.value)e.target.value=value;
-   setDeep(path,value);send({type:'OE_PATCH_FIELD',path,value});
+ return bindStudioField(input,{
+  path,checkpoint,
+  parseValue:number?Number:undefined,
+  cleanValue:clean?cleanValue:undefined,
+  update:(field,value)=>{setDeep(field,value);send({type:'OE_PATCH_FIELD',path:field,value})},
+  onUpdated:value=>{if(path==='heroTitleSize'){const out=$('#heroTitleSizeValue');if(out)out.textContent=value+' px'}}
  });
 }
 
@@ -1431,11 +1430,8 @@ function openImageInspector(path){
  $('#cropCurrentImage')?.addEventListener('click',()=>openImageCropper(current,path));
  $('#removeImage')?.addEventListener('click',()=>{checkpoint();setDeep(path,'');save();send({type:'OE_REPLACE_STATE',state});toast('图片已移除');openImageInspector(path)});
 }
-let activeCropper=null,cropContext=null,cropperModulePromise=null;
-function getCropperModule(){
- if(!cropperModulePromise)cropperModulePromise=import('https://cdn.jsdelivr.net/npm/cropperjs@2.2.0/+esm');
- return cropperModulePromise;
-}
+let activeCropper=null,cropContext=null;
+const getCropperModule=loadStudioCropper;
 function canvasToBlob(canvas,type='image/webp',quality=.9){
  return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('图片编码失败')),type,quality));
 }
@@ -1519,14 +1515,8 @@ async function openImageCropper(src,path,returnCollection='',returnIndex='',owne
  send({type:'OE_CROP_ACTIVE',active:true});
  stage.classList.add('loading');
  try{
-   const mod=await getCropperModule(),Cropper=mod.default||mod.Cropper;
    if(activeCropper?.destroy)activeCropper.destroy();
-   stage.querySelectorAll('cropper-canvas').forEach(x=>x.remove());
-   try{await img.decode()}catch{}
-   const ratioAttr=Number.isFinite(cfg.ratio)&&cfg.ratio>0?' aspect-ratio="'+cfg.ratio+'" initial-aspect-ratio="'+cfg.ratio+'"':'';
-   const handles='<cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle>';
-   const template='<cropper-canvas background><cropper-image initial-center-size="contain" rotatable></cropper-image><cropper-shade hidden></cropper-shade><cropper-selection initial-coverage="0.72"'+ratioAttr+' movable resizable outlined><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair><cropper-handle action="move" theme-color="rgba(255,255,255,.32)"></cropper-handle>'+handles+'</cropper-selection></cropper-canvas>';
-   activeCropper=new Cropper(img,{container:stage,template});
+   activeCropper=await createStudioCropper({image:img,stage,ratio:cfg.ratio,coverage:.72});
    const selection=activeCropper.getCropperSelection?.();
    if(selection){
      if(cfg.fixed&&Number.isFinite(cfg.ratio)){selection.aspectRatio=cfg.ratio;selection.initialAspectRatio=cfg.ratio}
@@ -1587,17 +1577,11 @@ $('#imageInput').addEventListener('change',async e=>{
    openImageCropper(prepared.url,path,returnCollection,returnIndex,prepared.url);
  }catch(err){console.error('[OnlyEvent image input]',err);toast('图片读取失败')}
 });
-function setDevice(mode){
- const mobile=mode==='mobile';canvas.classList.toggle('mobile',mobile);
- document.querySelectorAll('[data-device]').forEach(b=>b.classList.toggle('active',b.dataset.device===mode));
- const label=$('#canvasDeviceLabel');if(label)label.textContent=mobile?'手机画布':'桌面画布';
-}
+function setDevice(mode){setStudioDevice(mode,{canvas})}
 $('#deviceDesktopBtn').onclick=()=>setDevice('desktop');
 $('#deviceMobileBtn').onclick=()=>setDevice('mobile');
 function setPreview(next){
- preview=!!next;document.body.classList.toggle('previewing',preview);
- const label=$('#previewLabel');if(label)label.textContent=preview?'退出预览':'预览';
- $('#previewBtn').classList.toggle('active',preview);
+ preview=!!next;setStudioPreviewChrome(preview);
  send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});
  if(preview&&state.entryAnimation?.enabled!==false)setTimeout(()=>send({type:'OE_PREVIEW_ENTRY',state,play:false}),80);
  else if(!preview)setTimeout(()=>send({type:'OE_HIDE_ENTRY_PREVIEW'}),30);
@@ -1614,8 +1598,8 @@ function reconcilePageAfterHistory(){
  if(String(currentPage).startsWith('custom-')&&!customPageByKey(currentPage)){setStudioPage('home');return}
  if(String(currentPage).startsWith('custom-'))renderPageContentNav(currentPage,{openDefault:false});
 }
-$('#undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state));state=JSON.parse(history.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
-$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state));state=JSON.parse(future.pop());renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
+$('#undoBtn').onclick=()=>{const next=studioHistory.undo(state);if(!next)return;state=next;renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
+$('#redoBtn').onclick=()=>{const next=studioHistory.redo(state);if(!next)return;state=next;renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
 $('#backAdminBtn')?.addEventListener('click',()=>{location.href='/admin/'});
 $('#publishBtn').onclick=openPublishDialog;
 $('#publishClose').onclick=()=>publishDialog.close();

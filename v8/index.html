@@ -172,14 +172,7 @@
   </dialog>
 
   <div id="toast" class="toast" role="status"></div>
-  <script type="module">
-const id=new URLSearchParams(location.search).get('template')||'';
-if(id==='03-creator-market'||id==='04-creator-catalogue'){
-  import('/v8/market-studio-adapter.js?v=8.41.1');
-}else{
-  import('/v8/app.js?v=8.40.76');
-}
-</script>
+  <script type="module" src="/v8/editor/studio-entry.js"></script>
 <!-- v8.33.9 preview trigger -->
 </body>
 </html>
