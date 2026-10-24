@@ -18,6 +18,12 @@ const pageDefs=[['home','首页','basic'],['animation','动画','images'],['boot
 const frame=$('#canvas');frame.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/market-'+(t.id==='03-creator-market'?'01':'02')+'-preview.html?project='+encodeURIComponent(project)+'&template='+encodeURIComponent(t.id)+'" title="同人创作展实时预览"></iframe>';
 let iframe=$('#liveFrame');
 let pendingFrameRefresh=false;
+let pendingScrollPosition=null;
+function refreshMarketFrame(){
+ try{const doc=iframe.contentDocument;pendingScrollPosition=doc?.scrollingElement?.scrollTop??null;}catch{pendingScrollPosition=null}
+ iframe.contentWindow.location.reload();
+}
+iframe.addEventListener('load',()=>{if(pendingScrollPosition===null)return;const position=pendingScrollPosition;pendingScrollPosition=null;try{iframe.contentWindow.scrollTo(0,position)}catch{}});
 const LIVE_FIELDS={eventName:'[data-event-name]',description:'[data-description]',date:'[data-date]',location:'[data-location]'};
 function patchPreviewField(path,value){
  try{
@@ -33,7 +39,7 @@ function persist(){
   localStorage.setItem(storage,JSON.stringify(state));
   const key='onlyevent-market-preview:'+t.id+':'+project;
   localStorage.setItem(key,JSON.stringify(state));
-  if(pendingFrameRefresh){pendingFrameRefresh=false;iframe.contentWindow.location.reload();}
+  if(pendingFrameRefresh){pendingFrameRefresh=false;refreshMarketFrame();}
   $('#saveState').textContent='已保存';
  }catch(e){$('#saveState').textContent='保存失败：图片过大或浏览器存储不足';}
 }
