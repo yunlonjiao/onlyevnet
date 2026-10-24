@@ -278,6 +278,26 @@ test('03 and 04 first-level navigation switches actual iframe pages, not just In
  }
 });
 
+test('selecting a featured homepage product keeps the homepage visible while editing',async()=>{
+ const {context,page,frame,errors}=await openEditor('03-creator-market','ci-home-card-edit');
+ await page.locator('#pageContentNav [data-section="products"]').click();
+ await page.locator('#contentListPanel [data-sidebar-content-add]').click();
+ await page.locator('#inspector [data-key="products.0.name"]').fill('首页精选制品');
+ await page.waitForFunction(()=>{
+  const raw=localStorage.getItem('onlyevent-studio-v8:03-creator-market:ci-home-card-edit:iframe');
+  return raw&&JSON.parse(raw).products?.[0]?.name==='首页精选制品';
+ });
+ await page.locator('.page-nav [data-market-page="home"]').click();
+ const card=frame.locator('#randomSix [data-market-record="products"]').first();
+ await card.waitFor({state:'visible',timeout:15000});
+ await card.click();
+ assert.ok(await page.locator('#inspector [data-key="products.0.name"]').count());
+ assert.ok(await page.locator('.page-nav [data-market-page="home"].active').count());
+ assert.equal(await frame.locator('html').getAttribute('data-oe-studio-page'),'home');
+ assert.ok(await frame.locator('#randomSix').isVisible());
+ assert.deepEqual(errors,[]);
+ await context.close();
+});
 test('creator iframe navigation and canvas reload keep the requested first-level page',async()=>{
  const {context,page,frame,errors}=await openEditor('03-creator-market','ci-iframe-nav');
  await frame.locator('nav a[href="#map"]').click();
