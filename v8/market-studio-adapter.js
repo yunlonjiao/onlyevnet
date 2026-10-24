@@ -1,7 +1,7 @@
 import {renderStudioCollectionPanel,filterStudioCollection} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {downloadStudioHtml,publishStudioSite} from '/v8/editor/studio-publish.js';
-import {loadStudioCropper,cropSelectionToDataUrl} from '/v8/editor/studio-crop.js';
+import {createStudioCropper,cropSelectionToDataUrl} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,renderPageTree} from '/v8/editor/studio-chrome.js';
 import {bindCanvasSelection} from '/v8/editor/canvas-selection.js';
@@ -146,11 +146,8 @@ $('#inspector').addEventListener('change',async e=>{
  $('#imageCropDialog').showModal();
  $('#cropStage').classList.add('loading');
  try{
-  const mod=await loadStudioCropper();
-  const Cropper=mod.default||mod.Cropper;
   marketCropper?.destroy?.();
-  const ratio=marketCropConfig.ratio;
-  marketCropper=new Cropper($('#cropImage'),{container:'#cropStage',template:'<cropper-canvas background><cropper-image initial-center-size="contain" rotatable></cropper-image><cropper-shade hidden></cropper-shade><cropper-selection initial-coverage="0.8" movable resizable outlined'+(ratio?' aspect-ratio="'+ratio+'"':'')+'><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair><cropper-handle action="move"></cropper-handle><cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle></cropper-selection></cropper-canvas>'});
+  marketCropper=await createStudioCropper({image:$('#cropImage'),stage:$('#cropStage'),ratio:marketCropConfig.ratio,coverage:.72});
  }catch(err){console.error('[Market cropper]',err);$('#saveState').textContent='图片裁剪加载失败';closeMarketCrop();return}
  $('#cropStage').classList.remove('loading');
 });
