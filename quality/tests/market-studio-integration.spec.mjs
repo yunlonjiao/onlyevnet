@@ -28,3 +28,15 @@ for(const id of ['03-creator-market','04-creator-catalogue']){
   await expect(page.locator('#publishDownload')).toBeEnabled();
  });
 }
+
+test('Market 03 canvas product card opens matching inspector without navigating away',async({page})=>{
+ await page.goto('/v8/?template=03-creator-market&project=market-card-selection-qa');
+ const frame=page.frameLocator('#liveFrame');
+ const card=frame.locator('#randomSix [data-market-record="products"]').first();
+ await expect(card).toBeVisible();
+ const id=await card.getAttribute('data-market-record-id');
+ await card.click();
+ await expect(page.locator('#inspector')).toContainText('制品管理');
+ await expect(page.locator('#inspector [data-key$=".name"]')).toHaveCount(1);
+ await expect(frame.locator('#randomSix [data-market-record-id="'+id+'"]')).toHaveClass(/oe-selected-edit-target/);
+});
