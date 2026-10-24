@@ -143,10 +143,56 @@ test('Studio identifiers stay English while organizer event names remain editabl
   const {context,page,errors}=await openEditor(id,'ci-identity-'+id);
   assert.equal(await page.locator('#projectTemplateName').textContent(),label);
   assert.equal(await page.locator('#workspaceTemplateName').textContent(),label);
-  assert.equal(await page.locator('#studioVersion').textContent(),'v8.41.2');
+  assert.equal(await page.locator('#studioVersion').textContent(),'v8.41.3');
   assert.deepEqual(errors,[]);
   await context.close();
  }
+});
+test('template gallery metadata uses one distinct NAME ONLY for every template',async()=>{
+ const {context,page,errors}=await openEditor('01-ip-only','ci-template-brand-contract');
+ const templates=await page.evaluate(async()=>{
+   const {listTemplates}=await import('/v8/templates/registry.js?v=8.41.3');
+   return listTemplates().map(t=>({id:t.id,name:t.name,label:t.label,studioName:t.studioName}));
+ });
+ assert.equal(templates.length,4);
+ assert.equal(new Set(templates.map(t=>t.label)).size,templates.length);
+ for(const template of templates){
+  assert.match(template.label,/^[A-Z]+(?: [A-Z]+)* ONLY$/);
+  assert.equal(template.studioName,template.label);
+  assert.match(template.name,new RegExp('^\\\\d{2} · '+template.label+'async()=>{
+ const {context,page,errors}=await openEditor('03-creator-market','ci-page-alignment');
+ await page.locator('#pageContentNav [data-section="products"]').click();
+ assert.equal(await page.locator('#pageContentNav [data-section="products"] span').textContent(),'制品管理');
+ assert.equal(await page.locator('#pageContentNav [data-section="products"] b').textContent(),'0');
+ assert.ok(await page.locator('.page-nav [data-page="booths"].active').count());
+ assert.equal(await page.locator('.canvas-title b').textContent(),'摊位');
+ await page.locator('#pageContentNav [data-section="guide"]').click();
+ assert.equal(await page.locator('.canvas-title b').textContent(),'观展指南');
+ await page.locator('.page-nav [data-page="animation"]').click();
+ assert.equal(await page.locator('.canvas-title b').textContent(),'动画页面');
+ assert.equal(await page.locator('#createCustomPageBtn').isVisible(),false);
+ assert.deepEqual(errors,[]);
+ await context.close();
+});
+test('03 mobile pages and Inspector drawers open and dismiss correctly',async()=>{
+ const {context,page,errors}=await openEditor('03-creator-market','ci-mobile-drawers');
+ await page.setViewportSize({width:390,height:844});
+ await page.locator('#mobilePagesBtn').click();
+ assert.ok(await page.locator('body.mobile-sidebar-open').count());
+ assert.equal(await page.locator('#mobilePanelBackdrop').isVisible(),true);
+ await page.locator('.page-nav [data-page="booths"]').click();
+ assert.equal(await page.locator('body.mobile-sidebar-open').count(),0);
+ await page.locator('#mobileInspectorBtn').click();
+ assert.ok(await page.locator('body.mobile-inspector-open').count());
+ await page.locator('#mobilePanelBackdrop').click({position:{x:190,y:180}});
+ assert.equal(await page.locator('body.mobile-inspector-open').count(),0);
+ assert.deepEqual(errors,[]);
+ await context.close();
+});
+));
+ }
+ assert.deepEqual(errors,[]);
+ await context.close();
 });
 test('03 sidebar and canvas titles stay in sync for products and pages',async()=>{
  const {context,page,errors}=await openEditor('03-creator-market','ci-page-alignment');
