@@ -3,6 +3,7 @@ export const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 export function getData(){try{const q=new URLSearchParams(location.search),t=q.get('template'),p=q.get('project');const scoped=t&&p?localStorage.getItem('onlyevent-market-preview:'+t+':'+p):null;const x=JSON.parse(scoped||localStorage.getItem('onlyevent-creator-fair-demo')||'null');return x&&typeof x==='object'?{...sample,...x}:sample}catch{return sample}}
 export const img=(url,name)=>url?'<img loading="lazy" src="'+esc(url)+'" alt="'+esc(name)+'">':'<span class="placeholder">'+esc(name)+'</span>';
 export function mountCommon(d){
+ document.title=String(d.eventName||'STARDUST ONLY');
  const $=id=>document.getElementById(id);const cs=Array.isArray(d.creators)?d.creators:[],ps=Array.isArray(d.products)?d.products:[];
  document.querySelectorAll('[data-event-name]').forEach(n=>n.textContent=d.eventName);document.querySelectorAll('[data-date]').forEach(n=>n.textContent=d.date||'日期待定');document.querySelectorAll('[data-location]').forEach(n=>n.textContent=d.location||'地点待定');document.querySelectorAll('[data-description]').forEach(n=>n.textContent=d.description||'');
  document.querySelectorAll('[data-ticket]').forEach(n=>{n.href=d.ticketUrl||'#guide';n.textContent=d.ticketUrl?'立即购票 ↗':'入场指南 ↗'});
