@@ -176,6 +176,9 @@ test('template style labels are distinct; all fresh sites display STARDUST ONLY'
   await nameField.waitFor({timeout:15000});
   await page.waitForFunction(()=>document.querySelector('#projectEventName')?.textContent==='STARDUST ONLY');
   assert.equal((await nameField.textContent())?.trim(),'STARDUST ONLY');
+  if(id==='03-creator-market'||id==='04-creator-catalogue'){
+   assert.equal(await frame.locator('html').evaluate(el=>el.ownerDocument.title),'STARDUST ONLY');
+  }
   assert.deepEqual(errors,[]);
   await context.close();
  }
