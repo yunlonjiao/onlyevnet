@@ -1,3 +1,4 @@
+import {renderInspector} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.40.1';
 import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.40.1';
 const $=s=>document.querySelector(s);
@@ -259,7 +260,7 @@ function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a
 function getDeep(path){return path.split('.').reduce((o,k)=>o?.[/^\d+$/.test(k)?Number(k):k],state)}
 function send(message){if(frameReady&&iframe?.contentWindow)iframe.contentWindow.postMessage(message,ORIGIN)}
 function setInspector(kicker,title,html){
- inspector.innerHTML='<div class="inspector-header"><div><span class="inspector-kicker">'+esc(kicker||'属性')+'</span><b>'+esc(title||'未选择内容')+'</b></div><span class="inspector-status"><i></i>自动保存</span></div><div class="inspector-body">'+html+'</div>';
+ renderInspector(inspector,esc,kicker,title,html);
 }
 function showInspectorEmpty(){
  setInspector('属性','未选择内容','<div class="inspector-empty"><div class="empty-visual"><span></span><span></span><span></span></div><b>从画布或左侧内容库选择内容</b></div>');
