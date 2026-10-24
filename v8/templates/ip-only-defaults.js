@@ -1,5 +1,5 @@
 export const ipOnlyDefaults={
-    eventName:'STARDUST ONLY 2026',
+    eventName:'STARDUST ONLY',
     eventStatusMode:'auto',
     eventStatus:'upcoming',
     eventStartDateTime:'2026-11-08T10:00',
@@ -9,7 +9,7 @@ export const ipOnlyDefaults={
     edition:'杭州国际博览中心',
     navigationUrl:'https://uri.amap.com/search?keyword=%E6%9D%AD%E5%B7%9E%E5%9B%BD%E9%99%85%E5%8D%9A%E8%A7%88%E4%B8%AD%E5%BF%83',
     heroTitle1:'STAR',
-    heroTitle2:'BEAT',
+    heroTitle2:'DUST',
     heroTitle3:'ONLY',
     heroTitleSize:126,
     heroTitleColor:'#17151b',
