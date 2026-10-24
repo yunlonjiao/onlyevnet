@@ -130,7 +130,7 @@ test('03 image editor uses the shared Cropper UI and saves a cropped hero',async
  await page.locator('#imageCropDialog[open]').waitFor({timeout:20000});
  await page.locator('#cropStage cropper-selection').waitFor({timeout:20000});
  await page.locator('#cropApply').click();
- await page.locator('#imageCropDialog:not([open])').waitFor({timeout:20000});
+ await page.locator('#imageCropDialog').waitFor({state:'hidden',timeout:20000});
  await page.waitForTimeout(400);
  const src=await page.locator('#inspector .item-media img').first().getAttribute('src');
  assert.ok(src?.startsWith('data:image/webp;base64,'),'Cropping must save a WebP data URL');
