@@ -1,4 +1,4 @@
-import {setStudioDevice,setStudioPreviewChrome} from '/v8/editor/studio-controls.js';
+import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionPanel,filterStudioCollection} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {downloadStudioHtml,publishStudioSite} from '/v8/editor/studio-publish.js';
@@ -16,7 +16,10 @@ let hasSaved=false;try{const saved=JSON.parse(localStorage.getItem(storage)||'nu
 if(q.get('name')&&!hasSaved)state.eventName=q.get('name');
 syncStudioIdentity(t,state.eventName);
 const defs=[['basic','活动信息'],['images','主视觉'],['tickets','入场票'],['creators','社团管理'],['products','制品管理'],['maps','场地图'],['news','公告'],['community','社群'],['sponsors','赞助'],['guide','观展指南']];
-const pageDefs=[['home','首页','basic'],['animation','动画','images'],['booths','摊位','creators'],['map','场地图','maps'],['guide','观展指南','guide']];
+const pageDefs=[['home','首页','basic'],['animation','动画页面','images'],['booths','摊位','creators'],['map','场地图','maps'],['guide','观展指南','guide']];
+const pageForSection={basic:'home',images:'animation',tickets:'home',creators:'booths',products:'booths',maps:'map',news:'home',community:'home',sponsors:'home',guide:'guide'};
+const customPageButton=$('#createCustomPageBtn');
+if(customPageButton){customPageButton.hidden=true;customPageButton.style.display='none'}
 const frame=$('#canvas');frame.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/market-'+(t.id==='03-creator-market'?'01':'02')+'-preview.html?project='+encodeURIComponent(project)+'&template='+encodeURIComponent(t.id)+'" title="同人创作展实时预览"></iframe>';
 let iframe=$('#liveFrame');
 let pendingFrameRefresh=false;
@@ -78,7 +81,10 @@ function collection(key){
 }
 
 function render(){const nav=$('#pageContentNav'),panel=$('#inspector');
-  renderPageTree(document.querySelector('.page-nav'),pageDefs,pageDefs.find(x=>x[2]===section)?.[0]||'home',esc);
+  const pageId=pageForSection[section]||'home';
+  renderPageTree(document.querySelector('.page-nav'),pageDefs,pageId,esc);
+  const canvasPage=document.querySelector('.canvas-title b');
+  if(canvasPage)canvasPage.textContent=pageDefs.find(x=>x[0]===pageId)?.[1]||'首页';
   const html=defs.map(([id,label])=>'<button data-section="'+id+'" type="button" class="'+(id===section?'active':'')+'">'+label+'</button>').join('');nav.innerHTML=html;const title=defs.find(x=>x[0]===section)?.[1]||'属性';let fields='';
 if(section==='basic')fields=input('活动名称','eventName')+input('活动介绍','description',true)+input('时间','date')+input('地址','location');
 else if(section==='images')fields=upload('桌面 KV','heroImage')+upload('手机 KV','mobileHeroImage');
@@ -232,4 +238,5 @@ bindCanvasSelection({
 });
 
 
+bindStudioMobilePanels();
 persist();render();syncHistory();
