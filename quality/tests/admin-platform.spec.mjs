@@ -19,7 +19,7 @@ test('admin is the product entry and exposes projects plus template library',asy
   await expect(page.locator('[data-page-panel="projects"] h1')).toHaveText('我的活动');
   await page.locator('[data-admin-page="templates"]').click();
   await expect(page.locator('[data-page-panel="templates"] h1')).toHaveText('选择网站模板');
-  await expect(page.locator('#templateGrid .template-card').first()).toContainText('STAR BEAT ONLY');
+  await expect(page.locator('#templateGrid .template-card').first()).toContainText('IP ONLY');
   await expect(page.locator('#templateGrid [data-template="01-ip-only"]')).toBeVisible();
 });
 
@@ -28,6 +28,7 @@ test('creating from Template 01 opens a project-scoped Studio and returns to adm
   await page.locator('[data-admin-page="templates"]').click();
   await page.locator('[data-template="01-ip-only"]').click();
   await expect(page.locator('#createDialog')).toBeVisible();
+  await expect(page.locator('#createProjectName')).toHaveValue('STARDUST ONLY');
   await page.locator('#createProjectName').fill('测试 ONLY 2027');
   await page.locator('#createForm button[type="submit"]').click();
 

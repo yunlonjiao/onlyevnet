@@ -1,10 +1,10 @@
 import {IP_ONLY_CORE_MODULES,DEFAULT_IP_ONLY_PRESENTATION_PROFILE} from '/v8/templates/ip-only-core-contract.js?v=8.37.2';
-import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.37.0';
+import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.41.4';
 export const template01 = {
   id:'01-ip-only',
-  name:'01 · STAR BEAT ONLY',
-  label:'STAR BEAT ONLY',
-  studioName:'STAR BEAT ONLY',
+  name:'01 · IP ONLY',
+  label:'IP ONLY',
+  studioName:'IP ONLY',
   category:'单 IP / 同好活动',
   version:'1.0.0',
   description:'以鲜明配色、趣味贴纸、粗描边和活力卡片构成的二次元活动网站。',

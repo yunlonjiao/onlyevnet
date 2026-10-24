@@ -4,8 +4,8 @@ import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {downloadStudioHtml} from '/v8/editor/studio-publish.js';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
-import {renderInspector,syncStudioIdentity as renderStudioIdentity} from '/v8/editor/studio-chrome.js';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.3';
+import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.4';
 import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.40.1';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -31,6 +31,7 @@ let state=structuredClone(activeTemplate.defaults),preview=false,saveTimer=null,
 let hasSavedProject=false;
 try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&activeTemplate.id===DEFAULT_TEMPLATE_ID?localStorage.getItem(LEGACY_STORAGE):null);if(saved){state={...state,...JSON.parse(saved)};hasSavedProject=true}}catch{}
 if(!hasSavedProject&&initialProjectName)state.eventName=initialProjectName;
+migrateDemoEventName(state,projectId);
 state.templateId=activeTemplate.id;
 state.projectId=projectId;
 if(state.eventStatusMode===undefined)state.eventStatusMode=activeTemplate.defaults.eventStatusMode||'auto';

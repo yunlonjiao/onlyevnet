@@ -20,3 +20,14 @@ export function syncStudioIdentity(template,eventName,root=document){
  const project=root.querySelector('#projectTemplateName');if(project)project.textContent=title;
  const event=root.querySelector('#projectEventName');if(event)event.textContent=String(eventName||'未命名活动');
 }
+
+/* Upgrade earlier sample titles only for unscoped demo templates. User-created project names are never rewritten. */
+export function migrateDemoEventName(state,projectId){
+ if(projectId!=='default'||!state)return state;
+ const old=String(state.eventName||'');
+ if(old==='STARDUST ONLY 2026'||old==='同人创作展'){
+  state.eventName='STARDUST ONLY';
+  if(old==='STARDUST ONLY 2026'&&state.heroTitle1==='STAR'&&state.heroTitle2==='BEAT'&&state.heroTitle3==='ONLY')state.heroTitle2='DUST';
+ }
+ return state;
+}

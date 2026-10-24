@@ -4,7 +4,7 @@ export const CREATOR_FAIR_MODULES=Object.freeze(['creators','booths','products',
 export function createCreatorFairDefaults(){
   return {
     eventType:CREATOR_FAIR_TYPE,
-    eventName:'同人创作展',
+    eventName:'STARDUST ONLY',
     description:'',
     date:'',location:'',venue:'',heroImage:'',mobileHeroImage:'',
     registrationUrl:'',ticketUrl:'',

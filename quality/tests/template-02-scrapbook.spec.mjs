@@ -146,6 +146,7 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-entry');
     const frame=page.frameLocator('#liveFrame');
 
+    await expect(frame.locator('[data-oe-field="eventName"]').first()).toContainText('STARDUST ONLY');
     await page.locator('#previewBtn').click();
     await expect(frame.locator('#loader.scrap-entry')).toBeVisible();
     await expect(frame.locator('.scrap-entry-gate')).toBeVisible();

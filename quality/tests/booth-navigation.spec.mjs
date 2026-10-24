@@ -176,7 +176,7 @@ test('entry animation stays static until play and returns to static after playba
   await expect(page.locator('#previewEntryAnimation')).toBeVisible();
   await expect(frame.locator('#loader')).toBeVisible();
   await expect(frame.locator('#loader')).not.toHaveClass(/entry-playing/);
-  await expect(frame.locator('.entry-ticket-title')).toContainText('STARDUST ONLY 2026');
+  await expect(frame.locator('.entry-ticket-title')).toContainText('STARDUST ONLY');
   await expect(frame.locator('.entry-ticket-label')).toContainText('MEMORIAL TICKET');
   await page.locator('#previewEntryAnimation').click();
   await expect(frame.locator('#loader')).toHaveClass(/entry-playing/);

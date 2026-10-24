@@ -1,5 +1,5 @@
 import {IP_ONLY_CORE_MODULES,DEFAULT_IP_ONLY_PRESENTATION_PROFILE} from '/v8/templates/ip-only-core-contract.js?v=8.37.4';
-import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.37.4';
+import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.41.4';
 export function makeIpOnlyTemplate({
   id,name,label,description,structureProfile,artDirection,motionProfile,
   theme,heroTitleColor,heroTitleAccentColor,studioName,presentationProfile={}
