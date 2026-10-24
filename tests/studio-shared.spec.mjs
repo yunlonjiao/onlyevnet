@@ -139,23 +139,23 @@ test('03 image editor uses the shared Cropper UI and saves a cropped hero',async
 });
 
 test('Studio identifiers stay English while organizer event names remain editable',async()=>{
- for(const [id,label] of [['01-ip-only','IP ONLY'],['02-scrapbook','TRAVEL JOURNEY'],['03-creator-market','CREATOR MARKET'],['04-creator-catalogue','CREATOR CATALOGUE']]){
+ for(const [id,label] of [['01-ip-only','POP FESTIVAL'],['02-scrapbook','TRAVEL JOURNEY'],['03-creator-market','CREATOR MARKET'],['04-creator-catalogue','CREATOR CATALOGUE']]){
   const {context,page,errors}=await openEditor(id,'ci-identity-'+id);
   assert.equal(await page.locator('#projectTemplateName').textContent(),label);
   assert.equal(await page.locator('#workspaceTemplateName').textContent(),label);
-  assert.equal(await page.locator('#studioVersion').textContent(),'v8.41.4');
+  assert.equal(await page.locator('#studioVersion').textContent(),'v8.41.5');
   assert.deepEqual(errors,[]);
   await context.close();
  }
 });
 test('template style labels are distinct; all fresh sites display STARDUST ONLY',async()=>{
  const styleNames={
-  '01-ip-only':'IP ONLY','02-scrapbook':'TRAVEL JOURNEY',
+  '01-ip-only':'POP FESTIVAL','02-scrapbook':'TRAVEL JOURNEY',
   '03-creator-market':'CREATOR MARKET','04-creator-catalogue':'CREATOR CATALOGUE'
  };
  const {context:registryContext,page:registryPage}=await openEditor('01-ip-only','ci-style-contract');
  const templates=await registryPage.evaluate(async()=>{
-  const {listTemplates}=await import('/v8/templates/registry.js?v=8.41.4');
+  const {listTemplates}=await import('/v8/templates/registry.js?v=8.41.5');
   return listTemplates().map(t=>({id:t.id,name:t.name,label:t.label,studioName:t.studioName,defaultEvent:t.defaults.eventName}));
  });
  assert.equal(templates.length,4);
