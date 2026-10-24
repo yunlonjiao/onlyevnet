@@ -1,3 +1,4 @@
+import {downloadStudioHtml} from '/v8/editor/studio-publish.js';
 import {loadStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector} from '/v8/editor/studio-chrome.js';
@@ -901,9 +902,8 @@ window.addEventListener('message',e=>{
  if(m.type==='OE_EXPORT_HTML_RESULT'){if(publishIntent==='download'){publishIntent='site';downloadPublishedHtml(m.html)}else publishGeneratedHtml(m.html);return}
 });
 function downloadPublishedHtml(html){
- const blob=new Blob([html],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
- const name=(state.eventName||'onlyevent').replace(/[\\/:*?"<>|]+/g,'-').trim()||'onlyevent';
- a.href=url;a.download=name+'.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('已生成游客站');
+ downloadStudioHtml(html,state.eventName||'onlyevent');
+ toast('已生成游客站');
 }
 
 function bindInspectorStateInput(input,path,{clean=false,number=false}={}){
