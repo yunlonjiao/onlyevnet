@@ -9,3 +9,14 @@ export function renderPageTree(host,pages,activePage,escape){
  if(!host)return;
  host.innerHTML=pages.map(([id,label],i)=>'<div class="page-tree-row is-fixed"><button type="button" data-market-page="'+escape(id)+'" data-page="'+escape(id)+'" class="'+(id===activePage?'active':'')+'"><span class="nav-icon">'+(i===0?'⌂':id==='animation'?'✦':id==='booths'?'⌘':id==='map'?'▤':'i')+'</span><span>'+escape(label)+'</span></button></div>').join('');
 }
+
+/* Only the editor chrome uses the English template identifier; event names and gallery labels remain user-authored/localized. */
+export function studioTemplateTitle(template){
+ return String(template.studioName||template.name||template.id||'ONLYEVENT').replace(/^\\d+\\s*·\\s*/,'').trim();
+}
+export function syncStudioIdentity(template,eventName,root=document){
+ const title=studioTemplateTitle(template);
+ const workspace=root.querySelector('#workspaceTemplateName');if(workspace)workspace.textContent=title;
+ const project=root.querySelector('#projectTemplateName');if(project)project.textContent=title;
+ const event=root.querySelector('#projectEventName');if(event)event.textContent=String(eventName||'未命名活动');
+}
