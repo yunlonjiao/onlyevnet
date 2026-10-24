@@ -239,6 +239,7 @@ window.addEventListener('message',e=>{
     router.setCurrentPage(m.page||'home');
     applyState(m.state||{});
     fields.setMode(m.mode||'edit');
+    if(m.mode==='preview'&&state.entryAnimation?.enabled!==false)previewEntry({play:false});
     runtime.initRuntime();
     router.showPage(router.getCurrentPage(),false);
     requestAnimationFrame(setupHomeMotion);
