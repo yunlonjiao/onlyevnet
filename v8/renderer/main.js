@@ -1,6 +1,6 @@
 // @ts-check
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.41.4';
+import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.41.5';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.41.4';
 // @ts-ignore -- browser cache-busted absolute ESM URL
