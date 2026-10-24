@@ -1582,9 +1582,9 @@ $('#deviceDesktopBtn').onclick=()=>setDevice('desktop');
 $('#deviceMobileBtn').onclick=()=>setDevice('mobile');
 function setPreview(next){
  preview=!!next;setStudioPreviewChrome(preview);
+ // The renderer handles the entry state in OE_SET_MODE (and OE_INIT_STATE on a slow boot).
+ // Sending a second delayed entry command can reopen the gate after the visitor skips it.
  send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});
- if(preview&&state.entryAnimation?.enabled!==false)setTimeout(()=>send({type:'OE_PREVIEW_ENTRY',state,play:false}),80);
- else if(!preview)setTimeout(()=>send({type:'OE_HIDE_ENTRY_PREVIEW'}),30);
  toast(preview?'预览模式 · 页面交互已启用':'已返回编辑');
 }
 $('#previewBtn').onclick=()=>setPreview(!preview);
