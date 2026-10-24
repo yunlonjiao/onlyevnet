@@ -1,3 +1,4 @@
+import {bindCanvasSelection} from '/v8/editor/canvas-selection.js';
 import {getTemplate} from '/v8/templates/registry.js?v=8.41.1';
 import {esc} from '/v8/market-shared.js';
 import {createSite,updateSite,cleanSlug,suggestSlug,isValidSlug} from '/v8/publisher.js';
@@ -140,37 +141,14 @@ const css=document.createElement('style');css.textContent='.page-workspace #crea
 // In-canvas editing follows the existing Studio convention: select a visible block,
 // then edit its properties in the right inspector. No second editor UI.
 const regionMap={top:'images',about:'basic',ads:'products',randomSix:'products',news:'news',tickets:'tickets',community:'community',sponsors:'sponsors',creators:'creators',products:'products',map:'maps',guide:'guide',catalogue:'creators'};
-iframe.addEventListener('load',()=>{try{
-  // Direct text editing matches the existing Studio's yellow-frame interaction.
-  // Commit on blur; leaving the active node intact while typing avoids cursor jumps.
-  const editableFields=[['[data-event-name]','eventName'],['[data-description]','description'],['[data-date]','date'],['[data-location]','location']];
-  const doc=iframe.contentDocument;
-  for(const [selector,path] of editableFields){
-    doc.querySelectorAll(selector).forEach(el=>{
-      el.contentEditable=preview?'false':'true';el.dataset.marketEditPath=path;el.spellcheck=false;
-      el.setAttribute('role','textbox');el.setAttribute('aria-label','直接编辑'+({eventName:'活动名称',description:'活动介绍',date:'活动时间',location:'活动地址'}[path]));
-      el.addEventListener('focus',()=>{if(preview)return;checkpoint();section='basic';selected=-1;render();el.classList.add('oe-market-editing')});
-      el.addEventListener('blur',()=>{el.classList.remove('oe-market-editing');const value=el.textContent.trim();if(value!==String(state[path]??'')){change(path,value);render()}});
-      el.addEventListener('keydown',e=>{if(e.key==='Enter'&&path!=='description'){e.preventDefault();el.blur()}});
-    });
-  }
-  iframe.contentDocument.addEventListener('click',e=>{
-    if(preview)return;
-    if(e.target.closest('[data-market-edit-path]'))return;
-    const record=e.target.closest('[data-market-record]');
-    if(record){e.preventDefault();const key=record.dataset.marketRecord,items=Array.isArray(state[key])?state[key]:[];const index=items.findIndex(item=>String(item.id)===record.dataset.marketRecordId);if(index>=0){section=key;selected=index;render();iframe.contentDocument.querySelectorAll('.oe-selected-edit-target').forEach(n=>n.classList.remove('oe-selected-edit-target'));record.classList.add('oe-selected-edit-target');return}}
-    const target=e.target.closest('[id]');
-    let node=target;
-    while(node&&!regionMap[node.id])node=node.parentElement;
-    if(!node)return;
-    section=regionMap[node.id];selected=-1;render();
-    iframe.contentDocument.querySelectorAll('.oe-selected-edit-target').forEach(el=>el.classList.remove('oe-selected-edit-target'));
-    node.classList.add('oe-selected-edit-target');
-  });
-  const css=iframe.contentDocument.createElement('style');
-  css.textContent='.oe-selected-edit-target,[data-market-edit-path]:focus{outline:3px solid #e6bc22;outline-offset:4px}[data-market-edit-path]:hover{outline:2px dashed #e6bc22;outline-offset:3px}';
-  iframe.contentDocument.head.appendChild(css);
-}catch(e){console.warn('market canvas selection unavailable',e)}});
+bindCanvasSelection({
+ frame:iframe,getPreview:()=>preview,regions:regionMap,
+ fields:[['[data-event-name]','eventName'],['[data-description]','description'],['[data-date]','date'],['[data-location]','location']],
+ onFocusField:()=>{checkpoint();section='basic';selected=-1;render()},
+ onCommitField:(path,value)=>{if(value!==String(state[path]??'')){change(path,value);render()}},
+ onSelectRecord:(key,id)=>{const records=Array.isArray(state[key])?state[key]:[];const index=records.findIndex(item=>String(item.id)===String(id));if(index>=0){section=key;selected=index;render()}},
+ onSelectRegion:key=>{section=key;selected=-1;render()}
+});
 const marketSkin=document.createElement('style');marketSkin.textContent='.market-field{display:grid;gap:8px;margin:0 0 18px;color:#656574;font-size:12px;font-weight:650}.market-control{width:100%;min-height:39px;border:1px solid #e3e3eb;border-radius:9px;background:#fff;color:#23232c;padding:10px 12px;outline:none;font:inherit;font-size:13px;transition:border-color .15s,box-shadow .15s}.market-control:focus{border-color:#8873d8;box-shadow:0 0 0 3px #8873d81a}.market-field textarea{min-height:105px;resize:vertical;line-height:1.6}.market-upload{margin:18px 0;padding:14px;border-radius:12px;border:1px solid #e7e6ed;background:#fafafd}.market-upload>span{font-size:12px;color:#626276;font-weight:750}.market-upload .item-media-row{display:flex;align-items:center;gap:14px;margin-top:12px}.market-upload .item-media-row>img,.market-upload .item-media-empty{width:100px;height:75px;flex-shrink:0;object-fit:contain;border-radius:8px;background:#f0eef6}.market-upload .item-media-empty{display:grid;place-items:center;font-size:28px;color:#aaa}.market-upload-actions{display:grid;gap:8px;flex:1;min-width:0}.market-upload-actions button{padding:9px 11px;font-size:12px}.market-hidden-upload{display:none!important}.market-upload details{margin-top:14px}.market-upload details summary{font-size:12px;color:#888;cursor:pointer}.market-upload details .market-field{margin-top:12px}';document.head.appendChild(marketSkin);
 const nameSlot=document.createElement('div');nameSlot.className='market-organizer-name';nameSlot.id='marketOrganizerEventName';const header=document.querySelector('.sidebar-head');if(header)header.insertAdjacentElement('afterend',nameSlot);
 persist();render();
