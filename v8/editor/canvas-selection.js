@@ -22,12 +22,12 @@ export function bindCanvasSelection({frame,getPreview,onSelectRecord,onSelectReg
       const edit=e.target.closest('[data-market-edit-path]');
       if(edit){mark(edit);return;}
       const record=e.target.closest('[data-market-record]');
-      if(record){e.preventDefault();onSelectRecord(record.dataset.marketRecord,record.dataset.marketRecordId);mark(record);return;}
+      if(record){e.preventDefault();e.stopImmediatePropagation();onSelectRecord(record.dataset.marketRecord,record.dataset.marketRecordId,record.dataset.marketRecordIndex);mark(record);return;}
       let node=e.target.closest('[id]');
       while(node&&!regions[node.id])node=node.parentElement;
       if(!node)return;
       onSelectRegion(regions[node.id]);mark(node);
-    });
+    },true);
     const style=doc.createElement('style');style.dataset.oeSelectionStyle='1';
     style.textContent='[data-market-edit-path]{cursor:text}[data-market-edit-path]:hover{outline:2px solid #7b61ff77;outline-offset:2px}[data-market-edit-path]:focus{outline:2px solid #7b61ff;background:#fff7b3;outline-offset:0}.oe-selected-edit-target:not([data-market-edit-path]){outline:2px solid #7b61ff55;outline-offset:4px}.oe-studio-preview [data-market-edit-path],.oe-studio-preview .oe-selected-edit-target{outline:none!important;background:inherit!important;cursor:inherit}';
     doc.head.appendChild(style);
