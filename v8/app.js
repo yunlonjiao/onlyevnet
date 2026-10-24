@@ -1,3 +1,4 @@
+import {loadStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.40.1';
@@ -1428,11 +1429,8 @@ function openImageInspector(path){
  $('#cropCurrentImage')?.addEventListener('click',()=>openImageCropper(current,path));
  $('#removeImage')?.addEventListener('click',()=>{checkpoint();setDeep(path,'');save();send({type:'OE_REPLACE_STATE',state});toast('图片已移除');openImageInspector(path)});
 }
-let activeCropper=null,cropContext=null,cropperModulePromise=null;
-function getCropperModule(){
- if(!cropperModulePromise)cropperModulePromise=import('https://cdn.jsdelivr.net/npm/cropperjs@2.2.0/+esm');
- return cropperModulePromise;
-}
+let activeCropper=null,cropContext=null;
+const getCropperModule=loadStudioCropper;
 function canvasToBlob(canvas,type='image/webp',quality=.9){
  return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('图片编码失败')),type,quality));
 }
