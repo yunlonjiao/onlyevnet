@@ -1,5 +1,5 @@
 /* One Studio entrypoint; renderer/data adapters are selected by the template contract. */
-import {getTemplate,DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.41.1';
+import {getTemplate,DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.41.3';
 const params=new URLSearchParams(location.search);
 const template=getTemplate(params.get('template')||DEFAULT_TEMPLATE_ID);
 if(template.eventType==='creator-market'){

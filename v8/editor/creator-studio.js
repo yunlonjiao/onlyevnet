@@ -6,7 +6,7 @@ import {createStudioCropper,cropSelectionToDataUrl} from '/v8/editor/studio-crop
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,renderPageTree,syncStudioIdentity} from '/v8/editor/studio-chrome.js';
 import {bindCanvasSelection} from '/v8/editor/canvas-selection.js';
-import {getTemplate} from '/v8/templates/registry.js?v=8.41.1';
+import {getTemplate} from '/v8/templates/registry.js?v=8.41.3';
 import {esc} from '/v8/market-shared.js';
 import {createSite,updateSite,cleanSlug,suggestSlug,isValidSlug} from '/v8/publisher.js';
 const $=s=>document.querySelector(s),q=new URLSearchParams(location.search),t=getTemplate(q.get('template')),project=q.get('project')||'default';

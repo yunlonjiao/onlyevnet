@@ -139,14 +139,30 @@ test('03 image editor uses the shared Cropper UI and saves a cropped hero',async
 });
 
 test('Studio identifiers stay English while organizer event names remain editable',async()=>{
- for(const [id,label] of [['01-ip-only','IP ONLY'],['02-scrapbook','TRAVEL JOURNEY'],['03-creator-market','CREATOR MARKET'],['04-creator-catalogue','CREATOR CATALOGUE']]){
+ for(const [id,label] of [['01-ip-only','STAR BEAT ONLY'],['02-scrapbook','JOURNEY ONLY'],['03-creator-market','CREATOR ONLY'],['04-creator-catalogue','CATALOGUE ONLY']]){
   const {context,page,errors}=await openEditor(id,'ci-identity-'+id);
   assert.equal(await page.locator('#projectTemplateName').textContent(),label);
   assert.equal(await page.locator('#workspaceTemplateName').textContent(),label);
-  assert.equal(await page.locator('#studioVersion').textContent(),'v8.41.2');
+  assert.equal(await page.locator('#studioVersion').textContent(),'v8.41.3');
   assert.deepEqual(errors,[]);
   await context.close();
  }
+});
+test('template gallery metadata uses one distinct NAME ONLY for every template',async()=>{
+ const {context,page,errors}=await openEditor('01-ip-only','ci-template-brand-contract');
+ const templates=await page.evaluate(async()=>{
+   const {listTemplates}=await import('/v8/templates/registry.js?v=8.41.3');
+   return listTemplates().map(t=>({id:t.id,name:t.name,label:t.label,studioName:t.studioName}));
+ });
+ assert.equal(templates.length,4);
+ assert.equal(new Set(templates.map(t=>t.label)).size,templates.length);
+ for(const template of templates){
+  assert.match(template.label,/^[A-Z]+(?: [A-Z]+)* ONLY$/);
+  assert.equal(template.studioName,template.label);
+  assert.equal(template.name,template.id.slice(0,2)+' · '+template.label);
+ }
+ assert.deepEqual(errors,[]);
+ await context.close();
 });
 test('03 sidebar and canvas titles stay in sync for products and pages',async()=>{
  const {context,page,errors}=await openEditor('03-creator-market','ci-page-alignment');
