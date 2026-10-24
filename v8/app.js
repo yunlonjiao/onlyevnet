@@ -4,7 +4,7 @@ import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {downloadStudioHtml} from '/v8/editor/studio-publish.js';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
-import {renderInspector} from '/v8/editor/studio-chrome.js';
+import {renderInspector,syncStudioIdentity as renderStudioIdentity} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.40.1';
 import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.40.1';
 const $=s=>document.querySelector(s);
@@ -250,7 +250,7 @@ async function publishGeneratedHtml(html){
  }finally{setPublishBusy(false)}
 }
 
-function syncStudioIdentity(){const t=document.querySelector('#workspaceTemplateName');if(t)t.textContent=activeTemplate.name.replace(/^\d+\s*·\s*/,'');const p=document.querySelector('#projectTemplateName');if(p)p.textContent=activeTemplate.name.replace(/^\d+\s*·\s*/,'');const e=document.querySelector('#projectEventName');if(e)e.textContent=state.eventName||'未命名活动'}
+function syncStudioIdentity(){renderStudioIdentity(activeTemplate,state.eventName)}
 function syncAdminProject(extra={}){
  if(projectId==='default')return;
  let rows=[];try{rows=JSON.parse(localStorage.getItem(ADMIN_PROJECTS_KEY)||'[]')||[]}catch{}
