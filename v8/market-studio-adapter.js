@@ -1,3 +1,4 @@
+import {downloadStudioHtml,publishStudioSite} from '/v8/editor/studio-publish.js';
 import {loadStudioCropper,cropSelectionToDataUrl} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,renderPageTree} from '/v8/editor/studio-chrome.js';
@@ -139,16 +140,14 @@ $('#publishBtn').onclick=publishDialog;
 $('#publishClose').onclick=()=>$('#publishDialog').close();
 $('#publishCancel').onclick=()=>$('#publishDialog').close();
 $('#publishDownload').onclick=async()=>{
-  try{persist();const html=await generateHtml();const blob=new Blob([html],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='onlyevent-market-'+project+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){$('#publishStatus').textContent='导出失败：'+e.message;}
+  try{persist();const html=await generateHtml();downloadStudioHtml(html,state.eventName||'onlyevent-market-'+project);}catch(e){$('#publishStatus').textContent='导出失败：'+e.message;}
 };
 $('#publishPrimary').onclick=async()=>{
   const slug=cleanSlug($('#publishSlug').value);if(!isValidSlug(slug)){$('#publishStatus').textContent='请输入3–63位字母、数字或连字符';return}
   $('#publishPrimary').disabled=true;$('#publishStatus').textContent='正在生成并发布网站…';
   try{
-    persist();const html=await generateHtml(),payload={html,title:state.eventName,slug,templateId:t.id};
-    const result=publication.siteId?await updateSite({...payload,siteId:publication.siteId,editToken:publication.editToken}):await createSite(payload);
-    if(!result.siteId||!(result.editToken||publication.editToken))throw new Error('发布平台未返回有效站点凭证');
-    publication={siteId:result.siteId,editToken:result.editToken||publication.editToken,slug:result.slug||slug,url:result.url||('https://'+slug+'.onlyevent.cn'),publishedAt:new Date().toISOString()};
+    persist();const html=await generateHtml();
+    publication=await publishStudioSite({html,title:state.eventName,slug,templateId:t.id,publication,createSite,updateSite});
     localStorage.setItem(publishKey,JSON.stringify(publication));
     $('#publishStatus').textContent='网站已发布';$('#publishResult').hidden=false;$('#publishUrl').textContent=publication.url;
     const projects=JSON.parse(localStorage.getItem('onlyevent-admin-projects-v1')||'[]');
