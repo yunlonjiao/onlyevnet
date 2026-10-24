@@ -1,3 +1,4 @@
+import {setStudioDevice,setStudioPreviewChrome} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {downloadStudioHtml} from '/v8/editor/studio-publish.js';
@@ -1576,17 +1577,11 @@ $('#imageInput').addEventListener('change',async e=>{
    openImageCropper(prepared.url,path,returnCollection,returnIndex,prepared.url);
  }catch(err){console.error('[OnlyEvent image input]',err);toast('图片读取失败')}
 });
-function setDevice(mode){
- const mobile=mode==='mobile';canvas.classList.toggle('mobile',mobile);
- document.querySelectorAll('[data-device]').forEach(b=>b.classList.toggle('active',b.dataset.device===mode));
- const label=$('#canvasDeviceLabel');if(label)label.textContent=mobile?'手机画布':'桌面画布';
-}
+function setDevice(mode){setStudioDevice(mode,{canvas})}
 $('#deviceDesktopBtn').onclick=()=>setDevice('desktop');
 $('#deviceMobileBtn').onclick=()=>setDevice('mobile');
 function setPreview(next){
- preview=!!next;document.body.classList.toggle('previewing',preview);
- const label=$('#previewLabel');if(label)label.textContent=preview?'退出预览':'预览';
- $('#previewBtn').classList.toggle('active',preview);
+ preview=!!next;setStudioPreviewChrome(preview);
  send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});
  if(preview&&state.entryAnimation?.enabled!==false)setTimeout(()=>send({type:'OE_PREVIEW_ENTRY',state,play:false}),80);
  else if(!preview)setTimeout(()=>send({type:'OE_HIDE_ENTRY_PREVIEW'}),30);
