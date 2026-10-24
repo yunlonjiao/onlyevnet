@@ -6,12 +6,13 @@ import {createStudioCropper,cropSelectionToDataUrl} from '/v8/editor/studio-crop
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,renderPageTree,syncStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
 import {bindCanvasSelection} from '/v8/editor/canvas-selection.js';
+import {createCreatorStudioPages} from '/v8/editor/creator-pages.js';
 import {getTemplate} from '/v8/templates/registry.js?v=8.41.5';
 import {esc} from '/v8/market-shared.js';
 import {createSite,updateSite,cleanSlug,suggestSlug,isValidSlug} from '/v8/publisher.js';
 const $=s=>document.querySelector(s),q=new URLSearchParams(location.search),t=getTemplate(q.get('template')),project=q.get('project')||'default';
 const storage='onlyevent-studio-v8:'+t.id+':'+project+':iframe';
-let state=structuredClone(t.defaults),section='basic',selected=-1,delay=0,preview=false;
+let state=structuredClone(t.defaults),section='basic',currentPage='home',selected=-1,delay=0,preview=false;
 let hasSaved=false;try{const saved=JSON.parse(localStorage.getItem(storage)||'null');if(saved){state={...state,...saved};hasSaved=true}}catch{}
 if(q.get('name')&&!hasSaved)state.eventName=q.get('name');
 migrateDemoEventName(state,project);
@@ -23,6 +24,7 @@ const customPageButton=$('#createCustomPageBtn');
 if(customPageButton){customPageButton.hidden=true;customPageButton.style.display='none'}
 const frame=$('#canvas');frame.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/market-'+(t.id==='03-creator-market'?'01':'02')+'-preview.html?project='+encodeURIComponent(project)+'&template='+encodeURIComponent(t.id)+'" title="同人创作展实时预览"></iframe>';
 let iframe=$('#liveFrame');
+const creatorPages=createCreatorStudioPages({frame:iframe,onNavigate:(page,content)=>navigatePage(page,content)});
 let pendingFrameRefresh=false;
 let pendingScrollPosition=null;
 function refreshMarketFrame(){
@@ -83,7 +85,7 @@ function collection(key){
 }
 
 function render(){const nav=$('#pageContentNav'),panel=$('#inspector');
-  const pageId=pageForSection[section]||'home';
+  const pageId=currentPage;
   renderPageTree(document.querySelector('.page-nav'),pageDefs,pageId,esc);
   const canvasPage=document.querySelector('.canvas-title b');
   if(canvasPage)canvasPage.textContent=pageDefs.find(x=>x[0]===pageId)?.[1]||'首页';
@@ -114,8 +116,25 @@ renderInspector(panel,esc,'属性',title,fields);
   });
  });
 $('#pageContentTitle').textContent=title;syncStudioIdentity(t,state.eventName);}
-document.querySelector('.page-nav')?.addEventListener('click',e=>{const b=e.target.closest('[data-market-page]');if(!b)return;const page=pageDefs.find(x=>x[0]===b.dataset.marketPage);if(!page)return;section=page[2];selected=-1;render();const hash={home:'#top',animation:'#top',booths:'#creators',map:'#map',guide:'#guide'}[page[0]];try{const doc=iframe.contentDocument;const target=doc.querySelector(hash);if(target){doc.querySelector('#directory')?.setAttribute('open','');target.scrollIntoView({behavior:'smooth',block:'start'})}}catch{}});
-$('#pageContentNav').addEventListener('click',e=>{let b=e.target.closest('[data-section]');if(!b)return;section=b.dataset.section;selected=-1;render();});
+function navigatePage(page,content){
+ const target=pageDefs.find(item=>item[0]===page);
+ if(!target)return;
+ currentPage=page;
+ section=content&&defs.some(item=>item[0]===content)?content:target[2];
+ selected=-1;
+ render();
+ creatorPages.show(currentPage,{isPreview:preview});
+}
+document.querySelector('.page-nav')?.addEventListener('click',e=>{
+ const button=e.target.closest('[data-market-page]');
+ if(button)navigatePage(button.dataset.marketPage);
+});
+$('#pageContentNav').addEventListener('click',e=>{
+ const button=e.target.closest('[data-section]');
+ if(!button)return;
+ section=button.dataset.section;currentPage=pageForSection[section]||'home';selected=-1;render();
+ creatorPages.show(currentPage,{isPreview:preview});
+});
 $('#inspector').addEventListener('click',e=>{
  const upload=e.target.closest('[data-market-upload]');if(upload){$('#inspector [data-file="'+upload.dataset.marketUpload+'"]')?.click();return}
  const remove=e.target.closest('[data-market-remove-image]');if(remove){checkpoint();change(remove.dataset.marketRemoveImage,'');render();return}
@@ -181,7 +200,7 @@ $('#cropApply').onclick=async()=>{
 };
 $('#undoBtn').onclick=()=>{const next=studioHistory.undo(state);if(!next)return;state=next;pendingFrameRefresh=true;schedule();render();syncHistory()};$('#redoBtn').onclick=()=>{const next=studioHistory.redo(state);if(!next)return;state=next;pendingFrameRefresh=true;schedule();render();syncHistory()};
 $('#deviceDesktopBtn').onclick=()=>setStudioDevice('desktop',{canvas:frame});$('#deviceMobileBtn').onclick=()=>setStudioDevice('mobile',{canvas:frame});
-$('#previewBtn').onclick=()=>{preview=!preview;setStudioPreviewChrome(preview);try{iframe.contentDocument?.documentElement.classList.toggle('oe-studio-preview',preview)}catch{};try{const doc=iframe.contentDocument;doc.querySelectorAll('[data-market-edit-path]').forEach(el=>{el.contentEditable=preview?'false':'true';el.setAttribute('aria-readonly',preview?'true':'false')});if(preview)doc.querySelectorAll('.oe-selected-edit-target').forEach(el=>el.classList.remove('oe-selected-edit-target'))}catch{}};
+$('#previewBtn').onclick=()=>{preview=!preview;setStudioPreviewChrome(preview);creatorPages.show(currentPage,{isPreview:preview});try{iframe.contentDocument?.documentElement.classList.toggle('oe-studio-preview',preview)}catch{};try{const doc=iframe.contentDocument;doc.querySelectorAll('[data-market-edit-path]').forEach(el=>{el.contentEditable=preview?'false':'true';el.setAttribute('aria-readonly',preview?'true':'false')});if(preview)doc.querySelectorAll('.oe-selected-edit-target').forEach(el=>el.classList.remove('oe-selected-edit-target'))}catch{}};
 $('#backAdminBtn').onclick=()=>location.assign('/admin/');
 const publishKey='onlyevent-studio-publish:'+t.id+':'+project+':iframe';
 let publication={};try{publication=JSON.parse(localStorage.getItem(publishKey)||'{}')}catch{}
@@ -235,10 +254,10 @@ bindCanvasSelection({
  fields:[['[data-event-name]','eventName'],['[data-description]','description'],['[data-date]','date'],['[data-location]','location']],
  onFocusField:()=>{checkpoint();section='basic';selected=-1;render()},
  onCommitField:(path,value)=>{if(value!==String(state[path]??'')){change(path,value);render()}},
- onSelectRecord:(key,id,position)=>{const records=Array.isArray(state[key])?state[key]:[];let index=id?records.findIndex(item=>String(item.id)===String(id)):-1;if(index<0&&position!==undefined)index=Number(position);if(index>=0&&index<records.length){section=key;selected=index;render()}},
- onSelectRegion:key=>{section=key;selected=-1;render()}
+ onSelectRecord:(key,id,position)=>{const records=Array.isArray(state[key])?state[key]:[];let index=id?records.findIndex(item=>String(item.id)===String(id)):-1;if(index<0&&position!==undefined)index=Number(position);if(index>=0&&index<records.length){section=key;selected=index;render();creatorPages.show(currentPage,{isPreview:preview,scroll:false})}},
+ onSelectRegion:key=>{section=key;selected=-1;render();creatorPages.show(pageForSection[key]||'home',{isPreview:preview,scroll:false})}
 });
 
 
 bindStudioMobilePanels();
-persist();render();syncHistory();
+persist();render();creatorPages.show(currentPage,{isPreview:preview,scroll:false});syncHistory();

@@ -45,7 +45,7 @@ test('03 can edit, persist, select product cards, preview and export standalone 
  await page.locator('#inspector [data-key="products.0.name"]').fill('QA 制品');
  await page.waitForTimeout(550);
  await frame.locator('#directory').evaluate(el=>el.open=true);
- const product=frame.locator('[data-market-record="products"][data-market-record-id]').filter({hasText:'QA 制品'}).first();
+ const product=frame.locator('#productList [data-market-record="products"][data-market-record-id]').filter({hasText:'QA 制品'}).first();
  await product.click({timeout:15000});
  assert.ok((await page.locator('#inspector [data-key="products.0.name"]').inputValue()).includes('QA 制品'));
 
@@ -232,6 +232,90 @@ test('03 mobile pages and Inspector drawers open and dismiss correctly',async()=
  assert.ok(await page.locator('body.mobile-inspector-open').count());
  await page.locator('#mobilePanelBackdrop').click({position:{x:190,y:180}});
  assert.equal(await page.locator('body.mobile-inspector-open').count(),0);
+ assert.deepEqual(errors,[]);
+ await context.close();
+});
+
+test('03 and 04 first-level navigation switches actual iframe pages, not just Inspector',async()=>{
+ const pages=[
+  {id:'home',section:'basic',visible:['.hero','#news'],hidden:['#map','#guide','#creators']},
+  {id:'animation',section:'images',visible:['.hero'],hidden:['#news','#creators','#map','#guide']},
+  {id:'booths',section:'creators',visible:['#creators','#products'],hidden:['.hero','#news','#map','#guide']},
+  {id:'map',section:'maps',visible:['#map'],hidden:['.hero','#news','#creators','#guide']},
+  {id:'guide',section:'guide',visible:['#guide'],hidden:['.hero','#news','#creators','#map']}
+ ];
+ for(const template of ['03-creator-market','04-creator-catalogue']){
+  const {context,page,frame,errors}=await openEditor(template,'ci-pages-'+template);
+  for(const target of pages){
+   await page.locator('.page-nav [data-market-page="'+target.id+'"]').click();
+   assert.equal(await page.locator('.page-nav button.active').getAttribute('data-market-page'),target.id);
+   assert.equal(await page.locator('.canvas-title b').textContent(),target.id==='home'?'首页':target.id==='animation'?'动画页面':target.id==='booths'?'摊位':target.id==='map'?'场地图':'观展指南');
+   assert.ok(await page.locator('#pageContentNav [data-section="'+target.section+'"].active').count());
+   assert.equal(await frame.locator('html').getAttribute('data-oe-studio-page'),target.id);
+   for(const selector of target.visible)assert.ok(await frame.locator(selector).first().isVisible(),template+' '+target.id+' should show '+selector);
+   for(const selector of target.hidden)assert.equal(await frame.locator(selector).first().isVisible(),false,template+' '+target.id+' should hide '+selector);
+  }
+  await page.locator('#pageContentNav [data-section="products"]').click();
+  assert.ok(await page.locator('.page-nav [data-market-page="booths"].active').count());
+  assert.ok(await frame.locator('#products').isVisible());
+  await page.locator('#pageContentNav [data-section="guide"]').click();
+  assert.ok(await frame.locator('#guide').isVisible());
+  await page.locator('#previewBtn').click();
+  assert.equal(await frame.locator('html').getAttribute('data-oe-studio-page'),null);
+  assert.equal(await frame.locator('.hero').isVisible(),true);
+  assert.equal(await frame.locator('#news').isVisible(),true);
+  if(template==='03-creator-market'){
+   assert.equal(await frame.locator('#directory').evaluate(el=>el.open),false);
+   await frame.locator('nav a[href="#map"]').click();
+   assert.equal(await frame.locator('#directory').evaluate(el=>el.open),true);
+  }
+  await page.locator('#previewBtn').click();
+  assert.equal(await frame.locator('html').getAttribute('data-oe-studio-page'),'guide');
+  assert.ok(await frame.locator('#guide').isVisible());
+  assert.equal(await frame.locator('.hero').isVisible(),false);
+  assert.deepEqual(errors,[]);
+  await context.close();
+ }
+});
+
+test('selecting a featured homepage product keeps the homepage visible while editing',async()=>{
+ const {context,page,frame,errors}=await openEditor('03-creator-market','ci-home-card-edit');
+ await page.locator('#pageContentNav [data-section="products"]').click();
+ await page.locator('#contentListPanel [data-sidebar-content-add]').click();
+ await page.locator('#inspector [data-key="products.0.name"]').fill('首页精选制品');
+ await page.waitForFunction(()=>{
+  const raw=localStorage.getItem('onlyevent-studio-v8:03-creator-market:ci-home-card-edit:iframe');
+  return raw&&JSON.parse(raw).products?.[0]?.name==='首页精选制品';
+ });
+ await page.locator('.page-nav [data-market-page="home"]').click();
+ const card=frame.locator('#randomSix [data-market-record="products"]').first();
+ await card.waitFor({state:'visible',timeout:15000});
+ await card.click();
+ assert.ok(await page.locator('#inspector [data-key="products.0.name"]').count());
+ assert.ok(await page.locator('.page-nav [data-market-page="home"].active').count());
+ assert.equal(await frame.locator('html').getAttribute('data-oe-studio-page'),'home');
+ assert.ok(await frame.locator('#randomSix').isVisible());
+ assert.deepEqual(errors,[]);
+ await context.close();
+});
+test('creator iframe navigation and canvas reload keep the requested first-level page',async()=>{
+ const {context,page,frame,errors}=await openEditor('03-creator-market','ci-iframe-nav');
+ await frame.locator('nav a[href="#map"]').click();
+ assert.equal(await frame.locator('html').getAttribute('data-oe-studio-page'),'map');
+ assert.ok(await page.locator('.page-nav [data-market-page="map"].active').count());
+ assert.ok(await frame.locator('#map').isVisible());
+ await page.locator('#pageContentNav [data-section="maps"]').click();
+ await page.locator('#contentListPanel [data-sidebar-content-add]').click();
+ await page.waitForFunction(()=>{
+  const frame=document.querySelector('#liveFrame');
+  return frame?.contentDocument?.documentElement?.getAttribute('data-oe-studio-page')==='map' &&
+  frame.contentDocument?.querySelector('#map')?.getAttribute('data-oe-creator-hidden')===null;
+ });
+ assert.ok(await frame.locator('#map').isVisible());
+ assert.equal(await frame.locator('#creators').isVisible(),false);
+ await frame.locator('nav a[href="#creators"]').click();
+ assert.equal(await frame.locator('html').getAttribute('data-oe-studio-page'),'booths');
+ assert.ok(await page.locator('#pageContentNav [data-section="creators"].active').count());
  assert.deepEqual(errors,[]);
  await context.close();
 });
