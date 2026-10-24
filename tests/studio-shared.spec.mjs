@@ -72,3 +72,51 @@ test('03 mobile editor has working device toolbar and preview controls',async()=
  assert.deepEqual(errors,[]);
  await context.close();
 });
+
+test('03 guide, map records, list deletion and undo/redo use the Studio workflow',async()=>{
+ const {context,page,errors,frame}=await openEditor('03-creator-market','ci-guide-map');
+ const name=page.locator('#inspector [data-key="eventName"]');
+ const original=await name.inputValue();
+ await name.fill('QA Undo Title');
+ await name.blur();
+ await page.locator('#undoBtn').click();
+ assert.equal(await page.locator('#inspector [data-key="eventName"]').inputValue(),original);
+ await page.locator('#redoBtn').click();
+ assert.equal(await page.locator('#inspector [data-key="eventName"]').inputValue(),'QA Undo Title');
+
+ await page.locator('#pageContentNav [data-section="guide"]').click();
+ await page.locator('#inspector [data-key="guide"]').fill('QA 入场指南内容');
+ await page.waitForTimeout(300);
+ assert.equal((await frame.locator('#guideText').textContent())?.trim(),'QA 入场指南内容');
+
+ await page.locator('#pageContentNav [data-section="maps"]').click();
+ await page.locator('#contentListPanel [data-sidebar-content-add]').click();
+ const mapName=page.locator('#inspector [data-key="maps.0.title"]');
+ await mapName.fill('QA 场地图');
+ await page.waitForTimeout(500);
+ const map=frame.locator('[data-market-record="maps"]').first();
+ await map.click({timeout:12000});
+ assert.equal(await page.locator('#inspector [data-key="maps.0.title"]').inputValue(),'QA 场地图');
+ assert.equal(await frame.locator('#zoom[open]').count(),0,'Editor map selection must not open visitor zoom');
+ await page.locator('#inspector [data-delete-selected]').click();
+ assert.equal(await page.locator('#contentListPanel [data-open-item]').count(),0);
+ assert.deepEqual(errors,[]);
+ await context.close();
+});
+
+test('03 canvas focus uses the same 01/02 field highlight colors',async()=>{
+ const {context,page,errors,frame}=await openEditor('03-creator-market','ci-highlight');
+ const target=frame.locator('[data-event-name][data-market-edit-path]').first();
+ await target.focus();
+ const styles=await target.evaluate(el=>({
+  outline:getComputedStyle(el).outlineColor,
+  background:getComputedStyle(el).backgroundColor
+ }));
+ assert.equal(styles.outline,'rgb(123, 97, 255)');
+ assert.equal(styles.background,'rgb(255, 247, 179)');
+ await page.locator('#previewBtn').click();
+ const outline=await frame.locator('[data-event-name]').first().evaluate(el=>getComputedStyle(el).outlineStyle);
+ assert.equal(outline,'none');
+ assert.deepEqual(errors,[]);
+ await context.close();
+});
