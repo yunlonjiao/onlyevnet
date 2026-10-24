@@ -1,3 +1,4 @@
+import {loadStudioCropper,cropSelectionToDataUrl} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,renderPageTree} from '/v8/editor/studio-chrome.js';
 import {bindCanvasSelection} from '/v8/editor/canvas-selection.js';
@@ -89,7 +90,7 @@ $('#inspector').addEventListener('change',async e=>{
  $('#imageCropDialog').showModal();
  $('#cropStage').classList.add('loading');
  try{
-  const mod=await import('https://cdn.jsdelivr.net/npm/cropperjs@2.2.0/+esm');
+  const mod=await loadStudioCropper();
   const Cropper=mod.default||mod.Cropper;
   marketCropper?.destroy?.();
   const ratio=marketCropConfig.ratio;
@@ -105,12 +106,7 @@ $('#cropApply').onclick=async()=>{
  const selection=marketCropper?.getCropperSelection?.();if(!selection||!marketCropPath)return;
  const button=$('#cropApply');button.disabled=true;
  try{
-  const cfg=marketCropConfig;
-  let width=cfg.width,height=cfg.height;
-  if(!cfg.ratio){const ratio=Math.max(.1,Number(selection.width||1)/Math.max(1,Number(selection.height||1)));const max=cfg.maxSize||1600;width=ratio>=1?max:Math.max(1,Math.round(max*ratio));height=ratio>=1?Math.max(1,Math.round(max/ratio)):max}
-  const canvas=await selection.$toCanvas({width,height});
-  const blob=await new Promise((resolve,reject)=>canvas.toBlob(x=>x?resolve(x):reject(new Error('图片编码失败')),'image/webp',.86));
-  const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob)});
+  const data=await cropSelectionToDataUrl(selection,marketCropConfig);
   checkpoint();change(marketCropPath,data);closeMarketCrop();render();
  }catch(err){console.error('[Market image apply]',err);$('#saveState').textContent='图片裁剪失败'}finally{button.disabled=false}
 };
