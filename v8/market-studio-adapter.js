@@ -56,16 +56,23 @@ function syncHistory(){const undo=$('#undoBtn'),redo=$('#redoBtn');if(undo)undo.
 function checkpoint(){studioHistory.checkpoint(state)}
 function schedule(){clearTimeout(delay);delay=setTimeout(persist,170);}
 function change(path,value){const keys=path.split('.');let o=state;for(const k of keys.slice(0,-1))o=o[k];o[keys.at(-1)]=value;if(path==='eventName'){const a=document.querySelector('#marketOrganizerEventName');if(a)a.textContent=value||'未命名活动';const b=document.querySelector('#projectEventName');if(b)b.textContent=value||'未命名活动';}if(!patchPreviewField(path,value))pendingFrameRefresh=true;schedule();}
-function input(label,path,multiline=false){const val=path.split('.').reduce((o,k)=>o?.[k],state)??'';return '<label class="market-field"><span>'+esc(label)+'</span>'+(multiline?'<textarea class="market-control" data-key="'+esc(path)+'">'+esc(val)+'</textarea>':'<input class="market-control" data-key="'+esc(path)+'" value="'+esc(val)+'">')+'</label>';}
-function upload(label,path){const current=path.split('.').reduce((o,k)=>o?.[k],state)||'';return '<div class="item-media market-upload"><span>'+esc(label)+'</span><div class="item-media-row">'+(current?'<img src="'+esc(current)+'" alt="'+esc(label)+' 当前图片">':'<div class="item-media-empty">＋</div>')+'<div class="market-upload-actions"><button type="button" data-market-upload="'+esc(path)+'">选择图片</button>'+(current?'<button type="button" class="ghost" data-market-remove-image="'+esc(path)+'">移除</button>':'')+'</div></div><input class="market-hidden-upload" type="file" accept="image/*" data-file="'+esc(path)+'" tabindex="-1" aria-label="'+esc(label)+'" hidden><details><summary>使用图片链接</summary>'+input('图片地址',path)+'</details></div>';}
+function input(label,path,multiline=false){const val=path.split('.').reduce((o,k)=>o?.[k],state)??'';return '<label><span>'+esc(label)+'</span>'+(multiline?'<textarea data-key="'+esc(path)+'">'+esc(val)+'</textarea>':'<input data-key="'+esc(path)+'" value="'+esc(val)+'">')+'</label>';}
+function upload(label,path){
+ const current=path.split('.').reduce((o,k)=>o?.[k],state)||'';
+ return '<div class="item-media hero-media-field"><span>'+esc(label)+'</span><div class="item-media-row">'+
+ (current?'<img src="'+esc(current)+'" alt="'+esc(label)+' 当前图片">':'<div class="item-media-empty">＋</div>')+
+ '<div><button type="button" data-market-upload="'+esc(path)+'">选择 / 裁剪</button>'+
+ (current?'<button type="button" class="ghost" data-market-remove-image="'+esc(path)+'">移除</button>':'')+
+ '</div></div><input type="file" accept="image/*" data-file="'+esc(path)+'" tabindex="-1" aria-label="'+esc(label)+'" hidden><details><summary>使用图片链接</summary>'+input('图片地址',path)+'</details></div>';
+}
 function collection(key){
  const records=state[key]||[],item=records[selected];if(!item)return '<div class="inspector-empty"><b>从左侧内容库或画布选择内容</b></div>';
  const prefix=key+'.'+selected+'.';
  const columns=key==='creators'?['name','booth','description','tags','image']:key==='products'?['name','creatorId','description','price','tags','image']:key==='maps'?['title','image']:key==='news'?['date','title']:key==='community'?['label','url']:['name','image'];
  let out='<div class="item-inspector-head"><div><span>内容编辑</span><b>'+esc(item.name||item.title||item.label||('记录 '+(selected+1)))+'</b></div><span>'+String(selected+1).padStart(2,'0')+' / '+String(records.length).padStart(2,'0')+'</span></div><div class="item-fields">';
  for(const k of columns){
-  if(k==='tags'){out+='<label class="market-field"><span>标签（逗号分隔）</span><input class="market-control" data-market-tags="'+prefix+k+'" value="'+esc((item.tags||[]).join(', '))+'"></label>';continue}
-  if(k==='creatorId'){out+='<label class="market-field"><span>所属社团</span><select class="market-control" data-key="'+prefix+k+'"><option value="">未关联</option>'+((state.creators||[]).map(c=>'<option value="'+esc(c.id)+'" '+(c.id===item.creatorId?'selected':'')+'>'+esc(c.name||c.id)+'</option>').join(''))+'</select></label>';continue}
+  if(k==='tags'){out+='<label ><span>标签（逗号分隔）</span><input  data-market-tags="'+prefix+k+'" value="'+esc((item.tags||[]).join(', '))+'"></label>';continue}
+  if(k==='creatorId'){out+='<label ><span>所属社团</span><select  data-key="'+prefix+k+'"><option value="">未关联</option>'+((state.creators||[]).map(c=>'<option value="'+esc(c.id)+'" '+(c.id===item.creatorId?'selected':'')+'>'+esc(c.name||c.id)+'</option>').join(''))+'</select></label>';continue}
   out+=k==='image'?upload('图片',prefix+k):input(({name:'名称',booth:'摊位号',description:'简介',price:'价格',date:'日期',title:'标题',label:'显示名称',url:'外链'})[k]||k,prefix+k,k==='description');
  }
  return out+'</div><div class="row"><button type="button" class="danger" data-delete-selected>删除当前内容</button></div>';
@@ -211,7 +218,6 @@ $('#publishOpen').onclick=()=>{if(publication.url)window.open(publication.url,'_
 $('#publishCopy').onclick=async()=>{if(publication.url)await navigator.clipboard.writeText(publication.url)};
 
 $('#saveState').onclick=persist;
-const css=document.createElement('style');css.textContent='.page-workspace #createCustomPageBtn{display:none!important}.page-workspace .page-nav{display:block!important}.page-workspace .page-tree-row button.active{background:#eee8ff;color:#5142a6}.market-organizer-name{padding:12px 15px;margin:8px 0 14px;border-radius:9px;background:#f5f4fa;font-size:14px;font-weight:800;overflow-wrap:anywhere}.page-workspace #customPageRows{display:none!important}.oe-market-preview-mode #studioSidebar,.oe-market-preview-mode #inspector{display:none!important}.oe-market-preview-mode .studio-shell{grid-template-columns:1fr!important}#pageContentNav [data-section]{display:block;padding:10px 13px;margin:4px 0;width:100%;text-align:left}#pageContentNav [data-section].active{background:#eee8ff;border-radius:8px}';document.head.appendChild(css);
 
 // In-canvas editing follows the existing Studio convention: select a visible block,
 // then edit its properties in the right inspector. No second editor UI.
@@ -224,6 +230,6 @@ bindCanvasSelection({
  onSelectRecord:(key,id,position)=>{const records=Array.isArray(state[key])?state[key]:[];let index=id?records.findIndex(item=>String(item.id)===String(id)):-1;if(index<0&&position!==undefined)index=Number(position);if(index>=0&&index<records.length){section=key;selected=index;render()}},
  onSelectRegion:key=>{section=key;selected=-1;render()}
 });
-const marketSkin=document.createElement('style');marketSkin.textContent='.market-field{display:grid;gap:8px;margin:0 0 18px;color:#656574;font-size:12px;font-weight:650}.market-control{width:100%;min-height:39px;border:1px solid #e3e3eb;border-radius:9px;background:#fff;color:#23232c;padding:10px 12px;outline:none;font:inherit;font-size:13px;transition:border-color .15s,box-shadow .15s}.market-control:focus{border-color:#8873d8;box-shadow:0 0 0 3px #8873d81a}.market-field textarea{min-height:105px;resize:vertical;line-height:1.6}.market-upload{margin:18px 0;padding:14px;border-radius:12px;border:1px solid #e7e6ed;background:#fafafd}.market-upload>span{font-size:12px;color:#626276;font-weight:750}.market-upload .item-media-row{display:flex;align-items:center;gap:14px;margin-top:12px}.market-upload .item-media-row>img,.market-upload .item-media-empty{width:100px;height:75px;flex-shrink:0;object-fit:contain;border-radius:8px;background:#f0eef6}.market-upload .item-media-empty{display:grid;place-items:center;font-size:28px;color:#aaa}.market-upload-actions{display:grid;gap:8px;flex:1;min-width:0}.market-upload-actions button{padding:9px 11px;font-size:12px}.market-hidden-upload{display:none!important}.market-upload details{margin-top:14px}.market-upload details summary{font-size:12px;color:#888;cursor:pointer}.market-upload details .market-field{margin-top:12px}';document.head.appendChild(marketSkin);
+
 const nameSlot=document.createElement('div');nameSlot.className='market-organizer-name';nameSlot.id='marketOrganizerEventName';const header=document.querySelector('.sidebar-head');if(header)header.insertAdjacentElement('afterend',nameSlot);
 persist();render();syncHistory();
