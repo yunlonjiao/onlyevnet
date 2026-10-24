@@ -151,6 +151,8 @@ test('Studio identifiers stay English while organizer event names remain editabl
 test('03 sidebar and canvas titles stay in sync for products and pages',async()=>{
  const {context,page,errors}=await openEditor('03-creator-market','ci-page-alignment');
  await page.locator('#pageContentNav [data-section="products"]').click();
+ assert.equal(await page.locator('#pageContentNav [data-section="products"] span').textContent(),'制品管理');
+ assert.equal(await page.locator('#pageContentNav [data-section="products"] b').textContent(),'0');
  assert.ok(await page.locator('.page-nav [data-page="booths"].active').count());
  assert.equal(await page.locator('.canvas-title b').textContent(),'摊位');
  await page.locator('#pageContentNav [data-section="guide"]').click();
