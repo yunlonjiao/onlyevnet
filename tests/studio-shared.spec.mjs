@@ -139,7 +139,7 @@ test('03 image editor uses the shared Cropper UI and saves a cropped hero',async
 });
 
 test('Studio identifiers stay English while organizer event names remain editable',async()=>{
- for(const [id,label] of [['01-ip-only','IP ONLY'],['02-scrapbook','TRAVEL JOURNEY'],['03-creator-market','CREATOR MARKET'],['04-creator-catalogue','CREATOR CATALOGUE']]){
+ for(const [id,label] of [['01-ip-only','STAR BEAT ONLY'],['02-scrapbook','JOURNEY ONLY'],['03-creator-market','CREATOR ONLY'],['04-creator-catalogue','CATALOGUE ONLY']]){
   const {context,page,errors}=await openEditor(id,'ci-identity-'+id);
   assert.equal(await page.locator('#projectTemplateName').textContent(),label);
   assert.equal(await page.locator('#workspaceTemplateName').textContent(),label);
