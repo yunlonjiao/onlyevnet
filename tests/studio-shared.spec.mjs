@@ -180,6 +180,24 @@ test('template style labels are distinct; all fresh sites display STARDUST ONLY'
   await context.close();
  }
 });
+test('legacy unscoped sample names migrate, but organizers own project names',async()=>{
+ const {context,page,errors}=await openEditor('03-creator-market','default');
+ await page.evaluate(()=>localStorage.setItem(
+  'onlyevent-studio-v8:03-creator-market:default:iframe',
+  JSON.stringify({eventName:'同人创作展',description:'原始内容仍需保留'})
+ ));
+ await page.reload({waitUntil:'domcontentloaded'});
+ await page.waitForFunction(()=>document.querySelector('#projectEventName')?.textContent==='STARDUST ONLY');
+ assert.equal(await page.locator('#inspector [data-key="description"]').inputValue(),'原始内容仍需保留');
+ assert.deepEqual(errors,[]);
+ await context.close();
+ const owned=await openEditor('03-creator-market','ci-owner-name');
+ await owned.page.locator('#inspector [data-key="eventName"]').fill('主办方自己的漫展名');
+ await owned.page.reload({waitUntil:'domcontentloaded'});
+ await owned.page.waitForFunction(()=>document.querySelector('#projectEventName')?.textContent==='主办方自己的漫展名');
+ assert.deepEqual(owned.errors,[]);
+ await owned.context.close();
+});
 test('03 sidebar and canvas titles stay in sync for products and pages',async()=>{
  const {context,page,errors}=await openEditor('03-creator-market','ci-page-alignment');
  await page.locator('#pageContentNav [data-section="products"]').click();
