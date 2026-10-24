@@ -29,7 +29,7 @@ export function bindCanvasSelection({frame,getPreview,onSelectRecord,onSelectReg
       onSelectRegion(regions[node.id]);mark(node);
     });
     const style=doc.createElement('style');style.dataset.oeSelectionStyle='1';
-    style.textContent='.oe-selected-edit-target,[data-market-edit-path]:focus{outline:3px solid #e6bc22;outline-offset:4px}[data-market-edit-path]:hover{outline:2px dashed #e6bc22;outline-offset:3px}';
+    style.textContent='[data-market-edit-path]{cursor:text}[data-market-edit-path]:hover{outline:2px solid #7b61ff77;outline-offset:2px}[data-market-edit-path]:focus{outline:2px solid #7b61ff;background:#fff7b3;outline-offset:0}.oe-selected-edit-target:not([data-market-edit-path]){outline:2px solid #7b61ff55;outline-offset:4px}.oe-studio-preview [data-market-edit-path],.oe-studio-preview .oe-selected-edit-target{outline:none!important;background:inherit!important;cursor:inherit}';
     doc.head.appendChild(style);
   };
   frame.addEventListener('load',attach);
