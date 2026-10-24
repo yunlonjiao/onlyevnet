@@ -1,7 +1,7 @@
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {downloadStudioHtml} from '/v8/editor/studio-publish.js';
-import {loadStudioCropper} from '/v8/editor/studio-crop.js';
+import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.40.1';
@@ -1514,14 +1514,8 @@ async function openImageCropper(src,path,returnCollection='',returnIndex='',owne
  send({type:'OE_CROP_ACTIVE',active:true});
  stage.classList.add('loading');
  try{
-   const mod=await getCropperModule(),Cropper=mod.default||mod.Cropper;
    if(activeCropper?.destroy)activeCropper.destroy();
-   stage.querySelectorAll('cropper-canvas').forEach(x=>x.remove());
-   try{await img.decode()}catch{}
-   const ratioAttr=Number.isFinite(cfg.ratio)&&cfg.ratio>0?' aspect-ratio="'+cfg.ratio+'" initial-aspect-ratio="'+cfg.ratio+'"':'';
-   const handles='<cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle>';
-   const template='<cropper-canvas background><cropper-image initial-center-size="contain" rotatable></cropper-image><cropper-shade hidden></cropper-shade><cropper-selection initial-coverage="0.72"'+ratioAttr+' movable resizable outlined><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair><cropper-handle action="move" theme-color="rgba(255,255,255,.32)"></cropper-handle>'+handles+'</cropper-selection></cropper-canvas>';
-   activeCropper=new Cropper(img,{container:stage,template});
+   activeCropper=await createStudioCropper({image:img,stage,ratio:cfg.ratio,coverage:.72});
    const selection=activeCropper.getCropperSelection?.();
    if(selection){
      if(cfg.fixed&&Number.isFinite(cfg.ratio)){selection.aspectRatio=cfg.ratio;selection.initialAspectRatio=cfg.ratio}
