@@ -121,3 +121,19 @@ test('03 canvas focus uses the same 01/02 field highlight colors',async()=>{
  assert.deepEqual(errors,[]);
  await context.close();
 });
+
+test('03 image editor uses the shared Cropper UI and saves a cropped hero',async()=>{
+ const {context,page,errors}=await openEditor('03-creator-market','ci-cropper');
+ await page.locator('#pageContentNav [data-section="images"]').click();
+ const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/eioAAAAASUVORK5CYII=','base64');
+ await page.locator('input[data-file="heroImage"]').setInputFiles({name:'hero.png',mimeType:'image/png',buffer:png});
+ await page.locator('#imageCropDialog[open]').waitFor({timeout:20000});
+ await page.locator('#cropStage cropper-selection').waitFor({timeout:20000});
+ await page.locator('#cropApply').click();
+ await page.locator('#imageCropDialog:not([open])').waitFor({timeout:20000});
+ await page.waitForTimeout(400);
+ const src=await page.locator('#inspector .item-media img').first().getAttribute('src');
+ assert.ok(src?.startsWith('data:image/webp;base64,'),'Cropping must save a WebP data URL');
+ assert.deepEqual(errors,[]);
+ await context.close();
+});
