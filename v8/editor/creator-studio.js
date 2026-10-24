@@ -6,6 +6,7 @@ import {createStudioCropper,cropSelectionToDataUrl} from '/v8/editor/studio-crop
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,renderPageTree,syncStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
 import {bindCanvasSelection} from '/v8/editor/canvas-selection.js';
+import {createCreatorStudioPages} from '/v8/editor/creator-pages.js';
 import {getTemplate} from '/v8/templates/registry.js?v=8.41.5';
 import {esc} from '/v8/market-shared.js';
 import {createSite,updateSite,cleanSlug,suggestSlug,isValidSlug} from '/v8/publisher.js';
@@ -23,6 +24,7 @@ const customPageButton=$('#createCustomPageBtn');
 if(customPageButton){customPageButton.hidden=true;customPageButton.style.display='none'}
 const frame=$('#canvas');frame.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/market-'+(t.id==='03-creator-market'?'01':'02')+'-preview.html?project='+encodeURIComponent(project)+'&template='+encodeURIComponent(t.id)+'" title="同人创作展实时预览"></iframe>';
 let iframe=$('#liveFrame');
+const creatorPages=createCreatorStudioPages({frame:iframe,onNavigate:(page,content)=>navigatePage(page,content)});
 let pendingFrameRefresh=false;
 let pendingScrollPosition=null;
 function refreshMarketFrame(){
@@ -114,8 +116,24 @@ renderInspector(panel,esc,'属性',title,fields);
   });
  });
 $('#pageContentTitle').textContent=title;syncStudioIdentity(t,state.eventName);}
-document.querySelector('.page-nav')?.addEventListener('click',e=>{const b=e.target.closest('[data-market-page]');if(!b)return;const page=pageDefs.find(x=>x[0]===b.dataset.marketPage);if(!page)return;section=page[2];selected=-1;render();const hash={home:'#top',animation:'#top',booths:'#creators',map:'#map',guide:'#guide'}[page[0]];try{const doc=iframe.contentDocument;const target=doc.querySelector(hash);if(target){doc.querySelector('#directory')?.setAttribute('open','');target.scrollIntoView({behavior:'smooth',block:'start'})}}catch{}});
-$('#pageContentNav').addEventListener('click',e=>{let b=e.target.closest('[data-section]');if(!b)return;section=b.dataset.section;selected=-1;render();});
+function navigatePage(page,content){
+ const target=pageDefs.find(item=>item[0]===page);
+ if(!target)return;
+ section=content&&defs.some(item=>item[0]===content)?content:target[2];
+ selected=-1;
+ render();
+ creatorPages.show(page,{isPreview:preview});
+}
+document.querySelector('.page-nav')?.addEventListener('click',e=>{
+ const button=e.target.closest('[data-market-page]');
+ if(button)navigatePage(button.dataset.marketPage);
+});
+$('#pageContentNav').addEventListener('click',e=>{
+ const button=e.target.closest('[data-section]');
+ if(!button)return;
+ section=button.dataset.section;selected=-1;render();
+ creatorPages.show(pageForSection[section]||'home',{isPreview:preview});
+});
 $('#inspector').addEventListener('click',e=>{
  const upload=e.target.closest('[data-market-upload]');if(upload){$('#inspector [data-file="'+upload.dataset.marketUpload+'"]')?.click();return}
  const remove=e.target.closest('[data-market-remove-image]');if(remove){checkpoint();change(remove.dataset.marketRemoveImage,'');render();return}
@@ -181,7 +199,7 @@ $('#cropApply').onclick=async()=>{
 };
 $('#undoBtn').onclick=()=>{const next=studioHistory.undo(state);if(!next)return;state=next;pendingFrameRefresh=true;schedule();render();syncHistory()};$('#redoBtn').onclick=()=>{const next=studioHistory.redo(state);if(!next)return;state=next;pendingFrameRefresh=true;schedule();render();syncHistory()};
 $('#deviceDesktopBtn').onclick=()=>setStudioDevice('desktop',{canvas:frame});$('#deviceMobileBtn').onclick=()=>setStudioDevice('mobile',{canvas:frame});
-$('#previewBtn').onclick=()=>{preview=!preview;setStudioPreviewChrome(preview);try{iframe.contentDocument?.documentElement.classList.toggle('oe-studio-preview',preview)}catch{};try{const doc=iframe.contentDocument;doc.querySelectorAll('[data-market-edit-path]').forEach(el=>{el.contentEditable=preview?'false':'true';el.setAttribute('aria-readonly',preview?'true':'false')});if(preview)doc.querySelectorAll('.oe-selected-edit-target').forEach(el=>el.classList.remove('oe-selected-edit-target'))}catch{}};
+$('#previewBtn').onclick=()=>{preview=!preview;setStudioPreviewChrome(preview);creatorPages.show(pageForSection[section]||'home',{isPreview:preview});try{iframe.contentDocument?.documentElement.classList.toggle('oe-studio-preview',preview)}catch{};try{const doc=iframe.contentDocument;doc.querySelectorAll('[data-market-edit-path]').forEach(el=>{el.contentEditable=preview?'false':'true';el.setAttribute('aria-readonly',preview?'true':'false')});if(preview)doc.querySelectorAll('.oe-selected-edit-target').forEach(el=>el.classList.remove('oe-selected-edit-target'))}catch{}};
 $('#backAdminBtn').onclick=()=>location.assign('/admin/');
 const publishKey='onlyevent-studio-publish:'+t.id+':'+project+':iframe';
 let publication={};try{publication=JSON.parse(localStorage.getItem(publishKey)||'{}')}catch{}
@@ -235,10 +253,10 @@ bindCanvasSelection({
  fields:[['[data-event-name]','eventName'],['[data-description]','description'],['[data-date]','date'],['[data-location]','location']],
  onFocusField:()=>{checkpoint();section='basic';selected=-1;render()},
  onCommitField:(path,value)=>{if(value!==String(state[path]??'')){change(path,value);render()}},
- onSelectRecord:(key,id,position)=>{const records=Array.isArray(state[key])?state[key]:[];let index=id?records.findIndex(item=>String(item.id)===String(id)):-1;if(index<0&&position!==undefined)index=Number(position);if(index>=0&&index<records.length){section=key;selected=index;render()}},
- onSelectRegion:key=>{section=key;selected=-1;render()}
+ onSelectRecord:(key,id,position)=>{const records=Array.isArray(state[key])?state[key]:[];let index=id?records.findIndex(item=>String(item.id)===String(id)):-1;if(index<0&&position!==undefined)index=Number(position);if(index>=0&&index<records.length){section=key;selected=index;render();creatorPages.show(pageForSection[key]||'home',{isPreview:preview,scroll:false})}},
+ onSelectRegion:key=>{section=key;selected=-1;render();creatorPages.show(pageForSection[key]||'home',{isPreview:preview,scroll:false})}
 });
 
 
 bindStudioMobilePanels();
-persist();render();syncHistory();
+persist();render();creatorPages.show('home',{isPreview:preview,scroll:false});syncHistory();
