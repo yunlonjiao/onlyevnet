@@ -1,10 +1,10 @@
-import {setStudioDevice,setStudioPreviewChrome} from '/v8/editor/studio-controls.js';
+import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {downloadStudioHtml} from '/v8/editor/studio-publish.js';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
-import {renderInspector} from '/v8/editor/studio-chrome.js';
+import {renderInspector,syncStudioIdentity as renderStudioIdentity} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.40.1';
 import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.40.1';
 const $=s=>document.querySelector(s);
@@ -250,7 +250,7 @@ async function publishGeneratedHtml(html){
  }finally{setPublishBusy(false)}
 }
 
-function syncStudioIdentity(){const t=document.querySelector('#workspaceTemplateName');if(t)t.textContent=activeTemplate.name.replace(/^\d+\s*·\s*/,'');const p=document.querySelector('#projectTemplateName');if(p)p.textContent=activeTemplate.name.replace(/^\d+\s*·\s*/,'');const e=document.querySelector('#projectEventName');if(e)e.textContent=state.eventName||'未命名活动'}
+function syncStudioIdentity(){renderStudioIdentity(activeTemplate,state.eventName)}
 function syncAdminProject(extra={}){
  if(projectId==='default')return;
  let rows=[];try{rows=JSON.parse(localStorage.getItem(ADMIN_PROJECTS_KEY)||'[]')||[]}catch{}
@@ -1582,9 +1582,9 @@ $('#deviceDesktopBtn').onclick=()=>setDevice('desktop');
 $('#deviceMobileBtn').onclick=()=>setDevice('mobile');
 function setPreview(next){
  preview=!!next;setStudioPreviewChrome(preview);
+ // The renderer handles the entry state in OE_SET_MODE (and OE_INIT_STATE on a slow boot).
+ // Sending a second delayed entry command can reopen the gate after the visitor skips it.
  send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});
- if(preview&&state.entryAnimation?.enabled!==false)setTimeout(()=>send({type:'OE_PREVIEW_ENTRY',state,play:false}),80);
- else if(!preview)setTimeout(()=>send({type:'OE_HIDE_ENTRY_PREVIEW'}),30);
  toast(preview?'预览模式 · 页面交互已启用':'已返回编辑');
 }
 $('#previewBtn').onclick=()=>setPreview(!preview);
@@ -1612,23 +1612,5 @@ publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.valu
 if(projectId!=='default'&&!hasSavedProject){localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject()}
 syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
 
-/* v8.35.0 mobile Studio drawers */
-function closeMobileStudioPanels(){
-  document.body.classList.remove('mobile-sidebar-open','mobile-inspector-open');
-  const backdrop=$('#mobilePanelBackdrop');if(backdrop)backdrop.hidden=true;
-  $('#mobilePagesBtn')?.classList.remove('active');
-  $('#mobileInspectorBtn')?.classList.remove('active');
-}
-function openMobileStudioPanel(kind){
-  const sidebar=kind==='sidebar';
-  document.body.classList.toggle('mobile-sidebar-open',sidebar);
-  document.body.classList.toggle('mobile-inspector-open',!sidebar);
-  const backdrop=$('#mobilePanelBackdrop');if(backdrop)backdrop.hidden=false;
-  $('#mobilePagesBtn')?.classList.toggle('active',sidebar);
-  $('#mobileInspectorBtn')?.classList.toggle('active',!sidebar);
-}
-$('#mobilePagesBtn')?.addEventListener('click',()=>document.body.classList.contains('mobile-sidebar-open')?closeMobileStudioPanels():openMobileStudioPanel('sidebar'));
-$('#mobileInspectorBtn')?.addEventListener('click',()=>document.body.classList.contains('mobile-inspector-open')?closeMobileStudioPanels():openMobileStudioPanel('inspector'));
-$('#mobilePanelBackdrop')?.addEventListener('click',closeMobileStudioPanels);
-window.addEventListener('resize',()=>{if(innerWidth>820)closeMobileStudioPanels()});
-document.querySelector('.page-nav')?.addEventListener('click',e=>{if(innerWidth<=820&&e.target.closest('[data-page]'))closeMobileStudioPanels()});
+/* Shared mobile drawers, identical across every template. */
+bindStudioMobilePanels();

@@ -137,3 +137,44 @@ test('03 image editor uses the shared Cropper UI and saves a cropped hero',async
  assert.deepEqual(errors,[]);
  await context.close();
 });
+
+test('Studio identifiers stay English while organizer event names remain editable',async()=>{
+ for(const [id,label] of [['01-ip-only','IP ONLY'],['02-scrapbook','TRAVEL JOURNEY'],['03-creator-market','CREATOR MARKET'],['04-creator-catalogue','CREATOR CATALOGUE']]){
+  const {context,page,errors}=await openEditor(id,'ci-identity-'+id);
+  assert.equal(await page.locator('#projectTemplateName').textContent(),label);
+  assert.equal(await page.locator('#workspaceTemplateName').textContent(),label);
+  assert.equal(await page.locator('#studioVersion').textContent(),'v8.41.2');
+  assert.deepEqual(errors,[]);
+  await context.close();
+ }
+});
+test('03 sidebar and canvas titles stay in sync for products and pages',async()=>{
+ const {context,page,errors}=await openEditor('03-creator-market','ci-page-alignment');
+ await page.locator('#pageContentNav [data-section="products"]').click();
+ assert.equal(await page.locator('#pageContentNav [data-section="products"] span').textContent(),'制品管理');
+ assert.equal(await page.locator('#pageContentNav [data-section="products"] b').textContent(),'0');
+ assert.ok(await page.locator('.page-nav [data-page="booths"].active').count());
+ assert.equal(await page.locator('.canvas-title b').textContent(),'摊位');
+ await page.locator('#pageContentNav [data-section="guide"]').click();
+ assert.equal(await page.locator('.canvas-title b').textContent(),'观展指南');
+ await page.locator('.page-nav [data-page="animation"]').click();
+ assert.equal(await page.locator('.canvas-title b').textContent(),'动画页面');
+ assert.equal(await page.locator('#createCustomPageBtn').isVisible(),false);
+ assert.deepEqual(errors,[]);
+ await context.close();
+});
+test('03 mobile pages and Inspector drawers open and dismiss correctly',async()=>{
+ const {context,page,errors}=await openEditor('03-creator-market','ci-mobile-drawers');
+ await page.setViewportSize({width:390,height:844});
+ await page.locator('#mobilePagesBtn').click();
+ assert.ok(await page.locator('body.mobile-sidebar-open').count());
+ assert.equal(await page.locator('#mobilePanelBackdrop').isVisible(),true);
+ await page.locator('.page-nav [data-page="booths"]').click();
+ assert.equal(await page.locator('body.mobile-sidebar-open').count(),0);
+ await page.locator('#mobileInspectorBtn').click();
+ assert.ok(await page.locator('body.mobile-inspector-open').count());
+ await page.locator('#mobilePanelBackdrop').click({position:{x:190,y:180}});
+ assert.equal(await page.locator('body.mobile-inspector-open').count(),0);
+ assert.deepEqual(errors,[]);
+ await context.close();
+});

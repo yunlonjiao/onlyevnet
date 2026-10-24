@@ -1177,5 +1177,3 @@ body.previewing .canvas-stage:before{display:none}
   .mobile-edit-group button span:last-child{display:none}
 }
 
-/* Event identity in the existing Studio sidebar (shared markup, no template override). */
-.market-organizer-name{padding:12px 15px;margin:8px 0 14px;border-radius:9px;background:#f5f4fa;font-size:14px;font-weight:800;overflow-wrap:anywhere}
