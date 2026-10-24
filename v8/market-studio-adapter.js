@@ -15,7 +15,8 @@ const pageDefs=[['home','首页','basic'],['animation','动画','images'],['boot
 const frame=$('#canvas');frame.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/market-'+(t.id==='03-creator-market'?'01':'02')+'-preview.html?project='+encodeURIComponent(project)+'&template='+encodeURIComponent(t.id)+'" title="同人创作展实时预览"></iframe>';
 let iframe=$('#liveFrame');
 function persist(){try{localStorage.setItem(storage,JSON.stringify(state));const key='onlyevent-market-preview:'+t.id+':'+project;localStorage.setItem(key,JSON.stringify(state));iframe.contentWindow.location.reload();$('#saveState').textContent='已保存';}catch(e){$('#saveState').textContent='保存失败：图片过大或浏览器存储不足';}}
-function checkpoint(){history.push(structuredClone(state));if(history.length>60)history.shift();future=[];}
+function syncHistory(){const undo=$('#undoBtn'),redo=$('#redoBtn');if(undo)undo.disabled=history.length===0;if(redo)redo.disabled=future.length===0;}
+function checkpoint(){history.push(structuredClone(state));if(history.length>60)history.shift();future=[];syncHistory();}
 function schedule(){clearTimeout(delay);delay=setTimeout(persist,170);}
 function change(path,value){const keys=path.split('.');let o=state;for(const k of keys.slice(0,-1))o=o[k];o[keys.at(-1)]=value;if(path==='eventName'){const a=document.querySelector('#marketOrganizerEventName');if(a)a.textContent=value||'未命名活动';const b=document.querySelector('#projectEventName');if(b)b.textContent=value||'未命名活动';}schedule();}
 function input(label,path,multiline=false){const val=path.split('.').reduce((o,k)=>o?.[k],state)??'';return '<label class="market-field"><span>'+esc(label)+'</span>'+(multiline?'<textarea class="market-control" data-key="'+esc(path)+'">'+esc(val)+'</textarea>':'<input class="market-control" data-key="'+esc(path)+'" value="'+esc(val)+'">')+'</label>';}
@@ -88,7 +89,7 @@ $('#cropApply').onclick=async()=>{
   checkpoint();change(marketCropPath,data);closeMarketCrop();render();
  }catch(err){console.error('[Market image apply]',err);$('#saveState').textContent='图片裁剪失败'}finally{button.disabled=false}
 };
-$('#undoBtn').onclick=()=>{if(!history.length)return;future.push(structuredClone(state));state=history.pop();schedule();render()};$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(structuredClone(state));state=future.pop();schedule();render()};
+$('#undoBtn').onclick=()=>{if(!history.length)return;future.push(structuredClone(state));state=history.pop();schedule();render();syncHistory()};$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(structuredClone(state));state=future.pop();schedule();render();syncHistory()};
 $('#deviceDesktopBtn').onclick=()=>{frame.classList.remove('device-mobile');iframe.style.maxWidth='100%';};$('#deviceMobileBtn').onclick=()=>{iframe.style.maxWidth='390px';};
 $('#previewBtn').onclick=()=>{preview=!preview;document.body.classList.toggle('oe-market-preview-mode',preview);$('#previewLabel').textContent=preview?'返回编辑':'预览';try{iframe.contentDocument.querySelectorAll('[data-market-edit-path]').forEach(el=>el.contentEditable=preview?'false':'true')}catch{}};
 $('#backAdminBtn').onclick=()=>location.assign('/admin/');
@@ -152,4 +153,4 @@ bindCanvasSelection({
 });
 const marketSkin=document.createElement('style');marketSkin.textContent='.market-field{display:grid;gap:8px;margin:0 0 18px;color:#656574;font-size:12px;font-weight:650}.market-control{width:100%;min-height:39px;border:1px solid #e3e3eb;border-radius:9px;background:#fff;color:#23232c;padding:10px 12px;outline:none;font:inherit;font-size:13px;transition:border-color .15s,box-shadow .15s}.market-control:focus{border-color:#8873d8;box-shadow:0 0 0 3px #8873d81a}.market-field textarea{min-height:105px;resize:vertical;line-height:1.6}.market-upload{margin:18px 0;padding:14px;border-radius:12px;border:1px solid #e7e6ed;background:#fafafd}.market-upload>span{font-size:12px;color:#626276;font-weight:750}.market-upload .item-media-row{display:flex;align-items:center;gap:14px;margin-top:12px}.market-upload .item-media-row>img,.market-upload .item-media-empty{width:100px;height:75px;flex-shrink:0;object-fit:contain;border-radius:8px;background:#f0eef6}.market-upload .item-media-empty{display:grid;place-items:center;font-size:28px;color:#aaa}.market-upload-actions{display:grid;gap:8px;flex:1;min-width:0}.market-upload-actions button{padding:9px 11px;font-size:12px}.market-hidden-upload{display:none!important}.market-upload details{margin-top:14px}.market-upload details summary{font-size:12px;color:#888;cursor:pointer}.market-upload details .market-field{margin-top:12px}';document.head.appendChild(marketSkin);
 const nameSlot=document.createElement('div');nameSlot.className='market-organizer-name';nameSlot.id='marketOrganizerEventName';const header=document.querySelector('.sidebar-head');if(header)header.insertAdjacentElement('afterend',nameSlot);
-persist();render();
+persist();render();syncHistory();
