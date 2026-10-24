@@ -1,3 +1,4 @@
+import {renderStudioCollectionPanel,filterStudioCollection} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {downloadStudioHtml,publishStudioSite} from '/v8/editor/studio-publish.js';
 import {loadStudioCropper,cropSelectionToDataUrl} from '/v8/editor/studio-crop.js';
@@ -56,7 +57,19 @@ function schedule(){clearTimeout(delay);delay=setTimeout(persist,170);}
 function change(path,value){const keys=path.split('.');let o=state;for(const k of keys.slice(0,-1))o=o[k];o[keys.at(-1)]=value;if(path==='eventName'){const a=document.querySelector('#marketOrganizerEventName');if(a)a.textContent=value||'未命名活动';const b=document.querySelector('#projectEventName');if(b)b.textContent=value||'未命名活动';}if(!patchPreviewField(path,value))pendingFrameRefresh=true;schedule();}
 function input(label,path,multiline=false){const val=path.split('.').reduce((o,k)=>o?.[k],state)??'';return '<label class="market-field"><span>'+esc(label)+'</span>'+(multiline?'<textarea class="market-control" data-key="'+esc(path)+'">'+esc(val)+'</textarea>':'<input class="market-control" data-key="'+esc(path)+'" value="'+esc(val)+'">')+'</label>';}
 function upload(label,path){const current=path.split('.').reduce((o,k)=>o?.[k],state)||'';return '<div class="item-media market-upload"><span>'+esc(label)+'</span><div class="item-media-row">'+(current?'<img src="'+esc(current)+'" alt="'+esc(label)+' 当前图片">':'<div class="item-media-empty">＋</div>')+'<div class="market-upload-actions"><button type="button" data-market-upload="'+esc(path)+'">选择图片</button>'+(current?'<button type="button" class="ghost" data-market-remove-image="'+esc(path)+'">移除</button>':'')+'</div></div><input class="market-hidden-upload" type="file" accept="image/*" data-file="'+esc(path)+'" tabindex="-1" aria-label="'+esc(label)+'" hidden><details><summary>使用图片链接</summary>'+input('图片地址',path)+'</details></div>';}
-function collection(key){const records=state[key]||[];let html='<button data-add="'+key+'" type="button" style="margin:12px 0">＋ 新增</button>';html+=records.map((r,i)=>'<div style="display:flex;gap:6px;margin:7px 0"><button data-select="'+i+'" style="flex:1;text-align:left">'+esc(r.name||r.title||r.label||('记录 '+(i+1)))+'</button><button data-delete="'+i+'">删除</button></div>').join('');if(records[selected]){let prefix=key+'.'+selected+'.';let columns=key==='creators'?['name','booth','description','tags','image']:key==='products'?['name','creatorId','description','price','tags','image']:key==='maps'?['title','image']:key==='news'?['date','title']:key==='community'?['label','url']:['name','image'];html+='<hr>';for(let k of columns){if(k==='tags'){html+='<label class="market-field"><span>标签（逗号分隔）</span><input class="market-control" data-market-tags="'+prefix+k+'" value="'+esc((records[selected].tags||[]).join(', '))+'"></label>';continue}if(k==='creatorId'){html+='<label class="market-field"><span>所属社团</span><select class="market-control" data-key="'+prefix+k+'"><option value="">未关联</option>'+((state.creators||[]).map(c=>'<option value="'+esc(c.id)+'" '+(c.id===records[selected].creatorId?'selected':'')+'>'+esc(c.name||c.id)+'</option>').join(''))+'</select></label>';continue}html+=k==='image'?upload('图片',prefix+k):input(({name:'名称',booth:'摊位号',description:'简介',creatorId:'关联社团 ID',price:'价格',date:'日期',title:'标题',label:'显示名称',url:'外链'})[k]||k,prefix+k,k==='description');} }return html}
+function collection(key){
+ const records=state[key]||[],item=records[selected];if(!item)return '<div class="inspector-empty"><b>从左侧内容库或画布选择内容</b></div>';
+ const prefix=key+'.'+selected+'.';
+ const columns=key==='creators'?['name','booth','description','tags','image']:key==='products'?['name','creatorId','description','price','tags','image']:key==='maps'?['title','image']:key==='news'?['date','title']:key==='community'?['label','url']:['name','image'];
+ let out='<div class="item-inspector-head"><div><span>内容编辑</span><b>'+esc(item.name||item.title||item.label||('记录 '+(selected+1)))+'</b></div><span>'+String(selected+1).padStart(2,'0')+' / '+String(records.length).padStart(2,'0')+'</span></div><div class="item-fields">';
+ for(const k of columns){
+  if(k==='tags'){out+='<label class="market-field"><span>标签（逗号分隔）</span><input class="market-control" data-market-tags="'+prefix+k+'" value="'+esc((item.tags||[]).join(', '))+'"></label>';continue}
+  if(k==='creatorId'){out+='<label class="market-field"><span>所属社团</span><select class="market-control" data-key="'+prefix+k+'"><option value="">未关联</option>'+((state.creators||[]).map(c=>'<option value="'+esc(c.id)+'" '+(c.id===item.creatorId?'selected':'')+'>'+esc(c.name||c.id)+'</option>').join(''))+'</select></label>';continue}
+  out+=k==='image'?upload('图片',prefix+k):input(({name:'名称',booth:'摊位号',description:'简介',price:'价格',date:'日期',title:'标题',label:'显示名称',url:'外链'})[k]||k,prefix+k,k==='description');
+ }
+ return out+'</div><div class="row"><button type="button" class="danger" data-delete-selected>删除当前内容</button></div>';
+}
+
 function render(){const nav=$('#pageContentNav'),panel=$('#inspector');
   renderPageTree(document.querySelector('.page-nav'),pageDefs,pageDefs.find(x=>x[2]===section)?.[0]||'home',esc);
   const leftName=document.querySelector('#marketOrganizerEventName');if(leftName)leftName.textContent=state.eventName||'未命名活动';const html=defs.map(([id,label])=>'<button data-section="'+id+'" type="button" class="'+(id===section?'active':'')+'">'+label+'</button>').join('');nav.innerHTML=html;const title=defs.find(x=>x[0]===section)?.[1]||'属性';let fields='';
@@ -65,6 +78,17 @@ else if(section==='images')fields=upload('桌面 KV','heroImage')+upload('手机
 else if(section==='tickets')fields=input('外部购票链接','ticketUrl');
 else if(section==='guide')fields=input('观展指南','guide',true);
 else fields=collection(section);
+ const list=$('#contentListPanel');
+ if(list){
+  const items=Array.isArray(state[section])?state[section]:null;
+  if(items){
+   renderStudioCollectionPanel(list,items,{
+    escape:esc,title,selected,
+    item:entry=>[entry.name||entry.title||entry.label||'未命名',entry.booth||entry.price||entry.date||''],
+    empty:'尚无'+title,addLabel:'添加'+title
+   });
+  }else list.innerHTML='';
+ }
 renderInspector(panel,esc,'属性',title,fields);
  panel.querySelectorAll('[data-key],[data-market-tags]').forEach(input=>{
   const path=input.dataset.key||input.dataset.marketTags;
@@ -76,7 +100,25 @@ renderInspector(panel,esc,'属性',title,fields);
 $('#pageContentTitle').textContent=title;$('#projectEventName').textContent=state.eventName||'同人创作展';}
 document.querySelector('.page-nav')?.addEventListener('click',e=>{const b=e.target.closest('[data-market-page]');if(!b)return;const page=pageDefs.find(x=>x[0]===b.dataset.marketPage);if(!page)return;section=page[2];selected=-1;render();const hash={home:'#top',animation:'#top',booths:'#creators',map:'#map',guide:'#guide'}[page[0]];try{const doc=iframe.contentDocument;const target=doc.querySelector(hash);if(target){doc.querySelector('#directory')?.setAttribute('open','');target.scrollIntoView({behavior:'smooth',block:'start'})}}catch{}});
 $('#pageContentNav').addEventListener('click',e=>{let b=e.target.closest('[data-section]');if(!b)return;section=b.dataset.section;selected=-1;render();});
-$('#inspector').addEventListener('click',e=>{let upload=e.target.closest('[data-market-upload]');if(upload){$('#inspector [data-file="'+upload.dataset.marketUpload+'"]')?.click();return}let remove=e.target.closest('[data-market-remove-image]');if(remove){checkpoint();change(remove.dataset.marketRemoveImage,'');render();return}let b=e.target.closest('[data-add],[data-select],[data-delete]');if(!b)return;if(b.dataset.add){checkpoint();const key=b.dataset.add;state[key]??=[];state[key].push({id:'item-'+Date.now().toString(36),name:'新项目',title:'新项目'});selected=state[key].length-1;pendingFrameRefresh=true;schedule();}else if(b.dataset.select!==undefined){selected=Number(b.dataset.select)}else if(b.dataset.delete!==undefined){checkpoint();state[section].splice(Number(b.dataset.delete),1);selected=-1;pendingFrameRefresh=true;schedule()}render()});
+$('#inspector').addEventListener('click',e=>{
+ const upload=e.target.closest('[data-market-upload]');if(upload){$('#inspector [data-file="'+upload.dataset.marketUpload+'"]')?.click();return}
+ const remove=e.target.closest('[data-market-remove-image]');if(remove){checkpoint();change(remove.dataset.marketRemoveImage,'');render();return}
+ if(e.target.closest('[data-delete-selected]')&&Array.isArray(state[section])&&selected>=0){
+  checkpoint();state[section].splice(selected,1);selected=-1;pendingFrameRefresh=true;schedule();render();
+ }
+});
+$('#contentListPanel').addEventListener('click',e=>{
+ const add=e.target.closest('[data-sidebar-content-add]');
+ if(add&&Array.isArray(state[section])){
+  checkpoint();state[section].push({id:'item-'+Date.now().toString(36),name:'',title:''});
+  selected=state[section].length-1;pendingFrameRefresh=true;schedule();render();return
+ }
+ const row=e.target.closest('[data-open-item]');
+ if(row){selected=Number(row.dataset.openItem);render()}
+});
+$('#contentListPanel').addEventListener('input',e=>{
+ if(e.target.matches('[data-sidebar-content-search]'))filterStudioCollection($('#contentListPanel'),e.target.value);
+});
 // The Market templates use the original Studio crop dialog and Cropper.js interaction.
 let marketCropper=null,marketCropUrl='',marketCropPath='',marketCropConfig=null;
 const getCropConfig=path=>{
