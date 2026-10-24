@@ -4,7 +4,7 @@ import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {downloadStudioHtml,publishStudioSite} from '/v8/editor/studio-publish.js';
 import {createStudioCropper,cropSelectionToDataUrl} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
-import {renderInspector,renderPageTree,syncStudioIdentity} from '/v8/editor/studio-chrome.js';
+import {renderInspector,renderPageTree,syncStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
 import {bindCanvasSelection} from '/v8/editor/canvas-selection.js';
 import {getTemplate} from '/v8/templates/registry.js?v=8.41.4';
 import {esc} from '/v8/market-shared.js';
@@ -14,6 +14,7 @@ const storage='onlyevent-studio-v8:'+t.id+':'+project+':iframe';
 let state=structuredClone(t.defaults),section='basic',selected=-1,delay=0,preview=false;
 let hasSaved=false;try{const saved=JSON.parse(localStorage.getItem(storage)||'null');if(saved){state={...state,...saved};hasSaved=true}}catch{}
 if(q.get('name')&&!hasSaved)state.eventName=q.get('name');
+migrateDemoEventName(state,project);
 syncStudioIdentity(t,state.eventName);
 const defs=[['basic','活动信息'],['images','主视觉'],['tickets','入场票'],['creators','社团管理'],['products','制品管理'],['maps','场地图'],['news','公告'],['community','社群'],['sponsors','赞助'],['guide','观展指南']];
 const pageDefs=[['home','首页','basic'],['animation','动画页面','images'],['booths','摊位','creators'],['map','场地图','maps'],['guide','观展指南','guide']];
