@@ -196,6 +196,10 @@ test('legacy unscoped sample names migrate, but organizers own project names',as
  await context.close();
  const owned=await openEditor('03-creator-market','ci-owner-name');
  await owned.page.locator('#inspector [data-key="eventName"]').fill('主办方自己的漫展名');
+ await owned.page.waitForFunction(()=>{
+  const raw=localStorage.getItem('onlyevent-studio-v8:03-creator-market:ci-owner-name:iframe');
+  return raw&&JSON.parse(raw).eventName==='主办方自己的漫展名';
+ });
  await owned.page.reload({waitUntil:'domcontentloaded'});
  await owned.page.waitForFunction(()=>document.querySelector('#projectEventName')?.textContent==='主办方自己的漫展名');
  assert.deepEqual(owned.errors,[]);
