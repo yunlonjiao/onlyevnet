@@ -39,6 +39,7 @@ const LIVE_FIELDS={eventName:'[data-event-name]',description:'[data-description]
 function patchPreviewField(path,value){
  try{
   const doc=iframe.contentDocument;if(!doc)return false;
+  if(path==='eventName')doc.title=String(value||'STARDUST ONLY');
   if(path==='ticketUrl'){doc.querySelectorAll('[data-ticket]').forEach(n=>{n.href=value||'#guide';n.textContent=value?'立即购票 ↗':'入场指南 ↗'});return true;}
   const selector=LIVE_FIELDS[path];if(!selector)return false;
   doc.querySelectorAll(selector).forEach(n=>{if(n===doc.activeElement)return;n.textContent=value||''});
