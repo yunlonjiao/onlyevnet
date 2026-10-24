@@ -1,3 +1,4 @@
+import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.40.1';
 import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.40.1';
@@ -905,17 +906,12 @@ function downloadPublishedHtml(html){
 }
 
 function bindInspectorStateInput(input,path,{clean=false,number=false}={}){
- let started=false;
- input.addEventListener('input',e=>{
-   if(!started){checkpoint();started=true}
-   const value=number?Number(e.target.value):e.target.value;
-   setDeep(path,value);send({type:'OE_PATCH_FIELD',path,value});
-   if(path==='heroTitleSize'){const out=$('#heroTitleSizeValue');if(out)out.textContent=value+' px'}
- });
- if(clean)input.addEventListener('blur',e=>{
-   const value=cleanValue(e.target.value);
-   if(value!==e.target.value)e.target.value=value;
-   setDeep(path,value);send({type:'OE_PATCH_FIELD',path,value});
+ return bindStudioField(input,{
+  path,checkpoint,
+  parseValue:number?Number:undefined,
+  cleanValue:clean?cleanValue:undefined,
+  update:(field,value)=>{setDeep(field,value);send({type:'OE_PATCH_FIELD',path:field,value})},
+  onUpdated:value=>{if(path==='heroTitleSize'){const out=$('#heroTitleSizeValue');if(out)out.textContent=value+' px'}}
  });
 }
 
