@@ -5,9 +5,8 @@ export function bindCanvasSelection({frame,getPreview,onSelectRecord,onSelectReg
     try{doc=frame.contentDocument;}catch{return;}
     if(!doc||doc.documentElement.dataset.oeSelectionBound==='1')return;
     doc.documentElement.dataset.oeSelectionBound='1';
-    let active=null;
     const clear=()=>{doc.querySelectorAll('.oe-selected-edit-target').forEach(el=>el.classList.remove('oe-selected-edit-target'));};
-    const mark=el=>{clear();if(el){el.classList.add('oe-selected-edit-target');active=el;}};
+    const mark=el=>{clear();if(el){el.classList.add('oe-selected-edit-target');}};
     for(const [selector,path] of fields){
       for(const el of doc.querySelectorAll(selector)){
         el.contentEditable=getPreview()?'false':'true';
@@ -34,6 +33,6 @@ export function bindCanvasSelection({frame,getPreview,onSelectRecord,onSelectReg
     doc.head.appendChild(style);
   };
   frame.addEventListener('load',attach);
-  if(frame.contentDocument?.readyState==='complete')attach();
+  try{if(frame.contentDocument?.readyState==='complete')attach()}catch{}
   return {attach};
 }
