@@ -1,3 +1,4 @@
+import {setStudioDevice,setStudioPreviewChrome} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionPanel,filterStudioCollection} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {downloadStudioHtml,publishStudioSite} from '/v8/editor/studio-publish.js';
@@ -164,8 +165,8 @@ $('#cropApply').onclick=async()=>{
  }catch(err){console.error('[Market image apply]',err);$('#saveState').textContent='图片裁剪失败'}finally{button.disabled=false}
 };
 $('#undoBtn').onclick=()=>{const next=studioHistory.undo(state);if(!next)return;state=next;pendingFrameRefresh=true;schedule();render();syncHistory()};$('#redoBtn').onclick=()=>{const next=studioHistory.redo(state);if(!next)return;state=next;pendingFrameRefresh=true;schedule();render();syncHistory()};
-$('#deviceDesktopBtn').onclick=()=>{frame.classList.remove('device-mobile');iframe.style.maxWidth='100%';};$('#deviceMobileBtn').onclick=()=>{iframe.style.maxWidth='390px';};
-$('#previewBtn').onclick=()=>{preview=!preview;document.body.classList.toggle('oe-market-preview-mode',preview);try{iframe.contentDocument?.documentElement.classList.toggle('oe-studio-preview',preview)}catch{};$('#previewLabel').textContent=preview?'返回编辑':'预览';try{const doc=iframe.contentDocument;doc.querySelectorAll('[data-market-edit-path]').forEach(el=>{el.contentEditable=preview?'false':'true';el.setAttribute('aria-readonly',preview?'true':'false')});if(preview)doc.querySelectorAll('.oe-selected-edit-target').forEach(el=>el.classList.remove('oe-selected-edit-target'))}catch{}};
+$('#deviceDesktopBtn').onclick=()=>setStudioDevice('desktop',{canvas:frame});$('#deviceMobileBtn').onclick=()=>setStudioDevice('mobile',{canvas:frame});
+$('#previewBtn').onclick=()=>{preview=!preview;setStudioPreviewChrome(preview);try{iframe.contentDocument?.documentElement.classList.toggle('oe-studio-preview',preview)}catch{};try{const doc=iframe.contentDocument;doc.querySelectorAll('[data-market-edit-path]').forEach(el=>{el.contentEditable=preview?'false':'true';el.setAttribute('aria-readonly',preview?'true':'false')});if(preview)doc.querySelectorAll('.oe-selected-edit-target').forEach(el=>el.classList.remove('oe-selected-edit-target'))}catch{}};
 $('#backAdminBtn').onclick=()=>location.assign('/admin/');
 const publishKey='onlyevent-studio-publish:'+t.id+':'+project+':iframe';
 let publication={};try{publication=JSON.parse(localStorage.getItem(publishKey)||'{}')}catch{}
