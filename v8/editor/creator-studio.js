@@ -4,7 +4,7 @@ import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {downloadStudioHtml,publishStudioSite} from '/v8/editor/studio-publish.js';
 import {createStudioCropper,cropSelectionToDataUrl} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
-import {renderInspector,renderPageTree} from '/v8/editor/studio-chrome.js';
+import {renderInspector,renderPageTree,syncStudioIdentity} from '/v8/editor/studio-chrome.js';
 import {bindCanvasSelection} from '/v8/editor/canvas-selection.js';
 import {getTemplate} from '/v8/templates/registry.js?v=8.41.1';
 import {esc} from '/v8/market-shared.js';
@@ -14,8 +14,7 @@ const storage='onlyevent-studio-v8:'+t.id+':'+project+':iframe';
 let state=structuredClone(t.defaults),section='basic',selected=-1,delay=0,preview=false;
 let hasSaved=false;try{const saved=JSON.parse(localStorage.getItem(storage)||'null');if(saved){state={...state,...saved};hasSaved=true}}catch{}
 if(q.get('name')&&!hasSaved)state.eventName=q.get('name');
-document.querySelector('#projectTemplateName').textContent=t.label;
-document.querySelector('#workspaceTemplateName').textContent=t.label;
+syncStudioIdentity(t,state.eventName);
 const defs=[['basic','活动信息'],['images','主视觉'],['tickets','入场票'],['creators','社团管理'],['products','制品管理'],['maps','场地图'],['news','公告'],['community','社群'],['sponsors','赞助'],['guide','观展指南']];
 const pageDefs=[['home','首页','basic'],['animation','动画','images'],['booths','摊位','creators'],['map','场地图','maps'],['guide','观展指南','guide']];
 const frame=$('#canvas');frame.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/market-'+(t.id==='03-creator-market'?'01':'02')+'-preview.html?project='+encodeURIComponent(project)+'&template='+encodeURIComponent(t.id)+'" title="同人创作展实时预览"></iframe>';
@@ -55,7 +54,7 @@ const studioHistory=createStudioHistory({limit:80,onChange:()=>syncHistory()});
 function syncHistory(){const undo=$('#undoBtn'),redo=$('#redoBtn');if(undo)undo.disabled=!studioHistory.canUndo;if(redo)redo.disabled=!studioHistory.canRedo;}
 function checkpoint(){studioHistory.checkpoint(state)}
 function schedule(){clearTimeout(delay);delay=setTimeout(persist,170);}
-function change(path,value){const keys=path.split('.');let o=state;for(const k of keys.slice(0,-1))o=o[k];o[keys.at(-1)]=value;if(path==='eventName'){const a=document.querySelector('#marketOrganizerEventName');if(a)a.textContent=value||'未命名活动';const b=document.querySelector('#projectEventName');if(b)b.textContent=value||'未命名活动';}if(!patchPreviewField(path,value))pendingFrameRefresh=true;schedule();}
+function change(path,value){const keys=path.split('.');let o=state;for(const k of keys.slice(0,-1))o=o[k];o[keys.at(-1)]=value;if(path==='eventName')syncStudioIdentity(t,value);if(!patchPreviewField(path,value))pendingFrameRefresh=true;schedule();}
 function input(label,path,multiline=false){const val=path.split('.').reduce((o,k)=>o?.[k],state)??'';return '<label><span>'+esc(label)+'</span>'+(multiline?'<textarea data-key="'+esc(path)+'">'+esc(val)+'</textarea>':'<input data-key="'+esc(path)+'" value="'+esc(val)+'">')+'</label>';}
 function upload(label,path){
  const current=path.split('.').reduce((o,k)=>o?.[k],state)||'';
@@ -80,7 +79,7 @@ function collection(key){
 
 function render(){const nav=$('#pageContentNav'),panel=$('#inspector');
   renderPageTree(document.querySelector('.page-nav'),pageDefs,pageDefs.find(x=>x[2]===section)?.[0]||'home',esc);
-  const leftName=document.querySelector('#marketOrganizerEventName');if(leftName)leftName.textContent=state.eventName||'未命名活动';const html=defs.map(([id,label])=>'<button data-section="'+id+'" type="button" class="'+(id===section?'active':'')+'">'+label+'</button>').join('');nav.innerHTML=html;const title=defs.find(x=>x[0]===section)?.[1]||'属性';let fields='';
+  const html=defs.map(([id,label])=>'<button data-section="'+id+'" type="button" class="'+(id===section?'active':'')+'">'+label+'</button>').join('');nav.innerHTML=html;const title=defs.find(x=>x[0]===section)?.[1]||'属性';let fields='';
 if(section==='basic')fields=input('活动名称','eventName')+input('活动介绍','description',true)+input('时间','date')+input('地址','location');
 else if(section==='images')fields=upload('桌面 KV','heroImage')+upload('手机 KV','mobileHeroImage');
 else if(section==='tickets')fields=input('外部购票链接','ticketUrl');
@@ -106,7 +105,7 @@ renderInspector(panel,esc,'属性',title,fields);
    parseValue:input.dataset.marketTags!==undefined?(value=>value.split(/[,，]/).map(x=>x.trim()).filter(Boolean)):undefined
   });
  });
-$('#pageContentTitle').textContent=title;$('#projectEventName').textContent=state.eventName||'同人创作展';}
+$('#pageContentTitle').textContent=title;syncStudioIdentity(t,state.eventName);}
 document.querySelector('.page-nav')?.addEventListener('click',e=>{const b=e.target.closest('[data-market-page]');if(!b)return;const page=pageDefs.find(x=>x[0]===b.dataset.marketPage);if(!page)return;section=page[2];selected=-1;render();const hash={home:'#top',animation:'#top',booths:'#creators',map:'#map',guide:'#guide'}[page[0]];try{const doc=iframe.contentDocument;const target=doc.querySelector(hash);if(target){doc.querySelector('#directory')?.setAttribute('open','');target.scrollIntoView({behavior:'smooth',block:'start'})}}catch{}});
 $('#pageContentNav').addEventListener('click',e=>{let b=e.target.closest('[data-section]');if(!b)return;section=b.dataset.section;selected=-1;render();});
 $('#inspector').addEventListener('click',e=>{
@@ -232,5 +231,5 @@ bindCanvasSelection({
  onSelectRegion:key=>{section=key;selected=-1;render()}
 });
 
-const nameSlot=document.createElement('div');nameSlot.className='market-organizer-name';nameSlot.id='marketOrganizerEventName';const header=document.querySelector('.sidebar-head');if(header)header.insertAdjacentElement('afterend',nameSlot);
+
 persist();render();syncHistory();
