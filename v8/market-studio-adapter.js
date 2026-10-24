@@ -1,3 +1,4 @@
+import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {downloadStudioHtml,publishStudioSite} from '/v8/editor/studio-publish.js';
 import {loadStudioCropper,cropSelectionToDataUrl} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
@@ -8,7 +9,7 @@ import {esc} from '/v8/market-shared.js';
 import {createSite,updateSite,cleanSlug,suggestSlug,isValidSlug} from '/v8/publisher.js';
 const $=s=>document.querySelector(s),q=new URLSearchParams(location.search),t=getTemplate(q.get('template')),project=q.get('project')||'default';
 const storage='onlyevent-studio-v8:'+t.id+':'+project+':iframe';
-let state=structuredClone(t.defaults),history=[],future=[],section='basic',selected=-1,delay=0,preview=false;
+let state=structuredClone(t.defaults),section='basic',selected=-1,delay=0,preview=false;
 let hasSaved=false;try{const saved=JSON.parse(localStorage.getItem(storage)||'null');if(saved){state={...state,...saved};hasSaved=true}}catch{}
 if(q.get('name')&&!hasSaved)state.eventName=q.get('name');
 document.querySelector('#projectTemplateName').textContent=t.label;
@@ -48,8 +49,9 @@ function persist(){
   $('#saveState').textContent='已保存';
  }catch(e){$('#saveState').textContent='保存失败：图片过大或浏览器存储不足';}
 }
-function syncHistory(){const undo=$('#undoBtn'),redo=$('#redoBtn');if(undo)undo.disabled=history.length===0;if(redo)redo.disabled=future.length===0;}
-function checkpoint(){history.push(structuredClone(state));if(history.length>60)history.shift();future=[];syncHistory();}
+const studioHistory=createStudioHistory({limit:80,onChange:()=>syncHistory()});
+function syncHistory(){const undo=$('#undoBtn'),redo=$('#redoBtn');if(undo)undo.disabled=!studioHistory.canUndo;if(redo)redo.disabled=!studioHistory.canRedo;}
+function checkpoint(){studioHistory.checkpoint(state)}
 function schedule(){clearTimeout(delay);delay=setTimeout(persist,170);}
 function change(path,value){const keys=path.split('.');let o=state;for(const k of keys.slice(0,-1))o=o[k];o[keys.at(-1)]=value;if(path==='eventName'){const a=document.querySelector('#marketOrganizerEventName');if(a)a.textContent=value||'未命名活动';const b=document.querySelector('#projectEventName');if(b)b.textContent=value||'未命名活动';}if(!patchPreviewField(path,value))pendingFrameRefresh=true;schedule();}
 function input(label,path,multiline=false){const val=path.split('.').reduce((o,k)=>o?.[k],state)??'';return '<label class="market-field"><span>'+esc(label)+'</span>'+(multiline?'<textarea class="market-control" data-key="'+esc(path)+'">'+esc(val)+'</textarea>':'<input class="market-control" data-key="'+esc(path)+'" value="'+esc(val)+'">')+'</label>';}
@@ -122,7 +124,7 @@ $('#cropApply').onclick=async()=>{
   checkpoint();change(marketCropPath,data);closeMarketCrop();render();
  }catch(err){console.error('[Market image apply]',err);$('#saveState').textContent='图片裁剪失败'}finally{button.disabled=false}
 };
-$('#undoBtn').onclick=()=>{if(!history.length)return;future.push(structuredClone(state));state=history.pop();pendingFrameRefresh=true;schedule();render();syncHistory()};$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(structuredClone(state));state=future.pop();pendingFrameRefresh=true;schedule();render();syncHistory()};
+$('#undoBtn').onclick=()=>{const next=studioHistory.undo(state);if(!next)return;state=next;pendingFrameRefresh=true;schedule();render();syncHistory()};$('#redoBtn').onclick=()=>{const next=studioHistory.redo(state);if(!next)return;state=next;pendingFrameRefresh=true;schedule();render();syncHistory()};
 $('#deviceDesktopBtn').onclick=()=>{frame.classList.remove('device-mobile');iframe.style.maxWidth='100%';};$('#deviceMobileBtn').onclick=()=>{iframe.style.maxWidth='390px';};
 $('#previewBtn').onclick=()=>{preview=!preview;document.body.classList.toggle('oe-market-preview-mode',preview);try{iframe.contentDocument?.documentElement.classList.toggle('oe-studio-preview',preview)}catch{};$('#previewLabel').textContent=preview?'返回编辑':'预览';try{const doc=iframe.contentDocument;doc.querySelectorAll('[data-market-edit-path]').forEach(el=>{el.contentEditable=preview?'false':'true';el.setAttribute('aria-readonly',preview?'true':'false')});if(preview)doc.querySelectorAll('.oe-selected-edit-target').forEach(el=>el.classList.remove('oe-selected-edit-target'))}catch{}};
 $('#backAdminBtn').onclick=()=>location.assign('/admin/');
