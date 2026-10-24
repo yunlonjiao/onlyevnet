@@ -30,6 +30,7 @@ for(const id of ['03-creator-market','04-creator-catalogue']){
 }
 
 test('Market 03 canvas product card opens matching inspector without navigating away',async({page})=>{
+ await page.addInitScript(()=>{const key='onlyevent-studio-v8:03-creator-market:market-card-selection-qa:iframe';localStorage.setItem(key,JSON.stringify({eventName:'社团卡片测试',creators:[{id:'c-qa',name:'测试社团',booth:'A01',tags:[]}],products:[{id:'p-qa',name:'测试制品',creatorId:'c-qa',price:'10'}]}));});
  await page.goto('/v8/?template=03-creator-market&project=market-card-selection-qa');
  const frame=page.frameLocator('#liveFrame');
  const card=frame.locator('#randomSix [data-market-record="products"]').first();
