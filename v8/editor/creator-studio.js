@@ -85,7 +85,7 @@ function render(){const nav=$('#pageContentNav'),panel=$('#inspector');
   renderPageTree(document.querySelector('.page-nav'),pageDefs,pageId,esc);
   const canvasPage=document.querySelector('.canvas-title b');
   if(canvasPage)canvasPage.textContent=pageDefs.find(x=>x[0]===pageId)?.[1]||'首页';
-  const html=defs.map(([id,label])=>'<button data-section="'+id+'" type="button" class="'+(id===section?'active':'')+'">'+label+'</button>').join('');nav.innerHTML=html;const title=defs.find(x=>x[0]===section)?.[1]||'属性';let fields='';
+  const html=defs.map(([id,label])=>'<button data-section="'+id+'" type="button" class="'+(id===section?'active':'')+'"><span>'+esc(label)+'</span>'+(Array.isArray(state[id])?'<b>'+state[id].length+'</b>':'')+'</button>').join('');nav.innerHTML=html;const title=defs.find(x=>x[0]===section)?.[1]||'属性';let fields='';
 if(section==='basic')fields=input('活动名称','eventName')+input('活动介绍','description',true)+input('时间','date')+input('地址','location');
 else if(section==='images')fields=upload('桌面 KV','heroImage')+upload('手机 KV','mobileHeroImage');
 else if(section==='tickets')fields=input('外部购票链接','ticketUrl');
