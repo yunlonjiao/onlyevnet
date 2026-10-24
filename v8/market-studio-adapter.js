@@ -14,11 +14,30 @@ const defs=[['basic','活动信息'],['images','主视觉'],['tickets','入场�
 const pageDefs=[['home','首页','basic'],['animation','动画','images'],['booths','摊位','creators'],['map','场地图','maps'],['guide','观展指南','guide']];
 const frame=$('#canvas');frame.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/market-'+(t.id==='03-creator-market'?'01':'02')+'-preview.html?project='+encodeURIComponent(project)+'&template='+encodeURIComponent(t.id)+'" title="同人创作展实时预览"></iframe>';
 let iframe=$('#liveFrame');
-function persist(){try{localStorage.setItem(storage,JSON.stringify(state));const key='onlyevent-market-preview:'+t.id+':'+project;localStorage.setItem(key,JSON.stringify(state));iframe.contentWindow.location.reload();$('#saveState').textContent='已保存';}catch(e){$('#saveState').textContent='保存失败：图片过大或浏览器存储不足';}}
+let pendingFrameRefresh=false;
+const LIVE_FIELDS={eventName:'[data-event-name]',description:'[data-description]',date:'[data-date]',location:'[data-location]'};
+function patchPreviewField(path,value){
+ try{
+  const doc=iframe.contentDocument;if(!doc)return false;
+  if(path==='ticketUrl'){doc.querySelectorAll('[data-ticket]').forEach(n=>{n.href=value||'#guide';n.textContent=value?'立即购票 ↗':'入场指南 ↗'});return true;}
+  const selector=LIVE_FIELDS[path];if(!selector)return false;
+  doc.querySelectorAll(selector).forEach(n=>{if(n===doc.activeElement)return;n.textContent=value||''});
+  return true;
+ }catch{return false;}
+}
+function persist(){
+ try{
+  localStorage.setItem(storage,JSON.stringify(state));
+  const key='onlyevent-market-preview:'+t.id+':'+project;
+  localStorage.setItem(key,JSON.stringify(state));
+  if(pendingFrameRefresh){pendingFrameRefresh=false;iframe.contentWindow.location.reload();}
+  $('#saveState').textContent='已保存';
+ }catch(e){$('#saveState').textContent='保存失败：图片过大或浏览器存储不足';}
+}
 function syncHistory(){const undo=$('#undoBtn'),redo=$('#redoBtn');if(undo)undo.disabled=history.length===0;if(redo)redo.disabled=future.length===0;}
 function checkpoint(){history.push(structuredClone(state));if(history.length>60)history.shift();future=[];syncHistory();}
 function schedule(){clearTimeout(delay);delay=setTimeout(persist,170);}
-function change(path,value){const keys=path.split('.');let o=state;for(const k of keys.slice(0,-1))o=o[k];o[keys.at(-1)]=value;if(path==='eventName'){const a=document.querySelector('#marketOrganizerEventName');if(a)a.textContent=value||'未命名活动';const b=document.querySelector('#projectEventName');if(b)b.textContent=value||'未命名活动';}schedule();}
+function change(path,value){const keys=path.split('.');let o=state;for(const k of keys.slice(0,-1))o=o[k];o[keys.at(-1)]=value;if(path==='eventName'){const a=document.querySelector('#marketOrganizerEventName');if(a)a.textContent=value||'未命名活动';const b=document.querySelector('#projectEventName');if(b)b.textContent=value||'未命名活动';}if(!patchPreviewField(path,value))pendingFrameRefresh=true;schedule();}
 function input(label,path,multiline=false){const val=path.split('.').reduce((o,k)=>o?.[k],state)??'';return '<label class="market-field"><span>'+esc(label)+'</span>'+(multiline?'<textarea class="market-control" data-key="'+esc(path)+'">'+esc(val)+'</textarea>':'<input class="market-control" data-key="'+esc(path)+'" value="'+esc(val)+'">')+'</label>';}
 function upload(label,path){const current=path.split('.').reduce((o,k)=>o?.[k],state)||'';return '<div class="item-media market-upload"><span>'+esc(label)+'</span><div class="item-media-row">'+(current?'<img src="'+esc(current)+'" alt="'+esc(label)+' 当前图片">':'<div class="item-media-empty">＋</div>')+'<div class="market-upload-actions"><button type="button" data-market-upload="'+esc(path)+'">选择图片</button>'+(current?'<button type="button" class="ghost" data-market-remove-image="'+esc(path)+'">移除</button>':'')+'</div></div><input class="market-hidden-upload" type="file" accept="image/*" data-file="'+esc(path)+'" tabindex="-1" aria-label="'+esc(label)+'" hidden><details><summary>使用图片链接</summary>'+input('图片地址',path)+'</details></div>';}
 function collection(key){const records=state[key]||[];let html='<button data-add="'+key+'" type="button" style="margin:12px 0">＋ 新增</button>';html+=records.map((r,i)=>'<div style="display:flex;gap:6px;margin:7px 0"><button data-select="'+i+'" style="flex:1;text-align:left">'+esc(r.name||r.title||r.label||('记录 '+(i+1)))+'</button><button data-delete="'+i+'">删除</button></div>').join('');if(records[selected]){let prefix=key+'.'+selected+'.';let columns=key==='creators'?['name','booth','description','tags','image']:key==='products'?['name','creatorId','description','price','tags','image']:key==='maps'?['title','image']:key==='news'?['date','title']:key==='community'?['label','url']:['name','image'];html+='<hr>';for(let k of columns){if(k==='tags'){html+='<label class="market-field"><span>标签（逗号分隔）</span><input class="market-control" data-market-tags="'+prefix+k+'" value="'+esc((records[selected].tags||[]).join(', '))+'"></label>';continue}if(k==='creatorId'){html+='<label class="market-field"><span>所属社团</span><select class="market-control" data-key="'+prefix+k+'"><option value="">未关联</option>'+((state.creators||[]).map(c=>'<option value="'+esc(c.id)+'" '+(c.id===records[selected].creatorId?'selected':'')+'>'+esc(c.name||c.id)+'</option>').join(''))+'</select></label>';continue}html+=k==='image'?upload('图片',prefix+k):input(({name:'名称',booth:'摊位号',description:'简介',creatorId:'关联社团 ID',price:'价格',date:'日期',title:'标题',label:'显示名称',url:'外链'})[k]||k,prefix+k,k==='description');} }return html}
@@ -36,7 +55,7 @@ document.querySelector('.page-nav')?.addEventListener('click',e=>{const b=e.targ
 $('#pageContentNav').addEventListener('click',e=>{let b=e.target.closest('[data-section]');if(!b)return;section=b.dataset.section;selected=-1;render();});
 $('#inspector').addEventListener('focusin',e=>{if(e.target.matches('[data-key],[data-market-tags]')&&!e.target.dataset.snap){checkpoint();e.target.dataset.snap='1'}});
 $('#inspector').addEventListener('input',e=>{const k=e.target.dataset.key;if(k)change(k,e.target.value);const tags=e.target.dataset.marketTags;if(tags)change(tags,e.target.value.split(/[,，]/).map(x=>x.trim()).filter(Boolean))});
-$('#inspector').addEventListener('click',e=>{let upload=e.target.closest('[data-market-upload]');if(upload){$('#inspector [data-file="'+upload.dataset.marketUpload+'"]')?.click();return}let remove=e.target.closest('[data-market-remove-image]');if(remove){checkpoint();change(remove.dataset.marketRemoveImage,'');render();return}let b=e.target.closest('[data-add],[data-select],[data-delete]');if(!b)return;if(b.dataset.add){checkpoint();const key=b.dataset.add;state[key]??=[];state[key].push({id:'item-'+Date.now().toString(36),name:'新项目',title:'新项目'});selected=state[key].length-1;schedule();}else if(b.dataset.select!==undefined){selected=Number(b.dataset.select)}else if(b.dataset.delete!==undefined){checkpoint();state[section].splice(Number(b.dataset.delete),1);selected=-1;schedule()}render()});
+$('#inspector').addEventListener('click',e=>{let upload=e.target.closest('[data-market-upload]');if(upload){$('#inspector [data-file="'+upload.dataset.marketUpload+'"]')?.click();return}let remove=e.target.closest('[data-market-remove-image]');if(remove){checkpoint();change(remove.dataset.marketRemoveImage,'');render();return}let b=e.target.closest('[data-add],[data-select],[data-delete]');if(!b)return;if(b.dataset.add){checkpoint();const key=b.dataset.add;state[key]??=[];state[key].push({id:'item-'+Date.now().toString(36),name:'新项目',title:'新项目'});selected=state[key].length-1;pendingFrameRefresh=true;schedule();}else if(b.dataset.select!==undefined){selected=Number(b.dataset.select)}else if(b.dataset.delete!==undefined){checkpoint();state[section].splice(Number(b.dataset.delete),1);selected=-1;pendingFrameRefresh=true;schedule()}render()});
 // The Market templates use the original Studio crop dialog and Cropper.js interaction.
 let marketCropper=null,marketCropUrl='',marketCropPath='',marketCropConfig=null;
 const getCropConfig=path=>{
@@ -89,7 +108,7 @@ $('#cropApply').onclick=async()=>{
   checkpoint();change(marketCropPath,data);closeMarketCrop();render();
  }catch(err){console.error('[Market image apply]',err);$('#saveState').textContent='图片裁剪失败'}finally{button.disabled=false}
 };
-$('#undoBtn').onclick=()=>{if(!history.length)return;future.push(structuredClone(state));state=history.pop();schedule();render();syncHistory()};$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(structuredClone(state));state=future.pop();schedule();render();syncHistory()};
+$('#undoBtn').onclick=()=>{if(!history.length)return;future.push(structuredClone(state));state=history.pop();pendingFrameRefresh=true;schedule();render();syncHistory()};$('#redoBtn').onclick=()=>{if(!future.length)return;history.push(structuredClone(state));state=future.pop();pendingFrameRefresh=true;schedule();render();syncHistory()};
 $('#deviceDesktopBtn').onclick=()=>{frame.classList.remove('device-mobile');iframe.style.maxWidth='100%';};$('#deviceMobileBtn').onclick=()=>{iframe.style.maxWidth='390px';};
 $('#previewBtn').onclick=()=>{preview=!preview;document.body.classList.toggle('oe-market-preview-mode',preview);$('#previewLabel').textContent=preview?'返回编辑':'预览';try{iframe.contentDocument.querySelectorAll('[data-market-edit-path]').forEach(el=>el.contentEditable=preview?'false':'true')}catch{}};
 $('#backAdminBtn').onclick=()=>location.assign('/admin/');
