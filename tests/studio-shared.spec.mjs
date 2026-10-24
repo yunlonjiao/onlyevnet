@@ -159,37 +159,7 @@ test('template gallery metadata uses one distinct NAME ONLY for every template',
  for(const template of templates){
   assert.match(template.label,/^[A-Z]+(?: [A-Z]+)* ONLY$/);
   assert.equal(template.studioName,template.label);
-  assert.match(template.name,new RegExp('^\\\\d{2} · '+template.label+'async()=>{
- const {context,page,errors}=await openEditor('03-creator-market','ci-page-alignment');
- await page.locator('#pageContentNav [data-section="products"]').click();
- assert.equal(await page.locator('#pageContentNav [data-section="products"] span').textContent(),'制品管理');
- assert.equal(await page.locator('#pageContentNav [data-section="products"] b').textContent(),'0');
- assert.ok(await page.locator('.page-nav [data-page="booths"].active').count());
- assert.equal(await page.locator('.canvas-title b').textContent(),'摊位');
- await page.locator('#pageContentNav [data-section="guide"]').click();
- assert.equal(await page.locator('.canvas-title b').textContent(),'观展指南');
- await page.locator('.page-nav [data-page="animation"]').click();
- assert.equal(await page.locator('.canvas-title b').textContent(),'动画页面');
- assert.equal(await page.locator('#createCustomPageBtn').isVisible(),false);
- assert.deepEqual(errors,[]);
- await context.close();
-});
-test('03 mobile pages and Inspector drawers open and dismiss correctly',async()=>{
- const {context,page,errors}=await openEditor('03-creator-market','ci-mobile-drawers');
- await page.setViewportSize({width:390,height:844});
- await page.locator('#mobilePagesBtn').click();
- assert.ok(await page.locator('body.mobile-sidebar-open').count());
- assert.equal(await page.locator('#mobilePanelBackdrop').isVisible(),true);
- await page.locator('.page-nav [data-page="booths"]').click();
- assert.equal(await page.locator('body.mobile-sidebar-open').count(),0);
- await page.locator('#mobileInspectorBtn').click();
- assert.ok(await page.locator('body.mobile-inspector-open').count());
- await page.locator('#mobilePanelBackdrop').click({position:{x:190,y:180}});
- assert.equal(await page.locator('body.mobile-inspector-open').count(),0);
- assert.deepEqual(errors,[]);
- await context.close();
-});
-));
+  assert.equal(template.name,template.id.slice(0,2)+' · '+template.label);
  }
  assert.deepEqual(errors,[]);
  await context.close();
