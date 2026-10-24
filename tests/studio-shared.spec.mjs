@@ -94,6 +94,7 @@ test('03 guide, map records, list deletion and undo/redo use the Studio workflow
  const mapName=page.locator('#inspector [data-key="maps.0.title"]');
  await mapName.fill('QA 场地图');
  await page.waitForTimeout(500);
+ await frame.locator('#directory').evaluate(el=>el.open=true);
  const map=frame.locator('[data-market-record="maps"]').first();
  await map.click({timeout:12000});
  assert.equal(await page.locator('#inspector [data-key="maps.0.title"]').inputValue(),'QA 场地图');
