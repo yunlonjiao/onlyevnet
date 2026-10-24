@@ -100,6 +100,8 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-directory');
     const frame=page.frameLocator('#liveFrame');
     await page.locator('#previewBtn').click();
+    // Wait for renderer mode propagation before any visitor-only favorite or wishlist interaction.
+    await expect(frame.locator('html')).toHaveClass(/oe-preview/);
     // The entry gate may already be hidden; close it through the supported renderer command.
     // This test verifies directory interactions, not entry-animation playback.
     await page.locator('#liveFrame').evaluate(iframe=>iframe.contentWindow.postMessage({type:'OE_HIDE_ENTRY_PREVIEW'},location.origin));
