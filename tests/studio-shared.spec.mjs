@@ -45,7 +45,7 @@ test('03 can edit, persist, select product cards, preview and export standalone 
  await page.locator('#inspector [data-key="products.0.name"]').fill('QA 制品');
  await page.waitForTimeout(550);
  await frame.locator('#directory').evaluate(el=>el.open=true);
- const product=frame.locator('[data-market-record="products"][data-market-record-id]').filter({hasText:'QA 制品'}).first();
+ const product=frame.locator('#productList [data-market-record="products"][data-market-record-id]').filter({hasText:'QA 制品'}).first();
  await product.click({timeout:15000});
  assert.ok((await page.locator('#inspector [data-key="products.0.name"]').inputValue()).includes('QA 制品'));
 
