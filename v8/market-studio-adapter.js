@@ -1,3 +1,4 @@
+import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,renderPageTree} from '/v8/editor/studio-chrome.js';
 import {bindCanvasSelection} from '/v8/editor/canvas-selection.js';
 import {getTemplate} from '/v8/templates/registry.js?v=8.41.1';
@@ -50,11 +51,16 @@ else if(section==='tickets')fields=input('外部购票链接','ticketUrl');
 else if(section==='guide')fields=input('观展指南','guide',true);
 else fields=collection(section);
 renderInspector(panel,esc,'属性',title,fields);
+ panel.querySelectorAll('[data-key],[data-market-tags]').forEach(input=>{
+  const path=input.dataset.key||input.dataset.marketTags;
+  bindStudioField(input,{
+   path,checkpoint,update:change,
+   parseValue:input.dataset.marketTags!==undefined?(value=>value.split(/[,，]/).map(x=>x.trim()).filter(Boolean)):undefined
+  });
+ });
 $('#pageContentTitle').textContent=title;$('#projectEventName').textContent=state.eventName||'同人创作展';}
 document.querySelector('.page-nav')?.addEventListener('click',e=>{const b=e.target.closest('[data-market-page]');if(!b)return;const page=pageDefs.find(x=>x[0]===b.dataset.marketPage);if(!page)return;section=page[2];selected=-1;render();const hash={home:'#top',animation:'#top',booths:'#creators',map:'#map',guide:'#guide'}[page[0]];try{const doc=iframe.contentDocument;const target=doc.querySelector(hash);if(target){doc.querySelector('#directory')?.setAttribute('open','');target.scrollIntoView({behavior:'smooth',block:'start'})}}catch{}});
 $('#pageContentNav').addEventListener('click',e=>{let b=e.target.closest('[data-section]');if(!b)return;section=b.dataset.section;selected=-1;render();});
-$('#inspector').addEventListener('focusin',e=>{if(e.target.matches('[data-key],[data-market-tags]')&&!e.target.dataset.snap){checkpoint();e.target.dataset.snap='1'}});
-$('#inspector').addEventListener('input',e=>{const k=e.target.dataset.key;if(k)change(k,e.target.value);const tags=e.target.dataset.marketTags;if(tags)change(tags,e.target.value.split(/[,，]/).map(x=>x.trim()).filter(Boolean))});
 $('#inspector').addEventListener('click',e=>{let upload=e.target.closest('[data-market-upload]');if(upload){$('#inspector [data-file="'+upload.dataset.marketUpload+'"]')?.click();return}let remove=e.target.closest('[data-market-remove-image]');if(remove){checkpoint();change(remove.dataset.marketRemoveImage,'');render();return}let b=e.target.closest('[data-add],[data-select],[data-delete]');if(!b)return;if(b.dataset.add){checkpoint();const key=b.dataset.add;state[key]??=[];state[key].push({id:'item-'+Date.now().toString(36),name:'新项目',title:'新项目'});selected=state[key].length-1;pendingFrameRefresh=true;schedule();}else if(b.dataset.select!==undefined){selected=Number(b.dataset.select)}else if(b.dataset.delete!==undefined){checkpoint();state[section].splice(Number(b.dataset.delete),1);selected=-1;pendingFrameRefresh=true;schedule()}render()});
 // The Market templates use the original Studio crop dialog and Cropper.js interaction.
 let marketCropper=null,marketCropUrl='',marketCropPath='',marketCropConfig=null;
