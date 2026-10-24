@@ -12,7 +12,7 @@ export function renderPageTree(host,pages,activePage,escape){
 
 /* Only the editor chrome uses the English template identifier; event names and gallery labels remain user-authored/localized. */
 export function studioTemplateTitle(template){
- return String(template.studioName||template.name||template.id||'ONLYEVENT').replace(/^\\d+\\s*·\\s*/,'').trim();
+ return String(template.studioName||template.name||template.id||'ONLYEVENT').replace(/^\d+\s*·\s*/,'').trim();
 }
 export function syncStudioIdentity(template,eventName,root=document){
  const title=studioTemplateTitle(template);
