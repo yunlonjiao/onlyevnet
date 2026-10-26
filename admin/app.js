@@ -158,7 +158,7 @@ $('#projectSearch').addEventListener('input',e=>renderProjects(e.target.value));
 $('#exportProjectBackupBtn').addEventListener('click',()=>{
  if(!projects.length){alert('目前还没有活动项目可备份。');return}
  const includePublisherCredentials=$('#includePublisherCredentials').checked;
- if(includePublisherCredentials&&!confirm('备份文件将包含已发布站点的编辑凭证。拿到文件的人可能修改或下线网站。确认导出含凭证的敏感备份？'))return;
+ if(includePublisherCredentials&&!confirm('备份文件将包含已发布网站的管理记录。导入后仍需登录同一主办方账号才能更新或下线网站。确认导出？'))return;
  try{
   const data=makeProjectBackup(projects,localStorage,{includePublisherCredentials});
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'});
@@ -178,8 +178,8 @@ $('#importProjectBackupFile').addEventListener('change',async e=>{
   const count=data?.records?.length;
   if(!Number.isInteger(count))throw new Error('文件缺少活动项目清单');
   const detail=data.containsPublisherCredentials
-   ?'此备份可能包含可修改或下线网站的发布凭证。仅导入自己信任的备份文件。'
-   :'不包含发布凭证的项目将作为草稿导入，不会自动连接或替换线上网站。';
+   ?'此备份包含已发布网站的管理记录；登录发布该网站的主办方账号后即可继续更新。'
+   :'不包含发布记录的项目将作为草稿导入，不会自动连接或替换线上网站。';
   if(!confirm('从备份导入 '+count+' 个活动项目到当前浏览器？\n不会覆盖已有项目；重复 ID 将自动重命名。\n'+detail))return;
   const result=restoreProjectBackup(data,localStorage,{
    existingProjects:projects,

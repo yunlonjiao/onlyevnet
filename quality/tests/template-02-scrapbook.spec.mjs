@@ -99,6 +99,8 @@ test.describe('Template 02 scrapbook — Shared Core acceptance',()=>{
   test('keeps booth search, favorites and product wishlist',async({page})=>{
     await page.goto('/v8/?template=02-scrapbook&project=template02-directory');
     const frame=page.frameLocator('#liveFrame');
+    // Preview mode is posted to the iframe; wait until the renderer is listening.
+    await expect(frame.locator('.trip-logo [data-oe-field="eventName"]')).toHaveAttribute('contenteditable','true');
     await page.locator('#previewBtn').click();
     // Wait for renderer mode propagation before any visitor-only favorite or wishlist interaction.
     await expect(frame.locator('html')).toHaveClass(/oe-preview/);

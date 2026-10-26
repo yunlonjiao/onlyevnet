@@ -1,7 +1,8 @@
 /*
  * Offline, user-controlled project transfer between OnlyEvent origins (Vercel / Cloudflare).
  * Never export the simulated account database, login session or password/recovery hashes.
- * Publisher edit tokens are excluded unless the organizer explicitly opts in.
+ * Publish records (site + cloud project IDs) are excluded unless the organizer opts in;
+ * managing a restored site still requires signing in to the owning organizer account.
  */
 export const BACKUP_KIND='onlyevent-project-backup';
 export const BACKUP_VERSION=1;
@@ -39,7 +40,7 @@ export function makeProjectBackup(projects,storage,{includePublisherCredentials=
    if(raw!==null){
     if(!object(raw))throw new Error('项目发布记录格式无效');
     record.publication={
-     siteId:safeText(raw.siteId,240),editToken:safeText(raw.editToken,500),
+     siteId:safeText(raw.siteId,240),cloudProjectId:safeText(raw.cloudProjectId,120),
      slug:safeText(raw.slug,120),url:safeText(raw.url,1200),
      publishedAt:safeText(raw.publishedAt,60)
     };
@@ -64,7 +65,7 @@ export function validateProjectBackup(data,{allowedTemplateIds}={}){
   if(row.publication!=null&&!object(row.publication))throw new Error('发布管理记录格式无效');
   const publication=object(row.publication)?{
    siteId:safeText(row.publication.siteId,240),
-   editToken:safeText(row.publication.editToken,500),
+   cloudProjectId:safeText(row.publication.cloudProjectId,120),
    slug:safeText(row.publication.slug,120),
    url:safeText(row.publication.url,1200),
    publishedAt:safeText(row.publication.publishedAt,60)
@@ -88,8 +89,8 @@ export function restoreProjectBackup(data,storage,{existingProjects=[],allowedTe
   const state=item.state===null?null:{...item.state,projectId:id,templateId:project.templateId};
   if(state!==null)writes.push([projectStateKey(project.templateId,id),JSON.stringify(state)]);
   const pub=item.publication;
-  // Treat sites without their private editing token as local drafts, not manageable published sites.
-  if(pub?.siteId&&pub.editToken&&pub.url){
+  // Sites without their cloud project record cannot be managed again, so they come back as drafts.
+  if(pub?.siteId&&pub.cloudProjectId&&pub.url){
    project.status='published';project.siteUrl=pub.url;
    writes.push([projectPublishKey(project.templateId,id),JSON.stringify(pub)]);
   }else{project.status='draft';project.siteUrl=''}

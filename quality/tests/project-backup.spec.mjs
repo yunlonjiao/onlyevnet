@@ -1,14 +1,10 @@
 import {test,expect} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
+import {useCloudPublisher,signInCloud} from './cloud-publisher.mjs';
 
 async function authorize(page){
+ await signInCloud(page,await useCloudPublisher(page),'备份验收主办方');
  await page.goto('/admin/');
- await page.evaluate(()=>{
-  const account={id:'backup-qa',name:'备份验收主办方',email:'',passwordHash:'qa',recoveryHash:'qa',authType:'quick'};
-  localStorage.setItem('onlyevent-auth-sim-users-v1',JSON.stringify([account]));
-  localStorage.setItem('onlyevent-auth-sim-session-v1',JSON.stringify({userId:account.id}));
- });
- await page.reload();
  await expect(page.locator('#adminShell')).toBeVisible();
 }
 const fake=(projects,states={},publish={})=>{
@@ -21,8 +17,8 @@ test('project backup excludes passwords, sessions and publisher tokens by defaul
   const {makeProjectBackup}=await import('/admin/project-backup.js');
   const store=new Map([
    ['onlyevent-studio-v8:03-creator-market:test-1:iframe',JSON.stringify({eventName:'安全备份测试',products:[{id:'p',name:'徽章'}]})],
-   ['onlyevent-studio-publish:03-creator-market:test-1:iframe',JSON.stringify({siteId:'secret-site',editToken:'very-secret-token',url:'https://demo.onlyevent.cn'})],
-   ['onlyevent-auth-sim-users-v1','SUPER-SECRET-PASSWORD']
+   ['onlyevent-studio-publish:03-creator-market:test-1:iframe',JSON.stringify({siteId:'secret-site',cloudProjectId:'prj_secret',url:'https://demo.onlyevent.cn'})],
+   ['onlyevent-cloud-session-v1','SUPER-SECRET-SESSION']
   ]);
   const storage={getItem:key=>store.get(key)||null};
   const projects=[{id:'test-1',name:'安全备份测试',templateId:'03-creator-market',siteUrl:'https://demo.onlyevent.cn',status:'published'}];
@@ -30,10 +26,11 @@ test('project backup excludes passwords, sessions and publisher tokens by defaul
  });
  expect(result.plain).toMatchObject({kind:'onlyevent-project-backup',version:1,containsPublisherCredentials:false});
  expect(result.plain.records[0].state.products[0].name).toBe('徽章');
- expect(JSON.stringify(result.plain)).not.toContain('very-secret-token');
- expect(JSON.stringify(result.plain)).not.toContain('SUPER-SECRET-PASSWORD');
+ expect(JSON.stringify(result.plain)).not.toContain('prj_secret');
+ expect(JSON.stringify(result.plain)).not.toContain('SUPER-SECRET-SESSION');
  expect(result.plain.records[0]).not.toHaveProperty('publication');
- expect(result.withSecret.records[0].publication.editToken).toBe('very-secret-token');
+ expect(result.withSecret.records[0].publication.cloudProjectId).toBe('prj_secret');
+ expect(JSON.stringify(result.withSecret)).not.toContain('SUPER-SECRET-SESSION');
 });
 test('restore adds project without overwriting a colliding existing project',async({page})=>{
  await page.goto('/admin/');
@@ -72,13 +69,13 @@ test('published sites require explicit publisher credentials to remain manageabl
   const secondStore=new Map(),store2={
    getItem:k=>secondStore.get(k)??null,setItem:(k,v)=>secondStore.set(k,v),removeItem:k=>secondStore.delete(k)
   };
-  backup.records[0].publication={siteId:'site-1',editToken:'write-secret',url:'https://example.onlyevent.cn',slug:'example'};
+  backup.records[0].publication={siteId:'site-1',cloudProjectId:'prj_1',url:'https://example.onlyevent.cn',slug:'example'};
   const withCredential=restoreProjectBackup(backup,store2,{allowedTemplateIds:['01-ip-only']});
   return {noCredential:noCredential.added[0],withCredential:withCredential.added[0],publishedRecord:JSON.parse(secondStore.get('onlyevent-studio-publish:01-ip-only:pub:iframe'))};
  });
  expect(result.noCredential).toMatchObject({status:'draft',siteUrl:''});
  expect(result.withCredential).toMatchObject({status:'published',siteUrl:'https://example.onlyevent.cn'});
- expect(result.publishedRecord.editToken).toBe('write-secret');
+ expect(result.publishedRecord.cloudProjectId).toBe('prj_1');
 });
 test('failed import rolls back all changes including the project list',async({page})=>{
  await page.goto('/admin/');
