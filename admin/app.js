@@ -1,3 +1,4 @@
+import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
 import {deleteSite} from '/v8/publisher.js?v=8.36.7';
 
@@ -153,6 +154,44 @@ $('#templateGrid').addEventListener('click',e=>{const b=e.target.closest('[data-
 $('#createCancel').onclick=()=>$('#createDialog').close();
 $('#createForm').addEventListener('submit',e=>{e.preventDefault();createProject($('#createProjectName').value)});
 $('#projectSearch').addEventListener('input',e=>renderProjects(e.target.value));
+
+$('#exportProjectBackupBtn').addEventListener('click',()=>{
+ if(!projects.length){alert('目前还没有活动项目可备份。');return}
+ const includePublisherCredentials=$('#includePublisherCredentials').checked;
+ if(includePublisherCredentials&&!confirm('备份文件将包含已发布站点的编辑凭证。拿到文件的人可能修改或下线网站。确认导出含凭证的敏感备份？'))return;
+ try{
+  const data=makeProjectBackup(projects,localStorage,{includePublisherCredentials});
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'});
+  const url=URL.createObjectURL(blob),link=document.createElement('a');
+  link.href=url;link.download='onlyevent-projects-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.append(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+ }catch(error){alert('导出失败：'+(error?.message||error))}
+});
+$('#importProjectBackupBtn').addEventListener('click',()=>$('#importProjectBackupFile').click());
+$('#importProjectBackupFile').addEventListener('change',async e=>{
+ const file=e.target.files?.[0];e.target.value='';
+ if(!file)return;
+ if(file.size>60*1024*1024){alert('备份文件超过 60MB，请先检查文件。');return}
+ try{
+  const data=JSON.parse(await file.text());
+  const count=data?.records?.length;
+  if(!Number.isInteger(count))throw new Error('文件缺少活动项目清单');
+  const detail=data.containsPublisherCredentials
+   ?'此备份可能包含可修改或下线网站的发布凭证。仅导入自己信任的备份文件。'
+   :'不包含发布凭证的项目将作为草稿导入，不会自动连接或替换线上网站。';
+  if(!confirm('从备份导入 '+count+' 个活动项目到当前浏览器？\n不会覆盖已有项目；重复 ID 将自动重命名。\n'+detail))return;
+  const result=restoreProjectBackup(data,localStorage,{
+   existingProjects:projects,
+   allowedTemplateIds:listTemplates().map(template=>template.id),
+   makeId:uid
+  });
+  projects=result.projects;
+  renderProjects($('#projectSearch').value);
+  showPage('projects');
+  alert('已导入 '+result.added.length+' 个项目'+(result.credentialsRestored?'，其中 '+result.credentialsRestored+' 个包含网站发布管理凭证':'')+'。请进入 Studio 核对页面数据。');
+ }catch(error){alert('导入失败：'+(error?.message||error))}
+});
 renderTemplates();renderProjects();
 
 
