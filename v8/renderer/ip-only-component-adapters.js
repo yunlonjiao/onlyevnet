@@ -1,6 +1,7 @@
 
 // Templates whose art is pure CSS over the Template 01 component markup.
-const BASE_MARKUP_TEMPLATES=new Set(['01-ip-only','03-creator-market','04-creator-catalogue']);
+const BASE_MARKUP_TEMPLATES=new Set(['01-ip-only']);
+const CM='03-creator-market',CC='04-creator-catalogue';
 const tid=s=>{const id=String(s?.templateId||'01-ip-only');return BASE_MARKUP_TEMPLATES.has(id)?'01-ip-only':id};
 const isVariant=s=>tid(s)!=='01-ip-only';
 const num=i=>String(i+1).padStart(2,'0');
@@ -13,6 +14,8 @@ export function ticketMarkup({state,x,i,field,esc,image}){
   const gift=field('tickets.'+i+'.gift',x.gift||'','span','oe-ticket-gift');
   const note=field('tickets.'+i+'.note',x.note||'','small','oe-ticket-note');
   const common=' data-oe-item="tickets" data-oe-index="'+i+'"';
+  if(id===CM)return '<article class="ticket cm-ticket"'+common+'><span class="cm-ticket-badge">入场</span><div class="cm-ticket-body">'+name+gift+note+'</div><div class="cm-ticket-price">'+price+'</div>'+(image||'')+'</article>';
+  if(id===CC)return '<article class="ticket cc-ticket"'+common+'><div class="cc-ticket-main"><small>ADMISSION TICKET · 入場券</small>'+name+gift+note+'</div><div class="cc-ticket-stub"><span>No.'+num(i)+'</span>'+price+'<i>✦</i></div>'+(image||'')+'</article>';
   if(id==='02-scrapbook')return '<article class="ticket scrap-pass"'+common+'><div class="scrap-pass-watermark" aria-hidden="true"><svg class="stamp-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs><path id="journey-seal-ring" d="M100 100 m-73 0 a73 73 0 1 1 146 0 a73 73 0 1 1 -146 0"/></defs><circle cx="100" cy="100" r="88" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="100" cy="100" r="64" fill="none" stroke="currentColor" stroke-width="1.5"/><text fill="currentColor" font-family="Georgia,serif" font-size="12" letter-spacing="1.1" font-weight="bold"><textPath href="#journey-seal-ring" startOffset="50%" text-anchor="middle">YOUR SPECIAL JOURNEY • LUCKY DAY • OE</textPath></text><g transform="translate(100 103) rotate(-8)" fill="currentColor"><defs><path id="oe-clover-heart" d="M0 0 C-7 -8 -29 -22 -29 -39 C-29 -56 -7 -57 0 -42 C7 -57 29 -56 29 -39 C29 -22 7 -8 0 0 Z"/></defs><use href="#oe-clover-heart" transform="translate(0 -2) scale(.78)"/><use href="#oe-clover-heart" transform="rotate(90) translate(0 -2) scale(.78)"/><use href="#oe-clover-heart" transform="rotate(180) translate(0 -2) scale(.78)"/><use href="#oe-clover-heart" transform="rotate(270) translate(0 -2) scale(.78)"/><path d="M10 16 Q22 37 32 47" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></g></svg></div><div class="scrap-pass-main"><span class="scrap-pass-label">入场凭证 / ADMISSION</span>'+name+gift+note+'</div><div class="scrap-pass-art">'+image+'</div><aside>'+price+'<span>入场票 / TICKET</span></aside></article>';
   if(id==='03-school-festival')return '<article class="ticket school-ticket-card"'+common+'><div class="school-ticket-no">'+num(i)+'</div><div class="school-ticket-copy"><span>ADMISSION PASS</span>'+name+gift+note+'</div><div class="school-ticket-price">'+price+'</div>'+image+'</article>';
   if(id==='04-museum-editorial')return '<article class="ticket museum-admission"'+common+'><header><span>ADMISSION '+num(i)+'</span>'+price+'</header><div class="museum-admission-body">'+name+gift+note+'</div>'+image+'</article>';
@@ -51,6 +54,8 @@ export function scheduleMarkup({state,x,i,field,esc,day,area,endTime,guestHtml,p
 export function updateMarkup({state,u,i,field,esc,target,mode}){
   const id=tid(state); if(id==='01-ip-only')return '';
   const common=' href="#'+esc(target)+'" data-target-mode="'+mode+'" data-page-link="'+esc(target)+'" data-oe-item="updates" data-oe-index="'+i+'"';
+  if(id===CM)return '<a class="cm-update"'+common+'><span class="cm-update-tag">公告</span>'+field('updates.'+i+'.title',u.title||'','b')+'<time>'+esc(u.date||'')+'</time></a>';
+  if(id===CC)return '<a class="cc-update"'+common+'><span class="cc-update-star" aria-hidden="true">★</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<i aria-hidden="true">›</i></a>';
   if(id==='02-scrapbook')return '<a class="scrap-update"'+common+'><time class="scrap-update-date">'+esc(u.date||'')+'</time><span class="scrap-update-type">INFO</span>'+field('updates.'+i+'.title',u.title||'','b')+'<span class="scrap-update-arrow" aria-hidden="true">↗</span></a>';
   if(id==='03-school-festival')return '<a class="school-update"'+common+'><span>NEWS '+num(i)+'</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<i>→</i></a>';
   if(id==='04-museum-editorial')return '<a class="museum-update"'+common+'><time>'+esc(u.date||'')+'</time><span>NEWS</span>'+field('updates.'+i+'.title',u.title||'','b')+'<i>VIEW</i></a>';
@@ -63,6 +68,8 @@ export function sponsorMarkup({state,x,i,field,esc,logo,action}){
   const id=tid(state); if(id==='01-ip-only')return '';
   const name=field('sponsors.'+i+'.name',x.name||'','b'),level=field('sponsors.'+i+'.level',x.level||'','small');
   const common=' data-oe-item="sponsors" data-oe-index="'+i+'"';
+  if(id===CM)return '<article class="sponsor-card cm-sponsor"'+common+'>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
+  if(id===CC)return '<article class="sponsor-card cc-sponsor"'+common+'><span class="cc-sponsor-ribbon">SPECIAL THANKS</span>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
   if(id==='04-museum-editorial')return '<article class="sponsor-card museum-sponsor"'+common+'><span>'+level+'</span>'+logo+'<div>'+name+action+'</div></article>';
   if(id==='06-expo-catalogue')return '<article class="sponsor-card expo-sponsor"'+common+'><span>S-'+num(i)+'</span>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
   if(id==='07-immersive-character')return '<article class="sponsor-card kimetsu-sponsor"'+common+'>'+logo+'<div>'+level+name+'</div>'+action+'</article>';
@@ -74,6 +81,8 @@ export function boothMarkup({state,b,i,field,esc,logo,fav,search,productCount}){
   const common=' id="booth-'+esc(b.id)+'" data-directory-card data-kind="booth" data-booth-id="'+esc(b.id)+'" data-search="'+esc(search)+'" data-oe-item="booths" data-oe-index="'+i+'"';
   const name=field('booths.'+i+'.name',b.name||'','h3'),no=field('booths.'+i+'.no',b.no||'','span','booth-no'),type=field('booths.'+i+'.type',b.type||'','small'),intro=field('booths.'+i+'.intro',b.intro||'','p');
   const buttons='<button class="booth-products-link" type="button" data-view-booth-products="'+esc(b.id)+'" data-booth-label="'+esc((b.no?b.no+' · ':'')+(b.name||'摊位'))+'">'+(productCount?productCount+' 件制品 ↗':'暂无制品')+'</button><button class="favorite-booth'+(fav?' active':'')+'" type="button" data-favorite-booth="'+esc(b.id)+'" aria-pressed="'+fav+'">'+(fav?'♥ 已收藏':'♡ 收藏社团')+'</button>';
+  if(id===CM)return '<article class="cm-booth"'+common+'><div class="cm-booth-face">'+logo+'</div><div class="cm-booth-body"><div class="cm-booth-top">'+name+no+'</div>'+type+intro+'<footer>'+buttons+'</footer></div></article>';
+  if(id===CC)return '<article class="cc-booth"'+common+'><span class="cc-booth-space">'+no+'</span><div class="cc-booth-cut">'+logo+'</div><div class="cc-booth-info">'+name+type+intro+'</div><footer>'+buttons+'</footer></article>';
   if(id==='02-scrapbook')return '<article class="scrap-booth"'+common+'><div class="scrap-booth-pin">'+no+'</div>'+logo+'<div>'+type+name+intro+'<footer>'+buttons+'</footer></div></article>';
   if(id==='03-school-festival')return '<article class="school-booth"'+common+'><div class="school-booth-no">'+no+'</div>'+logo+'<div><span>CIRCLE FILE</span>'+name+type+intro+'</div><footer>'+buttons+'</footer></article>';
   if(id==='04-museum-editorial')return '<article class="museum-booth"'+common+'><header>'+no+type+'</header><div>'+logo+'</div><section>'+name+intro+'</section><footer>'+buttons+'</footer></article>';
@@ -87,6 +96,8 @@ export function productMarkup({state,b,p,i,j,field,esc,img,wished,search}){
   const common=' data-directory-card data-kind="product" data-product-id="'+esc(p.id)+'" data-booth-id="'+esc(b.id)+'" data-product-edit-booth="'+i+'" data-product-edit-index="'+j+'" data-search="'+esc(search)+'"';
   const name=field('booths.'+i+'.products.'+j+'.name',p.name||'','b'),tag=field('booths.'+i+'.products.'+j+'.tag',p.tag||'','em','product-tag'),price=field('booths.'+i+'.products.'+j+'.price',p.price||'','span');
   const wish='<button class="wishlist-product'+(wished?' active':'')+'" type="button" data-wishlist-product="'+esc(p.id)+'" data-booth-id="'+esc(b.id)+'" aria-pressed="'+wished+'">'+(wished?'★ 已加入':'☆ 心愿')+'</button>';
+  if(id===CM)return '<article class="cm-product"'+common+'><div class="cm-product-thumb">'+img+'<span class="cm-product-price">'+price+'</span></div><div class="cm-product-meta">'+name+'<small>'+esc(b.no||'')+' · '+esc(b.name||'')+'</small><footer>'+tag+wish+'</footer></div></article>';
+  if(id===CC)return '<article class="cc-product"'+common+'><div class="cc-product-art">'+img+'<span class="cc-new">NEW!</span></div><div class="cc-product-info">'+name+'<small>'+esc(b.no||'')+' / '+esc(b.name||'')+'</small>'+tag+'</div><footer>'+price+wish+'</footer></article>';
   if(id==='02-scrapbook')return '<article class="scrap-product"'+common+'>'+img+'<div>'+tag+name+'<small>'+esc(b.no||'')+' / '+esc(b.name||'')+'</small><footer>'+price+wish+'</footer></div></article>';
   if(id==='03-school-festival')return '<article class="school-product"'+common+'><span class="school-product-label">GOODS</span>'+img+'<div>'+name+tag+'<small>'+esc(b.no||'')+' · '+esc(b.name||'')+'</small></div><footer>'+price+wish+'</footer></article>';
   if(id==='04-museum-editorial')return '<article class="museum-product"'+common+'>'+img+'<div><span>'+esc(b.no||'')+'</span>'+name+tag+'<small>'+esc(b.name||'')+'</small></div><footer>'+price+wish+'</footer></article>';
@@ -116,6 +127,8 @@ export function guideMarkup({state,x,i,field,esc,image,navigation,preset,kindLab
   const common=' id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"';
   const title=field('guide.items.'+i+'.title',x.title||'','span'),text=field('guide.items.'+i+'.text',x.text||'','p');
   const label=esc(x.label||kindLabel[preset]||'GUIDE');
+  if(id===CM)return '<article class="cm-guide"'+common+'><div class="cm-guide-icon">'+num(i)+'</div><div class="cm-guide-body"><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
+  if(id===CC)return '<article class="cc-guide"'+common+'><span class="cc-guide-no">注意事項 '+num(i)+'</span><div class="cc-guide-body"><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='02-scrapbook')return '<article class="scrap-guide"'+common+'><span>NOTE '+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='03-school-festival')return '<article class="school-guide"'+common+'><div class="school-guide-no">'+num(i)+'</div><div><span>'+label+'</span><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='04-museum-editorial')return '<article class="museum-guide"'+common+'><aside>'+num(i)+' / '+label+'</aside><div><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
@@ -128,6 +141,8 @@ export function communityMarkup({state,x,i,field,esc,img,action}){
   const id=tid(state);if(id==='01-ip-only')return '';
   const common=' data-oe-item="socialLinks" data-oe-index="'+i+'"';
   const label=field('socialLinks.'+i+'.label',x.label,'b'),note=field('socialLinks.'+i+'.note',x.note||'','p');
+  if(id===CM)return '<article class="cm-social"'+common+'><div class="cm-social-avatar">'+img+'</div><div class="cm-social-text">'+label+note+'</div>'+action+'</article>';
+  if(id===CC)return '<article class="cc-social"'+common+'><div class="cc-social-art">'+img+'</div><div class="cc-social-text">'+label+note+action+'</div></article>';
   if(id==='02-scrapbook')return '<article class="scrap-social"'+common+'><div class="scrap-social-face">'+img+'<span class="scrap-social-stamp">↗</span></div><div class="scrap-social-caption">'+label+note+action+'</div></article>';
   if(id==='03-school-festival')return '<article class="school-social"'+common+'><span>'+num(i)+'</span>'+img+'<div>'+label+note+action+'</div></article>';
   if(id==='04-museum-editorial')return '<article class="museum-social"'+common+'><span>COMMUNITY '+num(i)+'</span><div>'+label+note+action+'</div>'+img+'</article>';
@@ -153,6 +168,8 @@ export function mapLinkMarkup({state,item,index,field,esc,target,kind,itemId}){
   const id=tid(state);if(id==='01-ip-only')return '';
   const common=' href="#'+esc(target)+'" data-target-mode="page" data-page-link="'+esc(target)+'" data-explore-link data-explore-kind="'+esc(kind)+'" data-explore-id="'+esc(itemId)+'" data-oe-item="explore" data-oe-index="'+index+'"';
   const label=field('venueMap.links.'+index+'.label',item.label,'span');
+  if(id===CM)return '<a class="cm-map-tag"'+common+'><b>#</b>'+label+'</a>';
+  if(id===CC)return '<a class="cc-map-tag"'+common+'><b>✦</b>'+label+'<i>›</i></a>';
   if(id==='02-scrapbook')return '<a class="scrap-map-tag"'+common+'><b>'+num(index)+'</b>'+label+'<i>↗</i></a>';
   if(id==='03-school-festival')return '<a class="school-map-sign"'+common+'><span>'+num(index)+'</span><b>'+label+'</b><i>→</i></a>';
   if(id==='04-museum-editorial')return '<a class="museum-map-index"'+common+'><span>'+num(index)+'</span><b>'+label+'</b><small>VIEW</small></a>';

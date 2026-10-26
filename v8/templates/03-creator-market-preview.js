@@ -80,11 +80,128 @@ const marketStyle=`
 .cm-site .spotlight-six{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto}
 }
 @media(max-width:800px){.cm-site .kv{background-image:var(--oe-hero-image-mobile),linear-gradient(130deg,#a4d9f4 0%,#ded4f4 45%,#fbc6df 100%);background-position:var(--oe-hero-focal-mobile),center}}
+
+/* 03 entry: portal loading splash instead of a ticket */
+.cm-site .loader.cm-entry{background:#f7f8fa!important;place-items:center}
+.cm-entry .entry-ticket-label,.cm-entry .stub-barcode,.cm-entry .stub-code{display:none!important}
+.cm-entry-gate{cursor:pointer;width:min(760px,92vw);background:none;border:0;padding:0;transform:none;box-shadow:none}
+.cm-entry-card{display:grid;grid-template-columns:1.3fr 1fr;background:#fff;border:1px solid var(--cm-line);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px #0000001a}
+.cm-site .cm-entry-photo{position:relative!important;inset:auto!important;transform:none!important;border:0!important;border-radius:0!important;width:auto!important;height:auto!important;aspect-ratio:16/10;background-color:#ded4f4;background-image:linear-gradient(130deg,#a4d9f4,#ded4f4 45%,#fbc6df);background-size:cover;background-position:center}
+.cm-entry-info{padding:28px;display:flex;flex-direction:column;gap:8px;justify-content:center;text-align:left}
+.cm-entry-kicker{font-size:11px;letter-spacing:.14em;color:#00a7de;font-weight:850}
+.cm-entry-info .entry-ticket-title{font-size:28px;line-height:1.15;color:var(--cm-ink);font-weight:900}
+.cm-entry-info .entry-ticket-subtitle{font-size:13px;color:var(--cm-muted)}
+.cm-entry-meta{display:flex;flex-direction:column;gap:2px;font-size:14px;color:var(--cm-ink)}
+.cm-entry-meta b{font-weight:800}
+.cm-entry-progress{height:4px;border-radius:4px;background:#e3e5e7;overflow:hidden;margin-top:10px}
+.cm-entry-progress i{display:block;height:100%;width:18%;background:var(--cm-accent);border-radius:inherit;transition:width 1.5s ease}
+.loader.entry-playing .cm-entry-progress i{width:100%}
+.cm-entry-hint{font-size:12px;color:var(--cm-soft)}
+.loader.entry-playing .cm-entry-card{animation:cmEntryOut .45s ease 1.55s forwards}
+@keyframes cmEntryOut{to{transform:translateY(-12px) scale(.97);opacity:0}}
+.cm-site .loader .skip{background:#fff;color:var(--cm-muted);border:1px solid var(--cm-line);border-radius:999px;box-shadow:none}
+/* 03 booth directory: creator-portal toolbar, UP主-style circle cards and video-card works */
+.cm-site .booth-directory-rich{background:none!important;border:0!important;box-shadow:none!important;padding:0!important}
+.cm-site .booth-directory-tools{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--cm-line)!important;border-radius:12px;padding:10px 12px;box-shadow:none!important}
+.cm-site .directory-tabs{display:flex;gap:4px;background:#f1f2f3;border:0;border-radius:8px;padding:3px}
+.cm-site .directory-tabs button{border:0;background:none;border-radius:6px;padding:7px 14px;font-weight:700;color:var(--cm-muted);box-shadow:none}
+.cm-site .directory-tabs button.active{background:#fff;color:var(--cm-accent);box-shadow:0 1px 3px #0000001a}
+.cm-site .booth-search{flex:1;display:flex;align-items:center;gap:8px;background:#f1f2f3;border:0!important;border-radius:8px;padding:0 12px;box-shadow:none}
+.cm-site .booth-search input{border:0;background:none;height:38px;flex:1;outline:none;box-shadow:none}
+.cm-site .booth-directory-tools>button{border:1px solid var(--cm-line);background:#fff;border-radius:8px;padding:8px 12px;font-weight:700;box-shadow:none;color:var(--cm-muted)}
+.cm-site .directory-context{color:var(--cm-soft)}
+.cm-site .booth-directory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:16px}
+.cm-booth{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--cm-line);border-radius:12px;padding:16px;transition:box-shadow .2s}
+.cm-booth:hover{box-shadow:0 6px 20px #00000012}
+.cm-booth-face{flex:0 0 64px;height:64px;border-radius:50%;overflow:hidden;background:linear-gradient(135deg,#a4d9f4,#fbc6df);display:grid;place-items:center;box-shadow:0 0 0 1px var(--cm-line)}
+.cm-booth-face img,.cm-booth-face .booth-logo{width:100%!important;height:100%!important;object-fit:cover;border:0!important;border-radius:50%!important;background:none!important;color:#fff!important;font-weight:900;display:grid;place-items:center;box-shadow:none!important;margin:0!important}
+.cm-booth-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.cm-booth-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cm-booth-top h3{margin:0;font-size:16px;font-weight:800;color:var(--cm-ink)}
+.cm-booth .booth-no{font-size:11px;font-weight:800;color:var(--cm-accent-ink);background:#e8f7ff;border-radius:4px;padding:2px 6px}
+.cm-booth small{color:var(--cm-soft);font-size:12px}
+.cm-booth p{margin:2px 0 6px;color:var(--cm-muted);font-size:13px;line-height:1.6}
+.cm-booth footer{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap}
+.cm-booth .favorite-booth{border:0;border-radius:6px;background:var(--cm-accent);color:#fff;padding:6px 14px;font-weight:700;font-size:12px;box-shadow:none}
+.cm-booth .favorite-booth.active{background:#e3e5e7;color:var(--cm-muted)}
+.cm-booth .booth-products-link{border:1px solid var(--cm-line);background:#fff;border-radius:6px;padding:6px 12px;font-size:12px;color:var(--cm-muted);box-shadow:none}
+.cm-site .product-directory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:16px}
+.cm-product{display:flex;flex-direction:column;gap:8px;background:none;border:0}
+.cm-product-thumb{position:relative;aspect-ratio:16/10;border-radius:9px;overflow:hidden;background:#f0e8ff}
+.cm-product-thumb .directory-product-image{width:100%;height:100%;border:0!important;padding:0;background:none!important;display:grid;place-items:center;color:#806db0;font-weight:900;box-shadow:none!important;border-radius:0!important}
+.cm-product-thumb img{width:100%;height:100%;object-fit:cover}
+.cm-product-price{position:absolute;right:8px;bottom:8px;background:#000000a0;color:#fff;border-radius:4px;padding:2px 8px;font-size:12px;font-weight:700}
+.cm-product-meta b{font-size:14px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--cm-ink)}
+.cm-product-meta small{display:block;color:var(--cm-soft);font-size:12px;margin-top:2px}
+.cm-product-meta footer{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.cm-product .product-tag{font-style:normal;font-size:11px;color:var(--cm-accent-ink);background:#e8f7ff;border-radius:4px;padding:2px 6px}
+.cm-product .wishlist-product{border:0;background:none;color:var(--cm-soft);font-size:12px;box-shadow:none;padding:0}
+.cm-product .wishlist-product.active{color:#fb7299}
+/* 03 guide: two-column help-centre list (no oversized first card) */
+.cm-site .guide-detail-content{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px}
+.cm-guide{display:flex;gap:14px;background:#fff;border:1px solid var(--cm-line);border-radius:12px;padding:18px;grid-column:auto!important;min-height:0}
+.cm-guide-icon{flex:0 0 40px;height:40px;border-radius:10px;background:#e8f7ff;color:var(--cm-accent-ink);display:grid;place-items:center;font-weight:900}
+.cm-guide-body{flex:1;min-width:0}
+.cm-guide-body small{color:var(--cm-soft);font-size:11px;letter-spacing:.1em;font-weight:700}
+.cm-guide-body h3{margin:2px 0 8px;font-size:17px;color:var(--cm-ink)}
+.cm-guide-body p{margin:0;color:var(--cm-muted);font-size:13px;line-height:1.8;white-space:pre-line}
+.cm-guide .guide-venue-nav{display:inline-block;margin-top:10px;background:var(--cm-accent);color:#fff;border:0;border-radius:6px;box-shadow:none;font-size:12px;padding:7px 14px}
+.cm-guide .guide-access-media-empty{display:none}
+/* 03 tickets, announcements, community, sponsors, map */
+.cm-site .ticket-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.cm-site .cm-ticket{position:relative;display:flex;align-items:center;gap:16px;background:#fff!important;border:1px solid var(--cm-line)!important;border-left:4px solid var(--cm-accent)!important;border-radius:10px;padding:18px 20px;box-shadow:none!important;min-height:0}
+.cm-ticket-badge{flex:0 0 auto;font-size:11px;font-weight:800;color:#fff;background:var(--cm-accent);border-radius:4px;padding:3px 8px}
+.cm-ticket-body{flex:1;display:flex;flex-direction:column;gap:4px}
+.cm-ticket-body h3{margin:0;font-size:16px}
+.cm-ticket-body .oe-ticket-gift{font-size:13px;color:var(--cm-muted);white-space:pre-line}
+.cm-ticket-body .oe-ticket-note{font-size:12px;color:var(--cm-soft)}
+.cm-ticket-price .oe-ticket-price{font-size:22px;font-weight:900;color:#fb7299}
+.cm-site .updates-list{display:flex;flex-direction:column;background:#fff;border:1px solid var(--cm-line);border-radius:12px;overflow:hidden}
+.cm-update{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--cm-line);color:var(--cm-ink)}
+.cm-update:last-child{border-bottom:0}
+.cm-update-tag{font-size:11px;font-weight:800;color:#fb7299;border:1px solid #fb7299;border-radius:4px;padding:1px 6px}
+.cm-update b{flex:1;font-size:14px;font-weight:600}
+.cm-update time{font-size:12px;color:var(--cm-soft)}
+.cm-site .community{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.cm-site .cm-social{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--cm-line)!important;border-radius:12px;padding:14px;box-shadow:none!important;min-height:0}
+.cm-social-avatar{flex:0 0 44px;height:44px;border-radius:50%;overflow:hidden;background:#e8f7ff;display:grid;place-items:center}
+.cm-social-avatar img,.cm-social-avatar>*{width:100%;height:100%;object-fit:cover;border:0!important;border-radius:50%;margin:0!important;min-height:0!important}
+.cm-social-text{flex:1;min-width:0}.cm-social-text b{font-size:14px}.cm-social-text p{margin:2px 0 0;font-size:12px;color:var(--cm-soft)}
+.cm-social .social-action{font-size:12px;color:var(--cm-accent-ink);white-space:nowrap;border:0;background:none;padding:0}
+.cm-site .sponsors{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.cm-site .cm-sponsor{display:flex;flex-direction:column;align-items:center;gap:8px;background:#fff;border:1px solid var(--cm-line)!important;border-radius:12px;padding:16px;box-shadow:none!important;text-align:center}
+.cm-site .map-explorer{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:14px}
+.cm-site .map-static{min-height:380px}
+.cm-site .map-link-rail{padding:16px}
+.cm-site .map-link-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.cm-map-tag{display:inline-flex;gap:4px;align-items:center;background:#f1f2f3;border-radius:999px;padding:6px 12px;font-size:13px;color:var(--cm-ink)}
+.cm-map-tag b{color:var(--cm-accent)}
+/* 03 footer: one compact row */
+.cm-site .footer{padding:28px 0}
+.cm-site .footer-grid{display:flex!important;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px}
+.cm-site .footer-grid>div{display:flex;align-items:center;gap:10px}
+.cm-site .footer-grid b{font-size:12px;color:var(--cm-soft);font-weight:700}
+.cm-site .footer-grid nav{display:flex;gap:12px}.cm-site .footer-grid nav a{font-size:13px;color:var(--cm-muted)}
+.cm-site .footer-brand h2{font-size:16px;margin:0}.cm-site .footer-brand p{margin:0;font-size:12px;color:var(--cm-soft)}
+@media(max-width:800px){.cm-site .guide-detail-content{grid-template-columns:1fr!important}.cm-site .map-explorer{grid-template-columns:1fr}.cm-entry-card{grid-template-columns:1fr}.cm-site .booth-directory-tools{flex-wrap:wrap}}
+
+/* 03 overrides for shared runtime rules (gate filter, editorial guide styling) */
+.cm-site .loader .cm-entry-gate{filter:none!important;display:block!important;width:min(780px,92vw)!important;height:auto!important;min-height:0!important;animation:none!important}
+.cm-site .cm-entry-gate:before,.cm-site .cm-entry-gate:after{display:none!important}
+.cm-site #guide .guide-detail-grid{display:block!important}
+.cm-site #guide .cm-guide{background:#fff!important;border:1px solid var(--cm-line)!important;border-radius:12px!important;box-shadow:none!important;padding:18px!important;margin:0!important;color:var(--cm-ink)!important}
+.cm-site #guide .cm-guide:before,.cm-site #guide .cm-guide:after{display:none!important}
+.cm-site #guide .cm-guide-body h3{color:var(--cm-ink)!important}.cm-site #guide .cm-guide-body p{color:var(--cm-muted)!important}
+
+.cm-site #guide .cm-guide{display:flex!important;flex-direction:row!important;align-items:flex-start!important}
+.cm-site #guide .cm-guide-icon{flex:0 0 40px!important;width:40px!important;height:40px!important;margin:0!important}
+.cm-site #guide .guide-venue-nav{background:var(--cm-accent)!important;color:#fff!important;border:0!important;border-radius:6px!important;box-shadow:none!important;font-size:12px!important;padding:7px 14px!important}
+
 `;
 
 export const previewStyle=coreStyle+marketStyle;
 
-const loader=`<div class="loader" id="loader"><div class="gate" role="button" tabindex="0" aria-label="点击纪念票进入活动网站"><section class="ticket-half left"><div class="entry-photo" aria-label="活动KV"></div></section><aside class="ticket-half right"><div class="entry-ticket-label">MEMORIAL TICKET</div><div class="entry-ticket-title">STARDUST ONLY</div><div class="entry-ticket-subtitle"></div><div class="entry-ticket-meta"><div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date"></b></div><div class="entry-ticket-time-wrap"><span>TIME</span><b class="entry-ticket-time"></b></div><div class="entry-ticket-location-wrap"><span>PLACE</span><b class="entry-ticket-location"></b></div></div><div class="stub-barcode" aria-hidden="true"></div><div class="stub-code"><span class="entry-serial stub-number">NO. 000000</span></div></aside></div><button class="skip" id="skip">跳过动画 →</button></div>`;
+const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">CREATOR MARKET</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
 const head=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div></div>';
 const pageHead=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></div>';
