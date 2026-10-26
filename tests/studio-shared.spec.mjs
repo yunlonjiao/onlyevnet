@@ -29,8 +29,8 @@ test('01 and 02 use the shared Studio editor without startup errors',async()=>{
   await context.close();
  }
 });
-test('03 can edit, persist, select product cards, preview and export standalone HTML',async()=>{
- const {context,page,errors,frame}=await openEditor('03-creator-market','ci-shared-studio');
+test('04 can edit, persist, select product cards, preview and export standalone HTML',async()=>{
+ const {context,page,errors,frame}=await openEditor('04-creator-catalogue','ci-shared-studio');
  await page.locator('[data-section="basic"]').waitFor();
  const activityName=page.locator('#inspector [data-key="eventName"]');
  await activityName.fill('QA 创作放送');
@@ -44,7 +44,7 @@ test('03 can edit, persist, select product cards, preview and export standalone 
  await page.locator('#contentListPanel [data-sidebar-content-add]').click();
  await page.locator('#inspector [data-key="products.0.name"]').fill('QA 制品');
  await page.waitForTimeout(550);
- await frame.locator('#directory').evaluate(el=>el.open=true);
+ await frame.locator('#directory').evaluateAll(list=>list.forEach(el=>{el.open=true}));
  const product=frame.locator('#productList [data-market-record="products"][data-market-record-id]').filter({hasText:'QA 制品'}).first();
  await product.click({timeout:15000});
  assert.ok((await page.locator('#inspector [data-key="products.0.name"]').inputValue()).includes('QA 制品'));
@@ -63,8 +63,8 @@ test('03 can edit, persist, select product cards, preview and export standalone 
  assert.deepEqual(errors,[],'03 must have no uncaught runtime errors');
  await context.close();
 });
-test('03 mobile editor has working device toolbar and preview controls',async()=>{
- const {context,page,errors}=await openEditor('03-creator-market','ci-mobile');
+test('04 mobile editor has working device toolbar and preview controls',async()=>{
+ const {context,page,errors}=await openEditor('04-creator-catalogue','ci-mobile');
  await page.locator('#deviceMobileBtn').click();
  assert.ok(await page.locator('#canvas.mobile').count());
  await page.locator('#deviceDesktopBtn').click();
@@ -73,8 +73,8 @@ test('03 mobile editor has working device toolbar and preview controls',async()=
  await context.close();
 });
 
-test('03 guide, map records, list deletion and undo/redo use the Studio workflow',async()=>{
- const {context,page,errors,frame}=await openEditor('03-creator-market','ci-guide-map');
+test('04 guide, map records, list deletion and undo/redo use the Studio workflow',async()=>{
+ const {context,page,errors,frame}=await openEditor('04-creator-catalogue','ci-guide-map');
  const name=page.locator('#inspector [data-key="eventName"]');
  const original=await name.inputValue();
  await name.fill('QA Undo Title');
@@ -94,7 +94,7 @@ test('03 guide, map records, list deletion and undo/redo use the Studio workflow
  const mapName=page.locator('#inspector [data-key="maps.0.title"]');
  await mapName.fill('QA 场地图');
  await page.waitForTimeout(500);
- await frame.locator('#directory').evaluate(el=>el.open=true);
+ await frame.locator('#directory').evaluateAll(list=>list.forEach(el=>{el.open=true}));
  const map=frame.locator('[data-market-record="maps"]').first();
  await map.click({timeout:12000});
  assert.equal(await page.locator('#inspector [data-key="maps.0.title"]').inputValue(),'QA 场地图');
@@ -105,8 +105,8 @@ test('03 guide, map records, list deletion and undo/redo use the Studio workflow
  await context.close();
 });
 
-test('03 canvas focus uses the same 01/02 field highlight colors',async()=>{
- const {context,page,errors,frame}=await openEditor('03-creator-market','ci-highlight');
+test('04 canvas focus uses the same 01/02 field highlight colors',async()=>{
+ const {context,page,errors,frame}=await openEditor('04-creator-catalogue','ci-highlight');
  const target=frame.locator('[data-event-name][data-market-edit-path]').first();
  await target.focus();
  const styles=await target.evaluate(el=>({
@@ -122,8 +122,8 @@ test('03 canvas focus uses the same 01/02 field highlight colors',async()=>{
  await context.close();
 });
 
-test('03 image editor uses the shared Cropper UI and saves a cropped hero',async()=>{
- const {context,page,errors}=await openEditor('03-creator-market','ci-cropper');
+test('04 image editor uses the shared Cropper UI and saves a cropped hero',async()=>{
+ const {context,page,errors}=await openEditor('04-creator-catalogue','ci-cropper');
  await page.locator('#pageContentNav [data-section="images"]').click();
  const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/eioAAAAASUVORK5CYII=','base64');
  await page.locator('input[data-file="heroImage"]').setInputFiles({name:'hero.png',mimeType:'image/png',buffer:png});
@@ -170,13 +170,13 @@ test('template style labels are distinct; all fresh sites display STARDUST ONLY'
   const {context,page,frame,errors}=await openEditor(id,'ci-default-'+id);
   await page.waitForFunction(()=>document.querySelector('#projectEventName')?.textContent==='STARDUST ONLY');
   assert.equal(await page.locator('#projectTemplateName').textContent(),style);
-  const nameField=id.startsWith('0')&&Number(id.slice(0,2))<3?
+  const nameField=Number(id.slice(0,2))<4?
    frame.locator('[data-oe-field="eventName"]').first():
    frame.locator('[data-event-name]').first();
   await nameField.waitFor({timeout:15000});
   await page.waitForFunction(()=>document.querySelector('#projectEventName')?.textContent==='STARDUST ONLY');
   assert.equal((await nameField.textContent())?.trim(),'STARDUST ONLY');
-  if(id==='03-creator-market'||id==='04-creator-catalogue'){
+  if(id==='04-creator-catalogue'){
    assert.equal(await frame.locator('html').evaluate(el=>el.ownerDocument.title),'STARDUST ONLY');
   }
   assert.deepEqual(errors,[]);
@@ -184,9 +184,9 @@ test('template style labels are distinct; all fresh sites display STARDUST ONLY'
  }
 });
 test('legacy unscoped sample names migrate, but organizers own project names',async()=>{
- const {context,page,errors}=await openEditor('03-creator-market','default');
+ const {context,page,errors}=await openEditor('04-creator-catalogue','default');
  await page.evaluate(()=>localStorage.setItem(
-  'onlyevent-studio-v8:03-creator-market:default:iframe',
+  'onlyevent-studio-v8:04-creator-catalogue:default:iframe',
   JSON.stringify({eventName:'同人创作展',description:'原始内容仍需保留'})
  ));
  await page.reload({waitUntil:'domcontentloaded'});
@@ -194,10 +194,10 @@ test('legacy unscoped sample names migrate, but organizers own project names',as
  assert.equal(await page.locator('#inspector [data-key="description"]').inputValue(),'原始内容仍需保留');
  assert.deepEqual(errors,[]);
  await context.close();
- const owned=await openEditor('03-creator-market','ci-owner-name');
+ const owned=await openEditor('04-creator-catalogue','ci-owner-name');
  await owned.page.locator('#inspector [data-key="eventName"]').fill('主办方自己的漫展名');
  await owned.page.waitForFunction(()=>{
-  const raw=localStorage.getItem('onlyevent-studio-v8:03-creator-market:ci-owner-name:iframe');
+  const raw=localStorage.getItem('onlyevent-studio-v8:04-creator-catalogue:ci-owner-name:iframe');
   return raw&&JSON.parse(raw).eventName==='主办方自己的漫展名';
  });
  await owned.page.reload({waitUntil:'domcontentloaded'});
@@ -205,8 +205,8 @@ test('legacy unscoped sample names migrate, but organizers own project names',as
  assert.deepEqual(owned.errors,[]);
  await owned.context.close();
 });
-test('03 sidebar and canvas titles stay in sync for products and pages',async()=>{
- const {context,page,errors}=await openEditor('03-creator-market','ci-page-alignment');
+test('04 sidebar and canvas titles stay in sync for products and pages',async()=>{
+ const {context,page,errors}=await openEditor('04-creator-catalogue','ci-page-alignment');
  await page.locator('#pageContentNav [data-section="products"]').click();
  assert.equal(await page.locator('#pageContentNav [data-section="products"] span').textContent(),'制品管理');
  assert.equal(await page.locator('#pageContentNav [data-section="products"] b').textContent(),'0');
@@ -220,8 +220,8 @@ test('03 sidebar and canvas titles stay in sync for products and pages',async()=
  assert.deepEqual(errors,[]);
  await context.close();
 });
-test('03 mobile pages and Inspector drawers open and dismiss correctly',async()=>{
- const {context,page,errors}=await openEditor('03-creator-market','ci-mobile-drawers');
+test('04 mobile pages and Inspector drawers open and dismiss correctly',async()=>{
+ const {context,page,errors}=await openEditor('04-creator-catalogue','ci-mobile-drawers');
  await page.setViewportSize({width:390,height:844});
  await page.locator('#mobilePagesBtn').click();
  assert.ok(await page.locator('body.mobile-sidebar-open').count());
@@ -236,7 +236,7 @@ test('03 mobile pages and Inspector drawers open and dismiss correctly',async()=
  await context.close();
 });
 
-test('03 and 04 first-level navigation switches actual iframe pages, not just Inspector',async()=>{
+test('04 first-level navigation switches actual iframe pages, not just Inspector',async()=>{
  const pages=[
   {id:'home',section:'basic',visible:['.hero','#news'],hidden:['#map','#guide','#creators']},
   {id:'animation',section:'images',visible:['.hero'],hidden:['#news','#creators','#map','#guide']},
@@ -244,7 +244,7 @@ test('03 and 04 first-level navigation switches actual iframe pages, not just In
   {id:'map',section:'maps',visible:['#map'],hidden:['.hero','#news','#creators','#guide']},
   {id:'guide',section:'guide',visible:['#guide'],hidden:['.hero','#news','#creators','#map']}
  ];
- for(const template of ['03-creator-market','04-creator-catalogue']){
+ for(const template of ['04-creator-catalogue']){
   const {context,page,frame,errors}=await openEditor(template,'ci-pages-'+template);
   for(const target of pages){
    await page.locator('.page-nav [data-market-page="'+target.id+'"]').click();
@@ -264,11 +264,6 @@ test('03 and 04 first-level navigation switches actual iframe pages, not just In
   assert.equal(await frame.locator('html').getAttribute('data-oe-studio-page'),null);
   assert.equal(await frame.locator('.hero').isVisible(),true);
   assert.equal(await frame.locator('#news').isVisible(),true);
-  if(template==='03-creator-market'){
-   assert.equal(await frame.locator('#directory').evaluate(el=>el.open),false);
-   await frame.locator('nav a[href="#map"]').click();
-   assert.equal(await frame.locator('#directory').evaluate(el=>el.open),true);
-  }
   await page.locator('#previewBtn').click();
   assert.equal(await frame.locator('html').getAttribute('data-oe-studio-page'),'guide');
   assert.ok(await frame.locator('#guide').isVisible());
@@ -278,28 +273,8 @@ test('03 and 04 first-level navigation switches actual iframe pages, not just In
  }
 });
 
-test('selecting a featured homepage product keeps the homepage visible while editing',async()=>{
- const {context,page,frame,errors}=await openEditor('03-creator-market','ci-home-card-edit');
- await page.locator('#pageContentNav [data-section="products"]').click();
- await page.locator('#contentListPanel [data-sidebar-content-add]').click();
- await page.locator('#inspector [data-key="products.0.name"]').fill('首页精选制品');
- await page.waitForFunction(()=>{
-  const raw=localStorage.getItem('onlyevent-studio-v8:03-creator-market:ci-home-card-edit:iframe');
-  return raw&&JSON.parse(raw).products?.[0]?.name==='首页精选制品';
- });
- await page.locator('.page-nav [data-market-page="home"]').click();
- const card=frame.locator('#randomSix [data-market-record="products"]').first();
- await card.waitFor({state:'visible',timeout:15000});
- await card.click();
- assert.ok(await page.locator('#inspector [data-key="products.0.name"]').count());
- assert.ok(await page.locator('.page-nav [data-market-page="home"].active').count());
- assert.equal(await frame.locator('html').getAttribute('data-oe-studio-page'),'home');
- assert.ok(await frame.locator('#randomSix').isVisible());
- assert.deepEqual(errors,[]);
- await context.close();
-});
 test('creator iframe navigation and canvas reload keep the requested first-level page',async()=>{
- const {context,page,frame,errors}=await openEditor('03-creator-market','ci-iframe-nav');
+ const {context,page,frame,errors}=await openEditor('04-creator-catalogue','ci-iframe-nav');
  await frame.locator('nav a[href="#map"]').click();
  assert.equal(await frame.locator('html').getAttribute('data-oe-studio-page'),'map');
  assert.ok(await page.locator('.page-nav [data-market-page="map"].active').count());

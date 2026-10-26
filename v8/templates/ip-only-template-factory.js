@@ -2,7 +2,8 @@ import {IP_ONLY_CORE_MODULES,DEFAULT_IP_ONLY_PRESENTATION_PROFILE} from '/v8/tem
 import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.41.4';
 export function makeIpOnlyTemplate({
   id,name,label,description,structureProfile,artDirection,motionProfile,
-  theme,heroTitleColor,heroTitleAccentColor,studioName,presentationProfile={}
+  theme,heroTitleColor,heroTitleAccentColor,studioName,presentationProfile={},
+  studioPages={hidden:[],customPages:true}
 }){
   const defaults=createIpOnlyDefaults();
   const resolvedPresentation={...DEFAULT_IP_ONLY_PRESENTATION_PROFILE,...presentationProfile};
@@ -31,6 +32,7 @@ export function makeIpOnlyTemplate({
     engine:'onlyevent-studio-v8',
     renderer:id,
     presentationProfile:resolvedPresentation,
+    studioPages,
     defaults
   };
 }

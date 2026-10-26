@@ -7,6 +7,7 @@ import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
 import {cleanSlug,suggestSlug,isValidSlug} from '/v8/publisher.js?v=8.42.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.42.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -29,7 +30,7 @@ const CUSTOM_PAGE_LAYOUTS={
 };
 let state=structuredClone(activeTemplate.defaults),preview=false,saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home',publishIntent='site',publishRecord={};
 let hasSavedProject=false;
-try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&activeTemplate.id===DEFAULT_TEMPLATE_ID?localStorage.getItem(LEGACY_STORAGE):null);if(saved){state={...state,...JSON.parse(saved)};hasSavedProject=true}}catch{}
+try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&activeTemplate.id===DEFAULT_TEMPLATE_ID?localStorage.getItem(LEGACY_STORAGE):null);if(saved){let parsed=JSON.parse(saved);if(activeTemplate.id==='03-creator-market')parsed=migrateCreatorMarketState(parsed,activeTemplate.defaults);state={...state,...parsed};hasSavedProject=true}}catch{}
 if(!hasSavedProject&&initialProjectName)state.eventName=initialProjectName;
 migrateDemoEventName(state,projectId);
 state.templateId=activeTemplate.id;
@@ -735,7 +736,7 @@ function renderPageContentNav(page,{openDefault=true}={}){
  }
  const items=page==='home'&&state.templateId==='02-scrapbook'?
    PAGE_CONTENT_CONFIG.home.filter(x=>x.collection!=='ribbonItems'&&x.collection!=='explore').flatMap(x=>x.tool==='hero'?[x,{tool:'intro',label:'活动简介'}]:x.tool==='map'?[x,{collection:'guests',label:'嘉宾阵容'}]:[x]):
-   (PAGE_CONTENT_CONFIG[page]||[]);
+   (PAGE_CONTENT_CONFIG[page]||[]).filter(x=>!(activeTemplate.studioPages?.hiddenContent||[]).includes(x.collection||x.tool));
  nav.innerHTML=items.map(x=>x.collection
    ?'<button type="button" data-page-content-manager="'+x.collection+'"><span>'+esc(x.label)+'</span><b data-content-count="'+x.collection+'">0</b></button>'
    :'<button type="button" data-page-tool="'+x.tool+'"><span>'+esc(x.label)+'</span></button>'
@@ -818,6 +819,10 @@ function openGuideInspector(){
 function syncModuleControls(){
  const guestPageRow=document.querySelector('[data-page-row="guests"]');
  if(guestPageRow)guestPageRow.style.display=state.templateId==='02-scrapbook'?'none':'';
+ // Templates without some first-level pages (03 has no 活动 / 嘉宾) or without custom pages.
+ (activeTemplate.studioPages?.hidden||[]).forEach(page=>{const row=document.querySelector('[data-page-row="'+page+'"]');if(row)row.style.display='none'});
+ const customPageButton=document.querySelector('#createCustomPageBtn');
+ if(customPageButton)customPageButton.hidden=activeTemplate.studioPages?.customPages===false;
  document.querySelectorAll('[data-module]').forEach(input=>{input.checked=state.modules?.[input.dataset.module]!==false});
  document.querySelectorAll('[data-page-row]').forEach(row=>row.classList.toggle('is-disabled',state.modules?.[row.dataset.pageRow]===false));
 }

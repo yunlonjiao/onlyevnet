@@ -125,5 +125,6 @@ test('organizer can export JSON, import it, and reopen a restored project',async
  await page.locator('.edit-project').click();
  await expect(page).toHaveURL(/\/v8\/\?template=03-creator-market&project=my-event/);
  await expect(page.locator('#projectEventName')).toHaveText('转移的漫展');
- await expect(page.locator('#inspector [data-key="description"]')).toHaveValue('Cloudflare 项目迁移测试');
+ // Template 03 now runs on the shared core; the old description becomes the hero tagline.
+ await expect(page.frameLocator('#liveFrame').locator('.hero-copy [data-oe-field="tagline"]')).toHaveText('Cloudflare 项目迁移测试');
 });

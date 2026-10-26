@@ -45,16 +45,16 @@ test('03 publishes standalone HTML that the Worker serves on its subdomain',asyn
   const cloud=await useCloudPublisher(page);
   await signInCloud(page,cloud);
   await page.goto('/v8/?template=03-creator-market&project=publish-03');
-  await page.locator('[data-section="basic"]').waitFor();
+  await page.frameLocator('#liveFrame').locator('.cm-site').waitFor();
   await page.locator('#publishBtn').click();
   await page.locator('#publishSlug').fill('creator-market-qa');
   await page.locator('#publishPrimary').click();
-  await expect(page.locator('#publishStatus')).toHaveText('网站已发布');
+  await expect(page.locator('#publishStatus')).toHaveText('网站已上线');
   await expect(page.locator('#publishUrl')).toHaveText('https://creator-market-qa.onlyevent.cn');
   const visit=await visitSite(cloud,'creator-market-qa');
   expect(visit.status).toBe(200);
-  expect(visit.html).toContain('const d=__oeSnapshot');
-  expect(visit.html).not.toContain("from'/v8/market-shared.js'");
+  expect(visit.html).toContain('data-oe-mount="product-spotlight"');
+  expect(visit.html).not.toContain('/v8/');
 });
 
 test('publishing while signed out explains that an organizer login is required',async({page})=>{

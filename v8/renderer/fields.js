@@ -105,13 +105,11 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     }
 
     el.textContent=value??'';
-    // Mirrored travel-template fields must remain in sync with the Shared Core.
-    // The entry ticket is presentation-only: do not let its duplicates capture editing.
-    if(document.documentElement.dataset.oeTemplate==='02-scrapbook'){
-      qa('[data-oe-field="'+CSS.escape(path)+'"]').forEach(mirror=>{
-        if(mirror!==el && mirror!==document.activeElement)mirror.textContent=value??'';
-      });
-    }
+    // Templates may show a field in several places (02 travel ticket, 03 hero card and KV);
+    // every copy follows the Shared Core value.
+    qa('[data-oe-field="'+CSS.escape(path)+'"]').forEach(mirror=>{
+      if(mirror!==el && mirror!==document.activeElement)mirror.textContent=value??'';
+    });
 
     if(path.startsWith('ribbon')){
       const i=Number(path.replace('ribbon',''))-1;

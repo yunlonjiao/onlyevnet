@@ -7,7 +7,7 @@ test('Template 02 retains IP ONLY publishing data and home activity modules',asy
  await expect(frame.locator('[data-oe-mount="tickets"]')).toBeAttached();
  await expect(frame.locator('[data-oe-mount="map"]')).toBeAttached();
 });
-for(const id of ['03-creator-market','04-creator-catalogue']){
+for(const id of ['04-creator-catalogue']){
  test(id+' preserves the shared creator fair data and editing contract',async({page})=>{
   await page.goto('/v8/?template='+id+'&project=parity-current-'+id);
   const frame=page.frameLocator('#liveFrame');

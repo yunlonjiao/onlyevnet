@@ -1,5 +1,7 @@
 
-const tid=s=>String(s?.templateId||'01-ip-only');
+// Templates whose art is pure CSS over the Template 01 component markup.
+const BASE_MARKUP_TEMPLATES=new Set(['01-ip-only','03-creator-market']);
+const tid=s=>{const id=String(s?.templateId||'01-ip-only');return BASE_MARKUP_TEMPLATES.has(id)?'01-ip-only':id};
 const isVariant=s=>tid(s)!=='01-ip-only';
 const num=i=>String(i+1).padStart(2,'0');
 

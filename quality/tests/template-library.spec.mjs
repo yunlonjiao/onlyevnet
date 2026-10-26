@@ -13,21 +13,24 @@ for(const id of ids)test(id+' opens the correct Studio instead of silently rever
  const frame=page.frameLocator('#liveFrame');
  await expect(frame.locator('body')).toBeVisible();
  await expect(page.locator('#workspaceTemplateName')).not.toBeEmpty();
- if(id.startsWith('03')||id.startsWith('04')){
+ if(id.startsWith('04')){
   await expect(page.locator('#pageContentNav [data-section="creators"]')).toBeVisible();
-  await expect(frame.locator(id.startsWith('03')?'#randomSix':'#catalogue')).toBeAttached();
+  await expect(frame.locator('#catalogue')).toBeAttached();
+ }else if(id.startsWith('03')){
+  await expect(frame.locator('.cm-site [data-oe-mount="product-spotlight"]')).toBeAttached();
  }else{
   await expect(frame.locator('.hero')).toBeAttached();
  }
 });
-test('registry retains IP ONLY core but separates creator fair modules',async({page})=>{
+test('01-03 share the IP ONLY core while 04 keeps the creator fair modules',async({page})=>{
  await page.goto('/v8/');
  const rows=await page.evaluate(async()=>{
   const r=await import('/v8/templates/registry.js');
   return r.listTemplates().map(t=>({id:t.id,eventType:t.eventType||'ip-only',supportedModules:t.supportedModules}));
  });
  expect(rows.map(t=>t.id)).toEqual(ids);
- expect(rows.slice(0,2).every(x=>x.eventType==='ip-only')).toBe(true);
- expect(rows.slice(2).every(x=>x.eventType==='creator-market')).toBe(true);
- expect(rows.slice(2).every(x=>x.supportedModules.includes('products'))).toBe(true);
+ expect(rows.slice(0,3).every(x=>x.eventType==='ip-only')).toBe(true);
+ expect(rows.slice(0,3).every(x=>x.supportedModules.includes('booths'))).toBe(true);
+ expect(rows[3].eventType).toBe('creator-market');
+ expect(rows[3].supportedModules.includes('products')).toBe(true);
 });

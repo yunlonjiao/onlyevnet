@@ -1,6 +1,7 @@
 import {test,expect} from '@playwright/test';
 
-for(const id of ['03-creator-market','04-creator-catalogue']){
+// Template 03 moved to the shared core (template-03-unified.spec.mjs); 04 still uses the creator Studio.
+for(const id of ['04-creator-catalogue']){
  test(id+' launches in existing OnlyEvent Studio and uses independent type fields',async({page})=>{
   await page.goto('/v8/?template='+id+'&project=market-integration-qa');
   await expect(page.locator('#workspaceTemplateName')).toContainText(id.startsWith('03')?'CREATOR MARKET':'CREATOR CATALOGUE');
@@ -29,16 +30,3 @@ for(const id of ['03-creator-market','04-creator-catalogue']){
   await expect(page.locator('#publishDownload')).toBeEnabled();
  });
 }
-
-test('Market 03 canvas product card opens matching inspector without navigating away',async({page})=>{
- await page.addInitScript(()=>{const key='onlyevent-studio-v8:03-creator-market:market-card-selection-qa:iframe';localStorage.setItem(key,JSON.stringify({eventName:'社团卡片测试',creators:[{id:'c-qa',name:'测试社团',booth:'A01',tags:[]}],products:[{id:'p-qa',name:'测试制品',creatorId:'c-qa',price:'10'}]}));});
- await page.goto('/v8/?template=03-creator-market&project=market-card-selection-qa');
- const frame=page.frameLocator('#liveFrame');
- const card=frame.locator('#randomSix [data-market-record="products"]').first();
- await expect(card).toBeVisible();
- const id=await card.getAttribute('data-market-record-id');
- await card.click();
- await expect(page.locator('#inspector')).toContainText('制品管理');
- await expect(page.locator('#inspector [data-key$=".name"]')).toHaveCount(1);
- await expect(frame.locator('#randomSix [data-market-record-id="'+id+'"]')).toHaveClass(/oe-selected-edit-target/);
-});

@@ -1,3 +1,4 @@
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
 import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.40.26';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
@@ -509,8 +510,13 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       social.hidden=!links.length;
     }
   }
+  function renderProductSpotlight(){
+    const state=getState(),box=mount('product-spotlight');if(!box)return;
+    if(state.presentationProfile?.productSpotlight===false){box.innerHTML='';return}
+    mountProductSpotlight(box,spotlightItems(state),{autoplay:getMode()!=='edit',storageKey:'oe-spotlight:'+String(state.projectId||state.eventName||'event')});
+  }
   function renderCollections(){
-    renderRibbon();renderTickets();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderUpdates();renderCommunity();renderSponsors();renderCustomPages();renderOptionalPages();renderFooter();
+    renderProductSpotlight();renderRibbon();renderTickets();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderUpdates();renderCommunity();renderSponsors();renderCustomPages();renderOptionalPages();renderFooter();
     enhanceImages();
   }
   return {openGiftLightbox,renderRibbon,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderUpdates,renderCommunity,renderSponsors,renderCustomPages,renderOptionalPages,renderFooter,renderCollections,enhanceImages};

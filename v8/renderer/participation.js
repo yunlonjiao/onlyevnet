@@ -74,7 +74,7 @@ export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send})
         '</div>'+image+
       '</article>';
     }).join('');
-    page.querySelectorAll('[data-oe-item="participation"]').forEach(card=>card.addEventListener('click',e=>{
+    page?.querySelectorAll('[data-oe-item="participation"]').forEach(card=>card.addEventListener('click',e=>{
       if(getMode()!=='edit'||e.target.closest?.('[data-oe-field],a[href],input,select,textarea,label'))return;
       e.preventDefault();e.stopPropagation();
       send?.({type:'OE_SELECT_ITEM',collection:'participation',index:Number(card.dataset.oeIndex)});

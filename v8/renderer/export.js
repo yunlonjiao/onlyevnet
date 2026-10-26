@@ -1,3 +1,4 @@
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
 export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyle='',escapeHtml:esc}){
   return function buildStandaloneHtml(){
     const state=getState(),clone=document.body.cloneNode(true);
@@ -37,6 +38,8 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)],S=${stateJson};
       const mods=S.modules||{},standalone=["booths","activities","guests","guide",...(S.customPages||[]).map(p=>"custom-"+p.id)],fixed=new Set(["tickets","map"]);
       const heroSrc=(matchMedia("(max-width:560px)").matches?(S.mobileHeroImage||S.heroImage):(S.heroImage||S.mobileHeroImage))||"";
+      const spotlight=$('[data-oe-mount="product-spotlight"]');
+      if(spotlight&&S.presentationProfile?.productSpotlight!==false)(${mountProductSpotlight.toString()})(spotlight,(${spotlightItems.toString()})(S),{autoplay:true,storageKey:'oe-spotlight:'+String(S.projectId||S.eventName||'event')});
       if(heroSrc){const probe=new Image(),kv=$(".kv");probe.onload=()=>kv?.classList.remove("image-failed");probe.onerror=()=>kv?.classList.add("image-failed");probe.src=heroSrc;}
       const homeSections=[["tickets","tickets"],["map-home","map"],["participation","activities"],["schedule-home","activities"],["community","community"],["sponsors","sponsors"]];
       const hasContent=k=>k==="booths"?(S.booths||[]).length>0:k==="activities"?(S.participation||[]).length>0||(S.schedule||[]).length>0:k==="guests"?(S.guests||[]).length>0:k==="guide"?(S.guide?.items||[]).length>0:k==="community"?(S.socialLinks||[]).some(x=>String(x?.label||"").trim()||String(x?.note||"").trim()||String(x?.url||"").trim()||String(x?.image||"").trim()):k==="ribbon"?(S.ribbonItems||[]).some(x=>String(x?.text||"").trim()):k==="sponsors"?(S.sponsors||[]).some(x=>String(x?.name||"").trim()||String(x?.logo||"").trim()||String(x?.url||"").trim()):true;
@@ -99,7 +102,7 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       function show(page){
         if(page!=="home"&&!standalone.includes(page))page="home";
         if(page!=="home"&&!on(page))page="home";
-        [$(".hero"),$(".quick")].filter(Boolean).forEach(el=>el.classList.toggle("oe-page-hidden",page!=="home"));
+        [$(".hero"),$(".quick"),...qa(".oe-home-only")].filter(Boolean).forEach(el=>el.classList.toggle("oe-page-hidden",page!=="home"));
         $(".ribbon")?.classList.toggle("oe-page-hidden",page!=="home"||!on("ribbon"));
         homeSections.forEach(([id,key])=>$("#"+id)?.classList.toggle("oe-page-hidden",page!=="home"||!on(key)));
         standalone.forEach(id=>$("#"+id)?.classList.toggle("oe-page-hidden",page!==id||!on(id)));
@@ -223,6 +226,6 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       ogImage?'<meta property="og:image" content="'+esc(ogImage)+'">':'',
       canonical?'<meta property="og:url" content="'+esc(canonical)+'">':''
     ].join('');
-    return '<!doctype html><html lang="zh-CN" class="event-status-'+eventStatus+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+meta+'<style>'+previewStyle+extra+'</style></head><body class="event-status-'+eventStatus+'">'+clone.innerHTML+'<script>'+runtime+'<\\/script></body></html>';
+    return '<!doctype html><html lang="zh-CN" class="event-status-'+eventStatus+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+meta+'<style>'+previewStyle+extra+'</style></head><body class="event-status-'+eventStatus+'">'+clone.innerHTML+'<script>'+runtime+'</script></body></html>';
   }
 }

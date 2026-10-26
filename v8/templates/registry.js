@@ -3,7 +3,8 @@ import {validateIpOnlyTemplateDefinition} from '/v8/templates/ip-only-core-contr
 import {template01} from '/v8/templates/01-ip-only.js?v=8.41.5';
 import {template02} from '/v8/templates/02-scrapbook.js?v=8.41.4';
 
-import {template03,template04} from '/v8/templates/creator-market-templates.js?v=8.41.4';
+import {template03} from '/v8/templates/03-creator-market.js?v=8.42.0';
+import {template04} from '/v8/templates/creator-market-templates.js?v=8.42.0';
 
 export const DEFAULT_TEMPLATE_ID='01-ip-only';
 
