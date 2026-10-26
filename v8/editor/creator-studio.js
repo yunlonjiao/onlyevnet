@@ -42,7 +42,7 @@ function patchPreviewField(path,value){
  try{
   const doc=iframe.contentDocument;if(!doc)return false;
   if(path==='eventName')doc.title=String(value||'STARDUST ONLY');
-  if(path==='ticketUrl'){doc.querySelectorAll('[data-ticket]').forEach(n=>{n.href=value||'#guide';n.textContent=value?'立即购票 ↗':'入场指南 ↗'});return true;}
+  if(path==='ticketUrl')return false;
   const selector=LIVE_FIELDS[path];if(!selector)return false;
   doc.querySelectorAll(selector).forEach(n=>{if(n===doc.activeElement)return;n.textContent=value||''});
   return true;
@@ -139,7 +139,10 @@ $('#inspector').addEventListener('click',e=>{
  const upload=e.target.closest('[data-market-upload]');if(upload){$('#inspector [data-file="'+upload.dataset.marketUpload+'"]')?.click();return}
  const remove=e.target.closest('[data-market-remove-image]');if(remove){checkpoint();change(remove.dataset.marketRemoveImage,'');render();return}
  if(e.target.closest('[data-delete-selected]')&&Array.isArray(state[section])&&selected>=0){
-  checkpoint();state[section].splice(selected,1);selected=-1;pendingFrameRefresh=true;schedule();render();
+  checkpoint();const [removed]=state[section].splice(selected,1);
+  // Products of a deleted creator stay, but no longer point at a missing creator.
+  if(section==='creators'&&removed?.id)(state.products||[]).forEach(p=>{if(p.creatorId===removed.id)p.creatorId=''});
+  selected=-1;pendingFrameRefresh=true;schedule();render();
  }
 });
 $('#contentListPanel').addEventListener('click',e=>{

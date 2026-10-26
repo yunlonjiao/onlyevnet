@@ -10,7 +10,7 @@ nav a:hover{color:#00aeec}
 .hero{padding:24px max(24px,calc((100vw - 1380px)/2));background:#f7f8fa}
 .kv{height:min(36vw,485px);min-height:340px;grid-template-columns:62% 38%;gap:15px;background:transparent}
 .kv .character{border-radius:14px;background:linear-gradient(130deg,#a4d9f4 0%,#ded4f4 45%,#fbc6df 100%)}
-.kv .character strong{color:#fff;letter-spacing:-.085em;font-size:clamp(66px,8vw,140px);text-shadow:5px 6px #806db0}
+.kv .character strong{color:#fff;letter-spacing:-.085em;font-size:clamp(66px,8vw,140px);text-shadow:5px 6px #806db0;max-width:88%;text-align:center;overflow-wrap:anywhere}
 .kv .hero-copy{background:white;border:1px solid #e3e5e7;border-radius:14px;padding:clamp(20px,3vw,42px);justify-content:center}
 .hero-kicker{font-size:11px;letter-spacing:.12em;color:#00a7de;font-weight:850}
 .hero-copy h1{font-size:clamp(28px,3vw,50px);letter-spacing:-.05em;color:#18191c;line-height:1.16}
@@ -90,7 +90,7 @@ footer{background:#fff;color:#777;border-top:1px solid #e3e5e7;text-align:center
 .ribbon{display:none}
 .home-intro,.home-ticket,.home-community{padding:23px!important}
 }
-header nav{margin-left:auto;justify-content:flex-end;flex:0 1 auto}header .brand{flex:0 0 auto}header .header-cta{display:none!important}@media(max-width:700px){header nav{margin-left:auto;justify-content:flex-end}}</style></head><body><header><a href="#top" class="brand" data-event-name>STARDUST ONLY</a><nav><a href="#top">首页</a><a href="#creators">社团</a><a href="#products">制品</a><a href="#map">场地图</a><a href="#guide">指南</a></nav></header><div id="top" class="hero"><div class="kv"><div class="character" id="kvArtwork"><strong>STARDUST<br>ONLY</strong></div><div class="hero-copy"><span class="hero-kicker">CREATOR MARKET</span><h1 data-event-name></h1><p data-description></p><p class="date"><span data-date></span><span data-location></span></p></div></div></div>
+header nav{margin-left:auto;justify-content:flex-end;flex:0 1 auto}header .brand{flex:0 0 auto}header .header-cta{display:none!important}@media(max-width:700px){header nav{margin-left:auto;justify-content:flex-end}}</style></head><body><header><a href="#top" class="brand" data-event-name>STARDUST ONLY</a><nav><a href="#top">首页</a><a href="#creators">社团</a><a href="#products">制品</a><a href="#map">场地图</a><a href="#guide">指南</a></nav></header><div id="top" class="hero"><div class="kv"><div class="character" id="kvArtwork"><strong data-event-name>STARDUST ONLY</strong></div><div class="hero-copy"><span class="hero-kicker">CREATOR MARKET</span><h1 data-event-name></h1><p data-description></p><p class="date"><span data-date></span><span data-location></span></p></div></div></div>
 <div id="mobileOpening" class="mobile-opening is-hidden" role="dialog" aria-label="活动手机开场"><div id="mobileOpeningArt"></div><button id="skipOpening">跳过动画 →</button></div>
 <main class="wrap">
 <section class="home-recommend" aria-label="随机推荐制品">
@@ -106,7 +106,7 @@ header nav{margin-left:auto;justify-content:flex-end;flex:0 1 auto}header .brand
 <section id="products"><div class="section-head"><h2>作品与制品</h2><span>WORKS & GOODS</span></div><div id="productList" class="tiles"></div></section>
 <section id="map"><div class="section-head"><h2>场地图</h2><span>MAP</span></div><div class="maps" id="mapList"></div></section>
 <section id="guide"><div class="section-head"><h2>观展指南</h2><span>GUIDE</span></div><p id="guideText"></p></section>
-</details></main><footer>OnlyEvent · CREATOR MARKET 01 / 原型</footer><dialog class="zoom" id="zoom"><button id="closeZoom">关闭 ×</button><img id="zoomImage" alt="放大场地图"></dialog><script type="module">import{getData,mountCommon,img,esc}from'/v8/market-shared.js';
+</details></main><footer><span data-event-name></span> · Powered by OnlyEvent</footer><dialog class="zoom" id="zoom"><button id="closeZoom">关闭 ×</button><img id="zoomImage" alt="放大场地图"></dialog><script type="module">import{getData,mountCommon,img,esc}from'/v8/market-shared.js';
 const d=getData(),{ps,cs,$}=mountCommon(d);
 if(d.heroImage){$('kvArtwork').innerHTML='<img alt="活动 KV" src="'+esc(d.heroImage)+'">';}
 const external=typeof d.ticketUrl==='string'&&/^https:\/\//i.test(d.ticketUrl);
@@ -123,8 +123,8 @@ let n=0;function draw(){if(!current.length){$('adTitle').textContent='暂无制�
 function step(v){n=(n+v+current.length)%current.length;draw()}$('adPrev').onclick=()=>step(-1);$('adNext').onclick=()=>step(1);draw();
 const ad=$('ads');let startX=null;ad.addEventListener('touchstart',e=>{startX=e.touches[0]?.clientX??null},{passive:true});ad.addEventListener('touchend',e=>{if(startX===null)return;const dx=(e.changedTouches[0]?.clientX??startX)-startX;if(Math.abs(dx)>45&&current.length>1)step(dx<0?1:-1);startX=null},{passive:true});
 const frame=$('adVisual');let downX=null;frame.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;downX=e.clientX});frame.addEventListener('pointerup',e=>{if(downX===null)return;const delta=e.clientX-downX;if(Math.abs(delta)>50&&current.length>1)step(delta<0?1:-1);downX=null});frame.addEventListener('pointercancel',()=>downX=null);
-if(current.length>1)setInterval(()=>{if(!document.hidden)step(1)},5500);
+if(current.length>1&&!matchMedia('(prefers-reduced-motion: reduce)').matches)setInterval(()=>{if(!document.hidden)step(1)},5500);
 const mobile=matchMedia('(max-width:800px)').matches;
 if(mobile&&d.mobileHeroImage){const ov=$('mobileOpening');const art=$('mobileOpeningArt');art.innerHTML='<img src="'+esc(d.mobileHeroImage)+'" alt="活动移动端主视觉">';ov.classList.remove('is-hidden');const close=()=>{ov.classList.add('is-hidden');ov.setAttribute('aria-hidden','true')};$('skipOpening').onclick=close;ov.addEventListener('click',e=>{if(e.target===ov)close()});setTimeout(close,2500)}
-document.querySelectorAll('nav a[href^="#"]').forEach(a=>a.addEventListener('click',()=>{const hash=a.getAttribute('href');if(['#creators','#products','#map','#guide'].includes(hash))$('directory').open=true;}));
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(a&&['#creators','#products','#map','#guide'].includes(a.getAttribute('href')))$('directory').open=true;});
 </script></body></html>

@@ -256,7 +256,7 @@ function syncAdminProject(extra={}){
  if(i>=0)rows[i]=next;else rows.push(next);
  localStorage.setItem(ADMIN_PROJECTS_KEY,JSON.stringify(rows));
 }
-function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject();saveState.textContent='已保存'},180)}
+function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject();saveState.textContent='已保存'}catch{saveState.textContent='保存失败：图片过大或浏览器存储不足'}},180)}
 const studioHistory=createStudioHistory({limit:80,onChange:()=>syncHistory()});
 function checkpoint(){studioHistory.checkpoint(state)}
 function syncHistory(){$('#undoBtn').disabled=!studioHistory.canUndo;$('#redoBtn').disabled=!studioHistory.canRedo}
