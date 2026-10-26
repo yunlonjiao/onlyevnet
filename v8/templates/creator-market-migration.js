@@ -30,7 +30,7 @@ export function migrateCreatorMarketState(saved,defaults){
     ...saved,
     tagline:text(saved.description)||saved.tagline||defaults.tagline,
     booths,
-    venueMap:{...structuredClone(defaults.venueMap),image:text(maps[0]?.image)},
+    venueMap:{...structuredClone(defaults.venueMap),image:text(maps[0]?.image),imageTitle:text(maps[0]?.title),more:maps.slice(1).filter(m=>text(m?.image)).map((m,i)=>({id:'map'+(i+2),title:text(m.title),image:text(m.image)}))},
     updates:(Array.isArray(saved.news)?saved.news:[]).map((n,i)=>({id:'u'+(i+1),date:text(n.date),title:text(n.title),target:'top'})),
     socialLinks:(Array.isArray(saved.community)?saved.community:[]).map((c,i)=>({id:'sl'+(i+1),label:text(c.label)||text(c.name),note:'',url:text(c.url),image:''})),
     sponsors:(Array.isArray(saved.sponsors)?saved.sponsors:[]).map((s,i)=>typeof s==='string'?{id:'sp'+(i+1),name:s,logo:'',url:''}:{id:text(s.id)||'sp'+(i+1),name:text(s.name),logo:text(s.image||s.logo),url:text(s.url)}),

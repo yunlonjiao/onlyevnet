@@ -1,4 +1,5 @@
 import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
+import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.42.0';
 export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyle='',escapeHtml:esc}){
   return function buildStandaloneHtml(){
     const state=getState(),clone=document.body.cloneNode(true);
@@ -13,6 +14,11 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
     clone.querySelectorAll('[data-oe-field]').forEach(el=>{el.removeAttribute('data-oe-field');el.removeAttribute('contenteditable');el.removeAttribute('spellcheck')});
     clone.querySelectorAll('[data-oe-item]').forEach(el=>{el.removeAttribute('data-oe-item');el.removeAttribute('data-oe-index')});
     clone.querySelectorAll('[data-oe-image]').forEach(el=>el.removeAttribute('data-oe-image'));
+    clone.querySelectorAll('[data-map-bound]').forEach(el=>el.removeAttribute('data-map-bound'));
+    // Developer comments (version notes, design references) never ship to visitors.
+    const comments=document.createTreeWalker(clone,NodeFilter.SHOW_COMMENT),stale=[];
+    while(comments.nextNode())stale.push(comments.currentNode);
+    stale.forEach(node=>node.remove());
     clone.querySelectorAll('[data-oe-custom-page],[data-oe-custom-index],[data-oe-custom-page-settings],[data-custom-page-root]').forEach(el=>{el.removeAttribute('data-oe-custom-page');el.removeAttribute('data-oe-custom-index');el.removeAttribute('data-oe-custom-page-settings');el.removeAttribute('data-custom-page-root')});
     clone.querySelectorAll('[data-favorite-booth]').forEach(el=>{el.classList.remove('active');el.setAttribute('aria-pressed','false');el.textContent='♡ 收藏社团'});
     clone.querySelectorAll('[data-wishlist-product]').forEach(el=>{el.classList.remove('active');el.setAttribute('aria-pressed','false');el.textContent='☆ 心愿'});
@@ -38,6 +44,7 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)],S=${stateJson};
       const mods=S.modules||{},standalone=["booths","activities","guests","guide",...(S.customPages||[]).map(p=>"custom-"+p.id)],fixed=new Set(["tickets","map"]);
       const heroSrc=(matchMedia("(max-width:560px)").matches?(S.mobileHeroImage||S.heroImage):(S.heroImage||S.mobileHeroImage))||"";
+      (${bindMapCarousels.toString()})(document);
       const spotlight=$('[data-oe-mount="product-spotlight"]');
       if(spotlight&&S.presentationProfile?.productSpotlight!==false)(${mountProductSpotlight.toString()})(spotlight,(${spotlightItems.toString()})(S),{autoplay:true,storageKey:'oe-spotlight:'+String(S.projectId||S.eventName||'event')});
       if(heroSrc){const probe=new Image(),kv=$(".kv");probe.onload=()=>kv?.classList.remove("image-failed");probe.onerror=()=>kv?.classList.add("image-failed");probe.src=heroSrc;}
@@ -226,6 +233,6 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       ogImage?'<meta property="og:image" content="'+esc(ogImage)+'">':'',
       canonical?'<meta property="og:url" content="'+esc(canonical)+'">':''
     ].join('');
-    return '<!doctype html><html lang="zh-CN" class="event-status-'+eventStatus+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+meta+'<style>'+previewStyle+extra+'</style></head><body class="event-status-'+eventStatus+'">'+clone.innerHTML+'<script>'+runtime+'</script></body></html>';
+    return '<!doctype html><html lang="zh-CN" class="event-status-'+eventStatus+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+meta+'<style>'+(previewStyle+extra).replace(/\/\*[\s\S]*?\*\//g,'')+'</style></head><body class="event-status-'+eventStatus+'">'+clone.innerHTML+'<script>'+runtime+'</script></body></html>';
   }
 }

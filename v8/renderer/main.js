@@ -25,6 +25,8 @@ import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.40.30';
 import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {validateRendererContext} from '/v8/renderer/context.js?v=8.38.3';
+// @ts-ignore -- browser cache-busted absolute ESM URL
+import {mapCarouselStyle} from '/v8/renderer/map-carousel.js?v=8.42.0';
 
 const ORIGIN=location.origin;
 let state={},mode='edit',entryPreviewTimer=0;
@@ -74,7 +76,7 @@ function mountTemplate(templateId=DEFAULT_TEMPLATE_ID){
   currentTemplateId=next.id;currentPreview=next;
   document.documentElement.dataset.oeTemplate=next.id;
   document.body.dataset.oeTemplate=next.id;
-  runtimeStyle.textContent=currentPreview.style+runtimeExtraStyle+activityLayoutFixStyle;
+  runtimeStyle.textContent=currentPreview.style+runtimeExtraStyle+activityLayoutFixStyle+mapCarouselStyle;
   document.body.innerHTML=currentPreview.body.replace('这不是后台功能，而是一种前台视觉表达。主办方只需要配置哪些企划需要展示，网站负责把它做得像活动场刊。','');
   const sponsorSection=$('.sponsors')?.closest('section');if(sponsorSection)sponsorSection.id='sponsors';
   $('.scroll-progress')?.remove();
@@ -98,7 +100,7 @@ const participation=createParticipation({...rendererContext,send});
 const router=createRouter({...rendererContext,renderParticipation:participation.renderParticipation,onPageNavigate:page=>send({type:'OE_PAGE_NAVIGATED',page})});
 const fields=createFields({...rendererContext,setModeState:next=>{mode=next},setDeep,renderTickets:collections.renderTickets});
 const runtime=createRuntime(rendererContext);
-const buildStandaloneHtml=()=>createStandaloneExporter({getState:()=>state,previewStyle:currentPreview.style,runtimeExtraStyle:runtimeExtraStyle+activityLayoutFixStyle,escapeHtml:esc})();
+const buildStandaloneHtml=()=>createStandaloneExporter({getState:()=>state,previewStyle:currentPreview.style,runtimeExtraStyle:runtimeExtraStyle+activityLayoutFixStyle+mapCarouselStyle,escapeHtml:esc})();
 
 function resolveLifecycleStatus(){
   if(state.eventStatusMode==='manual')return ['upcoming','live','ended'].includes(state.eventStatus)?state.eventStatus:'upcoming';

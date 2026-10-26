@@ -43,7 +43,7 @@ const marketStyle=`
 .cm-site .oe-page-view>.wrap>.head h2{font-size:clamp(26px,3vw,36px)!important;line-height:1.2!important;margin-top:4px!important}
 .cm-site .head .ey{color:var(--cm-soft)!important}
 .cm-site .section-back{color:var(--cm-accent-ink);font-weight:700;font-size:14px;border:0;background:none}
-/* Shared product spotlight, 03 art: Bilibili-style 1 + 6 recommendation grid */
+/* Shared product spotlight, 03 art: featured carousel beside a 2 x 3 product grid */
 .cm-spotlight{padding:6px 0 14px}
 .cm-site [data-oe-mount="product-spotlight"]{display:grid;grid-template-columns:minmax(0,2.08fr) minmax(0,3fr);gap:18px;align-items:stretch}
 .cm-site .spotlight-feature{position:relative;border-radius:12px;overflow:hidden;background:#141414;min-height:420px;display:flex}

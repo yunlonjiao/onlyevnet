@@ -1383,7 +1383,7 @@ function imageSlotConfig(path){
  if(/^featuredActivities\.\d+\.image$/.test(path))return {label:'首页活动精选图片',ratio:16/9,ratioLabel:'裁剪框可移动 · 比例 16:9',width:1440,height:810,fixed:true};
  if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾宣传图',ratio:4/3,ratioLabel:'与嘉宾卡预览一致 · 裁剪框可移动 · 比例 4:3',width:1200,height:900,fixed:true};
  if(/^booths\.\d+\.products\.\d+\.image$/.test(path))return {label:'制品图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1000,height:1000,fixed:true};
- if(path==='venueMap.image')return {label:'场地图',ratio:null,ratioLabel:'裁剪框自由比例',maxSize:2000,free:true};
+ if(path==='venueMap.image'||/^venueMap\.more\.\d+\.image$/.test(path))return {label:'场地图',ratio:null,ratioLabel:'裁剪框自由比例',maxSize:2000,free:true};
  if(/^guide\.items\.\d+\.image$/.test(path)){const i=Number(path.match(/^guide\.items\.(\d+)\.image$/)?.[1]||-1),item=state.guide?.items?.[i];return {label:item?.preset==='traffic'?'交通路线图 / 入口示意图':'指南图片',ratio:null,ratioLabel:'裁剪框自由比例',maxSize:1800,free:true}};
  if(/^(freewalk|itasha)\.image$/.test(path))return {label:'活动图片',ratio:.8,ratioLabel:'裁剪框可移动 · 比例 4:5',width:960,height:1200,fixed:true};
  if(/^booths\.\d+\.logo$/.test(path))return {label:'社团 Logo',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:700,height:700,fixed:true};
@@ -1395,6 +1395,22 @@ function imageSlotConfig(path){
    return {label:(preset.itemTitle||'展示内容')+'图片',ratio,ratioLabel:'裁剪框可移动 · 页面预设比例',width:ratio<1?960:1200,height:ratio<1?1200:Math.round(1200/ratio),fixed:true};
  }
  return {label:'图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1200,height:1200,fixed:true};
+}
+// Extra venue maps: with more than one map, visitors swipe between them on every template.
+function moreMapsMarkup(){
+ const more=state.venueMap?.more||[];
+ return '<div class="item-media more-maps-editor"><span>更多场地图（多张时游客可左右滑动）</span>'+
+  more.map((m,i)=>'<div class="item-media-row" data-more-map="'+i+'">'+(m.image?'<img src="'+esc(m.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+
+   '<div><input data-more-map-title="'+i+'" value="'+esc(m.title||'')+'" placeholder="名称，例如 二层 / B 馆" aria-label="场地图名称"><button type="button" data-more-map-replace="'+i+'">'+(m.image?'替换图片':'选择 / 裁剪')+'</button><button type="button" class="ghost danger" data-more-map-remove="'+i+'">移除</button></div></div>').join('')+
+  '<button type="button" class="ghost" id="addMoreMap">＋ 添加一张场地图</button></div>';
+}
+function bindMoreMaps(){
+ const pick=i=>{$('#imageInput').dataset.path='venueMap.more.'+i+'.image';$('#imageInput').click()};
+ const refresh=()=>{send({type:'OE_REPLACE_STATE',state});openImageInspector('venueMap.image')};
+ inspector.querySelectorAll('[data-more-map-replace]').forEach(b=>b.addEventListener('click',()=>pick(Number(b.dataset.moreMapReplace))));
+ inspector.querySelectorAll('[data-more-map-remove]').forEach(b=>b.addEventListener('click',()=>{checkpoint();state.venueMap.more.splice(Number(b.dataset.moreMapRemove),1);save();refresh()}));
+ inspector.querySelectorAll('[data-more-map-title]').forEach(input=>input.addEventListener('change',()=>{checkpoint();setDeep('venueMap.more.'+input.dataset.moreMapTitle+'.title',input.value);send({type:'OE_REPLACE_STATE',state})}));
+ $('#addMoreMap')?.addEventListener('click',()=>{checkpoint();state.venueMap.more??=[];state.venueMap.more.push({id:uid('map'),title:'',image:''});save();openImageInspector('venueMap.image');pick(state.venueMap.more.length-1)});
 }
 function openImageInspector(path){
  const current=getDeep(path);
@@ -1416,7 +1432,8 @@ function openImageInspector(path){
      (current?'<img src="'+esc(current)+'" alt="">':'<div class="item-media-empty">＋</div>')+
      '<div><button id="replaceImage" type="button">'+(current?'替换图片':'选择 / 裁剪')+'</button>'+
      (current?'<button id="removeImage" type="button" class="ghost danger">移除</button>':'')+'</div></div></div>';
-   setInspector(title,isHomeMap?'图片与关联链接':title,markup);
+   setInspector(title,isHomeMap?'图片与关联链接':title,markup+(path==='venueMap.image'?moreMapsMarkup():''));
+   if(path==='venueMap.image')bindMoreMaps();
    if(isHomeMap){
      inspector.querySelectorAll('[data-map-link-index]').forEach(btn=>btn.addEventListener('click',()=>{
        openCollectionManager('explore',Number(btn.dataset.mapLinkIndex));setPageContentActive({tool:'map'});
@@ -1555,7 +1572,8 @@ async function applyImageCrop(){
    checkpoint();setDeep(cropContext.path,data);
    if(/^(?:heroImage|mobileHeroImage)$/.test(cropContext.path)||/^tickets\.\d+\.image$/.test(cropContext.path))send({type:'OE_PATCH_FIELD',path:cropContext.path,value:data});else send({type:'OE_REPLACE_STATE',state});
    toast('图片已应用');
-   const c=cropContext.returnCollection,i=Number(cropContext.returnIndex);closeImageCropper();
+   const c=cropContext.returnCollection,i=Number(cropContext.returnIndex),croppedPath=cropContext.path;closeImageCropper();
+   if(/^venueMap\.(?:image|more\.\d+\.image)$/.test(croppedPath))openImageInspector('venueMap.image');
    if(c&&Number.isInteger(i)){if(c.startsWith('custom:'))openCustomPageItemInspector(c.slice(7),i);else if(c.startsWith('product:'))openProductInspector(Number(c.slice(8)),i);else openItemInspector(c,i)}
  }catch(err){console.error('[OnlyEvent crop apply]',err);toast('裁剪失败，请重试')}
  finally{const b=$('#cropApply');if(b)b.disabled=false}

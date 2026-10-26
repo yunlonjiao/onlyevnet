@@ -82,7 +82,7 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
         const valid=/^https?:\/\//i.test(stateValue);
         qa('.ticket-purchase-link').forEach(a=>{a.href=valid?stateValue:'#';a.hidden=!valid&&getMode()!=='edit'});
       }else{
-        qa('.ticket-purchase-link').forEach(a=>{a.textContent=(stateValue||'前往官方售票平台')+' ↗'});
+        qa('.ticket-purchase-link:not(.nav .ticket-purchase-link)').forEach(a=>{a.textContent=(stateValue||'前往官方售票平台')+' ↗'});
       }
       return;
     }

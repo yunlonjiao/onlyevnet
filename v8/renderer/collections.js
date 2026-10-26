@@ -1,4 +1,5 @@
 import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
+import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.42.0';
 import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.40.26';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
@@ -142,8 +143,11 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
 
   function renderMap(){
     const state=getState(),map=state.venueMap||{},box=mount('map','#venueMap'),rail=$('[data-oe-mount="map-rail"]')||$('.map-link-rail'),list=mount('map-links','.map-link-list');if(!box)return;
-    box.dataset.oeImage='venueMap.image';box.classList.toggle('has-map',!!map.image);
-    box.innerHTML=map.image?'<button class="map-image-view" type="button" data-product-lightbox="'+esc(map.image)+'" aria-label="查看场地图大图"><img src="'+esc(map.image)+'" alt="活动场地图"><span>查看大图 ↗</span></button>':'<div class="map-static-placeholder"><b>场地图</b><span>主办方暂未上传场地图</span></div>';
+    const maps=venueMapList(map),first=maps[0]?.image||'';
+    box.dataset.oeImage='venueMap.image';box.classList.toggle('has-map',!!first);box.classList.toggle('has-map-carousel',maps.length>1);
+    // One map keeps the original single-image markup; several maps become a swipeable carousel.
+    box.innerHTML=maps.length>1?mapCarouselMarkup(maps,esc):first?'<button class="map-image-view" type="button" data-product-lightbox="'+esc(first)+'" aria-label="查看场地图大图"><img src="'+esc(first)+'" alt="活动场地图"><span>查看大图 ↗</span></button>':'<div class="map-static-placeholder"><b>场地图</b><span>主办方暂未上传场地图</span></div>';
+    if(maps.length>1)bindMapCarousels(box);
     const firstLevelPages=new Set(['booths','activities','guests','guide',...(state.customPages||[]).map(p=>'custom-'+p.id)]);
     const links=(map.links||[]).map((item,index)=>({item,index})).filter(({item})=>{
       if(!String(item?.label||'').trim()||!firstLevelPages.has(item.target))return false;
