@@ -69,6 +69,9 @@ const catalogueStyle=`
 .cc-site .cb-cover-vol{font-size:12px;font-weight:900;letter-spacing:.2em;color:#fff}
 .cc-site .cb-cover-star{position:absolute;top:16px;right:22px;font-size:40px;color:#ffe45c;font-style:normal;text-shadow:3px 3px 0 var(--cc-ink)}
 .cc-site .cb-contents button{border-bottom:2px dashed #2b1f4726}
+/* Keep catalogue TOC controls below the sticky 68px navigation when scrolled into view. */
+.cc-site .cb-contents button{scroll-margin-top:110px;scroll-margin-bottom:28px}
+.cc-site .cb-book{scroll-margin-top:96px}
 .cc-site .cb-contents span{color:#c04f8a}.cc-site .cb-contents i{font-style:normal;font-weight:900;color:#6a55c8}
 .cc-site .cb-bubble p{background:#fff;border:3px solid var(--cc-ink);box-shadow:4px 4px 0 var(--cc-pink)}
 .cc-site .cb-avatar{background:var(--cc-pink);color:#fff;border:3px solid var(--cc-ink)}
