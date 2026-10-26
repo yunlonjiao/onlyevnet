@@ -1,12 +1,12 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {downloadStudioHtml} from '/v8/editor/studio-publish.js';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.42.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {cleanSlug,suggestSlug,isValidSlug,createSite,updateSite} from '/v8/publisher.js?v=8.40.1';
+import {cleanSlug,suggestSlug,isValidSlug} from '/v8/publisher.js?v=8.42.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -209,13 +209,13 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 function toast(t){toastEl.textContent=t;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),1400)}
 const publishDialog=$('#publishDialog'),publishSlug=$('#publishSlug'),publishPrimary=$('#publishPrimary'),publishStatus=$('#publishStatus'),publishResult=$('#publishResult'),publishUrl=$('#publishUrl');
 function syncPublishButton(){
- const label=$('#publishBtnLabel');if(label)label.textContent=publishRecord?.siteId?'更新网站':'发布网站';
+ const label=$('#publishBtnLabel');if(label)label.textContent=hasLiveSite(publishRecord)?'更新网站':'发布网站';
 }
 function savePublishRecord(next){
  publishRecord={...publishRecord,...next};localStorage.setItem(PUBLISH_STORAGE,JSON.stringify(publishRecord));syncPublishButton();
 }
 function renderPublishDialog(){
- const hasSite=!!publishRecord?.siteId,slug=cleanSlug(publishRecord?.slug||suggestSlug(state.eventName,state.date));
+ const hasSite=hasLiveSite(publishRecord),slug=cleanSlug(publishRecord?.slug||suggestSlug(state.eventName,state.date));
  publishSlug.value=slug;publishSlug.readOnly=hasSite;
  $('#publishHost').textContent='.onlyevent.cn';
  publishPrimary.textContent=hasSite?'更新网站':'发布网站';
@@ -225,25 +225,21 @@ function renderPublishDialog(){
  $('#publishOpen').disabled=!publishRecord?.url;$('#publishCopy').disabled=!publishRecord?.url;
 }
 function openPublishDialog(){
- renderPublishDialog();publishDialog.showModal();if(!publishRecord?.siteId)setTimeout(()=>publishSlug.select(),0);
+ renderPublishDialog();publishDialog.showModal();if(!hasLiveSite(publishRecord))setTimeout(()=>publishSlug.select(),0);
 }
 function setPublishBusy(busy,text=''){
- publishPrimary.disabled=busy;$('#publishDownload').disabled=busy;publishSlug.disabled=busy||!!publishRecord?.siteId;
+ publishPrimary.disabled=busy;$('#publishDownload').disabled=busy;publishSlug.disabled=busy||hasLiveSite(publishRecord);
  if(text)publishStatus.textContent=text;
 }
 async function publishGeneratedHtml(html){
  const slug=cleanSlug(publishSlug.value);
- if(!isValidSlug(slug)){setPublishBusy(false,'地址需为 3–63 位小写字母、数字或连字符。');publishSlug.focus();return}
- setPublishBusy(true,publishRecord?.siteId?'正在更新网站…':'正在发布网站…');
+ if(!isValidSlug(slug)){setPublishBusy(false,'地址需为 3–50 位小写字母、数字或连字符。');publishSlug.focus();return}
+ setPublishBusy(true,hasLiveSite(publishRecord)?'正在更新网站…':'正在发布网站…');
  try{
-   const payload={html,title:state.eventName||'OnlyEvent',slug,templateId:state.templateId||activeTemplate.id};
-   const result=publishRecord?.siteId
-     ?await updateSite({...payload,siteId:publishRecord.siteId,editToken:publishRecord.editToken})
-     :await createSite(payload);
-   if(!result.siteId)throw new Error('发布服务未返回站点 ID');
-   if(!publishRecord?.siteId&&!result.editToken)throw new Error('发布服务未返回编辑凭证');
-   const publishedUrl=result.url||('https://'+slug+'.onlyevent.cn');
-   savePublishRecord({siteId:result.siteId,editToken:result.editToken||publishRecord.editToken,slug:result.slug||slug,url:publishedUrl,publishedAt:new Date().toISOString()});
+   const result=await publishStudioSite({html,title:state.eventName||'OnlyEvent',slug,templateId:state.templateId||activeTemplate.id,publication:publishRecord});
+   const publishedUrl=result.url||('https://'+result.slug+'.onlyevent.cn');
+   publishRecord={};
+   savePublishRecord({...result,url:publishedUrl});
    syncAdminProject({siteUrl:publishedUrl,status:'published'});
    renderPublishDialog();publishStatus.textContent='网站已上线';toast('网站已发布');
  }catch(error){

@@ -1,17 +1,19 @@
 import {test,expect} from '@playwright/test';
+import {useCloudPublisher} from './cloud-publisher.mjs';
 
 async function clearAuth(page){
+  const cloud=await useCloudPublisher(page);
   await page.goto('/admin/');
   await page.evaluate(()=>{
-    localStorage.removeItem('onlyevent-auth-sim-users-v1');
-    localStorage.removeItem('onlyevent-auth-sim-session-v1');
+    localStorage.removeItem('onlyevent-cloud-session-v1');
     localStorage.removeItem('onlyevent-admin-projects-v1');
   });
   await page.reload();
+  return cloud;
 }
 
-test('organizer quick registration, 6-digit recovery, logout and login form a complete flow',async({page})=>{
-  await clearAuth(page);
+test('organizer registration, recovery code, logout and login run against the Worker account API',async({page})=>{
+  const cloud=await clearAuth(page);
   await expect(page.locator('#authShell')).toBeVisible();
   await expect(page.locator('#adminShell')).toBeHidden();
 
@@ -23,7 +25,7 @@ test('organizer quick registration, 6-digit recovery, logout and login form a co
 
   await expect(page.locator('#authRecoveryCodeResult')).toBeVisible();
   const code=(await page.locator('#authRecoveryCodeValue').textContent())?.trim()||'';
-  expect(code).toMatch(/^\d{6}$/);
+  expect(code).toMatch(/^[A-Za-z0-9_-]{20,}$/);
 
   await page.locator('#authEnterAdmin').click();
   await expect(page.locator('#adminShell')).toBeVisible();
@@ -35,6 +37,9 @@ test('organizer quick registration, 6-digit recovery, logout and login form a co
   await page.locator('#authLogoutBtn').click();
   await expect(page.locator('#authShell')).toBeVisible();
   await page.locator('#authLoginAccount').fill('QA 快速注册主办方');
+  await page.locator('#authLoginPassword').fill('wrong-password');
+  await page.locator('#authLoginForm button[type="submit"]').click();
+  await expect(page.locator('#authLoginMessage')).toHaveText('账号或密码不正确');
   await page.locator('#authLoginPassword').fill('qa-password-01');
   await page.locator('#authLoginForm button[type="submit"]').click();
   await expect(page.locator('#adminShell')).toBeVisible();
@@ -53,37 +58,24 @@ test('organizer quick registration, 6-digit recovery, logout and login form a co
   await page.locator('#authLoginPassword').fill('qa-password-02');
   await page.locator('#authLoginForm button[type="submit"]').click();
   await expect(page.locator('#adminShell')).toBeVisible();
+  expect(cloud.requests.map(r=>r.path)).toContain('/api/account/recover');
 });
 
-test('email registration and simulated email recovery complete without dead ends',async({page})=>{
+test('an expired cloud session returns the organizer to the login gate',async({page})=>{
+  await useCloudPublisher(page);
+  await page.addInitScript(()=>localStorage.setItem('onlyevent-cloud-session-v1',JSON.stringify({token:'expired-token',username:'QA'})));
+  await page.goto('/admin/');
+  await expect(page.locator('#authShell')).toBeVisible();
+  expect(await page.evaluate(()=>localStorage.getItem('onlyevent-cloud-session-v1'))).toBeNull();
+});
+
+test('email sign-up is not offered until the Worker supports email',async({page})=>{
   await clearAuth(page);
   await page.locator('[data-auth-page="register"]').click();
-  await page.locator('[data-register-mode="email"]').click();
-  await page.locator('#authEmailName').fill('QA 邮箱主办方');
-  await page.locator('#authEmailAddress').fill('qa-organizer@example.com');
-  await page.locator('#authEmailPassword').fill('mail-password-01');
-  await page.locator('#authEmailPassword2').fill('mail-password-01');
-  await page.locator('#authEmailRegisterForm button[type="submit"]').click();
-  await expect(page.locator('#adminShell')).toBeVisible({timeout:3000});
-
-  await page.locator('#authLogoutBtn').click();
+  await expect(page.locator('[data-register-mode="email"]')).toBeHidden();
+  await page.locator('[data-auth-page="login"]').click();
   await page.locator('#authForgotBtn').click();
-  await page.locator('[data-recovery-mode="email"]').click();
-  await page.locator('#authRecoveryEmail').fill('qa-organizer@example.com');
-  await page.locator('#authEmailRecoveryForm button[type="submit"]').click();
-  await expect(page.locator('#authDemoMail')).toBeVisible();
-  await page.locator('#authOpenDemoReset').click();
-  await expect(page.locator('#authEmailResetForm')).toBeVisible();
-  await page.locator('#authEmailResetPassword').fill('mail-password-02');
-  await page.locator('#authEmailResetPassword2').fill('mail-password-02');
-  await page.locator('#authEmailResetForm button[type="submit"]').click();
-  await expect(page.locator('#authEmailResetMessage')).toContainText('密码已更新');
-  await page.waitForTimeout(1000);
-
-  await page.locator('#authLoginAccount').fill('qa-organizer@example.com');
-  await page.locator('#authLoginPassword').fill('mail-password-02');
-  await page.locator('#authLoginForm button[type="submit"]').click();
-  await expect(page.locator('#adminShell')).toBeVisible();
+  await expect(page.locator('[data-recovery-mode="email"]')).toBeHidden();
 });
 
 test('visitor pages contain no internal design explanation copy and renderer has no console-breaking errors',async({page})=>{

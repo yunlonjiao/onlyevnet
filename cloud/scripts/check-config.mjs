@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+const raw=fs.readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8');
+const cleaned=raw.replace(/\/\*[\s\S]*?\*\//g,'').replace(/^\s*\/\/.*$/gm,'');
+const c=JSON.parse(cleaned);
+const fail=m=>{console.error('✗ '+m);process.exitCode=1};
+const ok=m=>console.log('✓ '+m);
+const d=c.d1_databases?.find(x=>x.binding==='DB');
+if(!d)fail('D1 binding 必须为 DB'); else if(!/^[0-9a-f-]{36}$/i.test(d.database_id||''))fail('D1 database_id 无效'); else ok('D1 database_id / DB binding');
+const r=c.r2_buckets?.find(x=>x.binding==='SITES');if(!r)fail('R2 binding 必须为 SITES');else ok('R2 SITES binding');
+if(c.assets?.binding!=='ASSETS')fail('静态资源 binding 必须为 ASSETS');else ok('ASSETS');
+if(c.vars?.BASE_DOMAIN!=='onlyevent.cn')fail('BASE_DOMAIN 应为 onlyevent.cn');else ok('BASE_DOMAIN');
+if(!process.exitCode)console.log('配置检查通过。');

@@ -1,0 +1,17 @@
+{
+  "name": "onlyevent",
+  "version": "7.25.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node ./scripts/check-config.mjs && node --check ./src/worker.js && node --check ./web/admin/workspace.js && node --check ./web/admin/app.js && node --check ./web/admin/ip01.js && node --check ./web/admin/publishing.js",
+    "db:remote": "wrangler d1 execute DB --remote --file=./schema.sql",
+    "db:local": "wrangler d1 execute DB --local --file=./schema.sql",
+    "deploy": "npm run check && wrangler deploy",
+    "dev": "wrangler dev",
+    "test": "node --test scripts/api-test.mjs && node ./scripts/check-config.mjs && node --check ./src/worker.js && node --check ./web/admin/workspace.js && node --check ./web/admin/app.js && node --check ./web/admin/ip01.js && node --check ./web/admin/publishing.js && node ./scripts/self-test.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.144.0"
+  }
+}

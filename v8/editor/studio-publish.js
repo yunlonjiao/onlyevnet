@@ -1,14 +1,17 @@
 /* Common publishing operations for every Studio template. HTML rendering remains template-specific. */
+import {ensureCloudProject,createSite,updateSite} from '/v8/publisher.js?v=8.42.0';
 export function downloadStudioHtml(html,name){
  const blob=new Blob([html],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
  a.href=url;a.download=(String(name||'onlyevent').replace(/[\\/:*?"<>|]+/g,'-').trim()||'onlyevent')+'.html';
  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
-export async function publishStudioSite({html,title,slug,templateId,publication,createSite,updateSite}){
- const payload={html,title,slug,templateId};
- const result=publication?.siteId
-  ?await updateSite({...payload,siteId:publication.siteId,editToken:publication.editToken})
-  :await createSite(payload);
- if(!result.siteId||!(result.editToken||publication?.editToken))throw new Error('发布平台未返回有效站点凭证');
- return {siteId:result.siteId,editToken:result.editToken||publication?.editToken,slug:result.slug||slug,url:result.url||'',publishedAt:new Date().toISOString()};
+/* Records saved before the account API (editToken only, no cloud project) never reached a live site. */
+export function hasLiveSite(publication){return !!(publication?.siteId&&publication?.cloudProjectId)}
+export async function publishStudioSite({html,title,slug,templateId,publication}){
+ const cloudProjectId=await ensureCloudProject({cloudProjectId:publication?.cloudProjectId,name:title});
+ const payload={html,title,slug,templateId,projectId:cloudProjectId};
+ const existing=hasLiveSite(publication)&&publication.cloudProjectId===cloudProjectId;
+ const result=existing?await updateSite({...payload,siteId:publication.siteId}):await createSite(payload);
+ if(!result.siteId)throw new Error('发布平台未返回有效站点');
+ return {siteId:result.siteId,cloudProjectId,slug:result.slug||slug,url:result.url||'',publishedAt:new Date().toISOString()};
 }

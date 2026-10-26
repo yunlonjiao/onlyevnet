@@ -1,16 +1,15 @@
 import {test,expect} from '@playwright/test';
+import {useCloudPublisher,signInCloud} from './cloud-publisher.mjs';
 
 test.use({viewport:{width:1440,height:900}});
 
 async function signInSim(page,name='QA 主办方'){
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,name);
   await page.goto('/admin/');
-  await page.evaluate(({name})=>{
-    const user={id:'qa-organizer',name,email:'',passwordHash:'qa',recoveryHash:'qa',authType:'quick',createdAt:new Date().toISOString()};
-    localStorage.setItem('onlyevent-auth-sim-users-v1',JSON.stringify([user]));
-    localStorage.setItem('onlyevent-auth-sim-session-v1',JSON.stringify({userId:user.id,createdAt:new Date().toISOString()}));
-  },{name});
-  await page.reload();
   await expect(page.locator('#adminShell')).toBeVisible();
+  await expect(page.locator('#authCurrentUser')).toHaveText(name);
+  return cloud;
 }
 
 test('admin is the product entry and exposes projects plus template library',async({page})=>{
@@ -64,7 +63,7 @@ test('admin exposes explicit project deletion and published-site unpublish contr
   await page.evaluate(()=>{
     const project={id:'published-test',name:'已发布测试',templateId:'01-ip-only',siteUrl:'https://published-test.onlyevent.cn',status:'published',updatedAt:new Date().toISOString()};
     localStorage.setItem('onlyevent-admin-projects-v1',JSON.stringify([project]));
-    localStorage.setItem('onlyevent-studio-publish:01-ip-only:published-test:iframe',JSON.stringify({siteId:'site-1',editToken:'token-1',url:project.siteUrl,slug:'published-test'}));
+    localStorage.setItem('onlyevent-studio-publish:01-ip-only:published-test:iframe',JSON.stringify({siteId:'site-1',cloudProjectId:'prj_1',url:project.siteUrl,slug:'published-test'}));
   });
   await page.reload();
   await expect(page.locator('.delete-project')).toHaveText('删除项目');

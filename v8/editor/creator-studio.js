@@ -1,7 +1,7 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionPanel,filterStudioCollection} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {downloadStudioHtml,publishStudioSite} from '/v8/editor/studio-publish.js';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.42.0';
 import {createStudioCropper,cropSelectionToDataUrl} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,renderPageTree,syncStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
@@ -9,7 +9,7 @@ import {bindCanvasSelection} from '/v8/editor/canvas-selection.js';
 import {createCreatorStudioPages} from '/v8/editor/creator-pages.js';
 import {getTemplate} from '/v8/templates/registry.js?v=8.41.5';
 import {esc} from '/v8/market-shared.js';
-import {createSite,updateSite,cleanSlug,suggestSlug,isValidSlug} from '/v8/publisher.js';
+import {cleanSlug,suggestSlug,isValidSlug} from '/v8/publisher.js?v=8.42.0';
 const $=s=>document.querySelector(s),q=new URLSearchParams(location.search),t=getTemplate(q.get('template')),project=q.get('project')||'default';
 const storage='onlyevent-studio-v8:'+t.id+':'+project+':iframe';
 let state=structuredClone(t.defaults),section='basic',currentPage='home',selected=-1,delay=0,preview=false;
@@ -217,8 +217,8 @@ async function generateHtml(){
 function publishDialog(){
   const dialog=$('#publishDialog');
   $('#publishSlug').value=publication.slug||suggestSlug(state.eventName,state.date);
-  $('#publishSlug').readOnly=!!publication.siteId;
-  $('#publishStatus').textContent=publication.siteId?'已发布，可更新当前网站':'输入网站地址后发布';
+  $('#publishSlug').readOnly=hasLiveSite(publication);
+  $('#publishStatus').textContent=hasLiveSite(publication)?'已发布，可更新当前网站':'输入网站地址后发布';
   $('#publishResult').hidden=!publication.url;
   $('#publishUrl').textContent=publication.url||'';
   dialog.showModal();
@@ -230,11 +230,11 @@ $('#publishDownload').onclick=async()=>{
   try{persist();const html=await generateHtml();downloadStudioHtml(html,state.eventName||'onlyevent-market-'+project);}catch(e){$('#publishStatus').textContent='导出失败：'+e.message;}
 };
 $('#publishPrimary').onclick=async()=>{
-  const slug=cleanSlug($('#publishSlug').value);if(!isValidSlug(slug)){$('#publishStatus').textContent='请输入3–63位字母、数字或连字符';return}
+  const slug=cleanSlug($('#publishSlug').value);if(!isValidSlug(slug)){$('#publishStatus').textContent='请输入3–50位小写字母、数字或连字符';return}
   $('#publishPrimary').disabled=true;$('#publishStatus').textContent='正在生成并发布网站…';
   try{
     persist();const html=await generateHtml();
-    publication=await publishStudioSite({html,title:state.eventName,slug,templateId:t.id,publication,createSite,updateSite});
+    publication=await publishStudioSite({html,title:state.eventName,slug,templateId:t.id,publication});
     localStorage.setItem(publishKey,JSON.stringify(publication));
     $('#publishStatus').textContent='网站已发布';$('#publishResult').hidden=false;$('#publishUrl').textContent=publication.url;
     const projects=JSON.parse(localStorage.getItem('onlyevent-admin-projects-v1')||'[]');

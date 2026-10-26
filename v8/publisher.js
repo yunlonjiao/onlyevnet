@@ -1,29 +1,80 @@
+/* Client for the convention-publisher Worker (cloud/src/worker.js).
+   Organizer accounts live in D1; the session token is sent as a Bearer header so the
+   CMS can run on Pages, the Worker domain or onlyevent.cn without third-party cookies.
+   Every site belongs to one cloud project, selected with the X-OnlyEvent-Project header. */
 export const PUBLISHER_ORIGIN='https://convention-publisher.onlyevents.workers.dev';
+export const CLOUD_SESSION_KEY='onlyevent-cloud-session-v1';
 
-const jsonHeaders=token=>({
-  'Content-Type':'application/json',
-  ...(token?{'Authorization':'Bearer '+token,'X-Edit-Token':token}:{})
-});
+export function readCloudSession(){
+  try{const s=JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY)||'null');return s?.token?s:null}catch{return null}
+}
+function writeCloudSession(data){
+  const session={token:data.token,username:data.user?.username||data.username||'',userId:data.user?.id||'',expiresAt:data.expiresAt||''};
+  localStorage.setItem(CLOUD_SESSION_KEY,JSON.stringify(session));
+  return session;
+}
+export function clearCloudSession(){localStorage.removeItem(CLOUD_SESSION_KEY)}
 
 async function readJson(response){
   const text=await response.text();
   let data={};
   try{data=text?JSON.parse(text):{}}catch{data={message:text}}
-  if(!response.ok){
+  if(!response.ok||data?.ok===false){
     const error=new Error(data?.error||data?.message||('发布服务返回 '+response.status));
     error.status=response.status;
     error.data=data;
+    if(response.status===401)clearCloudSession();
     throw error;
   }
   return data;
 }
 
-function normalizeResult(data,{slug,editToken}={}){
-  const siteId=data?.siteId||data?.id||data?.site?.id||'';
-  const nextSlug=data?.slug||data?.site?.slug||slug||'';
-  const token=data?.editToken||data?.token||data?.site?.editToken||editToken||'';
-  const url=data?.url||data?.siteUrl||data?.publicUrl||data?.site?.url||(nextSlug?'https://'+nextSlug+'.onlyevent.cn':'');
-  return {siteId,slug:nextSlug,editToken:token,url,raw:data};
+async function api(path,{method='GET',body,projectId,auth=true}={}){
+  const headers={};
+  if(body!==undefined)headers['Content-Type']='application/json';
+  const session=auth?readCloudSession():null;
+  if(auth&&!session)throw Object.assign(new Error('请先登录主办方账号'),{status:401});
+  if(session)headers.Authorization='Bearer '+session.token;
+  if(projectId)headers['X-OnlyEvent-Project']=projectId;
+  const response=await fetch(PUBLISHER_ORIGIN+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body)});
+  return readJson(response);
+}
+
+export async function registerAccount({username,password}){
+  const data=await api('/api/account/register',{method:'POST',body:{username,password},auth:false});
+  return {session:writeCloudSession(data),recoveryCode:data.recoveryCode||''};
+}
+export async function loginAccount({username,password}){
+  return writeCloudSession(await api('/api/account/login',{method:'POST',body:{username,password},auth:false}));
+}
+export async function recoverAccount({username,recoveryCode,newPassword}){
+  return api('/api/account/recover',{method:'POST',body:{username,recoveryCode,newPassword},auth:false});
+}
+export async function rotateRecoveryCode(){
+  return (await api('/api/account/recovery-code',{method:'POST',body:{}})).recoveryCode;
+}
+export async function fetchAccount(){
+  return (await api('/api/me')).user;
+}
+export async function logoutAccount(){
+  try{if(readCloudSession())await api('/api/logout',{method:'POST',body:{}})}
+  finally{clearCloudSession()}
+}
+
+/* Reuse the cloud project recorded for this local project, or create one. */
+export async function ensureCloudProject({cloudProjectId,name}){
+  if(cloudProjectId){
+    const {projects=[]}=await api('/api/projects');
+    if(projects.some(p=>p.id===cloudProjectId))return cloudProjectId;
+  }
+  const data=await api('/api/projects',{method:'POST',body:{name:String(name||'OnlyEvent').slice(0,160),template:'blank'}});
+  return data.project.id;
+}
+
+function normalizeSite(data,{slug}={}){
+  const site=data?.site||data||{};
+  const nextSlug=site.slug||slug||'';
+  return {siteId:site.id||site.siteId||'',slug:nextSlug,url:site.url||(nextSlug?'https://'+nextSlug+'.onlyevent.cn':''),raw:data};
 }
 
 export function cleanSlug(value){
@@ -35,7 +86,7 @@ export function cleanSlug(value){
     .replace(/[^a-z0-9-]+/g,'-')
     .replace(/-+/g,'-')
     .replace(/^-|-$/g,'')
-    .slice(0,63);
+    .slice(0,50);
 }
 
 export function suggestSlug(eventName,date=''){
@@ -47,36 +98,22 @@ export function suggestSlug(eventName,date=''){
 
 export function isValidSlug(value){
   const slug=cleanSlug(value);
-  return slug.length>=3&&slug.length<=63&&/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(slug);
+  return slug.length>=3&&slug.length<=50&&/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(slug);
 }
 
-export async function createSite({html,title,slug,templateId}){
-  const response=await fetch(PUBLISHER_ORIGIN+'/api/sites',{
-    method:'POST',
-    headers:jsonHeaders(),
-    body:JSON.stringify({html,title,slug,templateId})
-  });
-  return normalizeResult(await readJson(response),{slug});
+export async function createSite({html,title,slug,templateId,projectId}){
+  if(!projectId)throw new Error('缺少云端活动项目');
+  return normalizeSite(await api('/api/sites',{method:'POST',projectId,body:{html,title,slug,templateId}}),{slug});
 }
 
-export async function deleteSite({siteId,editToken}){
+export async function updateSite({siteId,projectId,html,title,slug,templateId}){
   if(!siteId)throw new Error('缺少已发布站点 ID');
-  if(!editToken)throw new Error('缺少站点编辑凭证，无法下线网站');
-  const response=await fetch(PUBLISHER_ORIGIN+'/api/sites/'+encodeURIComponent(siteId),{
-    method:'DELETE',
-    headers:jsonHeaders(editToken),
-    body:JSON.stringify({editToken})
-  });
-  return readJson(response);
+  if(!projectId)throw new Error('缺少云端活动项目');
+  return normalizeSite(await api('/api/sites/'+encodeURIComponent(siteId),{method:'PUT',projectId,body:{html,title,slug,templateId}}),{slug});
 }
 
-export async function updateSite({siteId,editToken,html,title,slug,templateId}){
+export async function deleteSite({siteId,projectId}){
   if(!siteId)throw new Error('缺少已发布站点 ID');
-  if(!editToken)throw new Error('缺少站点编辑凭证，请重新发布为新站点');
-  const response=await fetch(PUBLISHER_ORIGIN+'/api/sites/'+encodeURIComponent(siteId),{
-    method:'PUT',
-    headers:jsonHeaders(editToken),
-    body:JSON.stringify({html,title,slug,templateId,editToken})
-  });
-  return normalizeResult(await readJson(response),{slug,editToken});
+  if(!projectId)throw new Error('缺少云端活动项目');
+  return api('/api/sites/'+encodeURIComponent(siteId),{method:'DELETE',projectId});
 }

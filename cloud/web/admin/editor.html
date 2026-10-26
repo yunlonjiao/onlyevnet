@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>OnlyEvent · 空白 CMS</title><script>if(new URLSearchParams(location.search).get('visual')==='1')document.documentElement.classList.add('visual-entry-pending')</script><link rel="stylesheet" href="styles.css?v=7.25.0"></head>
+<body data-portal="organizer" class="v6-admin">
+<div class="v6-shell">
+  <aside class="v6-nav" id="mainSidebar">
+    <div class="v6-brand"><div class="v6-logo">OE</div><div><strong>OnlyEvent</strong><small>Blank CMS</small></div></div>
+    <nav class="editor-tabs v6-menu" id="editorTabs">
+      <div class="v6-menu-label">内容管理</div>
+      <button data-tab="site" data-role="organizer" class="active"><span class="nav-icon">▤</span><span>空白 CMS</span></button>
+      <button data-tab="guests" data-feature-nav="guests" data-role="organizer"><span class="nav-icon">☆</span><span>嘉宾</span></button>
+      <button data-tab="booths" data-feature-nav="booths" data-role="organizer"><span class="nav-icon">▦</span><span>摊位 / 社团</span></button>
+      <button data-tab="schedule" data-feature-nav="schedule" data-role="organizer"><span class="nav-icon">◷</span><span>活动日程</span></button>
+      <button data-tab="guide" data-feature-nav="guide" data-role="organizer"><span class="nav-icon">⌖</span><span>场馆指南</span></button>
+      <button data-tab="faq" data-feature-nav="faq" data-role="organizer"><span class="nav-icon">?</span><span>FAQ</span></button>
+      <button data-tab="sponsors" data-feature-nav="sponsors" data-role="organizer"><span class="nav-icon">◇</span><span>赞助合作</span></button>
+      <div class="v6-menu-label">发布</div>
+      <button data-tab="publish" data-role="organizer"><span class="nav-icon">↗</span><span>发布网站</span></button>
+    </nav>
+    <div class="v6-nav-footer"><span class="status-dot"></span><div><b>云端项目</b><small>自动保存已开启</small></div></div>
+  </aside>
+
+  <section class="v6-main">
+    <header class="v6-topbar">
+      <div class="v6-top-left"><button id="collapseBtn" class="v6-icon-btn" title="收起菜单">☰</button><div><small id="breadcrumb">漫展管理 / 空白 CMS</small><h1 id="pageTitle">空白 CMS</h1></div></div>
+      <div class="v6-top-actions"><a href="/admin/" class="top-manual-save" style="text-decoration:none">← 我的漫展</a>
+        <span id="saveStatus" class="save-status saved">已自动保存</span>
+        <button id="saveBtn" class="top-manual-save" type="button" title="立即保存当前修改">手动保存</button>
+        <button id="globalPreviewToggle" class="top-preview-toggle" type="button" title="进入可视化编辑">可视化编辑</button>
+      </div>
+    </header>
+
+    <div class="v6-content-grid">
+      <main class="v6-editor">
+        <div class="editor-body">
+<section class="tab-panel active" data-panel="site" data-role="organizer">
+<div class="management-toolbar">
+  <section class="content-jumpbar" id="contentJumpbar" aria-label="管理内容快速定位"></section>
+  <button class="secondary compact restore-management-btn" id="restoreManagementDefaultsBtn" type="button">恢复默认设置</button>
+</div>
+<section class="panel template-preset-panel" id="contentTemplatePreset">
+  <div class="template-preset-main">
+    <div><small class="template-preset-kicker">网站结构</small><h3 id="currentTemplateName">空白模板</h3><p id="currentTemplateDescription">不预设展示结构。</p></div>
+    <button class="primary compact" id="applyDefaultTemplateBtn" type="button">一键应用默认模板</button>
+  </div>
+  <div class="template-preset-preview" id="templatePresetPreview" aria-hidden="true"></div>
+  <small class="template-preset-note">应用模板的结构与视觉默认值，不会填入例图、示例文字，也不会删除已经录入的活动内容。</small>
+</section>
+
+<section class="panel" id="contentBasic">
+  <div class="panel-title-row"><div><h3>基本信息</h3><p class="panel-note">活动名称、时间、地点与基础链接。</p></div><span class="badge">建议先完成</span></div>
+  <label>漫展名称<input id="eventName" type="text"/></label>
+  <label>副标题<input id="eventTagline" type="text"/></label>
+  <label>活动日期（单日或日期范围）<input id="eventDate" type="text" placeholder="例如 2026年10月3日 或 10月3日–4日"/></label>
+  <label>地点<input id="eventLocation" type="text"/></label>
+  <label>公告<input id="announcement" type="text"/></label>
+  
+</section>
+
+
+<section class="panel" id="contentLinks">
+  <div class="panel-title-row"><div><h3>外部链接</h3><p class="panel-note">购票、报名、社交平台或地图都跳转到第三方页面，OnlyEvent 不处理交易和报名数据。</p></div><button class="small" id="addExternalLinkBtn" type="button">+ 添加链接</button></div>
+  <div id="externalLinkList" class="external-link-list"></div>
+</section>
+
+<section class="panel" id="contentTickets">
+  <div class="panel-title-row"><div><h3>票种与特典</h3><p class="panel-note">这里只展示票种、价格和赠品。实际购买仍通过上方“购票”外部链接跳转到第三方售票平台。</p></div><button class="small" id="addTicketTypeBtn" type="button">+ 添加票种</button></div>
+  <div id="ticketTypeList" class="data-list"></div>
+</section>
+
+<section class="panel" id="contentFeatures">
+  <div class="panel-title-row"><div><h3>网站栏目</h3><p class="panel-note">只显示需要的栏目。</p></div><span class="badge">按需开启</span></div>
+  <div class="feature-toggle-grid">
+    <label class="feature-toggle"><input id="featureGuests" type="checkbox"><span><b>嘉宾</b><small>嘉宾阵容与介绍</small></span></label>
+    <label class="feature-toggle"><input id="featureBooths" type="checkbox"><span><b>摊位 / 社团</b><small>摊位介绍、封面与制品内容</small></span></label>
+    <label class="feature-toggle"><input id="featureSchedule" type="checkbox"><span><b>活动日程</b><small>单日或多日活动均可</small></span></label>
+    <label class="feature-toggle"><input id="featureGuide" type="checkbox"><span><b>场馆指南</b><small>地图、交通与入场须知</small></span></label>
+    <label class="feature-toggle"><input id="featureFaq" type="checkbox"><span><b>FAQ</b><small>常见问题</small></span></label>
+    <label class="feature-toggle"><input id="featureSponsors" type="checkbox"><span><b>赞助 / 合作</b><small>赞助商、合作方与媒体伙伴</small></span></label>
+  </div>
+</section>
+
+
+<section class="panel" id="contentVisual">
+  <div class="panel-title-row"><div><h3>主视觉</h3><p class="panel-note">桌面与手机版主视觉分别上传；不使用自动焦点裁切。</p></div></div>
+  <div class="template-art-hint" id="heroArtHint"></div>
+  <div class="hero-device-row">
+    <div class="hero-device-editor desktop">
+      <div class="hero-device-head"><div><b>桌面主视觉</b><small>推荐 1920 × 1080 · 16:9</small></div><div class="inline-actions"><label class="file-btn compact">上传图片<input accept="image/*" hidden id="heroUpload" type="file"/></label><button class="secondary compact" id="clearHeroBtn" type="button">恢复默认</button></div></div>
+      <div class="hero-device-preview desktop" id="heroDesktopVisualPreview"><div class="hero-device-overlay"></div><div class="hero-device-copy"><b id="heroDesktopPreviewTitle">活动名称</b><span id="heroDesktopPreviewMeta">日期 · 地点</span></div></div>
+    </div>
+    <div class="hero-device-editor mobile">
+      <div class="hero-device-head"><div><b>手机版主视觉</b><small>推荐 1080 × 1440 · 3:4</small></div><div class="inline-actions"><label class="file-btn compact">上传图片<input accept="image/*" hidden id="heroMobileUpload" type="file"/></label><button class="secondary compact" id="clearHeroMobileBtn" type="button">使用桌面图</button></div></div>
+      <div class="hero-device-preview mobile" id="heroMobilePreview"><div class="hero-device-overlay"></div><div class="hero-device-copy"><b id="heroMobilePreviewTitle">活动名称</b><span id="heroMobilePreviewMeta">日期 · 地点</span></div></div>
+      <div class="hero-device-foot"><span>建议单独上传 3:4 手机版主视觉；未上传时才使用桌面图</span></div>
+    </div>
+  </div>
+  <div class="image-field-block page-banner-editor compact-banner-editor">
+    <div class="hero-device-head"><div><b>内页 Banner</b><small>嘉宾、摊位、日程、指南等内页顶部 · 推荐 1920 × 480</small></div><div class="inline-actions"><label class="file-btn compact">上传 Banner<input accept="image/*" hidden id="pageBannerUpload" type="file"/></label><button class="secondary compact" id="clearPageBannerBtn" type="button">恢复默认</button></div></div>
+    <div class="page-banner-preview-stage" id="pageBannerPreview"><div class="page-banner-preview-overlay"></div><div class="page-banner-preview-copy"><b>内页标题预览</b></div></div>
+  </div>
+<div class="mini-grid">
+    <label>主题色<input id="themeColor" type="color"/></label>
+    <label>强调色<input id="accentColor" type="color"/></label>
+    <label>页面背景色<input id="backgroundColor" type="color"/></label>
+    <label>圆角大小
+      <div class="range-row"><input id="radius" min="4" max="32" step="1" type="range"/><div class="range-value"><span id="radiusValue"></span> px</div></div>
+    </label>
+  </div>
+  <details class="advanced-theme-settings">
+    <summary>高级视觉设置</summary>
+    <div class="mini-grid">
+      <label>正文颜色<input id="textColor" type="color"/></label>
+      <label>次要文字<input id="mutedColor" type="color"/></label>
+      <label>边框颜色<input id="lineColor" type="color"/></label>
+      <label>卡片底色<input id="surfaceColor" type="color"/></label>
+      <label>顶部导航底色<input id="headerBgColor" type="color"/></label>
+      <label>顶部导航文字<input id="headerTextColor" type="color"/></label>
+      <label>内容最大宽度<div class="range-row"><input id="contentWidth" min="760" max="1440" step="20" type="range"/><div class="range-value"><span id="contentWidthValue"></span> px</div></div></label>
+      <label>区块上下间距<div class="range-row"><input id="sectionSpacing" min="32" max="120" step="4" type="range"/><div class="range-value"><span id="sectionSpacingValue"></span> px</div></div></label>
+      <label>卡片间距<div class="range-row"><input id="cardGap" min="0" max="40" step="2" type="range"/><div class="range-value"><span id="cardGapValue"></span> px</div></div></label>
+      <label>阴影强度<div class="range-row"><input id="shadowStrength" min="0" max="30" step="1" type="range"/><div class="range-value"><span id="shadowStrengthValue"></span> %</div></div></label>
+      <label>动画强度<div class="range-row"><input id="animationStrength" min="0" max="100" step="10" type="range"/><div class="range-value"><span id="animationStrengthValue"></span> %</div></div></label>
+      <label class="toggle-row"><input id="introAnimationEnabled" type="checkbox"/> <span>启用开屏动画</span></label>
+      <label class="toggle-row"><input id="decorationsEnabled" type="checkbox"/> <span>启用装饰 / 章节动效</span></label>
+      <label class="toggle-row"><input id="mobileDockEnabled" type="checkbox"/> <span>启用手机底部快捷导航</span></label>
+      <label class="wide">自定义 CSS（高级，可覆盖任意页面设计点）<textarea id="customCss" rows="7" placeholder="例如：.hero h1 { font-size: 72px; }"></textarea></label>
+    </div>
+    <p class="panel-note">模板只负责结构和默认风格。颜色、尺寸、间距与细节可在这里覆盖；不需要复制出新的模板。</p>
+  </details>
+
+</section>
+
+
+<section class="panel hidden" id="portalGlobalArtPanel">
+  <div class="panel-title-row"><div><h3>综合门户首页图片</h3><p class="panel-note">只控制“综合漫展 / 大型活动门户”首页美术。留空时才从嘉宾、日程、摊位、制品图片中自动补图。</p></div></div>
+  <div class="template-art-hint">资讯卡与活动内容卡均建议横图 16:9。这里指定的图片优先级高于自动图片池。</div>
+  <h4 class="pg-art-heading">最新资讯 · 6 张</h4><div class="pg-art-grid"><div class="pg-art-slot"><b>资讯 1</b><div class="pg-art-preview empty" id="pg-news-preview-0"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-news-upload-0" type="file"></label><button class="secondary compact" id="pg-news-clear-0" type="button">清除</button></div></div><div class="pg-art-slot"><b>资讯 2</b><div class="pg-art-preview empty" id="pg-news-preview-1"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-news-upload-1" type="file"></label><button class="secondary compact" id="pg-news-clear-1" type="button">清除</button></div></div><div class="pg-art-slot"><b>资讯 3</b><div class="pg-art-preview empty" id="pg-news-preview-2"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-news-upload-2" type="file"></label><button class="secondary compact" id="pg-news-clear-2" type="button">清除</button></div></div><div class="pg-art-slot"><b>资讯 4</b><div class="pg-art-preview empty" id="pg-news-preview-3"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-news-upload-3" type="file"></label><button class="secondary compact" id="pg-news-clear-3" type="button">清除</button></div></div><div class="pg-art-slot"><b>资讯 5</b><div class="pg-art-preview empty" id="pg-news-preview-4"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-news-upload-4" type="file"></label><button class="secondary compact" id="pg-news-clear-4" type="button">清除</button></div></div><div class="pg-art-slot"><b>资讯 6</b><div class="pg-art-preview empty" id="pg-news-preview-5"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-news-upload-5" type="file"></label><button class="secondary compact" id="pg-news-clear-5" type="button">清除</button></div></div></div>
+  <h4 class="pg-art-heading">活动内容 · 10 张</h4><div class="pg-art-grid"><div class="pg-art-slot"><b>活动 1</b><div class="pg-art-preview empty" id="pg-explore-preview-0"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-explore-upload-0" type="file"></label><button class="secondary compact" id="pg-explore-clear-0" type="button">清除</button></div></div><div class="pg-art-slot"><b>活动 2</b><div class="pg-art-preview empty" id="pg-explore-preview-1"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-explore-upload-1" type="file"></label><button class="secondary compact" id="pg-explore-clear-1" type="button">清除</button></div></div><div class="pg-art-slot"><b>活动 3</b><div class="pg-art-preview empty" id="pg-explore-preview-2"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-explore-upload-2" type="file"></label><button class="secondary compact" id="pg-explore-clear-2" type="button">清除</button></div></div><div class="pg-art-slot"><b>活动 4</b><div class="pg-art-preview empty" id="pg-explore-preview-3"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-explore-upload-3" type="file"></label><button class="secondary compact" id="pg-explore-clear-3" type="button">清除</button></div></div><div class="pg-art-slot"><b>活动 5</b><div class="pg-art-preview empty" id="pg-explore-preview-4"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-explore-upload-4" type="file"></label><button class="secondary compact" id="pg-explore-clear-4" type="button">清除</button></div></div><div class="pg-art-slot"><b>活动 6</b><div class="pg-art-preview empty" id="pg-explore-preview-5"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-explore-upload-5" type="file"></label><button class="secondary compact" id="pg-explore-clear-5" type="button">清除</button></div></div><div class="pg-art-slot"><b>活动 7</b><div class="pg-art-preview empty" id="pg-explore-preview-6"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-explore-upload-6" type="file"></label><button class="secondary compact" id="pg-explore-clear-6" type="button">清除</button></div></div><div class="pg-art-slot"><b>活动 8</b><div class="pg-art-preview empty" id="pg-explore-preview-7"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-explore-upload-7" type="file"></label><button class="secondary compact" id="pg-explore-clear-7" type="button">清除</button></div></div><div class="pg-art-slot"><b>活动 9</b><div class="pg-art-preview empty" id="pg-explore-preview-8"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-explore-upload-8" type="file"></label><button class="secondary compact" id="pg-explore-clear-8" type="button">清除</button></div></div><div class="pg-art-slot"><b>活动 10</b><div class="pg-art-preview empty" id="pg-explore-preview-9"></div><div class="inline-actions"><label class="file-btn compact">上传<input accept="image/*" hidden id="pg-explore-upload-9" type="file"></label><button class="secondary compact" id="pg-explore-clear-9" type="button">清除</button></div></div></div>
+</section>
+<section class="panel" id="contentHome">
+  <div class="panel-title-row"><div><h3>首页内容</h3><p class="panel-note">按需添加首页内容模块。</p></div><div class="module-add-actions"><button class="small" id="addSectionBtn" type="button">+ 普通模块</button></div></div>
+  <div class="section-list" id="sectionList"></div>
+</section>
+
+<section class="panel" id="contentCommunity">
+  <div class="panel-title-row"><div><h3>社群 / 链接</h3><p class="panel-note">可填写社群、二维码或外部链接。</p></div><span class="badge">按需设置</span></div>
+  <div class="mini-grid">
+    <label>区块标题<input id="communityTitle" type="text" placeholder="例如：加入官方群 / 报名交流"/></label>
+    <label>QQ 群<input id="communityQqGroup" type="text" placeholder="群号或加群说明"/></label>
+    <label>微信群说明<input id="communityWechatGroup" type="text" placeholder="例如：扫描二维码加入官方群"/></label>
+    <label>外部报名 / 群公告链接<input id="communityLink" type="url" placeholder="可留空"/></label>
+    <label class="wide">说明<textarea id="communityText" rows="3" placeholder="介绍官方群用途、报名提醒等"></textarea></label>
+    <label>链接按钮文字<input id="communityLinkLabel" type="text" placeholder="例如：打开报名页面"/></label>
+  </div>
+  <div class="community-admin-grid">
+    <div class="upload-box">
+      <b>QQ 群二维码</b>
+      <div class="image-tool-row"><label class="file-btn compact">上传二维码<input id="communityQqQrUpload" type="file" accept="image/*" hidden></label><button class="secondary compact" id="clearCommunityQqQr" type="button">清除</button></div>
+      <img id="communityQqQrPreview" class="qr-preview hidden" alt="QQ 群二维码预览">
+    </div>
+    <div class="upload-box">
+      <b>微信群二维码</b>
+      <div class="image-tool-row"><label class="file-btn compact">上传二维码<input id="communityWechatQrUpload" type="file" accept="image/*" hidden></label><button class="secondary compact" id="clearCommunityWechatQr" type="button">清除</button></div>
+      <img id="communityWechatQrPreview" class="qr-preview hidden" alt="微信群二维码预览">
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="contentSeo">
+  <div class="panel-title-row"><div><h3>分享与站点信息</h3><p class="panel-note">用于浏览器标题、分享卡片和网站底部。</p></div></div>
+  <div class="mini-grid">
+    <label>网页标题<input id="seoTitle" type="text"/></label>
+    <label>主办方名称<input id="organizerName" type="text"/></label>
+    <label class="wide">网页描述<textarea id="seoDescription" rows="3"></textarea></label>
+    <label>联系方式<input id="organizerContact" type="text" placeholder="邮箱、社交账号或其他公开联系方式"/></label>
+    <label>隐私说明链接<input id="privacyUrl" type="url" placeholder="https://"/></label>
+  </div>
+  <div class="community-admin-grid">
+    <div class="upload-box"><b>分享封面</b><div class="image-tool-row"><label class="file-btn compact">上传图片<input id="shareImageUpload" type="file" accept="image/*" hidden></label><button id="clearShareImageBtn" class="secondary compact" type="button">清除</button></div><img id="shareImagePreview" class="cover-preview image-preview hidden" alt="分享封面预览"></div>
+    <div class="upload-box"><b>网站图标</b><div class="image-tool-row"><label class="file-btn compact">上传图标<input id="faviconUpload" type="file" accept="image/*" hidden></label><button id="clearFaviconBtn" class="secondary compact" type="button">清除</button></div><img id="faviconImagePreview" class="qr-preview hidden" alt="网站图标预览"></div>
+  </div>
+</section>
+</section>
+<section class="tab-panel" data-panel="sponsors" data-role="organizer">
+<section class="panel">
+  <div class="panel-title-row">
+    <div><h3>赞助商 / 合作方</h3><p class="panel-note">合作方信息。</p></div>
+    <button class="small" id="addSponsorBtn" type="button">+ 添加合作方</button>
+  </div>
+  <div class="data-list sponsor-admin-list" id="sponsorList"></div>
+</section>
+</section>
+<section class="tab-panel" data-panel="publish" data-role="organizer">
+<section class="panel publisher-center">
+  <div class="publisher-head">
+    <small class="eyebrow-admin">ONLINE PUBLISH</small>
+    <h2>发布游客网站</h2>
+    <p>草稿会自动保存，只有点击发布后游客站才会更新。</p>
+    <span id="publishStateBadge" class="badge">草稿</span>
+  </div>
+
+  <div class="publisher-connection-strip">
+    <div>
+      <span class="publisher-connection-dot"></span>
+      <b id="publisherCurrentUser">—</b>
+      <span id="publisherConnectionText">正在检查在线连接…</span>
+    </div>
+    <small>当前账号已连接 OnlyEvent</small>
+    <div class="publisher-message" id="publisherAuthMessage"></div>
+  </div>
+
+  <section class="publisher-site-card">
+    
+    <div class="publisher-site-main">
+      <div class="publisher-section-title"><b>发布当前网站</b><span>网址可以修改；旧网址会自动跳转到新网址</span></div>
+      <div class="publisher-slug-row">
+        <input id="publisherSlug" type="text" placeholder="event-name" spellcheck="false"/>
+        <div class="publisher-url-preview" id="publisherUrlPreview">输入网址名称后显示发布地址</div>
+      </div>
+      <button class="primary publisher-main-action" id="publisherPublishBtn" type="button" disabled>发布网站</button>
+      <div class="publisher-message" id="publisherPublishMessage"></div>
+    </div>
+  </section>
+
+  <section class="publisher-sites-card hidden" id="publisherSitesCard">
+    <div class="publisher-section-title"><b>已发布网站</b><span>60 天无人访问后自动休眠</span></div>
+    <div id="publisherSiteList" class="publisher-site-list"></div>
+  </section>
+
+</section>
+</section>
+
+<section class="tab-panel" data-panel="guests" data-role="organizer"><section class="panel"><div class="panel-title-row"><div><h3>嘉宾管理</h3><p class="panel-note">嘉宾资料与相关链接。</p></div><button class="small" id="addGuestBtn">+ 嘉宾</button></div><div class="data-list" id="guestList"></div></section></section>
+<section class="tab-panel" data-panel="booths" data-role="organizer">
+<section class="panel" id="boothContentSection">
+  <div class="panel-title-row">
+    <div>
+      <h3>摊位 / 社团内容</h3>
+      <p class="panel-note">摊位、社团与制品信息。</p>
+    </div>
+    <button class="small" id="addBoothBtn">+ 添加摊位</button>
+  </div>
+  <div class="data-list booth-content-list" id="vendorManagementList"></div>
+</section>
+</section>
+
+
+<section class="tab-panel" data-panel="schedule" data-role="organizer"><section class="panel"><div class="panel-title-row"><div><h3>舞台活动 / 演出日程</h3><p class="panel-note">活动时间、舞台与参与信息。</p></div><button class="small" id="addScheduleBtn">+ 添加活动</button></div><div class="data-list" id="scheduleList"></div></section></section>
+<section class="tab-panel" data-panel="guide" data-role="organizer">
+<section class="panel">
+<h3>场馆与交通</h3>
+<label>场馆说明<textarea id="venueText" rows="5"></textarea></label>
+<div class="image-field-block">
+<div class="upload-row">
+<label class="file-btn compact">上传场馆地图<input accept="image/*" hidden="" id="mapUpload" type="file"/></label><small class="upload-crop-hint">上传后可框选需要显示的地图范围</small>
+<button class="secondary compact" id="clearMapBtn" type="button">清除图片</button>
+</div>
+<img alt="场馆地图预览" class="cover-preview image-preview hidden" id="mapPreview"/>
+</div>
+<section class="booth-map-admin" id="boothMapAdmin">
+  <div class="panel-title-row">
+    <div>
+      <h3>摊位点位编辑器</h3>
+      <p class="panel-note">上传场地图后，把摊位编号拖到对应位置。游客在场馆指南中点击点位即可打开摊位与制品详情。</p>
+    </div>
+    <button class="secondary small" id="autoPlaceBoothsBtn" type="button">排列未定位摊位</button>
+  </div>
+  <div id="boothMapEditor"></div>
+</section>
+<label>交通指南<textarea id="transportText" rows="6"></textarea></label>
+<div class="image-field-block transport-media-block">
+  <div class="upload-row">
+    <label class="file-btn compact">上传交通图片<input accept="image/*" hidden id="transportUpload" type="file"/></label><small class="upload-crop-hint">上传后可框选需要显示的范围</small>
+    <button class="secondary compact" id="clearTransportImageBtn" type="button">清除图片</button>
+  </div>
+  <img alt="交通示意图预览" class="cover-preview image-preview hidden" id="transportImagePreview"/>
+</div>
+<label>外部地图 / 导航链接<input id="transportMapUrl" type="url" placeholder="可粘贴高德、百度、Apple Maps、Google Maps 等分享链接"/></label>
+<small class="hint">游客端会显示“打开地图导航”按钮。留空则不显示。</small>
+<label>入场须知<textarea id="entryText" rows="6"></textarea></label>
+</section>
+</section>
+<section class="tab-panel" data-panel="faq" data-role="organizer"><section class="panel"><div class="panel-title-row"><h3>常见问题</h3><button class="small" id="addFaqBtn">+ 问题</button></div><div class="data-list" id="faqList"></div></section></section>
+        </div>
+      </main>
+
+    </div>
+  </section>
+</div>
+
+<div id="previewMode" class="full-preview-mode hidden" aria-hidden="true">
+  <header class="full-preview-toolbar">
+    <div class="full-preview-left">
+      <button id="exitPreviewBtn" class="preview-back-btn" type="button">← 高级管理</button>
+      <div><b>可视化编辑</b><small id="previewPageLabel">首页</small></div>
+    </div>
+    <div class="full-preview-actions">
+      <button id="visualEditToggle" class="visual-edit-toggle" type="button" title="直接点击页面内容编辑">✎ 可视化编辑</button>
+      <button id="visualUndoBtn" class="visual-tool-btn visual-history-btn hidden" type="button" title="撤销（Ctrl+Z）">↶ 撤销</button><button id="visualRedoBtn" class="visual-tool-btn visual-history-btn hidden" type="button" title="重做（Ctrl+Shift+Z）">↷ 重做</button><span id="visualSaveStatus" class="visual-save-status saved hidden">已自动保存</span><button id="visualIntroBtn" class="visual-tool-btn hidden" type="button">🎟 开屏</button><button id="visualThemeBtn" class="visual-tool-btn hidden" type="button">🎨 主题</button><button id="visualModulesBtn" class="visual-tool-btn hidden" type="button">▦ 模块</button>
+      <input id="visualImageUpload" type="file" accept="image/*" hidden>
+      <select id="previewPage" class="full-preview-page-select" aria-label="预览页面"><option value="index.html">首页</option><option value="guests.html">嘉宾</option><option value="booths.html">摊位</option><option value="schedule.html">日程</option><option value="guide.html">指南</option><option value="faq.html">FAQ</option></select>
+      <div class="device-switch" id="deviceSwitch"><button data-device="desktop" class="active" title="桌面预览">桌面</button><button data-device="mobile" title="手机预览">手机</button></div>
+      <span id="previewViewportLabel" class="preview-size-label">桌面 · 自动宽度</span>
+      <button id="openPreviewBtn" class="icon-mini" title="在新窗口打开预览">↗</button>
+    </div>
+  </header>
+
+  <aside id="visualInspector" class="visual-inspector hidden" aria-label="可视化编辑属性面板">
+    <div class="visual-inspector-head"><b id="visualInspectorTitle">主题样式</b><button id="visualInspectorClose" type="button">×</button></div>
+    <div id="visualStyleControls" class="visual-inspector-body hidden">
+      <div class="visual-module-edit-head"><b id="visualStyleLabel">选中元素</b><small>只修改当前选中的元素样式；0 表示继续使用模板默认值。</small></div>
+      <div class="visual-field-grid">
+        <label class="visual-field">字号 <div class="visual-range compact"><input id="visualElFontSize" type="range" min="0" max="120" step="1"><span><b id="visualElFontSizeValue">0</b> px</span></div></label>
+        <label class="visual-field">字重 <select id="visualElFontWeight"><option value="0">模板默认</option><option value="400">400</option><option value="500">500</option><option value="600">600</option><option value="700">700</option><option value="800">800</option><option value="900">900</option></select></label>
+        <label class="visual-field">对齐 <select id="visualElTextAlign"><option value="">模板默认</option><option value="left">左对齐</option><option value="center">居中</option><option value="right">右对齐</option></select></label>
+        <label class="visual-field">宽度 <div class="visual-range compact"><input id="visualElWidth" type="range" min="0" max="100" step="1"><span><b id="visualElWidthValue">0</b> %</span></div></label>
+        <label class="visual-field">上下内边距 <div class="visual-range compact"><input id="visualElPaddingY" type="range" min="0" max="80" step="1"><span><b id="visualElPaddingYValue">0</b> px</span></div></label>
+        <label class="visual-field">左右内边距 <div class="visual-range compact"><input id="visualElPaddingX" type="range" min="0" max="80" step="1"><span><b id="visualElPaddingXValue">0</b> px</span></div></label>
+        <label class="visual-field">上外边距 <div class="visual-range compact"><input id="visualElMarginTop" type="range" min="0" max="120" step="1"><span><b id="visualElMarginTopValue">0</b> px</span></div></label>
+        <label class="visual-field">下外边距 <div class="visual-range compact"><input id="visualElMarginBottom" type="range" min="0" max="120" step="1"><span><b id="visualElMarginBottomValue">0</b> px</span></div></label>
+        <label class="visual-field">圆角 <div class="visual-range compact"><input id="visualElRadius" type="range" min="0" max="48" step="1"><span><b id="visualElRadiusValue">0</b> px</span></div></label>
+        <label class="visual-field">字距 <div class="visual-range compact"><input id="visualElLetterSpacing" type="range" min="-5" max="20" step=".5"><span><b id="visualElLetterSpacingValue">0</b> px</span></div></label>
+      </div>
+      <button id="visualStyleReset" class="visual-secondary-btn" type="button">恢复这个元素的模板默认样式</button>
+    </div>
+    <div id="visualThemeControls" class="visual-inspector-body">
+      <div class="visual-color-grid"><label>主色<input id="visualThemeColor" type="color"></label><label>辅色<input id="visualAccentColor" type="color"></label><label>背景<input id="visualBackgroundColor" type="color"></label><label>文字<input id="visualTextColor" type="color"></label><label>卡片<input id="visualSurfaceColor" type="color"></label><label>导航<input id="visualHeaderBgColor" type="color"></label></div>
+      <label class="visual-range">圆角 <input id="visualRadius" type="range" min="0" max="36" step="1"><span id="visualRadiusValue"></span>px</label>
+      <label class="visual-range">阴影 <input id="visualShadow" type="range" min="0" max="30" step="1"><span id="visualShadowValue"></span></label>
+      <label class="visual-range">区块间距 <input id="visualSectionSpacing" type="range" min="32" max="120" step="2"><span id="visualSectionSpacingValue"></span>px</label>
+      <p class="visual-inspector-help">修改会直接反映到当前游客页预览，并沿用现有自动保存。</p>
+    </div>
+    <div id="visualIntroControls" class="visual-inspector-body hidden">
+      <div class="visual-module-edit-head"><b>票根式开屏</b><small>这里单独编辑游客首次进入时看到的开屏。正常页面编辑不会自动重播。</small></div>
+      <label class="toggle-row"><input id="visualIntroEnabled" type="checkbox"> <span>游客站启用开屏动画</span></label>
+      <div class="visual-field-grid">
+        <label class="visual-field">左侧主标题<input id="visualIntroLeftTitle" type="text" placeholder="留空时使用活动名称"></label>
+        <label class="visual-field">左侧小字<input id="visualIntroLeftLabel" type="text" placeholder="ADMIT ONE"></label>
+        <label class="visual-field wide">右侧主标题<textarea id="visualIntroRightTitle" rows="2" placeholder="ONLY
+EVENT"></textarea></label>
+        <label class="visual-field">右侧小字<input id="visualIntroRightLabel" type="text" placeholder="留空时使用活动日期"></label>
+        <label class="visual-field wide">进入按钮文字<input id="visualIntroButtonLabel" type="text" placeholder="进入活动官网 →"></label>
+        <label class="visual-field">背景色<input id="visualIntroBackgroundColor" type="color"></label>
+        <label class="visual-field">票面颜色<input id="visualIntroTicketColor" type="color"></label>
+        <label class="visual-field">文字 / 描边<input id="visualIntroInkColor" type="color"></label>
+        <label class="visual-field">退出效果<select id="visualIntroAnimationStyle"><option value="ticket">票根撕开</option><option value="fade">淡出缩小</option><option value="slide">向上滑走</option></select></label>
+        <label class="visual-field">停留时间（ms）<input id="visualIntroHoldMs" type="number" min="300" max="8000" step="100"></label>
+        <label class="visual-field">退出时长（ms）<input id="visualIntroExitMs" type="number" min="200" max="2500" step="50"></label>
+      </div>
+      <div class="visual-inline-actions"><label class="file-btn compact">上传 Logo<input id="visualIntroLogoUpload" accept="image/*" hidden type="file"></label><button id="visualIntroLogoClear" class="visual-secondary-btn" type="button">清除 Logo</button><small id="visualIntroLogoState">未上传 Logo</small></div>
+      <button id="visualIntroPreviewBtn" class="visual-add-btn" type="button">▶ 从头预览一次开屏动画</button>
+      <p class="visual-inspector-help">修改文字、颜色和时间时只刷新普通页面，不会自动播放；只有点击上面的预览按钮才会从头播放一次。发布后的游客站使用同一套设置。</p>
+    </div>
+    <div id="visualModuleControls" class="visual-inspector-body hidden"><p class="visual-inspector-help">点击页面区块也可以定位到这里。固定模块可以排序或隐藏；隐藏后仍能在此重新显示。</p><div id="visualModuleList" class="visual-module-list"></div></div>
+    <div id="visualModuleInspectorControls" class="visual-inspector-body hidden"></div>
+  </aside>
+  <div class="full-preview-stage device-desktop" id="previewStage" data-device="desktop">
+    <div class="preview-viewport" id="previewViewport"><div class="preview-canvas" id="previewCanvas"><iframe id="previewFrame" title="网站预览"></iframe></div></div>
+  </div>
+</div>
+
+
+
+<div id="toast" class="toast"></div>
+<template id="sectionEditorTemplate">
+<div class="section-editor" draggable="true"><div class="section-head"><span class="drag-handle" title="拖动排序">⋮⋮</span><label class="section-order-control" title="输入顺序数字可直接移动"><span>顺序</span><input class="section-order-input" min="1" step="1" type="number"/></label><input class="section-title-input" placeholder="区块标题" type="text"/><button class="delete-section danger small" type="button" title="删除这个首页模块">删除模块</button></div><label>区块类型<select class="section-type"><option value="text">文字介绍</option><option value="cards">卡片列表</option><option value="schedule">节目单摘要</option><option value="stats">数据亮点</option><option value="image">大图</option><option value="cta">按钮行动区</option></select></label><label>内容<textarea class="section-content" rows="5"></textarea></label><small class="hint"></small></div>
+</template>
+
+<div class="image-crop-modal hidden" id="imageCropModal" aria-hidden="true">
+  <div class="image-crop-backdrop" data-crop-cancel></div>
+  <section class="image-crop-dialog" role="dialog" aria-modal="true" aria-labelledby="imageCropTitle">
+    <div class="image-crop-head">
+      <div><h3 id="imageCropTitle">框选图片范围</h3><p id="imageCropSubtitle">拖动图片调整位置，使用缩放控制显示范围。</p></div>
+      <button class="v6-icon-btn" id="imageCropCloseBtn" type="button" aria-label="关闭">×</button>
+    </div>
+    <div class="image-crop-body">
+      <div class="crop-canvas-shell"><canvas id="imageCropCanvas" width="900" height="600"></canvas><div class="crop-rule-grid" aria-hidden="true"></div></div>
+      <div class="crop-controls">
+        <label>画面比例<select id="imageCropAspect"><option value="recommended">按用途推荐</option><option value="1">1:1 正方形</option><option value="1.333333">4:3</option><option value="1.777778">16:9</option><option value="source">原图比例</option></select></label>
+        <label class="crop-zoom-label">缩放<input id="imageCropZoom" min="1" max="3" step="0.01" type="range" value="1"><span id="imageCropZoomValue">100%</span></label>
+      </div>
+      <small class="crop-help">可直接拖动图片；滚轮也可以缩放。确认后只上传框内范围，不会保留框外内容。</small>
+    </div>
+    <div class="image-crop-actions"><button class="secondary" id="imageCropCancelBtn" type="button">取消</button><button class="primary" id="imageCropApplyBtn" type="button">使用此范围</button></div>
+  </section>
+</div>
+<script src="publisher-config.js?v=7.25.0"></script><script src="app.js?v=7.25.0"></script><script src="publishing.js?v=7.25.0"></script><script>setTimeout(()=>{if(document.documentElement.dataset.onlyeventJs!=='app'){alert('编辑器脚本未正确加载，请按 Ctrl+F5 强制刷新。')}},1200)</script></body></html>

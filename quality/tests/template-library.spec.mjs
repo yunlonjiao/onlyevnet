@@ -1,13 +1,9 @@
 import {test,expect} from '@playwright/test';
+import {useCloudPublisher,signInCloud} from './cloud-publisher.mjs';
 const ids=['01-ip-only','02-scrapbook','03-creator-market','04-creator-catalogue'];
 test('admin lists four current, actionable templates',async({page})=>{
+ await signInCloud(page,await useCloudPublisher(page),'模板QA');
  await page.goto('/admin/');
- await page.evaluate(()=>{
-  const user={id:'qa-current-templates',name:'模板QA',email:'',passwordHash:'qa',recoveryHash:'qa',authType:'quick'};
-  localStorage.setItem('onlyevent-auth-sim-users-v1',JSON.stringify([user]));
-  localStorage.setItem('onlyevent-auth-sim-session-v1',JSON.stringify({userId:user.id}));
- });
- await page.reload();
  await page.locator('[data-admin-page="templates"]').click();
  await expect(page.locator('#templateGrid .template-card[data-template-id]')).toHaveCount(4);
  for(const id of ids)await expect(page.locator('#templateGrid [data-template="'+id+'"]')).toHaveText(/使用此模板/);

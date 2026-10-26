@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+import {useCloudPublisher,signInCloud,visitSite} from './cloud-publisher.mjs';
 
 const STORAGE='onlyevent-studio-v8:01-ip-only:iframe';
 
@@ -91,13 +92,8 @@ test('broken images become graceful placeholders and content images are lazy-loa
 });
 
 test('SEO and lifecycle are written into exported visitor HTML',async({page})=>{
-  let requestBody=null;
-  await page.route('https://convention-publisher.onlyevents.workers.dev/api/sites',async route=>{
-    requestBody=route.request().postDataJSON();
-    await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({
-      siteId:'seo-site',slug:'seo-test',url:'https://seo-test.onlyevent.cn',editToken:'seo-token'
-    })});
-  });
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud);
 
   await setState(page,s=>{
     s.eventName='SEO 测试活动';
@@ -119,9 +115,9 @@ test('SEO and lifecycle are written into exported visitor HTML',async({page})=>{
   await page.locator('#publishBtn').click();
   await page.locator('#publishSlug').fill('seo-test');
   await page.locator('#publishPrimary').click();
-  await expect.poll(()=>requestBody).not.toBeNull();
-
-  const html=requestBody.html;
+  await expect(page.locator('#publishStatus')).toHaveText('网站已上线');
+  const html=JSON.parse(cloud.requests.find(r=>r.method==='POST'&&r.path==='/api/sites').body).html;
+  expect((await visitSite(cloud,'seo-test')).html).toBe(html);
   expect(html).toContain('<title>自定义页面标题</title>');
   expect(html).toContain('name="description" content="这是搜索摘要。"');
   expect(html).toContain('rel="canonical" href="https://seo-test.onlyevent.cn/"');

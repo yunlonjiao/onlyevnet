@@ -1,0 +1,32 @@
+{
+  "name": "convention-publisher",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./web",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "vars": {
+    "BASE_DOMAIN": "onlyevent.cn",
+    "SESSION_DAYS": "30",
+    "INACTIVE_DAYS": "60",
+    "ALLOWED_ORIGINS": "https://onlyevent-preview.pages.dev,https://*.onlyevent-preview.pages.dev"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "convention-publisher-db",
+      "database_id": "e0369f12-529b-43a0-bbc0-47ecf52d0acf",
+      "remote": true
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "SITES",
+      "bucket_name": "convention-publisher-sites"
+    }
+  ],
+  "triggers": { "crons": ["17 3 * * *"] }
+}

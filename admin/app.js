@@ -1,5 +1,5 @@
 import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {deleteSite} from '/v8/publisher.js?v=8.36.7';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount} from '/v8/publisher.js?v=8.42.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -35,13 +35,13 @@ function clearProjectLocalData(project){
 }
 async function unpublishProject(project){
   const record=getPublishRecord(project);
-  if(!record.siteId||!record.editToken){
-    alert('这个已发布网站缺少下线凭证，暂时不能安全删除线上站点。');
+  if(!record.siteId||!record.cloudProjectId){
+    alert('这个已发布网站缺少云端项目记录，暂时不能安全删除线上站点。');
     return false;
   }
   if(!confirm('确定下线这个游客网站？\n下线后公开链接将不可访问，项目内容仍会保留。'))return false;
   try{
-    await deleteSite({siteId:record.siteId,editToken:record.editToken});
+    await deleteSite({siteId:record.siteId,projectId:record.cloudProjectId});
     localStorage.removeItem(publishStorageKey(project));
     writeProjects(projects.map(p=>p.id===project.id?{...p,siteUrl:'',status:'draft',updatedAt:new Date().toISOString()}:p));
     renderProjects($('#projectSearch').value);
@@ -56,11 +56,11 @@ async function deleteProject(project){
     const ok=confirm('这个项目已经发布。\n\n确定删除项目吗？系统会先下线游客网站，再删除本地项目数据。');
     if(!ok)return;
     const record=getPublishRecord(project);
-    if(!record.siteId||!record.editToken){
+    if(!record.siteId||!record.cloudProjectId){
       alert('为避免留下无法管理的线上网站，当前不会只删除本地项目。\n请先恢复发布凭证或下线网站。');
       return;
     }
-    try{await deleteSite({siteId:record.siteId,editToken:record.editToken})}
+    try{await deleteSite({siteId:record.siteId,projectId:record.cloudProjectId})}
     catch(error){alert('线上网站下线失败，项目未删除：'+(error?.message||'Publisher 暂未启用删除接口'));return}
   }else if(!confirm('确定删除这个项目？\n项目内容会从当前浏览器中删除。'))return;
   clearProjectLocalData(project);
@@ -157,53 +157,19 @@ renderTemplates();renderProjects();
 
 
 /* -------------------------------------------------------------------------- */
-/* Organizer auth simulation v1.1.0                                           */
-/* Front-end only. Final Cloudflare package will replace this storage adapter. */
+/* Organizer accounts v2.0.0 — stored in the convention-publisher Worker (D1). */
 /* -------------------------------------------------------------------------- */
-const AUTH_USERS_KEY='onlyevent-auth-sim-users-v1';
-const AUTH_SESSION_KEY='onlyevent-auth-sim-session-v1';
-
-function authReadUsers(){
-  try{return JSON.parse(localStorage.getItem(AUTH_USERS_KEY)||'[]')||[]}catch{return []}
-}
-function authWriteUsers(users){localStorage.setItem(AUTH_USERS_KEY,JSON.stringify(users))}
-function authReadSession(){
-  try{return JSON.parse(localStorage.getItem(AUTH_SESSION_KEY)||'null')}catch{return null}
-}
-function authWriteSession(user){localStorage.setItem(AUTH_SESSION_KEY,JSON.stringify({userId:user.id,createdAt:new Date().toISOString()}))}
-function authClearSession(){localStorage.removeItem(AUTH_SESSION_KEY)}
-function authNormalizeName(v){return String(v||'').trim().replace(/\s+/g,' ')}
-function authNormalizeEmail(v){return String(v||'').trim().toLowerCase()}
-function authId(){return 'org-'+(crypto.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2))}
-async function authDigest(value){
-  const bytes=new TextEncoder().encode(String(value));
-  const hash=await crypto.subtle.digest('SHA-256',bytes);
-  return [...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,'0')).join('');
-}
-function authGenerateRecoveryCode(){
-  const max=4294000000;
-  const a=new Uint32Array(1);
-  do{crypto.getRandomValues(a)}while(a[0]>=max);
-  return String(a[0]%1000000).padStart(6,'0');
-}
 function authSetMessage(id,text,type=''){
   const el=$('#'+id);if(!el)return;
   el.textContent=text||'';
   el.className='auth-message'+(type?' '+type:'');
 }
-function authCurrentUser(){
-  const session=authReadSession();if(!session?.userId)return null;
-  return authReadUsers().find(x=>x.id===session.userId)||null;
-}
-function authFindByAccount(account){
-  const raw=String(account||'').trim(),email=authNormalizeEmail(raw),name=authNormalizeName(raw).toLowerCase();
-  return authReadUsers().find(u=>(u.email&&u.email===email)||String(u.name||'').toLowerCase()===name)||null;
-}
-function authShowAdmin(user){
+function authNormalizeName(v){return String(v||'').trim().replace(/\s+/g,' ')}
+function authShowAdmin(session){
   $('#authShell').hidden=true;
   $('#adminShell').hidden=false;
   $('#authAccountActions').hidden=false;
-  $('#authCurrentUser').textContent=user?.name||'主办方';
+  $('#authCurrentUser').textContent=session?.username||'主办方';
   document.body.classList.add('auth-signed-in');
 }
 function authShowGate(){
@@ -235,22 +201,8 @@ function authSetRecoveryMode(mode){
   document.querySelectorAll('[data-recovery-panel]').forEach(p=>p.hidden=p.dataset.recoveryPanel!==mode);
   $('#authEmailResetForm').hidden=true;
 }
-async function authRegister({name,email='',password}){
-  const cleanName=authNormalizeName(name),cleanEmail=authNormalizeEmail(email),users=authReadUsers();
-  if(cleanName.length<2)throw new Error('主办方名称至少需要 2 个字符。');
-  if(password.length<6)throw new Error('密码至少需要 6 个字符。');
-  if(users.some(u=>String(u.name||'').toLowerCase()===cleanName.toLowerCase()))throw new Error('这个主办方名称已经被使用。');
-  if(cleanEmail&&users.some(u=>u.email===cleanEmail))throw new Error('这个邮箱已经注册过。');
-  const quick=!cleanEmail,recoveryCode=quick?authGenerateRecoveryCode():'';
-  const user={
-    id:authId(),name:cleanName,email:cleanEmail||'',
-    passwordHash:await authDigest(password),
-    recoveryHash:recoveryCode?await authDigest(recoveryCode):'',
-    authType:quick?'quick':'email',
-    createdAt:new Date().toISOString()
-  };
-  authWriteUsers([...users,user]);authWriteSession(user);
-  return {user,recoveryCode};
+function authNetworkMessage(err){
+  return err?.status?err.message:'无法连接账号服务，请检查网络后重试。';
 }
 
 document.querySelectorAll('[data-auth-page]').forEach(btn=>btn.addEventListener('click',()=>authShowPage(btn.dataset.authPage)));
@@ -263,12 +215,9 @@ $('#authLoginForm')?.addEventListener('submit',async e=>{
   e.preventDefault();authSetMessage('authLoginMessage','');
   const btn=e.submitter;btn.disabled=true;
   try{
-    const user=authFindByAccount($('#authLoginAccount').value);
-    if(!user)throw new Error('没有找到这个账号。');
-    const hash=await authDigest($('#authLoginPassword').value);
-    if(hash!==user.passwordHash)throw new Error('密码不正确。');
-    authWriteSession(user);authShowAdmin(user);
-  }catch(err){authSetMessage('authLoginMessage',err.message,'error')}
+    const session=await loginAccount({username:authNormalizeName($('#authLoginAccount').value),password:$('#authLoginPassword').value});
+    authShowAdmin(session);
+  }catch(err){authSetMessage('authLoginMessage',authNetworkMessage(err),'error')}
   finally{btn.disabled=false}
 });
 
@@ -277,101 +226,60 @@ $('#authQuickRegisterForm')?.addEventListener('submit',async e=>{
   const btn=e.submitter;btn.disabled=true;
   try{
     const p=$('#authQuickPassword').value,p2=$('#authQuickPassword2').value;
-    if(p!==p2)throw new Error('两次输入的密码不一致。');
-    const {recoveryCode}=await authRegister({name:$('#authQuickName').value,password:p});
+    if(p!==p2)throw Object.assign(new Error('两次输入的密码不一致。'),{status:400});
+    const {recoveryCode}=await registerAccount({username:authNormalizeName($('#authQuickName').value),password:p});
     $('#authRecoveryCodeValue').textContent=recoveryCode;
     document.querySelectorAll('[data-auth-panel]').forEach(x=>x.hidden=true);
     $('#authRecoveryCodeResult').hidden=false;
-  }catch(err){authSetMessage('authQuickMessage',err.message,'error')}
+  }catch(err){authSetMessage('authQuickMessage',authNetworkMessage(err),'error')}
   finally{btn.disabled=false}
 });
 
-$('#authEmailRegisterForm')?.addEventListener('submit',async e=>{
-  e.preventDefault();authSetMessage('authEmailMessage','');
-  const btn=e.submitter;btn.disabled=true;
-  try{
-    const p=$('#authEmailPassword').value,p2=$('#authEmailPassword2').value;
-    if(p!==p2)throw new Error('两次输入的密码不一致。');
-    const email=authNormalizeEmail($('#authEmailAddress').value);
-    if(!/^\S+@\S+\.\S+$/.test(email))throw new Error('请输入有效邮箱地址。');
-    const {user}=await authRegister({name:$('#authEmailName').value,email,password:p});
-    authSetMessage('authEmailMessage','注册成功，正在进入后台…','ok');
-    setTimeout(()=>authShowAdmin(user),350);
-  }catch(err){authSetMessage('authEmailMessage',err.message,'error')}
-  finally{btn.disabled=false}
+$('#authEmailRegisterForm')?.addEventListener('submit',e=>{
+  e.preventDefault();
+  authSetMessage('authEmailMessage','邮箱注册暂未开放，请使用主办方名称注册。','error');
 });
 
 $('#authCopyRecoveryCode')?.addEventListener('click',async()=>{
   const code=$('#authRecoveryCodeValue').textContent;
   try{await navigator.clipboard.writeText(code);$('#authCopyRecoveryCode').textContent='已复制'}catch{prompt('复制找回码',code)}
 });
-$('#authEnterAdmin')?.addEventListener('click',()=>{const user=authCurrentUser();if(user)authShowAdmin(user)});
+$('#authEnterAdmin')?.addEventListener('click',()=>{const session=readCloudSession();if(session)authShowAdmin(session)});
 
-$('#authRecoveryCode')?.addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,6)});
 $('#authCodeRecoveryForm')?.addEventListener('submit',async e=>{
   e.preventDefault();authSetMessage('authRecoveryMessage','');
   const btn=e.submitter;btn.disabled=true;
   try{
-    const name=authNormalizeName($('#authRecoveryName').value).toLowerCase(),code=$('#authRecoveryCode').value.trim();
-    const users=authReadUsers(),index=users.findIndex(u=>String(u.name||'').toLowerCase()===name);
-    if(index<0)throw new Error('没有找到这个主办方账号。');
-    if(!/^\d{6}$/.test(code))throw new Error('找回码应为 6 位数字。');
-    if(!users[index].recoveryHash)throw new Error('这个账号使用邮箱找回密码。');
-    if(await authDigest(code)!==users[index].recoveryHash)throw new Error('找回码不正确。');
     const p=$('#authRecoveryPassword').value,p2=$('#authRecoveryPassword2').value;
-    if(p.length<6)throw new Error('新密码至少需要 6 个字符。');
-    if(p!==p2)throw new Error('两次输入的新密码不一致。');
-    users[index].passwordHash=await authDigest(p);
-    const nextCode=authGenerateRecoveryCode();
-    users[index].recoveryHash=await authDigest(nextCode);
-    users[index].recoveryRotatedAt=new Date().toISOString();
-    authWriteUsers(users);
-    authSetMessage('authRecoveryMessage','密码已重设。旧找回码已失效，请使用新密码登录。','ok');
+    if(p.length<6)throw Object.assign(new Error('新密码至少需要 6 个字符。'),{status:400});
+    if(p!==p2)throw Object.assign(new Error('两次输入的新密码不一致。'),{status:400});
+    await recoverAccount({username:authNormalizeName($('#authRecoveryName').value),recoveryCode:$('#authRecoveryCode').value.trim(),newPassword:p});
+    authSetMessage('authRecoveryMessage','密码已重设，请使用新密码登录。','ok');
     setTimeout(()=>authShowPage('login'),900);
-  }catch(err){authSetMessage('authRecoveryMessage',err.message,'error')}
+  }catch(err){authSetMessage('authRecoveryMessage',authNetworkMessage(err),'error')}
   finally{btn.disabled=false}
 });
 
-let authPendingResetUserId='';
 $('#authEmailRecoveryForm')?.addEventListener('submit',e=>{
-  e.preventDefault();authSetMessage('authRecoveryEmailMessage','');
-  const email=authNormalizeEmail($('#authRecoveryEmail').value),user=authReadUsers().find(u=>u.email===email);
-  if(!user){authSetMessage('authRecoveryEmailMessage','没有找到使用这个邮箱注册的账号。','error');return}
-  authPendingResetUserId=user.id;
-  $('#authDemoMail').hidden=false;
-  authSetMessage('authRecoveryEmailMessage','模拟重置邮件已发送。','ok');
+  e.preventDefault();
+  authSetMessage('authRecoveryEmailMessage','邮箱找回暂未开放，请使用找回码。','error');
 });
-$('#authOpenDemoReset')?.addEventListener('click',()=>{
-  const user=authReadUsers().find(u=>u.id===authPendingResetUserId);if(!user)return;
-  $('#authEmailRecoveryForm').hidden=true;$('#authEmailResetForm').hidden=false;
-  $('#authResetEmailLabel').textContent=user.email;
-});
-$('#authEmailResetForm')?.addEventListener('submit',async e=>{
-  e.preventDefault();authSetMessage('authEmailResetMessage','');
-  const btn=e.submitter;btn.disabled=true;
-  try{
-    const users=authReadUsers(),index=users.findIndex(u=>u.id===authPendingResetUserId);
-    if(index<0)throw new Error('重置链接已失效。');
-    const p=$('#authEmailResetPassword').value,p2=$('#authEmailResetPassword2').value;
-    if(p.length<6)throw new Error('新密码至少需要 6 个字符。');
-    if(p!==p2)throw new Error('两次输入的新密码不一致。');
-    users[index].passwordHash=await authDigest(p);users[index].passwordUpdatedAt=new Date().toISOString();authWriteUsers(users);
-    authPendingResetUserId='';
-    authSetMessage('authEmailResetMessage','密码已更新，正在返回登录…','ok');
-    setTimeout(()=>authShowPage('login'),900);
-  }catch(err){authSetMessage('authEmailResetMessage',err.message,'error')}
-  finally{btn.disabled=false}
-});
-$('#authLogoutBtn')?.addEventListener('click',()=>{
-  authClearSession();authShowGate();authShowPage('login');
+$('#authLogoutBtn')?.addEventListener('click',async()=>{
+  await logoutAccount().catch(()=>{});
+  authShowGate();authShowPage('login');
   $('#authLoginPassword').value='';
 });
 
 function authSyncView(){
-  const user=authCurrentUser();
-  if(user)authShowAdmin(user);
+  const session=readCloudSession();
+  if(session)authShowAdmin(session);
   else{authShowGate();authShowPage('login')}
 }
-authSyncView();
+async function authVerifySession(){
+  if(!readCloudSession())return;
+  try{await fetchAccount()}
+  catch(err){if(err?.status===401)authSyncView()}
+}
+authSyncView();authVerifySession();
 window.addEventListener('pageshow',()=>authSyncView());
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)authSyncView()});
