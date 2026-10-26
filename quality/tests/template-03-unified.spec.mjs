@@ -101,3 +101,13 @@ for(const id of ['01-ip-only','02-scrapbook','03-creator-market'])test(id+' expo
   expect(errors).toEqual([]);
   await visitor.close();
 });
+
+test('03 spotlight products open their product editor while editing',async({page})=>{
+  const {frame}=await openStudio(page,'unified-spotlight-edit');
+  const tile=frame.locator('.spotlight-six .spotlight-tile').first();
+  const name=(await tile.locator('b').textContent())?.trim();
+  await tile.click();
+  await expect(page.locator('#inspector')).toContainText('编辑制品');
+  await expect(page.locator('#inspector input[value="'+name+'"]').first()).toBeAttached();
+  await expect(frame.locator('#spotlight')).toBeVisible();
+});

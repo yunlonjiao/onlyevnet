@@ -518,6 +518,15 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
     const state=getState(),box=mount('product-spotlight');if(!box)return;
     if(state.presentationProfile?.productSpotlight===false){box.innerHTML='';return}
     mountProductSpotlight(box,spotlightItems(state),{autoplay:getMode()!=='edit',storageKey:'oe-spotlight:'+String(state.projectId||state.eventName||'event')});
+    if(box.dataset.oeSpotlightEdit==='1')return;
+    box.dataset.oeSpotlightEdit='1';
+    // In the editor a spotlight product opens that product, like booth-directory product cards.
+    box.addEventListener('click',e=>{
+      const card=e.target.closest?.('[data-product-edit-booth]');
+      if(getMode()!=='edit'||!card||e.target.closest?.('[data-spotlight-step]'))return;
+      e.preventDefault();e.stopPropagation();
+      send?.({type:'OE_SELECT_PRODUCT',boothIndex:Number(card.dataset.productEditBooth),productIndex:Number(card.dataset.productEditIndex),focusImage:false});
+    },true);
   }
   function renderCollections(){
     renderProductSpotlight();renderRibbon();renderTickets();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderUpdates();renderCommunity();renderSponsors();renderCustomPages();renderOptionalPages();renderFooter();

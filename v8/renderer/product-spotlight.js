@@ -2,9 +2,9 @@
    every visit. Enabled per template with presentationProfile.productSpotlight.
    mountProductSpotlight must stay self-contained: the exporter inlines it via toString(). */
 export function spotlightItems(state){
-  return (state?.booths||[]).flatMap(b=>(b.products||[]).map(p=>({
+  return (state?.booths||[]).flatMap((b,boothIndex)=>(b.products||[]).map((p,productIndex)=>({
     id:String(p.id||''),name:String(p.name||''),price:String(p.price||''),image:String(p.image||''),
-    boothId:String(b.id||''),boothName:String(b.name||''),boothNo:String(b.no||'')
+    boothId:String(b.id||''),boothName:String(b.name||''),boothNo:String(b.no||''),boothIndex,productIndex
   }))).filter(p=>p.name||p.image);
 }
 
@@ -24,12 +24,13 @@ export function mountProductSpotlight(root,items,{autoplay=true,storageKey='oe-s
   }catch{}
   clearInterval(root._oeSpotlightTimer);
   if(!order.length){root.innerHTML='<p class="spotlight-empty">暂无可推荐制品。</p>';return}
-  const link=p=>' href="#booths" data-target-mode="page" data-page-link="booths" data-spotlight-booth="'+esc(p.boothId)+'"';
+  // Editor clicks use data-product-edit-* to open the product; visitors follow the booth link.
+  const link=p=>' href="#booths" data-target-mode="page" data-page-link="booths" data-spotlight-booth="'+esc(p.boothId)+'" data-product-edit-booth="'+p.boothIndex+'" data-product-edit-index="'+p.productIndex+'"';
   root.innerHTML='<div class="spotlight-feature"><a class="spotlight-feature-art"'+link(order[0])+'></a><div class="spotlight-feature-info"><small class="spotlight-count"></small><h3 class="spotlight-title"></h3><p class="spotlight-meta"></p></div><div class="spotlight-controls"><button type="button" data-spotlight-step="-1" aria-label="上一件制品">←</button><button type="button" data-spotlight-step="1" aria-label="下一件制品">→</button></div></div>'+
    '<div class="spotlight-six">'+order.slice(0,6).map(p=>'<a class="spotlight-tile"'+link(p)+'><span class="spotlight-tile-art">'+art(p)+'</span><b>'+esc(p.name)+'</b><small>'+meta(p)+'</small></a>').join('')+'</div>';
   let index=0;
   const feature=root.querySelector('.spotlight-feature-art');
-  const draw=()=>{const p=order[index];feature.innerHTML=art(p);feature.dataset.spotlightBooth=p.boothId;root.querySelector('.spotlight-title').textContent=p.name;root.querySelector('.spotlight-meta').textContent=[p.boothNo,p.boothName,p.price].filter(Boolean).join(' · ');root.querySelector('.spotlight-count').textContent=(index+1)+' / '+order.length};
+  const draw=()=>{const p=order[index];feature.innerHTML=art(p);feature.dataset.spotlightBooth=p.boothId;feature.dataset.productEditBooth=p.boothIndex;feature.dataset.productEditIndex=p.productIndex;root.querySelector('.spotlight-title').textContent=p.name;root.querySelector('.spotlight-meta').textContent=[p.boothNo,p.boothName,p.price].filter(Boolean).join(' · ');root.querySelector('.spotlight-count').textContent=(index+1)+' / '+order.length};
   const step=d=>{index=(index+d+order.length)%order.length;draw()};
   root.querySelectorAll('[data-spotlight-step]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();step(Number(b.dataset.spotlightStep))}));
   let startX=null;
