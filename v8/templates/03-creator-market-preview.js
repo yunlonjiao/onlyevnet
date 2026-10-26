@@ -197,6 +197,26 @@ const marketStyle=`
 .cm-site #guide .cm-guide-icon{flex:0 0 40px!important;width:40px!important;height:40px!important;margin:0!important}
 .cm-site #guide .guide-venue-nav{background:var(--cm-accent)!important;color:#fff!important;border:0!important;border-radius:6px!important;box-shadow:none!important;font-size:12px!important;padding:7px 14px!important}
 
+
+/* Sakura creator portal refinement: video-grid rhythm, not a poster/ticket template.
+   The featured carousel and six random works retain their existing data and behavior. */
+.cm-site{--cm-accent:#139bd0;--cm-accent-ink:#087fae;--cm-bg:#f6f8fa;--cm-line:#e5e9ed;--cm-ink:#20242a;background:#f6f8fa}
+.cm-site .nav{background:#fff;border-bottom:1px solid #e7ebee;box-shadow:0 2px 12px #253b4e08}
+.cm-site .hero{padding:22px 0 12px}
+.cm-site .hero-grid{grid-template-columns:minmax(0,1.75fr) minmax(270px,1fr);gap:16px}
+.cm-site .hero-art{min-height:min(35vw,480px)}
+.cm-site .kv{border-radius:10px}
+.cm-site .hero-copy{border-radius:10px;box-shadow:none;padding:clamp(18px,2.8vw,36px)}
+.cm-site .spotlight-feature,.cm-site .spotlight-tile,.cm-site .booth-directory-card,.cm-site .directory-product-card{border-radius:10px;box-shadow:none;transition:transform .18s ease,box-shadow .18s ease}
+.cm-site .spotlight-tile:hover,.cm-site .directory-product-card:hover,.cm-site .booth-directory-card:hover{transform:translateY(-3px);box-shadow:0 10px 22px #183d5414}
+.cm-site .spotlight-feature-art,.cm-site .spotlight-tile-art{border-radius:9px;overflow:hidden}
+.cm-site .head h2{font-size:24px;font-weight:850;letter-spacing:-.045em}
+.cm-site .section{padding-top:42px}
+.cm-site .spotlight-six{gap:16px}
+.cm-site .spotlight-count{font-variant-numeric:tabular-nums}
+@media(max-width:900px){.cm-site .hero-grid{grid-template-columns:1fr}.cm-site .hero-art{min-height:0;aspect-ratio:16/9}}
+@media(max-width:760px){.cm-site .spotlight-six{gap:12px}.cm-site .section{padding-top:32px}.cm-site .hero-copy{padding:20px}}
+
 `;
 
 export const previewStyle=coreStyle+marketStyle;
