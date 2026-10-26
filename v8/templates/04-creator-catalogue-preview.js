@@ -219,6 +219,39 @@ const catalogueStyle=`
 
 .cc-site #guide .guide-venue-nav{background:var(--cc-pink)!important;color:#2b1036!important;border:2px solid var(--cc-ink)!important;border-radius:999px!important;box-shadow:3px 3px 0 var(--cc-ink)!important;font-size:12px!important;font-weight:900!important;padding:6px 14px!important}
 
+
+/* Sakura editorial refresh: quiet, paper-first publication aesthetic.
+   Scoped to catalogue visitor UI; shared data, anchors and controls are unchanged. */
+.cc-site{--primary:#bc9fb3;--secondary:#c8dce2;--cc-night:#f6f2eb;--cc-night-2:#e9e2dc;--cc-pink:#d9a8b7;--cc-lilac:#c8bedb;--cc-cyan:#a2cad0;--cc-cream:#fffdf8;--cc-ink:#3d3940;--cc-line:#ddd5d0;color:var(--cc-ink);background:#f6f2eb;background-image:linear-gradient(90deg,#e7ded5 1px,transparent 1px),linear-gradient(#e7ded5 1px,transparent 1px);background-size:76px 76px}
+.cc-site .nav{background:#fffdf8ed;border-bottom:1px solid #e1d9d0;box-shadow:0 2px 12px #564d4310}
+.cc-site .brand,.cc-site .nav .links a,.cc-site .head h2,.cc-site .hero-copy h1,.cc-site .footer h2{color:var(--cc-ink)}
+.cc-site .brand:before{color:#c28b9e}
+.cc-site .nav .links a:hover{color:#a4728a}
+.cc-site .hero{background:transparent}
+.cc-site .hero:before{display:none}
+.cc-site .hero-copy{background:#fffdf8dd;padding:clamp(18px,3vw,38px);border:1px solid #e5dcd2;box-shadow:8px 9px 0 #e5ded5}
+.cc-site .hero-kicker{background:#eee5e7;color:#806877;border:1px solid #e4d1d8;letter-spacing:.12em}
+.cc-site .hero-copy h1{font-size:clamp(36px,4.5vw,70px);line-height:1.09;-webkit-text-stroke:0;text-shadow:none;letter-spacing:-.055em}
+.cc-site .hero-copy p,.cc-site .hero-copy .meta,.cc-site .hero-copy .meta .pill{color:#645e62}
+.cc-site .head .ey{color:#977987!important;letter-spacing:.14em}
+.cc-site .section{background:transparent}
+.cc-site .cb-page{background-color:#fffdf8;background-image:radial-gradient(#85766913 1px,transparent 1.2px);box-shadow:0 12px 32px #534b4422}
+.cc-site .cb-page.left{box-shadow:inset -22px 0 28px -20px #76675830,0 12px 32px #534b4422}
+.cc-site .cb-page.right{box-shadow:inset 22px 0 28px -20px #76675830,0 12px 32px #534b4422}
+.cc-site .cb-cover{background-color:#e9dce0;background-image:radial-gradient(circle at 76% 25%,#fff9 0 12%,transparent 13%),linear-gradient(155deg,#ded6e5,#f5dde0 55%,#f8ecd9);color:#514752}
+.cc-site .cb-cover.has-art:after{background:linear-gradient(transparent 55%,#3d394077)}
+.cc-site .cb-cover h3{-webkit-text-stroke:0;text-shadow:none;color:#514752}
+.cc-site .cb-ribbon{background:#c9a3ad}
+.cc-site .footer{background:#ebe5df;border-top:1px solid #d9d1c8;color:#655e61}
+.cc-site .footer a{color:inherit}
+.cc-site .footer h2{color:#4c454a}
+.cc-site .updates-strip,.cc-site .community,.cc-site .sponsors,.cc-site .map-static,.cc-site .map-link-rail{color:var(--cc-ink)}
+.cc-site .loader{--entry-accent:#e9dfe2;background:#eee6df;color:#4b4348}
+.cc-site .cc-entry-photo{background:#f3e9e2;color:#514752}
+.cc-site .cc-entry-gate{filter:drop-shadow(12px 14px 0 #b6a9a042)}
+.cc-site .btn{background:#e3cbd1;color:#463d43;border-color:#746870;box-shadow:3px 3px 0 #b6aab0}
+@media(max-width:760px){.cc-site .hero-copy{padding:22px;box-shadow:5px 6px 0 #e5ded5}.cc-site .hero-copy h1{font-size:clamp(32px,9vw,48px)}}
+
 `;
 
 export const previewStyle=coreStyle+catalogueStyle;
