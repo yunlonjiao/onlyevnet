@@ -4,7 +4,7 @@ import {test,expect} from '@playwright/test';
 const templates=[
   ['02-scrapbook','.scrap-pass'],
   ['03-creator-market','[data-oe-mount="product-spotlight"] .spotlight-tile'],
-  ['04-creator-catalogue','#catalogue']
+  ['04-creator-catalogue','[data-oe-mount="catalogue-book"] .cb-book']
 ];
 for(const [id,selector] of templates){
  test(id+' renders its own functional visual component',async({page})=>{
@@ -19,11 +19,11 @@ test('Market layouts remain distinct rather than sharing one skin',async({page})
  for(const id of ['03-creator-market','04-creator-catalogue']){
    await page.goto('/v8/?template='+id+'&project=market-distinct-'+id);
    const frame=page.frameLocator('#liveFrame');
-   await frame.locator(id.startsWith('03')?'.spotlight-six .spotlight-tile':'#catalogue').first().waitFor({state:'attached'});
+   await frame.locator(id.startsWith('03')?'.spotlight-six .spotlight-tile':'.cb-book').first().waitFor({state:'attached'});
    const marker=await frame.locator('body').evaluate(el=>({
      hasRecommendations:!!el.querySelector('.spotlight-six .spotlight-tile'),
-     hasBook:!!el.querySelector('#catalogue .book'),
-     bg:getComputedStyle(el).backgroundColor
+     hasBook:!!el.querySelector('#catalogue .cb-book'),
+     bg:getComputedStyle(el.querySelector('.cm-site,.cc-site')||el).backgroundColor
    }));
    markers.push(marker);
  }

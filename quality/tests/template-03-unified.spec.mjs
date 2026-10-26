@@ -15,7 +15,7 @@ const legacyProject={
 
 async function openStudio(page,project,seed){
   if(seed){
-    await page.goto('/v8/market-01-preview.html');
+    await page.goto('/v8/render.html');
     await page.evaluate(([k,v])=>localStorage.setItem(k,JSON.stringify(v)),['onlyevent-studio-v8:03-creator-market:'+project+':iframe',seed]);
   }
   const errors=[];page.on('pageerror',e=>errors.push(e.message));

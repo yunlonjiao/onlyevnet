@@ -5,7 +5,7 @@ test.use({viewport:{width:1440,height:900}});
 const png=color=>'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="800" height="500" fill="'+color+'"/></svg>');
 
 async function open(page,id,project,patch){
-  await page.goto('/v8/market-01-preview.html');
+  await page.goto('/v8/render.html');
   await page.evaluate(([k,v])=>localStorage.setItem(k,JSON.stringify(v)),['onlyevent-studio-v8:'+id+':'+project+':iframe',patch]);
   await page.goto('/v8/?template='+id+'&project='+project);
   const frame=page.frameLocator('#liveFrame');

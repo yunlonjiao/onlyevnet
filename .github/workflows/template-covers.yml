@@ -35,7 +35,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add admin/covers/template-01.png admin/covers/template-02.png admin/covers/template-03.png
+          git add admin/covers/template-01.png admin/covers/template-02.png admin/covers/template-03.png admin/covers/template-04.png
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "Update real browser screenshots of Template 01 and 02 [skip ci]"
           git push origin HEAD:preview/guide-sakura-access

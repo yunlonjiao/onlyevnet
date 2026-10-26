@@ -1,5 +1,6 @@
 import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
 import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.42.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.43.0';
 export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyle='',escapeHtml:esc}){
   return function buildStandaloneHtml(){
     const state=getState(),clone=document.body.cloneNode(true);
@@ -45,6 +46,8 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       const mods=S.modules||{},standalone=["booths","activities","guests","guide",...(S.customPages||[]).map(p=>"custom-"+p.id)],fixed=new Set(["tickets","map"]);
       const heroSrc=(matchMedia("(max-width:560px)").matches?(S.mobileHeroImage||S.heroImage):(S.heroImage||S.mobileHeroImage))||"";
       (${bindMapCarousels.toString()})(document);
+      const catalogue=$('[data-oe-mount="catalogue-book"]');
+      if(catalogue&&S.presentationProfile?.catalogueBook!==false)(${mountCatalogueBook.toString()})(catalogue,(${catalogueBookData.toString()})(S),{storageKey:'oe-catalogue:'+String(S.projectId||S.eventName||'event')});
       const spotlight=$('[data-oe-mount="product-spotlight"]');
       if(spotlight&&S.presentationProfile?.productSpotlight!==false)(${mountProductSpotlight.toString()})(spotlight,(${spotlightItems.toString()})(S),{autoplay:true,storageKey:'oe-spotlight:'+String(S.projectId||S.eventName||'event')});
       if(heroSrc){const probe=new Image(),kv=$(".kv");probe.onload=()=>kv?.classList.remove("image-failed");probe.onerror=()=>kv?.classList.add("image-failed");probe.src=heroSrc;}

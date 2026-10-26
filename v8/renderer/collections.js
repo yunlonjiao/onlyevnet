@@ -1,5 +1,6 @@
 import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
 import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.42.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.43.0';
 import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.40.26';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
@@ -528,8 +529,24 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       send?.({type:'OE_SELECT_PRODUCT',boothIndex:Number(card.dataset.productEditBooth),productIndex:Number(card.dataset.productEditIndex),focusImage:false});
     },true);
   }
+  function renderCatalogueBook(){
+    const state=getState(),box=mount('catalogue-book');if(!box)return;
+    if(state.presentationProfile?.catalogueBook===false){box.innerHTML='';return}
+    mountCatalogueBook(box,catalogueBookData(state),{storageKey:'oe-catalogue:'+String(state.projectId||state.eventName||'event')});
+    if(box.dataset.oeCatalogueEdit==='1')return;
+    box.dataset.oeCatalogueEdit='1';
+    // In the editor, circle cuts and works open their booth / product, like the booth directory.
+    box.addEventListener('click',e=>{
+      if(getMode()!=='edit')return;
+      const circle=e.target.closest?.('[data-catalogue-booth]'),work=e.target.closest?.('[data-catalogue-product]');
+      if(!circle&&!work)return;
+      e.preventDefault();e.stopPropagation();
+      if(work){const [boothIndex,productIndex]=work.dataset.catalogueProduct.split(':').map(Number);send?.({type:'OE_SELECT_PRODUCT',boothIndex,productIndex,focusImage:false})}
+      else send?.({type:'OE_SELECT_ITEM',collection:'booths',index:Number(circle.dataset.catalogueBooth)});
+    },true);
+  }
   function renderCollections(){
-    renderProductSpotlight();renderRibbon();renderTickets();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderUpdates();renderCommunity();renderSponsors();renderCustomPages();renderOptionalPages();renderFooter();
+    renderProductSpotlight();renderCatalogueBook();renderRibbon();renderTickets();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderUpdates();renderCommunity();renderSponsors();renderCustomPages();renderOptionalPages();renderFooter();
     enhanceImages();
   }
   return {openGiftLightbox,renderRibbon,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderUpdates,renderCommunity,renderSponsors,renderCustomPages,renderOptionalPages,renderFooter,renderCollections,enhanceImages};

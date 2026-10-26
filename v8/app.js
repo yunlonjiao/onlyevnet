@@ -30,7 +30,9 @@ const CUSTOM_PAGE_LAYOUTS={
 };
 let state=structuredClone(activeTemplate.defaults),preview=false,saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home',publishIntent='site',publishRecord={};
 let hasSavedProject=false;
-try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&activeTemplate.id===DEFAULT_TEMPLATE_ID?localStorage.getItem(LEGACY_STORAGE):null);if(saved){let parsed=JSON.parse(saved);if(activeTemplate.id==='03-creator-market')parsed=migrateCreatorMarketState(parsed,activeTemplate.defaults);state={...state,...parsed};hasSavedProject=true}}catch{}
+// The retired creator editor (03/04) stored project-less sessions under ':default:'; move them once.
+try{const legacyDefaultKey='onlyevent-studio-v8:'+activeTemplate.id+':default:iframe',legacyDefault=projectId==='default'?localStorage.getItem(legacyDefaultKey):null;if(legacyDefault){localStorage.setItem(STORAGE,legacyDefault);localStorage.removeItem(legacyDefaultKey)}}catch{}
+try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&activeTemplate.id===DEFAULT_TEMPLATE_ID?localStorage.getItem(LEGACY_STORAGE):null);if(saved){let parsed=JSON.parse(saved);if(activeTemplate.id==='03-creator-market'||activeTemplate.id==='04-creator-catalogue')parsed=migrateCreatorMarketState(parsed,activeTemplate.defaults);state={...state,...parsed};hasSavedProject=true}}catch{}
 if(!hasSavedProject&&initialProjectName)state.eventName=initialProjectName;
 migrateDemoEventName(state,projectId);
 state.templateId=activeTemplate.id;

@@ -24,7 +24,6 @@ jobs:
       - name: Check JavaScript module syntax
         run: |
           node --check v8/app.js
-          node --check v8/editor/creator-studio.js
           node --check v8/editor/studio-entry.js
           node --check v8/editor/studio-crop.js
           node --check v8/editor/studio-history.js

@@ -104,7 +104,8 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
       }
     }
 
-    el.textContent=value??'';
+    // Never rewrite the element the organizer is typing in: it would move the caret to the start.
+    if(el!==document.activeElement)el.textContent=value??'';
     // Templates may show a field in several places (02 travel ticket, 03 hero card and KV);
     // every copy follows the Shared Core value.
     qa('[data-oe-field="'+CSS.escape(path)+'"]').forEach(mirror=>{
