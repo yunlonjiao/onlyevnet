@@ -34,30 +34,33 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   if(data.works.length){starts.works=pages.length;chunk(data.works,8).forEach(group=>pages.push({kind:'works',html:head('NEW WORKS','新刊与制品')+'<div class="cb-works">'+group.map(w=>'<a class="cb-work" href="#booths" data-target-mode="page" data-page-link="booths" data-catalogue-product="'+w.boothIndex+':'+w.productIndex+'"><span class="cb-work-art">'+(w.image?'<img src="'+esc(w.image)+'" alt="'+esc(w.name)+'" loading="lazy">':'<em>NEW</em>')+'</span><b>'+esc(w.name)+'</b><small>'+esc([w.no,w.price].filter(Boolean).join(' · '))+'</small></a>').join('')+'</div>'}))}
   starts.rally=pages.length;
   pages.push({kind:'rally',html:head('STAMP RALLY','打卡页')+'<p class="cb-rally-copy">逛社团、收集印章，在会场留下属于你的回忆。</p><div class="cb-stamps">'+['入场','社团','新刊','合影','场贩','再见'].map(s=>'<span>'+s+'</span>').join('')+'</div><p class="cb-rally-end">SEE YOU AT THE VENUE ✦</p>'});
-  if(pages.length%2)pages.splice(pages.length-1,0,{kind:'memo',html:head('MEMO','备忘')+'<div class="cb-memo"></div>'});
+  if(pages.length%2){pages.splice(pages.length-1,0,{kind:'memo',html:head('MEMO','备忘')+'<div class="cb-memo"></div>'});starts.rally++}
   pages[contentsAt].html=head('CONTENTS','目次')+'<ol class="cb-contents">'+sections.filter(([k])=>starts[k]!==undefined).map(([k,jp,zh])=>'<li><button type="button" data-catalogue-goto="'+starts[k]+'"><span>'+jp+'</span><b>'+zh+'</b><i>P.'+String(starts[k]+1).padStart(2,'0')+'</i></button></li>').join('')+'</ol>';
   const total=pages.length;
   const page=(i,side)=>i<0||i>=total?'<div class="cb-page cb-blank '+side+'"></div>':'<div class="cb-page cb-kind-'+pages[i].kind+' '+side+'" data-catalogue-page="'+i+'">'+pages[i].html+(i>0?'<span class="cb-folio">'+String(i+1).padStart(2,'0')+'</span>':'')+'</div>';
-  root.innerHTML='<div class="cb-stage"><div class="cb-book" data-catalogue-book></div><span class="cb-ribbon" aria-hidden="true"></span></div><div class="cb-controls"><button type="button" data-catalogue-step="-1" aria-label="上一页">‹</button><span data-catalogue-count></span><button type="button" data-catalogue-step="1" aria-label="下一页">›</button></div>';
+  root.innerHTML='<div class="cb-stage"><div class="cb-book" data-catalogue-book></div><span class="cb-ribbon" aria-hidden="true"></span></div><div class="cb-controls"><button type="button" data-catalogue-step="-1" aria-label="上一页">‹</button><span data-catalogue-count aria-live="polite"></span><button type="button" data-catalogue-step="1" aria-label="下一页">›</button></div>';
   const book=root.querySelector('[data-catalogue-book]'),count=root.querySelector('[data-catalogue-count]');
   const single=()=>root.clientWidth<760;
   // Desktop shows spreads [i-1,i] where i is even (the cover sits alone on the right).
   let at=0;try{at=Math.max(0,Math.min(total-1,Number(sessionStorage.getItem(storageKey))||0))}catch{}
   const spreadOf=i=>single()?i:(i%2?i+1:i);
   const render=()=>{
-    at=spreadOf(at);
+    at=spreadOf(Math.min(at,total-1));
     book.classList.toggle('is-single',single());
     book.innerHTML=single()?page(at,'solo'):page(at-1,'left')+page(at,'right');
     count.textContent=single()?(at+1)+' / '+total:(at===0?'封面':at>=total?'封底':at+'-'+(at+1))+' / '+total;
+    root.querySelector('[data-catalogue-step="-1"]').disabled=at===0;
+    root.querySelector('[data-catalogue-step="1"]').disabled=at>=(single()?total-1:spreadOf(total-1));
     try{sessionStorage.setItem(storageKey,String(at))}catch{}
   };
   let busy=false;
   const go=next=>{
-    next=Math.max(0,Math.min(single()?total-1:total-(total%2?1:0),next));
+    next=spreadOf(Math.max(0,Math.min(total-1,next)));
     if(busy||next===at||next<0||next>=total+1)return;
     const forward=next>at,reduce=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(reduce){at=next;render();return}
     busy=true;
+    root.querySelectorAll("[data-catalogue-step]").forEach(b=>{b.disabled=true});
     const leaf=document.createElement('div');
     leaf.className='cb-leaf '+(single()?'solo':forward?'right':'left')+(forward?' forward':' back');
     const frontIndex=single()?at:(forward?at:at-1),backIndex=single()?next:(forward?at+1:at-2);
@@ -72,6 +75,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   root.querySelectorAll('[data-catalogue-step]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();go(at+Number(b.dataset.catalogueStep)*(single()?1:2))}));
   root.addEventListener('click',e=>{const g=e.target.closest('[data-catalogue-goto]');if(g){e.preventDefault();e.stopPropagation();go(Number(g.dataset.catalogueGoto))}});
   let startX=null;
+  book.addEventListener('pointercancel',()=>{startX=null;book._oeSwiped=false});
   book.addEventListener('pointerdown',e=>{startX=e.clientX});
   book.addEventListener('pointerup',e=>{if(startX===null)return;const dx=e.clientX-startX;startX=null;if(Math.abs(dx)>50){book._oeSwiped=true;go(at+(dx<0?1:-1)*(single()?1:2))}});
   book.addEventListener('click',e=>{if(book._oeSwiped){e.preventDefault();e.stopPropagation();book._oeSwiped=false}},true);
