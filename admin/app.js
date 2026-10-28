@@ -1,6 +1,6 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,getCloudProjectId,setCloudProjectId} from '/v8/publisher.js?v=8.44.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite} from '/v8/publisher.js?v=8.45.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -79,7 +79,18 @@ async function restoreCloudProjects(){
   const known=new Set(projects.map(p=>p.cloudProjectId||getCloudProjectId(p.templateId||DEFAULT_TEMPLATE_ID,p.id)).filter(Boolean));
   const templateIds=new Set(listTemplates().map(t=>t.id));
   const added=[];
+  // The site's ID lives in the browser that published it; rebuild the record so this device can update or unpublish it.
+  const restorePublication=async item=>{
+    if(!item.visitorSiteUrl||!templateIds.has(item.templateId))return;
+    const key='onlyevent-studio-publish:'+item.templateId+':'+(projects.find(p=>(p.cloudProjectId||getCloudProjectId(p.templateId||DEFAULT_TEMPLATE_ID,p.id))===item.id)?.id||item.id)+':iframe';
+    try{if(JSON.parse(localStorage.getItem(key)||'{}').siteId)return}catch{}
+    try{
+      const site=await getCloudSite(item.id);
+      if(site)localStorage.setItem(key,JSON.stringify({siteId:site.id,cloudProjectId:item.id,slug:site.slug,url:site.url,publishedAt:site.updated_at}));
+    }catch{}
+  };
   for(const item of remote){
+    if(known.has(item.id)||projects.some(p=>p.id===item.id))await restorePublication(item);
     // Cloud projects without a template are publish-only shells made before project sync existed.
     if(!item.templateId||!templateIds.has(item.templateId)||known.has(item.id)||projects.some(p=>p.id===item.id))continue;
     try{
@@ -87,6 +98,7 @@ async function restoreCloudProjects(){
       if(!config||typeof config!=='object')continue;
       localStorage.setItem('onlyevent-studio-v8:'+item.templateId+':'+item.id+':iframe',JSON.stringify({...config,projectId:item.id,templateId:item.templateId}));
       setCloudProjectId(item.templateId,item.id,item.id);
+      await restorePublication(item);
       added.push({id:item.id,name:item.name||config.eventName||'未命名活动',templateId:item.templateId,status:item.visitorSiteUrl?'published':'draft',siteUrl:item.visitorSiteUrl||'',updatedAt:item.updatedAt,cloudProjectId:item.id});
     }catch{}
   }

@@ -136,3 +136,21 @@ test('project config is size-checked and the list reports each project template'
   const huge=await call(env,'/api/config',{method:'PUT',token,project:projectId,body:{config:{heroImage:'x'.repeat(1900001)}}});
   assert.equal(huge.status,413);
 });
+
+test('visitor sites get robots.txt, no favicon noise and safe headers; the apex keeps its tools out of search',async()=>{
+  const env=createEnv();
+  const {token}=await signUp(env,'headers-user');
+  const projectId=await newProject(env,token);
+  await call(env,'/api/sites',{method:'POST',token,project:projectId,body:{html:'<!doctype html><p>hi</p>',slug:'header-site'}});
+  const robots=await call(env,'/robots.txt',{host:'header-site.onlyevent.cn'});
+  assert.equal(robots.status,200);assert.match(robots.data,/Allow: \//);
+  assert.equal((await call(env,'/favicon.ico',{host:'header-site.onlyevent.cn'})).status,204);
+  const page=await call(env,'/',{host:'header-site.onlyevent.cn'});
+  assert.equal(page.headers.get('x-content-type-options'),'nosniff');
+  assert.equal(page.headers.get('referrer-policy'),'strict-origin-when-cross-origin');
+  const admin=await call(env,'/admin/',{host:'onlyevent.cn'});
+  assert.equal(admin.headers.get('x-frame-options'),'SAMEORIGIN');
+  assert.match(admin.headers.get('cache-control'),/no-store/);
+  const editor=await call(env,'/v8/',{host:'onlyevent.cn'});
+  assert.equal(editor.headers.get('x-frame-options'),'SAMEORIGIN');
+});

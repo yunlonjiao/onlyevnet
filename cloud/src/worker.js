@@ -5,7 +5,7 @@ const HTML_HEADERS={"content-type":"text/html; charset=utf-8"};
 const PBKDF2_ITERATIONS=100000;
 const SESSION_COOKIE='onlyevent_session';
 const PROJECT_COOKIE='onlyevent_project';
-const APP_VERSION='7.26.0';
+const APP_VERSION='7.27.0';
 const MAX_SITE_HTML_BYTES=25*1024*1024;
 // D1 rows are capped at 2,000,000 bytes; leave room for the other columns.
 const MAX_PROJECT_CONFIG_BYTES=1900000;
@@ -141,7 +141,7 @@ async function updateSite(req,env,siteId){const u=await requireUser(req,env);awa
 async function listSiteVersions(req,env,siteId){const u=await requireUser(req,env),p=await projectFor(req,env,u),site=p?await currentProjectSite(req,env,u,p):null;if(!site||site.id!==siteId)return json({ok:false,error:'这个网站不属于当前活动项目'},404);const {results=[]}=await env.DB.prepare('SELECT id,size_bytes,created_at FROM site_versions WHERE site_id=? ORDER BY created_at DESC LIMIT 5').bind(siteId).all();return json({ok:true,versions:results})}
 async function rollbackSite(req,env,siteId,versionId){const u=await requireUser(req,env),p=await projectFor(req,env,u),site=p?await currentProjectSite(req,env,u,p):null;if(!site||site.id!==siteId)return json({ok:false,error:'这个网站不属于当前活动项目'},404);const ver=await env.DB.prepare('SELECT * FROM site_versions WHERE id=? AND site_id=?').bind(versionId,siteId).first();if(!ver)return json({ok:false,error:'历史版本不存在'},404);const obj=await env.SITES.get(ver.object_key);if(!obj)return json({ok:false,error:'历史版本文件不存在'},404);await archiveCurrentSiteVersion(env,site);const body=await obj.arrayBuffer();await env.SITES.put(site.object_key,body,{httpMetadata:{contentType:'text/html; charset=utf-8'},customMetadata:{owner:u.id,slug:site.slug,project:p.id}});const t=now(),draftTime=new Date(Date.now()+1000).toISOString();await env.DB.batch([env.DB.prepare(`UPDATE sites SET size_bytes=?,status='active',removed_at=NULL,last_viewed_at=?,updated_at=? WHERE id=?`).bind(body.byteLength,t,t,siteId),env.DB.prepare('UPDATE project_state SET published_at=?,published_config_json=NULL,updated_at=? WHERE project_id=? AND user_id=?').bind(t,t,p.id,u.id),env.DB.prepare('UPDATE projects SET updated_at=? WHERE id=? AND user_id=?').bind(draftTime,p.id,u.id)]);return json({ok:true,site:{...site,status:'active',updated_at:t,url:publicUrl(env,site.slug,req)},onlineRollback:true})}
 async function deleteSite(req,env,siteId){const u=await requireUser(req,env),p=await projectFor(req,env,u),site=p?await currentProjectSite(req,env,u,p):null;if(!site||site.id!==siteId)return json({ok:false,error:'这个网站不属于当前活动项目'},404);await deleteSiteResources(env,site);await env.DB.prepare('DELETE FROM sites WHERE id=? AND user_id=?').bind(siteId,u.id).run();let cfg={};try{cfg=JSON.parse(p.config_json||'{}')}catch{}cfg.visitorSiteUrl='';const t=now();await env.DB.batch([env.DB.prepare('UPDATE projects SET config_json=?,updated_at=? WHERE id=? AND user_id=?').bind(JSON.stringify(cfg),t,p.id,u.id),env.DB.prepare('UPDATE project_state SET published_at=NULL,published_config_json=NULL,updated_at=? WHERE project_id=? AND user_id=?').bind(t,p.id,u.id)]);return json({ok:true})}
-async function serveSlug(req,env,slug){slug=cleanSlug(slug);if(!slug)return html('网站不存在',404);let site=await env.DB.prepare('SELECT id,slug,object_key,title,status FROM sites WHERE slug=? COLLATE NOCASE').bind(slug).first();if(!site){const alias=await env.DB.prepare('SELECT s.id,s.slug,s.object_key,s.title,s.status FROM site_aliases a JOIN sites s ON s.id=a.site_id WHERE a.old_slug=? COLLATE NOCASE').bind(slug).first();if(alias)return redirect(publicUrl(env,alias.slug,req),301,{'cache-control':'public,max-age=3600'});return html('<!doctype html><meta charset=utf-8><title>网站不存在</title><style>body{font-family:system-ui;padding:40px}</style><h1>网站不存在</h1><p>这个活动网站还没有发布。</p>',404)}if(site.status==='inactive')return html('<!doctype html><meta charset=utf-8><title>网站暂时下线</title><style>body{font-family:system-ui;padding:40px;max-width:720px;margin:auto}</style><h1>网站暂时下线</h1><p>该网站长时间没有访问，公开版本已自动休眠。主办方重新发布即可恢复，编辑数据不会删除。</p>',410,{'cache-control':'no-store'});const obj=await env.SITES.get(site.object_key);if(!obj)return html('网站文件不存在',404);await env.DB.prepare('UPDATE sites SET last_viewed_at=? WHERE id=?').bind(now(),site.id).run();const h=new Headers(HTML_HEADERS);h.set('cache-control','public,max-age=60');h.set('x-onlyevent-site',slug);return new Response(obj.body,{headers:h})}
+async function serveSlug(req,env,slug){slug=cleanSlug(slug);if(!slug)return html('网站不存在',404);let site=await env.DB.prepare('SELECT id,slug,object_key,title,status FROM sites WHERE slug=? COLLATE NOCASE').bind(slug).first();if(!site){const alias=await env.DB.prepare('SELECT s.id,s.slug,s.object_key,s.title,s.status FROM site_aliases a JOIN sites s ON s.id=a.site_id WHERE a.old_slug=? COLLATE NOCASE').bind(slug).first();if(alias)return redirect(publicUrl(env,alias.slug,req),301,{'cache-control':'public,max-age=3600'});return html('<!doctype html><meta charset=utf-8><title>网站不存在</title><style>body{font-family:system-ui;padding:40px}</style><h1>网站不存在</h1><p>这个活动网站还没有发布。</p>',404)}if(site.status==='inactive')return html('<!doctype html><meta charset=utf-8><title>网站暂时下线</title><style>body{font-family:system-ui;padding:40px;max-width:720px;margin:auto}</style><h1>网站暂时下线</h1><p>该网站长时间没有访问，公开版本已自动休眠。主办方重新发布即可恢复，编辑数据不会删除。</p>',410,{'cache-control':'no-store'});const obj=await env.SITES.get(site.object_key);if(!obj)return html('网站文件不存在',404);await env.DB.prepare('UPDATE sites SET last_viewed_at=? WHERE id=?').bind(now(),site.id).run();const h=new Headers(HTML_HEADERS);h.set('cache-control','public,max-age=60');h.set('x-onlyevent-site',slug);h.set('x-content-type-options','nosniff');h.set('referrer-policy','strict-origin-when-cross-origin');return new Response(obj.body,{headers:h})}
 async function cleanupInactiveSites(env){const cutoff=new Date(Date.now()-inactiveDays(env)*86400000).toISOString(),{results=[]}=await env.DB.prepare(`SELECT id,object_key FROM sites WHERE status='active' AND COALESCE(last_viewed_at,updated_at,created_at) < ?`).bind(cutoff).all();for(const s of results){await env.SITES.delete(s.object_key);await env.DB.prepare(`UPDATE sites SET status='inactive',removed_at=?,updated_at=? WHERE id=?`).bind(now(),now(),s.id).run()}await env.DB.prepare('DELETE FROM sessions WHERE expires_at < ?').bind(now()).run();await env.DB.prepare('DELETE FROM rate_limits WHERE window_start < ?').bind(new Date(Date.now()-86400000).toISOString()).run();return results.length}
 
 async function accountStatus(req,env){const u=await authUser(req,env);const row=await env.DB.prepare('SELECT COUNT(*) AS n FROM users').first();return json({ok:true,initialized:Number(row?.n||0)>0,authenticated:!!u,username:u?.username||null})}
@@ -189,16 +189,26 @@ export default {
       if(path==='/health')return json({ok:true,time:now(),mode:'online-saas',version:APP_VERSION,baseDomain:baseDomain(env),host:url.hostname});
       if(path.startsWith('/media/'))return await serveMedia(req,env,decodeURIComponent(path.slice('/media/'.length)));
       if(path.startsWith('/api/'))return withCors(req,env,await handleApi(req,env,path));
-      const hostSlug=getSlugFromHost(req,env);if(hostSlug)return await serveSlug(req,env,hostSlug);
+      const hostSlug=getSlugFromHost(req,env);
+      if(hostSlug&&path==='/robots.txt')return new Response('User-agent: *\nAllow: /\n',{headers:{'content-type':'text/plain; charset=utf-8','cache-control':'public,max-age=3600'}});
+      if(hostSlug&&path==='/favicon.ico')return new Response(null,{status:204,headers:{'cache-control':'public,max-age=86400'}});
+      if(hostSlug)return await serveSlug(req,env,hostSlug);
       const sp=path.match(/^\/s\/([a-zA-Z0-9_-]+)\/?$/);if(sp&&req.method==='GET')return await serveSlug(req,env,sp[1]);
       if(path==='/')return redirect('/admin/');
       if(path==='/admin')return redirect('/admin/');
       const assetResponse=await env.ASSETS.fetch(req);
+      if(path.startsWith('/v8/')||path==='/robots.txt'){
+        // The editor loads same-origin module graphs: keep them revalidated and un-framable from other sites.
+        const headers=new Headers(assetResponse.headers);
+        headers.set('x-content-type-options','nosniff');headers.set('referrer-policy','strict-origin-when-cross-origin');headers.set('x-frame-options','SAMEORIGIN');
+        return new Response(assetResponse.body,{status:assetResponse.status,statusText:assetResponse.statusText,headers});
+      }
       if(path.startsWith('/admin/')){
         const headers=new Headers(assetResponse.headers);
         headers.set('cache-control','no-store, no-cache, must-revalidate');
         headers.set('pragma','no-cache');
         headers.set('expires','0');
+        headers.set('x-content-type-options','nosniff');headers.set('referrer-policy','strict-origin-when-cross-origin');headers.set('x-frame-options','SAMEORIGIN');
         headers.set('x-onlyevent-version',APP_VERSION);
         return new Response(assetResponse.body,{status:assetResponse.status,statusText:assetResponse.statusText,headers});
       }

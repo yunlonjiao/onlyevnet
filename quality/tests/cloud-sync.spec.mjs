@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-import {useCloudPublisher,signInCloud,loginCloud,PUBLISHER} from './cloud-publisher.mjs';
+import {useCloudPublisher,signInCloud,loginCloud,visitSite,PUBLISHER} from './cloud-publisher.mjs';
 
 test.use({viewport:{width:1440,height:900}});
 
@@ -54,7 +54,7 @@ test('signed-in image uploads go to R2 and are served back by the Worker',async(
   await page.goto('/v8/?template=01-ip-only&project=upload-check');
   await expect(page.frameLocator('#liveFrame').locator('[data-oe-field="eventName"]').first()).toBeAttached();
   const url=await page.evaluate(async()=>{
-    const m=await import('/v8/publisher.js?v=8.44.0');
+    const m=await import('/v8/publisher.js?v=8.45.0');
     const cloudProjectId=await m.ensureCloudProjectFor({templateId:'01-ip-only',projectId:'upload-check',name:'上传测试'});
     return m.uploadCloudImage({blob:new Blob([new Uint8Array([71,73,70,56,57,97])],{type:'image/gif'}),projectId:cloudProjectId,filename:'x.gif'});
   });
@@ -72,4 +72,34 @@ test('signed-out editing never calls the Worker and keeps local saves',async({pa
   await field.click();await page.keyboard.press('Control+A');await page.keyboard.type('仅本机');
   await expect(page.locator('#saveState')).toHaveText('已保存');
   expect(cloud.requests).toHaveLength(0);
+});
+
+test('a second device can update and take down a site that was published from the first',async({page,browser})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'two-device-site');
+  await page.goto('/v8/?template=01-ip-only&project=published-here');
+  const field=page.frameLocator('#liveFrame').locator('[data-oe-field="eventName"]').first();
+  await expect(field).toHaveAttribute('contenteditable','true');
+  await field.click();await page.keyboard.press('Control+A');await page.keyboard.type('两台设备');
+  await expect(page.locator('#saveState')).toHaveText('已保存 · 云端已同步',{timeout:15000});
+  await page.locator('#publishBtn').click();
+  await page.locator('#publishSlug').fill('two-device');
+  await page.locator('#publishPrimary').click();
+  await expect(page.locator('#publishStatus')).toHaveText('网站已上线');
+
+  const second=await browser.newContext({viewport:{width:1440,height:900}});
+  const phone=await second.newPage();
+  const secondCloud=await useCloudPublisher(phone,cloud);
+  await loginCloud(phone,secondCloud,'two-device-site');
+  await phone.goto('/admin/');
+  await expect(phone.locator('#projectGrid .project-card')).toContainText('两台设备');
+  // The publish record is rebuilt from the Worker, so the editor offers "update" instead of a second publish.
+  await phone.locator('.edit-project').click();
+  await expect(phone.frameLocator('#liveFrame').locator('[data-oe-field="eventName"]').first()).toBeAttached();
+  await expect(phone.locator('#publishBtnLabel')).toHaveText('更新网站');
+  await phone.goto('/admin/');
+  phone.once('dialog',d=>d.accept());
+  await phone.locator('.unpublish-site').first().click();
+  await expect.poll(async()=>(await visitSite(cloud,'two-device')).status).toBe(404);
+  await second.close();
 });

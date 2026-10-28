@@ -2,7 +2,12 @@
    Organizer accounts live in D1; the session token is sent as a Bearer header so the
    CMS can run on Pages, the Worker domain or onlyevent.cn without third-party cookies.
    Every site belongs to one cloud project, selected with the X-OnlyEvent-Project header. */
-export const PUBLISHER_ORIGIN='https://convention-publisher.onlyevents.workers.dev';
+const WORKER_ORIGIN='https://convention-publisher.onlyevents.workers.dev';
+// On onlyevent.cn (and the Worker's own address) the editor and the API share one origin; anywhere else
+// (Pages previews, local servers) it calls the Worker cross-origin.
+// onlyevent.localhost only exists on a developer machine (the Worker run locally with BASE_DOMAIN=onlyevent.localhost).
+const SAME_ORIGIN_HOSTS=/^(?:www\.)?onlyevent\.(?:cn|localhost)$|^convention-publisher\.onlyevents\.workers\.dev$/;
+export const PUBLISHER_ORIGIN=typeof location!=='undefined'&&SAME_ORIGIN_HOSTS.test(location.hostname)?location.origin:WORKER_ORIGIN;
 export const CLOUD_SESSION_KEY='onlyevent-cloud-session-v1';
 
 export function readCloudSession(){
@@ -83,6 +88,11 @@ export async function ensureCloudProjectFor({templateId,projectId,name,known=''}
   const id=await ensureCloudProject({cloudProjectId:known||getCloudProjectId(templateId,projectId),name});
   setCloudProjectId(templateId,projectId,id);
   return id;
+}
+/* The site (if any) published from a cloud project, so any signed-in device can update or take it down. */
+export async function getCloudSite(projectId){
+  const {sites=[]}=await api('/api/sites',{projectId});
+  return sites[0]||null;
 }
 export async function listCloudProjects(){
   return (await api('/api/projects')).projects||[];
