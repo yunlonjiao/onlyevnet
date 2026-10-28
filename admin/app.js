@@ -1,6 +1,6 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount} from '/v8/publisher.js?v=8.42.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,getCloudProjectId,setCloudProjectId} from '/v8/publisher.js?v=8.44.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -64,9 +64,33 @@ async function deleteProject(project){
     try{await deleteSite({siteId:record.siteId,projectId:record.cloudProjectId})}
     catch(error){alert('线上网站下线失败，项目未删除：'+(error?.message||'Publisher 暂未启用删除接口'));return}
   }else if(!confirm('确定删除这个项目？\n项目内容会从当前浏览器中删除。'))return;
+  const cloudId=project.cloudProjectId||getCloudProjectId(project.templateId||DEFAULT_TEMPLATE_ID,project.id);
   clearProjectLocalData(project);
   writeProjects(projects.filter(p=>p.id!==project.id));
   renderProjects($('#projectSearch').value);
+  // Without this the project would come back from the cloud on the next sign-in.
+  if(cloudId&&readCloudSession())deleteCloudProject(cloudId).catch(()=>alert('项目已从本机删除，但云端副本删除失败；下次登录时它可能重新出现。'));
+}
+/* Projects saved in the cloud on another device appear here after signing in. */
+async function restoreCloudProjects(){
+  if(!readCloudSession())return;
+  let remote=[];
+  try{remote=await listCloudProjects()}catch{return}
+  const known=new Set(projects.map(p=>p.cloudProjectId||getCloudProjectId(p.templateId||DEFAULT_TEMPLATE_ID,p.id)).filter(Boolean));
+  const templateIds=new Set(listTemplates().map(t=>t.id));
+  const added=[];
+  for(const item of remote){
+    // Cloud projects without a template are publish-only shells made before project sync existed.
+    if(!item.templateId||!templateIds.has(item.templateId)||known.has(item.id)||projects.some(p=>p.id===item.id))continue;
+    try{
+      const config=await loadCloudConfig(item.id);
+      if(!config||typeof config!=='object')continue;
+      localStorage.setItem('onlyevent-studio-v8:'+item.templateId+':'+item.id+':iframe',JSON.stringify({...config,projectId:item.id,templateId:item.templateId}));
+      setCloudProjectId(item.templateId,item.id,item.id);
+      added.push({id:item.id,name:item.name||config.eventName||'未命名活动',templateId:item.templateId,status:item.visitorSiteUrl?'published':'draft',siteUrl:item.visitorSiteUrl||'',updatedAt:item.updatedAt,cloudProjectId:item.id});
+    }catch{}
+  }
+  if(added.length){writeProjects([...projects,...added]);renderProjects($('#projectSearch').value)}
 }
 function migrateLegacyProject(){
   if(projects.length)return;
@@ -255,7 +279,7 @@ $('#authLoginForm')?.addEventListener('submit',async e=>{
   const btn=e.submitter;btn.disabled=true;
   try{
     const session=await loginAccount({username:authNormalizeName($('#authLoginAccount').value),password:$('#authLoginPassword').value});
-    authShowAdmin(session);
+    authShowAdmin(session);restoreCloudProjects();
   }catch(err){authSetMessage('authLoginMessage',authNetworkMessage(err),'error')}
   finally{btn.disabled=false}
 });
@@ -283,7 +307,7 @@ $('#authCopyRecoveryCode')?.addEventListener('click',async()=>{
   const code=$('#authRecoveryCodeValue').textContent;
   try{await navigator.clipboard.writeText(code);$('#authCopyRecoveryCode').textContent='已复制'}catch{prompt('复制找回码',code)}
 });
-$('#authEnterAdmin')?.addEventListener('click',()=>{const session=readCloudSession();if(session)authShowAdmin(session)});
+$('#authEnterAdmin')?.addEventListener('click',()=>{const session=readCloudSession();if(session){authShowAdmin(session);restoreCloudProjects()}});
 
 $('#authCodeRecoveryForm')?.addEventListener('submit',async e=>{
   e.preventDefault();authSetMessage('authRecoveryMessage','');
@@ -317,7 +341,8 @@ function authSyncView(){
 async function authVerifySession(){
   if(!readCloudSession())return;
   try{await fetchAccount()}
-  catch(err){if(err?.status===401)authSyncView()}
+  catch(err){if(err?.status===401){authSyncView();return}}
+  restoreCloudProjects();
 }
 authSyncView();authVerifySession();
 window.addEventListener('pageshow',()=>authSyncView());

@@ -1,12 +1,12 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.42.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.44.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {cleanSlug,suggestSlug,isValidSlug} from '/v8/publisher.js?v=8.42.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage} from '/v8/publisher.js?v=8.44.0';
 import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.42.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -239,7 +239,7 @@ async function publishGeneratedHtml(html){
  if(!isValidSlug(slug)){setPublishBusy(false,'地址需为 3–50 位小写字母、数字或连字符。');publishSlug.focus();return}
  setPublishBusy(true,hasLiveSite(publishRecord)?'正在更新网站…':'正在发布网站…');
  try{
-   const result=await publishStudioSite({html,title:state.eventName||'OnlyEvent',slug,templateId:state.templateId||activeTemplate.id,publication:publishRecord});
+   const result=await publishStudioSite({html,title:state.eventName||'OnlyEvent',slug,templateId:state.templateId||activeTemplate.id,localProjectId:projectId,publication:publishRecord});
    const publishedUrl=result.url||('https://'+result.slug+'.onlyevent.cn');
    publishRecord={};
    savePublishRecord({...result,url:publishedUrl});
@@ -259,7 +259,33 @@ function syncAdminProject(extra={}){
  if(i>=0)rows[i]=next;else rows.push(next);
  localStorage.setItem(ADMIN_PROJECTS_KEY,JSON.stringify(rows));
 }
-function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject();saveState.textContent='已保存'}catch{saveState.textContent='保存失败：图片过大或浏览器存储不足'}},180)}
+function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject();saveState.textContent='已保存';scheduleCloudSync()}catch{saveState.textContent='保存失败：图片过大或浏览器存储不足'}},180)}
+// Signed-in organizers also keep each project in the Worker (D1), so it follows them across devices.
+let cloudSyncTimer=0,cloudSyncing=false;
+function cloudSyncAvailable(){return projectId!=='default'&&!!readCloudSession()}
+function scheduleCloudSync(){if(!cloudSyncAvailable())return;clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(syncToCloud,2500)}
+async function syncToCloud(){
+ if(cloudSyncing){scheduleCloudSync();return}
+ cloudSyncing=true;
+ try{
+   const cloudProjectId=await ensureCloudProjectFor({templateId:activeTemplate.id,projectId,name:state.eventName});
+   await saveCloudConfig({projectId:cloudProjectId,config:{...state,templateId:activeTemplate.id}});
+   syncAdminProject({cloudProjectId});
+   saveState.textContent='已保存 · 云端已同步';
+ }catch(err){
+   saveState.textContent=err?.status===413?'已保存在本机 · 云端同步失败：项目数据过大':err?.status===401?'已保存在本机 · 登录后可同步到云端':'已保存在本机 · 云端同步失败';
+ }finally{cloudSyncing=false}
+}
+// Signed in, cropped images go to R2 instead of filling browser storage with data URLs.
+async function storeCroppedImage(blob){
+ if(cloudSyncAvailable()){
+   try{
+     const cloudProjectId=await ensureCloudProjectFor({templateId:activeTemplate.id,projectId,name:state.eventName});
+     return await uploadCloudImage({blob,projectId:cloudProjectId});
+   }catch(err){console.warn('[OnlyEvent image upload]',err);toast('云端上传失败，图片已保存在本机')}
+ }
+ return blobToDataUrl(blob);
+}
 const studioHistory=createStudioHistory({limit:80,onChange:()=>syncHistory()});
 function checkpoint(){studioHistory.checkpoint(state)}
 function syncHistory(){$('#undoBtn').disabled=!studioHistory.canUndo;$('#redoBtn').disabled=!studioHistory.canRedo}
@@ -1570,7 +1596,7 @@ async function applyImageCrop(){
    }
    const canvas=await selection.$toCanvas({width,height});
    const blob=await canvasToBlob(canvas,'image/webp',.9);
-   const data=await blobToDataUrl(blob);
+   const data=await storeCroppedImage(blob);
    checkpoint();setDeep(cropContext.path,data);
    if(/^(?:heroImage|mobileHeroImage)$/.test(cropContext.path)||/^tickets\.\d+\.image$/.test(cropContext.path))send({type:'OE_PATCH_FIELD',path:cropContext.path,value:data});else send({type:'OE_REPLACE_STATE',state});
    toast('图片已应用');

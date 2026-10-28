@@ -108,3 +108,31 @@ test('oversized HTML is rejected before it reaches R2',async()=>{
   assert.equal(r.status,413);
   assert.equal(env.SITES.objects.size,0);
 });
+
+test('login, registration and recovery are rate limited',async()=>{
+  const env=createEnv();
+  await signUp(env,'brute-target','right-password');
+  for(let i=0;i<10;i++)assert.equal((await call(env,'/api/account/login',{method:'POST',body:{username:'brute-target',password:'wrong-'+i}})).status,401);
+  const locked=await call(env,'/api/account/login',{method:'POST',body:{username:'brute-target',password:'right-password'}});
+  assert.equal(locked.status,429);
+  assert.match(locked.data.error,/尝试次数过多/);
+  assert.equal(locked.headers.get('access-control-allow-origin'),PAGES);
+  for(let i=0;i<4;i++)assert.equal((await call(env,'/api/account/register',{method:'POST',body:{username:'spam-'+i,password:'secret-123'}})).status,201);
+  assert.equal((await call(env,'/api/account/register',{method:'POST',body:{username:'spam-x',password:'secret-123'}})).status,429);
+  for(let i=0;i<5;i++)await call(env,'/api/account/recover',{method:'POST',body:{username:'brute-target',recoveryCode:'guess-'+i,newPassword:'another-1'}});
+  assert.equal((await call(env,'/api/account/recover',{method:'POST',body:{username:'brute-target',recoveryCode:'guess-x',newPassword:'another-1'}})).status,429);
+});
+
+test('project config is size-checked and the list reports each project template',async()=>{
+  const env=createEnv();
+  const {token}=await signUp(env,'sync-user');
+  const projectId=await newProject(env,token);
+  const saved=await call(env,'/api/config',{method:'PUT',token,project:projectId,body:{config:{eventName:'云端同步',templateId:'04-creator-catalogue'}}});
+  assert.equal(saved.status,200);
+  const list=await call(env,'/api/projects',{token});
+  assert.equal(list.data.projects.find(p=>p.id===projectId).templateId,'04-creator-catalogue');
+  const back=await call(env,'/api/config',{token,project:projectId});
+  assert.equal(back.data.config.eventName,'云端同步');
+  const huge=await call(env,'/api/config',{method:'PUT',token,project:projectId,body:{config:{heroImage:'x'.repeat(1900001)}}});
+  assert.equal(huge.status,413);
+});

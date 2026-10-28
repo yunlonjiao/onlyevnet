@@ -71,6 +71,41 @@ export async function ensureCloudProject({cloudProjectId,name}){
   return data.project.id;
 }
 
+/* Local project -> cloud project mapping, shared by sync, uploads and publishing. */
+const cloudProjectKey=(templateId,projectId)=>'onlyevent-cloud-project:'+templateId+':'+projectId;
+export function getCloudProjectId(templateId,projectId){
+  try{return localStorage.getItem(cloudProjectKey(templateId,projectId))||''}catch{return ''}
+}
+export function setCloudProjectId(templateId,projectId,cloudProjectId){
+  try{localStorage.setItem(cloudProjectKey(templateId,projectId),cloudProjectId)}catch{}
+}
+export async function ensureCloudProjectFor({templateId,projectId,name,known=''}){
+  const id=await ensureCloudProject({cloudProjectId:known||getCloudProjectId(templateId,projectId),name});
+  setCloudProjectId(templateId,projectId,id);
+  return id;
+}
+export async function listCloudProjects(){
+  return (await api('/api/projects')).projects||[];
+}
+export async function loadCloudConfig(projectId){
+  return (await api('/api/config',{projectId})).config||null;
+}
+export async function saveCloudConfig({projectId,config}){
+  return api('/api/config',{method:'PUT',projectId,body:{config}});
+}
+export async function deleteCloudProject(projectId){
+  return api('/api/projects/'+encodeURIComponent(projectId),{method:'DELETE'});
+}
+/* Uploads an image to R2 and returns its absolute, publicly cacheable URL. */
+export async function uploadCloudImage({blob,projectId,filename='image.webp'}){
+  const session=readCloudSession();
+  if(!session)throw Object.assign(new Error('请先登录主办方账号'),{status:401});
+  const form=new FormData();form.append('file',blob,filename);
+  const response=await fetch(PUBLISHER_ORIGIN+'/api/upload',{method:'POST',headers:{Authorization:'Bearer '+session.token,'X-OnlyEvent-Project':projectId},body:form});
+  const data=await readJson(response);
+  return PUBLISHER_ORIGIN+data.url;
+}
+
 function normalizeSite(data,{slug}={}){
   const site=data?.site||data||{};
   const nextSlug=site.slug||slug||'';

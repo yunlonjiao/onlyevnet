@@ -1,5 +1,5 @@
 /* Common publishing operations for every Studio template. HTML rendering remains template-specific. */
-import {ensureCloudProject,createSite,updateSite} from '/v8/publisher.js?v=8.42.0';
+import {ensureCloudProjectFor,createSite,updateSite} from '/v8/publisher.js?v=8.44.0';
 export function downloadStudioHtml(html,name){
  const blob=new Blob([html],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
  a.href=url;a.download=(String(name||'onlyevent').replace(/[\\/:*?"<>|]+/g,'-').trim()||'onlyevent')+'.html';
@@ -7,8 +7,9 @@ export function downloadStudioHtml(html,name){
 }
 /* Records saved before the account API (editToken only, no cloud project) never reached a live site. */
 export function hasLiveSite(publication){return !!(publication?.siteId&&publication?.cloudProjectId)}
-export async function publishStudioSite({html,title,slug,templateId,publication}){
- const cloudProjectId=await ensureCloudProject({cloudProjectId:publication?.cloudProjectId,name:title});
+export async function publishStudioSite({html,title,slug,templateId,localProjectId='default',publication}){
+ // The cloud project is shared with project sync and image uploads for this local project.
+ const cloudProjectId=await ensureCloudProjectFor({templateId,projectId:localProjectId,name:title,known:publication?.cloudProjectId});
  const payload={html,title,slug,templateId,projectId:cloudProjectId};
  const existing=hasLiveSite(publication)&&publication.cloudProjectId===cloudProjectId;
  const result=existing?await updateSite({...payload,siteId:publication.siteId}):await createSite(payload);
