@@ -1,7 +1,7 @@
 # convention-publisher Worker — deployment runbook
 
-Prepared 2026-10-28 against the live account. **Nothing here has been deployed yet.**
-Run every command from `cloud/`. Do not deploy without the owner's go-ahead.
+Prepared 2026-10-28 against the live account. **Deployed 2026-10-28 (see the log at the end).**
+Run every command from `cloud/`. Do not redeploy or change D1 without the owner's go-ahead.
 
 ## What is live today (verified through the Cloudflare API)
 | Item | Live state |
@@ -82,3 +82,18 @@ under `uploads/`; deployment never deletes R2 data.
 - Email sign-up and email password recovery are not implemented in the Worker.
 - Rate limits are per D1 row (fixed windows), not Cloudflare's WAF; heavy abuse still needs a
   dashboard rate-limiting rule on `onlyevent.cn/api/*`.
+
+## Deployment log — 2026-10-28
+- Backups: `d1-pre-deploy.sql` and `d1-post-deploy.sql` (61 data rows each, identical) next to the first backup.
+- `rate_limits` table created on production D1 before the deploy.
+- `wrangler deploy` -> version `bf4bcf41-2f1e-453f-91ed-084e83b88be1` (7.26.0). **Previous version for rollback:**
+  `c2f57408-e5f2-4d25-b674-679e0c894302` -> `npx wrangler rollback c2f57408-e5f2-4d25-b674-679e0c894302`.
+- Custom domain `onlyevent.cn`, route `*.onlyevent.cn/*` and cron `17 3 * * *` unchanged afterwards.
+- Production smoke test (throwaway account, Pages origin): register, project, config + templateId, R2 upload and
+  readback, publish, `https://<slug>.onlyevent.cn` over TLS, update, unauthenticated publish = 401 with CORS,
+  unknown origin gets no CORS header, brute force gets 429. All passed.
+- The test account locked itself (rate limit), so site takedown was not exercised on production; it was checked
+  on the real workerd runtime and in unit tests. Test data was removed directly (1 user, 1 project, 1 site,
+  3 R2 objects, per-user limit rows); the site returns 404 and the original 61 data rows are unchanged.
+- Not yet checked by a human in a browser: sign-in and cloud sync from the v8 editor on
+  `onlyevent-preview.pages.dev` against the live Worker.
