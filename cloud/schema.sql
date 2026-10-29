@@ -133,3 +133,12 @@ CREATE TABLE IF NOT EXISTS collect_entries (
   FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS idx_collect_entries_project ON collect_entries(project_id,created_at);
+
+-- Page views of visitor sites, one counter per site and day (China time). No visitor data is stored.
+CREATE TABLE IF NOT EXISTS site_stats (
+  site_id TEXT NOT NULL,
+  day TEXT NOT NULL,
+  views INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY(site_id,day),
+  FOREIGN KEY(site_id) REFERENCES sites(id) ON DELETE CASCADE
+);

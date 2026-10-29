@@ -112,6 +112,9 @@ export async function purgeCloudProject(projectId){
 export async function changeAccountPassword({oldPassword,newPassword}){
   return api('/api/account/password',{method:'POST',body:{oldPassword,newPassword}});
 }
+export async function getProjectStats(cloudProjectId){
+  return api('/api/projects/'+encodeURIComponent(cloudProjectId)+'/stats');
+}
 export async function getCollect(cloudProjectId){
   return api('/api/projects/'+encodeURIComponent(cloudProjectId)+'/collect');
 }

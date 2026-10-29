@@ -158,7 +158,7 @@ async function updateSite(req,env,siteId){const u=await requireUser(req,env);awa
 async function listSiteVersions(req,env,siteId){const u=await requireUser(req,env),p=await projectFor(req,env,u),site=p?await currentProjectSite(req,env,u,p):null;if(!site||site.id!==siteId)return json({ok:false,error:'这个网站不属于当前活动项目'},404);const {results=[]}=await env.DB.prepare('SELECT id,size_bytes,created_at FROM site_versions WHERE site_id=? ORDER BY created_at DESC LIMIT 5').bind(siteId).all();return json({ok:true,versions:results})}
 async function rollbackSite(req,env,siteId,versionId){const u=await requireUser(req,env),p=await projectFor(req,env,u),site=p?await currentProjectSite(req,env,u,p):null;if(!site||site.id!==siteId)return json({ok:false,error:'这个网站不属于当前活动项目'},404);const ver=await env.DB.prepare('SELECT * FROM site_versions WHERE id=? AND site_id=?').bind(versionId,siteId).first();if(!ver)return json({ok:false,error:'历史版本不存在'},404);const obj=await env.SITES.get(ver.object_key);if(!obj)return json({ok:false,error:'历史版本文件不存在'},404);await archiveCurrentSiteVersion(env,site);const body=await obj.arrayBuffer();await env.SITES.put(site.object_key,body,{httpMetadata:{contentType:'text/html; charset=utf-8'},customMetadata:{owner:u.id,slug:site.slug,project:p.id}});const t=now(),draftTime=new Date(Date.now()+1000).toISOString();await env.DB.batch([env.DB.prepare(`UPDATE sites SET size_bytes=?,status='active',removed_at=NULL,last_viewed_at=?,updated_at=? WHERE id=?`).bind(body.byteLength,t,t,siteId),env.DB.prepare('UPDATE project_state SET published_at=?,published_config_json=NULL,updated_at=? WHERE project_id=? AND user_id=?').bind(t,t,p.id,u.id),env.DB.prepare('UPDATE projects SET updated_at=? WHERE id=? AND user_id=?').bind(draftTime,p.id,u.id)]);return json({ok:true,site:{...site,status:'active',updated_at:t,url:publicUrl(env,site.slug,req)},onlineRollback:true})}
 async function deleteSite(req,env,siteId){const u=await requireUser(req,env),p=await projectFor(req,env,u),site=p?await currentProjectSite(req,env,u,p):null;if(!site||site.id!==siteId)return json({ok:false,error:'这个网站不属于当前活动项目'},404);await deleteSiteResources(env,site);await env.DB.prepare('DELETE FROM sites WHERE id=? AND user_id=?').bind(siteId,u.id).run();let cfg={};try{cfg=JSON.parse(p.config_json||'{}')}catch{}cfg.visitorSiteUrl='';const t=now();await env.DB.batch([env.DB.prepare('UPDATE projects SET config_json=?,updated_at=? WHERE id=? AND user_id=?').bind(JSON.stringify(cfg),t,p.id,u.id),env.DB.prepare('UPDATE project_state SET published_at=NULL,published_config_json=NULL,updated_at=? WHERE project_id=? AND user_id=?').bind(t,p.id,u.id)]);return json({ok:true})}
-async function serveSlug(req,env,slug){slug=cleanSlug(slug);if(!slug)return html('网站不存在',404);let site=await env.DB.prepare('SELECT id,slug,object_key,title,status FROM sites WHERE slug=? COLLATE NOCASE').bind(slug).first();if(!site){const alias=await env.DB.prepare('SELECT s.id,s.slug,s.object_key,s.title,s.status FROM site_aliases a JOIN sites s ON s.id=a.site_id WHERE a.old_slug=? COLLATE NOCASE').bind(slug).first();if(alias)return redirect(publicUrl(env,alias.slug,req),301,{'cache-control':'public,max-age=3600'});return html('<!doctype html><meta charset=utf-8><title>网站不存在</title><style>body{font-family:system-ui;padding:40px}</style><h1>网站不存在</h1><p>这个活动网站还没有发布。</p>',404)}if(site.status==='inactive')return html('<!doctype html><meta charset=utf-8><title>网站暂时下线</title><style>body{font-family:system-ui;padding:40px;max-width:720px;margin:auto}</style><h1>网站暂时下线</h1><p>该网站长时间没有访问，公开版本已自动休眠。主办方重新发布即可恢复，编辑数据不会删除。</p>',410,{'cache-control':'no-store'});const obj=await env.SITES.get(site.object_key);if(!obj)return html('网站文件不存在',404);await env.DB.prepare('UPDATE sites SET last_viewed_at=? WHERE id=?').bind(now(),site.id).run();const h=new Headers(HTML_HEADERS);h.set('cache-control','public,max-age=60');h.set('x-onlyevent-site',slug);h.set('x-content-type-options','nosniff');h.set('referrer-policy','strict-origin-when-cross-origin');return new Response(obj.body,{headers:h})}
+async function serveSlug(req,env,slug){slug=cleanSlug(slug);if(!slug)return html('网站不存在',404);let site=await env.DB.prepare('SELECT id,slug,object_key,title,status FROM sites WHERE slug=? COLLATE NOCASE').bind(slug).first();if(!site){const alias=await env.DB.prepare('SELECT s.id,s.slug,s.object_key,s.title,s.status FROM site_aliases a JOIN sites s ON s.id=a.site_id WHERE a.old_slug=? COLLATE NOCASE').bind(slug).first();if(alias)return redirect(publicUrl(env,alias.slug,req),301,{'cache-control':'public,max-age=3600'});return html('<!doctype html><meta charset=utf-8><title>网站不存在</title><style>body{font-family:system-ui;padding:40px}</style><h1>网站不存在</h1><p>这个活动网站还没有发布。</p>',404)}if(site.status==='inactive')return html('<!doctype html><meta charset=utf-8><title>网站暂时下线</title><style>body{font-family:system-ui;padding:40px;max-width:720px;margin:auto}</style><h1>网站暂时下线</h1><p>该网站长时间没有访问，公开版本已自动休眠。主办方重新发布即可恢复，编辑数据不会删除。</p>',410,{'cache-control':'no-store'});const obj=await env.SITES.get(site.object_key);if(!obj)return html('网站文件不存在',404);await env.DB.prepare('UPDATE sites SET last_viewed_at=? WHERE id=?').bind(now(),site.id).run();try{await countView(env,req,site.id)}catch(e){console.error(e)}const h=new Headers(HTML_HEADERS);h.set('cache-control','public,max-age=60');h.set('x-onlyevent-site',slug);h.set('x-content-type-options','nosniff');h.set('referrer-policy','strict-origin-when-cross-origin');return new Response(obj.body,{headers:h})}
 async function cleanupInactiveSites(env){const cutoff=new Date(Date.now()-inactiveDays(env)*86400000).toISOString(),{results=[]}=await env.DB.prepare(`SELECT id,object_key FROM sites WHERE status='active' AND COALESCE(last_viewed_at,updated_at,created_at) < ?`).bind(cutoff).all();for(const s of results){await env.SITES.delete(s.object_key);await env.DB.prepare(`UPDATE sites SET status='inactive',removed_at=?,updated_at=? WHERE id=?`).bind(now(),now(),s.id).run()}await env.DB.prepare('DELETE FROM sessions WHERE expires_at < ?').bind(now()).run();await env.DB.prepare('DELETE FROM rate_limits WHERE window_start < ?').bind(new Date(Date.now()-86400000).toISOString()).run();return results.length}
 
 async function accountStatus(req,env){const u=await authUser(req,env);const row=await env.DB.prepare('SELECT COUNT(*) AS n FROM users').first();return json({ok:true,initialized:Number(row?.n||0)>0,authenticated:!!u,username:u?.username||null})}
@@ -238,6 +238,26 @@ async function collectSubmit(req,env,token){
   return json({ok:true},201);
 }
 
+/* ---- visit statistics: a daily counter per site, nothing about the visitor is kept ---- */
+const BOT_UA=/bot|spider|crawl|slurp|preview|monitor|uptime|curl|wget|python|httpclient|headless|facebookexternalhit|lighthouse/i;
+const chinaDay=(t=Date.now())=>new Date(t+8*3600*1000).toISOString().slice(0,10);
+async function countView(env,req,siteId){
+  if(req.method!=='GET')return;
+  const ua=req.headers.get('user-agent')||'';if(!ua||BOT_UA.test(ua))return;
+  await env.DB.prepare('INSERT INTO site_stats(site_id,day,views) VALUES(?,?,1) ON CONFLICT(site_id,day) DO UPDATE SET views=views+1').bind(siteId,chinaDay()).run();
+}
+async function projectStats(req,env,pid){
+  const p=await ownedProject(req,env,pid);
+  const link=await env.DB.prepare('SELECT s.id,s.slug FROM project_sites ps JOIN sites s ON s.id=ps.site_id WHERE ps.project_id=?').bind(pid).first();
+  const days=[];for(let i=29;i>=0;i--)days.push({day:chinaDay(Date.now()-i*86400000),views:0});
+  if(!link)return json({ok:true,published:false,name:p.name,days,today:0,last7:0,last30:0,total:0});
+  const {results=[]}=await env.DB.prepare('SELECT day,views FROM site_stats WHERE site_id=? AND day>=?').bind(link.id,days[0].day).all();
+  const byDay=new Map(results.map(r=>[r.day,Number(r.views)||0]));for(const d of days)d.views=byDay.get(d.day)||0;
+  const total=await env.DB.prepare('SELECT COALESCE(SUM(views),0) AS n FROM site_stats WHERE site_id=?').bind(link.id).first();
+  const sum=list=>list.reduce((n,d)=>n+d.views,0);
+  return json({ok:true,published:true,name:p.name,slug:link.slug,days,today:days[days.length-1].views,last7:sum(days.slice(-7)),last30:sum(days),total:Number(total?.n)||0});
+}
+
 async function handleApi(req,env,path){
   if(path==='/api/health'&&req.method==='GET')return json({ok:true,version:APP_VERSION,app:'onlyevent',baseDomain:baseDomain(env)});
   if(path==='/api/account/status'&&req.method==='GET')return accountStatus(req,env);
@@ -252,7 +272,9 @@ async function handleApi(req,env,path){
   if(path==='/api/projects'&&req.method==='GET')return listProjects(req,env);
   if(path==='/api/projects'&&req.method==='POST')return createProject(req,env);
   if(path==='/api/projects/trash'&&req.method==='GET')return listProjects(req,env);
-  let m=path.match(/^\/api\/collect\/([a-f0-9]+)(\/image)?$/);
+  let m=path.match(/^\/api\/projects\/([^/]+)\/stats$/);
+  if(m&&req.method==='GET')return projectStats(req,env,decodeURIComponent(m[1]));
+  m=path.match(/^\/api\/collect\/([a-f0-9]+)(\/image)?$/);
   if(m&&m[2]&&req.method==='POST')return collectImage(req,env,m[1]);
   if(m&&!m[2]&&req.method==='GET')return collectInfo(req,env,m[1]);
   if(m&&!m[2]&&req.method==='POST')return collectSubmit(req,env,m[1]);

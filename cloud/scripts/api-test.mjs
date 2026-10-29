@@ -222,3 +222,24 @@ test('circle collection: public form, image upload, review queue and isolation',
   assert.notEqual(reset.data.form.token,t);assert.equal((await call(env,'/api/collect/'+t)).status,404);
   assert.equal((await call(env,'/api/projects/'+pid+'/collect/entries/'+e.id,{method:'DELETE',token})).status,200);
 });
+
+test('visits are counted per day, bots are ignored, and only the owner sees the numbers',async()=>{
+  const env=createEnv();
+  const {token}=await signUp(env,'stats-owner'),pid=await newProject(env,token,'统计测试');
+  const none=await call(env,'/api/projects/'+pid+'/stats',{token});
+  assert.equal(none.data.published,false);
+  const created=await call(env,'/api/sites',{method:'POST',token,project:pid,body:{html:'<!doctype html><h1>hi</h1>',title:'统计测试',slug:'stats-site',templateId:'01-ip-only'}});
+  assert.equal(created.status,201);
+  const visit=ua=>worker.fetch(new Request('https://stats-site.onlyevent.cn/',{headers:ua?{'user-agent':ua}:{}}),env);
+  const human='Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile Safari/604.1';
+  for(let i=0;i<3;i++)assert.equal((await visit(human)).status,200);
+  assert.equal((await visit('Googlebot/2.1')).status,200);
+  assert.equal((await visit('')).status,200);
+  const head=await worker.fetch(new Request('https://stats-site.onlyevent.cn/',{method:'HEAD',headers:{'user-agent':human}}),env);
+  assert.equal(head.status,200);
+  const s=await call(env,'/api/projects/'+pid+'/stats',{token});
+  assert.equal(s.data.published,true);assert.equal(s.data.days.length,30);
+  assert.equal(s.data.today,3);assert.equal(s.data.last7,3);assert.equal(s.data.total,3);
+  const other=await signUp(env,'stats-other');
+  assert.equal((await call(env,'/api/projects/'+pid+'/stats',{token:other.token})).status,404);
+});

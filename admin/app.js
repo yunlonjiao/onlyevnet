@@ -1,6 +1,6 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.47.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.48.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -164,6 +164,28 @@ function updateBinBar(){
   $('#binEmptyBtn').hidden=!trash.length;
   $('#selectAllBin').checked=!!trash.length&&trash.every(p=>binSelected.has(p.id));
 }
+/* ---- visit statistics ---- */
+async function loadStats(){
+  const project=projects.find(p=>p.id===$('#statsProject').value);
+  $('#statsCards').hidden=true;$('#statsChartBox').hidden=true;authSetMessage('statsMessage','');
+  if(!project){authSetMessage('statsMessage','还没有活动，先去「模板库」新建一个。');return}
+  if(!readCloudSession()){authSetMessage('statsMessage','请先登录主办方账号。');return}
+  try{
+    const cid=await ensureCloudProjectFor({templateId:project.templateId||DEFAULT_TEMPLATE_ID,projectId:project.id,name:project.name});
+    const s=await getProjectStats(cid);
+    if(!s.published){authSetMessage('statsMessage','这个活动还没有发布网站，发布之后这里才会有数据。');return}
+    $('#statToday').textContent=s.today;$('#statWeek').textContent=s.last7;$('#statMonth').textContent=s.last30;$('#statTotal').textContent=s.total;
+    const max=Math.max(1,...s.days.map(d=>d.views)),bars=$('#statsBars');bars.innerHTML='';
+    s.days.forEach(d=>{const bar=document.createElement('i');bar.style.height=Math.round(d.views/max*100)+'%';bar.title=d.day+'：'+d.views+' 次';bar.classList.toggle('zero',!d.views);bars.appendChild(bar)});
+    $('#statsCards').hidden=false;$('#statsChartBox').hidden=false;
+  }catch(err){authSetMessage('statsMessage',authNetworkMessage(err),'error')}
+}
+function renderStatsProjects(){
+  const select=$('#statsProject'),keep=select.value;
+  select.innerHTML='';projects.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name||'未命名活动';select.appendChild(o)});
+  if(keep&&projects.some(p=>p.id===keep))select.value=keep;
+}
+
 /* ---- circle collection ---- */
 let collectCloudId='',collectForm=null,collectEntries=[];
 const collectProject=()=>projects.find(p=>p.id===$('#collectProject').value)||null;
@@ -352,6 +374,7 @@ function showPage(name){
   qa('[data-admin-page]').forEach(b=>b.classList.toggle('active',b.dataset.adminPage===name));
   qa('[data-page-panel]').forEach(p=>{const on=p.dataset.pagePanel===name;p.hidden=!on;p.classList.toggle('active',on)});
   if(name==='bin')renderBin();
+  if(name==='stats'){renderStatsProjects();loadStats()}
   if(name==='collect'){renderCollectProjects();loadCollect()}
   if(name==='settings')renderSettings();
 }
@@ -422,6 +445,8 @@ $('#selectAllBin').onchange=e=>{trash.forEach(p=>e.target.checked?binSelected.ad
 $('#binRestoreBtn').onclick=()=>restoreFromTrash(trash.filter(p=>binSelected.has(p.id)));
 $('#binPurgeBtn').onclick=()=>purgeFromTrash(trash.filter(p=>binSelected.has(p.id)));
 $('#binEmptyBtn').onclick=()=>purgeFromTrash([...trash]);
+$('#statsProject').onchange=loadStats;
+$('#statsRefresh').onclick=loadStats;
 $('#collectProject').onchange=loadCollect;
 $('#collectRefresh').onclick=loadCollect;
 $('#collectEnable').onclick=async()=>{try{collectForm=(await manageCollect(collectCloudId,'enable')).form;renderCollect()}catch(err){collectMsg(authNetworkMessage(err),'error')}};

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>OnlyEvent Studio</title>
-  <link rel="stylesheet" href="/admin/styles.css?v=1.4.0">
+  <link rel="stylesheet" href="/admin/styles.css?v=1.5.0">
 </head>
 <body>
   <header class="admin-topbar">
@@ -124,6 +124,7 @@
       <nav>
         <button class="active" data-admin-page="projects" type="button"><span>⌂</span><b>我的活动</b></button>
         <button data-admin-page="templates" type="button"><span>◇</span><b>模板库</b></button>
+        <button data-admin-page="stats" type="button"><span>▥</span><b>数据统计</b></button>
         <button data-admin-page="collect" type="button"><span>✉</span><b>社团收集</b><i class="nav-badge" id="collectCount" hidden>0</i></button>
         <button data-admin-page="bin" type="button"><span>♻</span><b>回收站</b><i class="nav-badge" id="binCount" hidden>0</i></button>
         <button data-admin-page="settings" type="button"><span>⚙</span><b>账号设置</b></button>
@@ -172,6 +173,32 @@
           <p>先选一个模板，开始做第一个活动网站。</p>
           <button class="primary" id="emptyCreateBtn" type="button">选择模板</button>
         </div>
+      </div>
+
+      <div class="admin-page" data-page-panel="stats" hidden>
+        <div class="page-head compact">
+          <div>
+            <span class="eyebrow">游客网站</span>
+            <h1>数据统计</h1>
+            <p>统计游客网站的打开次数，按天累计。只记次数，不记录是谁看的。</p>
+          </div>
+        </div>
+        <div class="collect-toolbar">
+          <label>选择活动 <select id="statsProject"></select></label>
+          <button type="button" class="quiet" id="statsRefresh">刷新</button>
+        </div>
+        <p class="auth-message" id="statsMessage"></p>
+        <div class="stats-cards" id="statsCards" hidden>
+          <div><small>今天</small><b id="statToday">0</b></div>
+          <div><small>近 7 天</small><b id="statWeek">0</b></div>
+          <div><small>近 30 天</small><b id="statMonth">0</b></div>
+          <div><small>累计</small><b id="statTotal">0</b></div>
+        </div>
+        <section class="settings-card stats-chart" id="statsChartBox" hidden>
+          <h2>近 30 天每天的打开次数</h2>
+          <div class="stats-bars" id="statsBars"></div>
+          <p>每天按北京时间 0 点重新计数。搜索引擎和监控程序的访问不计入，同一个人短时间内重复打开会各算一次。</p>
+        </section>
       </div>
 
       <div class="admin-page" data-page-panel="collect" hidden>
@@ -369,6 +396,6 @@
     </article>
   </template>
 
-  <script type="module" src="/admin/app.js?v=1.4.0"></script>
+  <script type="module" src="/admin/app.js?v=1.5.0"></script>
 </body>
 </html>
