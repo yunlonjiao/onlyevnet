@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>OnlyEvent Studio</title>
-  <link rel="stylesheet" href="/admin/styles.css?v=1.6.0">
+  <link rel="stylesheet" href="/admin/styles.css?v=1.6.1">
 </head>
 <body>
   <header class="admin-topbar">
@@ -37,7 +37,7 @@
       </div>
 
       <section class="auth-panel active" data-auth-panel="login">
-        <div class="auth-panel-head"><h2>欢迎回来</h2><p>使用主办方名称登录，账号在任何设备上通用。</p></div>
+        <div class="auth-panel-head"><h2>欢迎回来</h2><p>用主办方名称登录。</p></div>
         <form id="authLoginForm" class="auth-form">
           <label><span>主办方名称</span><input id="authLoginAccount" autocomplete="username" placeholder="例如：星尘ONLY执行委员会" required></label>
           <label><span>密码</span><input id="authLoginPassword" type="password" autocomplete="current-password" placeholder="输入密码" required></label>
@@ -74,7 +74,7 @@
 
       <section class="auth-panel" data-auth-panel="recovery" hidden>
         <button class="auth-back" id="authRecoveryBack" type="button">← 返回登录</button>
-        <div class="auth-panel-head"><h2>找回密码</h2><p>使用注册时保存的找回码重设密码。</p></div>
+        <div class="auth-panel-head"><h2>找回密码</h2><p>输入注册时保存的找回码，重设密码。</p></div>
         <div class="auth-method-tabs recovery-tabs">
           <button class="active" type="button" data-recovery-mode="code"><b>找回码</b><small>快速重设</small></button>
           <button type="button" data-recovery-mode="email" hidden><b>邮箱找回</b><small>发送重置邮件</small></button>
@@ -113,7 +113,7 @@
         <span class="auth-success-icon">✓</span>
         <div class="auth-panel-head"><h2>账号创建完成</h2><p>这是你的找回码。请截图、抄下来或保存到密码管理器。</p></div>
         <div class="auth-code-display"><small>找回码</small><strong id="authRecoveryCodeValue">—</strong></div>
-        <div class="auth-code-warning"><b>只显示这一次</b><span>忘记密码时，输入主办方名称和这串找回码即可设置新密码。</span></div>
+        <div class="auth-code-warning"><b>只显示这一次</b><span>忘记密码时，用主办方名称加这串找回码重设密码。</span></div>
         <div class="auth-result-actions"><button id="authCopyRecoveryCode" class="quiet" type="button">复制找回码</button><button id="authEnterAdmin" class="primary" type="button">我已保存，进入后台</button></div>
       </section>
     </section>
@@ -141,7 +141,7 @@
           <div>
             <span class="eyebrow">主办方工作台</span>
             <h1>我的活动</h1>
-            <p>你的所有活动都在这里，可以继续编辑、发布或下线。</p>
+            <p>管理你的全部活动。</p>
           </div>
           <button class="primary large" id="newProjectHeroBtn" type="button">新建活动 <span>↗</span></button>
         </div>
@@ -164,12 +164,12 @@
           <button type="button" id="bulkDuplicateBtn" class="quiet" disabled>复制</button>
           <button type="button" id="bulkTrashBtn" class="quiet danger-outline" disabled>移入回收站</button>
         </div>
-        <p class="project-backup-notice">登录后，活动会自动保存到云端，换一台设备登录就能接着做。导出备份是额外的保险，备份里不含账号密码。</p>
+        <p class="project-backup-notice">登录后活动自动保存在云端，换设备登录就能接着做。备份文件不含账号密码。</p>
         <div class="project-grid" id="projectGrid"></div>
         <div class="empty-projects" id="emptyProjects" hidden>
           <div class="empty-orbit"><i></i><i></i></div>
           <b>还没有活动项目</b>
-          <p>先选一个模板，开始做第一个活动网站。</p>
+          <p>还没有活动，先去模板库挑一个模板。</p>
           <button class="primary" id="emptyCreateBtn" type="button">选择模板</button>
         </div>
       </div>
@@ -179,7 +179,7 @@
           <div>
             <span class="eyebrow">游客网站</span>
             <h1>数据统计</h1>
-            <p>统计游客网站的打开次数，按天累计。只记次数，不记录是谁看的。</p>
+            <p>看看游客网站每天被打开了多少次。</p>
           </div>
         </div>
         <div class="collect-toolbar">
@@ -194,9 +194,9 @@
           <div><small>累计</small><b id="statTotal">0</b></div>
         </div>
         <section class="settings-card stats-chart" id="statsChartBox" hidden>
-          <h2>近 30 天每天的打开次数</h2>
+          <h2>近 30 天访问</h2>
           <div class="stats-bars" id="statsBars"></div>
-          <p>每天按北京时间 0 点重新计数。搜索引擎和监控程序的访问不计入，同一个人短时间内重复打开会各算一次。</p>
+          <p>按北京时间每天 0 点重新计数，不含搜索引擎的访问。</p>
         </section>
       </div>
 
@@ -205,7 +205,7 @@
           <div>
             <span class="eyebrow">参展社团</span>
             <h1>社团收集</h1>
-            <p>生成一个填写链接发给各社团负责人，他们自己填信息、传图片，你审核通过后就会加进活动的摊位列表。</p>
+            <p>把链接发给各社团，让他们自己填资料、传图片。你审核通过后，就会加入摊位。</p>
           </div>
         </div>
         <div class="collect-toolbar">
@@ -215,8 +215,8 @@
         </div>
         <p class="auth-message" id="collectMessage"></p>
         <section class="settings-card" id="collectSetup" hidden>
-          <h2>还没有开启收集</h2>
-          <p>开启后会得到一个链接。链接不用登录就能打开，请只发给参展社团。</p>
+          <h2>还没开始收集</h2>
+          <p>开启后生成一个填写链接，不用登录就能打开，只发给参展社团就行。</p>
           <button class="primary" type="button" id="collectEnable">开启收集</button>
         </section>
         <section class="settings-card" id="collectLinkBox" hidden>
@@ -226,10 +226,10 @@
             <button type="button" class="quiet" id="collectToggle">关闭收集</button>
             <button type="button" class="quiet" id="collectReset">换一个新链接</button>
           </div>
-          <p>关闭后链接打不开，已提交的内容还在。换新链接后，旧链接马上失效。</p>
+          <p>关闭后链接打不开，已收到的资料还在。换新链接后，旧链接作废。</p>
         </section>
         <div class="collect-list" id="collectList"></div>
-        <div class="empty-projects" id="collectEmpty" hidden><b>还没有人提交</b><p>把链接发给社团负责人，他们提交后会出现在这里。</p></div>
+        <div class="empty-projects" id="collectEmpty" hidden><b>还没有人提交</b><p>社团提交后会显示在这里。</p></div>
       </div>
 
       <div class="admin-page" data-page-panel="bin" hidden>
@@ -237,7 +237,7 @@
           <div>
             <span class="eyebrow">已删除的活动</span>
             <h1>回收站</h1>
-            <p>删除的活动会在这里保留 30 天，到期自动清除。已发布的网站在删除时就已经下线了。</p>
+            <p>删除的活动保留 30 天，到期自动清除。</p>
           </div>
         </div>
         <div class="select-bar" id="binSelectBar">
@@ -251,7 +251,7 @@
         <div class="empty-projects" id="emptyBin" hidden>
           <div class="empty-orbit"><i></i><i></i></div>
           <b>回收站是空的</b>
-          <p>删除的活动会先放在这里，30 天内都可以找回来。</p>
+          <p>删除的活动会先放在这里。</p>
         </div>
       </div>
 
@@ -266,7 +266,7 @@
         <div class="settings-grid">
           <section class="settings-card">
             <h2>修改密码</h2>
-            <p>改完之后，其他设备上的登录会失效，需要用新密码重新登录。</p>
+            <p>修改后，其他设备要重新登录。</p>
             <form id="changePasswordForm" class="auth-form">
               <label><span>当前密码</span><input id="oldPassword" type="password" autocomplete="current-password" required></label>
               <label><span>新密码</span><input id="newPassword" type="password" minlength="6" autocomplete="new-password" placeholder="至少 6 个字符" required></label>
@@ -277,7 +277,7 @@
           </section>
           <section class="settings-card">
             <h2>找回码</h2>
-            <p>忘记密码时，靠找回码重设密码。找回码只会显示一次，重新生成后旧的立刻作废。</p>
+            <p>忘记密码时，用找回码重设密码。重新生成后，旧找回码作废。</p>
             <button class="quiet" id="rotateRecoveryBtn" type="button">重新生成找回码</button>
             <div class="auth-code-display" id="newRecoveryBox" hidden>
               <small>新的找回码</small><strong id="newRecoveryCodeValue">—</strong>
@@ -287,7 +287,7 @@
           </section>
           <section class="settings-card danger-card">
             <h2>删除账号</h2>
-            <p>会永久删除这个账号下的所有活动、已发布的网站、上传的图片和收集到的社团信息，找不回来。删除前建议先导出备份。</p>
+            <p>账号下的活动、网站、图片和社团资料都会被删除，无法恢复。建议先导出备份。</p>
             <form id="deleteAccountForm" class="auth-form">
               <label><span>输入密码确认</span><input id="deleteAccountPassword" type="password" autocomplete="current-password" required></label>
               <button class="danger-outline" type="submit">删除账号和全部数据</button>
@@ -302,7 +302,7 @@
           <div>
             <span class="eyebrow">模板库</span>
             <h1>选择网站模板</h1>
-            <p>模板只决定网站的外观和排版，摊位、日程、指南这些内容的填写方式都一样。</p>
+            <p>模板只影响外观，摊位、日程这些内容在每个模板里的填法都一样。</p>
           </div>
         </div>
         <div class="template-filter-row">
@@ -325,7 +325,7 @@
       <div class="dialog-body">
         <section class="selected-template" id="selectedTemplateCard"></section>
         <label><span>活动名称</span><input id="createProjectName" maxlength="80" placeholder="例如：STARDUST ONLY" required></label>
-        <div class="dialog-note">创建后会直接进入 OnlyEvent Studio。模板可以继续扩展，但项目内容独立保存。</div>
+        <div class="dialog-note">创建后直接进入编辑器。</div>
       </div>
       <div class="dialog-foot">
         <button value="cancel" type="button" id="createCancel">取消</button>
@@ -381,6 +381,6 @@
     </article>
   </template>
 
-  <script type="module" src="/admin/app.js?v=1.6.0"></script>
+  <script type="module" src="/admin/app.js?v=1.6.1"></script>
 </body>
 </html>

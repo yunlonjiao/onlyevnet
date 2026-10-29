@@ -23,7 +23,7 @@ self.addEventListener('fetch',e=>{
     e.respondWith(fetch(req).then(res=>{
       if(res.ok&&new URL(res.url||req.url).pathname==='/'){const copy=res.clone();e.waitUntil(caches.open(CACHE).then(c=>c.put(HOME,copy)))}
       return res;
-    }).catch(async()=>(await caches.match(HOME))||new Response('现在没有网络，而且这台设备还没有保存过这个网站。联网打开一次之后，就可以离线查看了。',{status:503,headers:{'content-type':'text/plain; charset=utf-8'}})));
+    }).catch(async()=>(await caches.match(HOME))||new Response('当前没有网络，这个网站还没缓存。联网打开一次后就能离线看。',{status:503,headers:{'content-type':'text/plain; charset=utf-8'}})));
     return;
   }
   if(req.destination==='image'){
@@ -263,13 +263,13 @@ async function collectImage(req,env,token){
 }
 async function collectSubmit(req,env,token){
   const f=await collectFormByToken(env,token);if(!f)return json({ok:false,error:'这个收集链接无效或已失效'},404);
-  if(!f.open)return json({ok:false,error:'主办方已经关闭了这次收集'},403);
+  if(!f.open)return json({ok:false,error:'主办方已关闭填写'},403);
   await rateLimit(env,'collect-sub:'+clientIp(req),10,3600);
   const b=await bodyJson(req),mediaPrefix='/media/uploads/collect/'+f.project_id+'/';
   const img=v=>{v=String(v||'');return v.startsWith(mediaPrefix)&&/^[a-zA-Z0-9_\/.-]+$/.test(v)?v:''};
   const data={name:collectText(b.name,40),type:collectText(b.type,40),intro:collectText(b.intro,200),contact:collectText(b.contact,80),logo:img(b.logo),products:[]};
   if(!data.name)return json({ok:false,error:'请填写社团名称'},400);
-  if(!data.contact)return json({ok:false,error:'请留一个联系方式，方便主办方联系你'},400);
+  if(!data.contact)return json({ok:false,error:'请填写联系方式'},400);
   for(const p of (Array.isArray(b.products)?b.products:[]).slice(0,COLLECT_MAX_PRODUCTS)){
     const name=collectText(p?.name,40);if(!name)continue;
     data.products.push({name,price:collectText(p.price,20),note:collectText(p.note,60),image:img(p.image)});

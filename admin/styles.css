@@ -205,3 +205,12 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
   .admin-content{padding-bottom:92px}
 }
 .danger-card{border-color:#f0c9d1}.danger-card h2{color:var(--danger,#d6334f)}
+
+/* settings buttons share the look of the other quiet buttons; the red one is for destructive actions */
+.settings-card button,.select-bar button{font-family:inherit}
+.settings-card button:not(.primary){border:1px solid #e0e0e7;background:#fff;border-radius:10px;min-height:36px;padding:0 14px;font-size:11px;font-weight:800;cursor:pointer;color:#26262c}
+.settings-card button:not(.primary):hover{background:#f4f4f8}
+.danger-outline{border:1px solid #efc8c3!important;background:#fffafa!important;color:#b42318!important}
+.danger-outline:hover{background:#fff1ef!important;border-color:#e8aaa2!important}
+.danger-card .auth-form{align-items:flex-start}
+.danger-card .auth-form label{align-self:stretch}

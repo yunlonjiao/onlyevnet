@@ -83,7 +83,7 @@ async function takeSiteOffline(project){
 async function moveToTrash(list){
   if(!list.length)return;
   const published=list.filter(p=>p.siteUrl).length;
-  const ask='把 '+list.length+' 个活动移入回收站？'+(published?'\n其中 '+published+' 个已发布，网站会先下线，游客暂时打不开。':'')+'\n30 天内可以在回收站恢复，内容不会丢。';
+  const ask='把 '+list.length+' 个活动移入回收站？'+(published?'\n其中 '+published+' 个已发布，会先下线网站。':'')+'\n30 天内可以恢复。';
   if(!confirm(ask))return;
   const moved=[],skipped=[];
   for(const project of list){
@@ -98,7 +98,7 @@ async function moveToTrash(list){
     if(readCloudSession())for(const p of moved){const cid=cloudIdOf(p);if(cid)deleteCloudProject(cid).catch(()=>{})}
   }
   selected.clear();renderProjects(currentSearch());
-  if(skipped.length)alert('这些活动没能移入回收站，因为网站没能下线（缺少发布记录，或网络出错）：\n'+skipped.join('、')+'\n请登录发布它们的账号，或稍后再试。');
+  if(skipped.length)alert('下面的活动没能删除，网站下线失败：\n'+skipped.join('、')+'\n请稍后再试。');
 }
 async function restoreFromTrash(list){
   if(!list.length)return;
@@ -111,7 +111,7 @@ async function restoreFromTrash(list){
 function purgeLocalData(project){clearProjectLocalData(project);setCloudProjectId(project.templateId||DEFAULT_TEMPLATE_ID,project.id,'')}
 function purgeFromTrash(list,{ask=true}={}){
   if(!list.length)return;
-  if(ask&&!confirm('永久删除 '+list.length+' 个活动？\n内容和上传的图片都会一起删掉，找不回来。'))return;
+  if(ask&&!confirm('永久删除 '+list.length+' 个活动？图片也会一起删掉，无法恢复。'))return;
   const ids=new Set(list.map(p=>p.id));
   for(const p of list){purgeLocalData(p);if(p.cloudProjectId&&readCloudSession())purgeCloudProject(p.cloudProjectId).catch(()=>{})}
   writeTrash(trash.filter(p=>!ids.has(p.id)));binSelected.clear();renderBin();
@@ -173,7 +173,7 @@ async function loadStats(){
   try{
     const cid=await ensureCloudProjectFor({templateId:project.templateId||DEFAULT_TEMPLATE_ID,projectId:project.id,name:project.name});
     const s=await getProjectStats(cid);
-    if(!s.published){authSetMessage('statsMessage','这个活动还没有发布网站，发布之后这里才会有数据。');return}
+    if(!s.published){authSetMessage('statsMessage','这个活动还没发布，发布后才有数据。');return}
     $('#statToday').textContent=s.today;$('#statWeek').textContent=s.last7;$('#statMonth').textContent=s.last30;$('#statTotal').textContent=s.total;
     const max=Math.max(1,...s.days.map(d=>d.views)),bars=$('#statsBars');bars.innerHTML='';
     s.days.forEach(d=>{const bar=document.createElement('i');bar.style.height=Math.round(d.views/max*100)+'%';bar.title=d.day+'：'+d.views+' 次';bar.classList.toggle('zero',!d.views);bars.appendChild(bar)});
@@ -247,7 +247,7 @@ function renderCollect(){
 // CSV with a BOM so Excel opens the Chinese text correctly.
 function exportCollect(){
   const project=collectProject();if(!project)return;
-  if(!collectEntries.length){collectMsg('还没有可以导出的提交。');return}
+  if(!collectEntries.length){collectMsg('还没有人提交。');return}
   let booths=[];try{booths=JSON.parse(localStorage.getItem(projectStorageKey(project))||'{}').booths||[]}catch{}
   const noByName=new Map(booths.map(b=>[b.name,b.no]));
   const label={pending:'待审核',approved:'已通过',rejected:'未通过'};
@@ -270,13 +270,13 @@ async function approveEntry(entry,no){
   const d=entry.data||{},key=projectStorageKey(project);
   let state=null;try{state=JSON.parse(localStorage.getItem(key)||'null')}catch{}
   try{if(!state)state=await loadCloudConfig(collectCloudId)}catch(err){collectMsg(authNetworkMessage(err),'error');return}
-  if(!state||typeof state!=='object'){collectMsg('这个活动还没有保存过内容，请先打开编辑器保存一次。','error');return}
+  if(!state||typeof state!=='object'){collectMsg('这个活动还没在编辑器里保存过，请先进编辑器保存一次。','error');return}
   const booth={id:uid(),no,name:d.name||'',logo:cloudMediaUrl(d.logo||''),type:d.type||'',intro:d.intro||'',products:(d.products||[]).map(p=>({id:uid(),name:p.name||'',tag:'',price:p.price||'',note:p.note||'',image:cloudMediaUrl(p.image||'')}))};
   state.booths=[...(Array.isArray(state.booths)?state.booths:[]),booth];
   try{localStorage.setItem(key,JSON.stringify(state))}catch{collectMsg('浏览器存储空间不足，没能加入摊位。','error');return}
   try{await saveCloudConfig({projectId:collectCloudId,config:state})}catch{}
   await changeEntry(entry,'approved');
-  collectMsg('已把「'+booth.name+'」加入摊位列表'+(no?'，摊位号 '+no:'')+'。回到编辑器可以继续调整，改完记得更新网站。','ok');
+  collectMsg('已加入摊位：'+booth.name+(no?'（'+no+'）':'')+'。记得回编辑器点「更新网站」。','ok');
 }
 function renderSettings(){
   $('#settingsUsername').textContent=readCloudSession()?.username||'';
@@ -455,7 +455,7 @@ renderTemplates();renderProjects();
 purgeExpiredTrash();renderBinBadge();
 $('#selectModeBtn').onclick=()=>{selectMode=!selectMode;selected.clear();renderProjects(currentSearch())};
 $('#selectAllProjects').onchange=e=>{visibleIds.forEach(id=>e.target.checked?selected.add(id):selected.delete(id));renderProjects(currentSearch())};
-$('#bulkDuplicateBtn').onclick=async()=>{const n=await duplicateProjects(projects.filter(p=>selected.has(p.id)));if(n)alert('已复制 '+n+' 个活动，名字后面加了「副本」。')};
+$('#bulkDuplicateBtn').onclick=async()=>{const n=await duplicateProjects(projects.filter(p=>selected.has(p.id)));if(n)alert('已复制 '+n+' 个活动。')};
 $('#bulkTrashBtn').onclick=()=>moveToTrash(projects.filter(p=>selected.has(p.id)));
 $('#selectAllBin').onchange=e=>{trash.forEach(p=>e.target.checked?binSelected.add(p.id):binSelected.delete(p.id));renderBin()};
 $('#binRestoreBtn').onclick=()=>restoreFromTrash(trash.filter(p=>binSelected.has(p.id)));
@@ -476,23 +476,23 @@ $('#changePasswordForm').addEventListener('submit',async e=>{
     const next=$('#newPassword').value;
     if(next!==$('#newPassword2').value)throw Object.assign(new Error('两次输入的新密码不一致。'),{status:400});
     await changeAccountPassword({oldPassword:$('#oldPassword').value,newPassword:next});
-    e.target.reset();authSetMessage('changePasswordMessage','密码已修改。其他设备需要用新密码重新登录。','ok');
+    e.target.reset();authSetMessage('changePasswordMessage','密码已修改。','ok');
   }catch(err){authSetMessage('changePasswordMessage',authNetworkMessage(err),'error')}
   finally{btn.disabled=false}
 });
 $('#rotateRecoveryBtn').onclick=async()=>{
-  if(!confirm('重新生成后，旧的找回码会立刻作废。继续吗？'))return;
+  if(!confirm('重新生成后，旧找回码作废。继续？'))return;
   authSetMessage('rotateRecoveryMessage','');
   try{
     const code=await rotateRecoveryCode();
     $('#newRecoveryCodeValue').textContent=code;$('#newRecoveryBox').hidden=false;$('#copyNewRecoveryBtn').textContent='复制';
-    authSetMessage('rotateRecoveryMessage','请现在就抄下来或保存好，离开这个页面后就看不到了。','ok');
+    authSetMessage('rotateRecoveryMessage','请马上保存，离开页面后不再显示。','ok');
   }catch(err){authSetMessage('rotateRecoveryMessage',authNetworkMessage(err),'error')}
 };
 $('#copyNewRecoveryBtn').onclick=async()=>{const code=$('#newRecoveryCodeValue').textContent;try{await navigator.clipboard.writeText(code);$('#copyNewRecoveryBtn').textContent='已复制'}catch{prompt('复制找回码',code)}};
 $('#deleteAccountForm').addEventListener('submit',async e=>{
   e.preventDefault();authSetMessage('deleteAccountMessage','');
-  if(!confirm('最后确认：永久删除账号和全部数据？这一步不能撤销。'))return;
+  if(!confirm('确定删除账号和全部数据吗？删除后无法恢复。'))return;
   const btn=e.submitter;btn.disabled=true;
   try{
     await deleteAccount({password:$('#deleteAccountPassword').value});

@@ -31,6 +31,6 @@ test('statistics page explains when the site is not published yet',async({page})
   await page.evaluate(()=>localStorage.setItem('onlyevent-admin-projects-v1',JSON.stringify([{id:'s1',name:'未发布',templateId:'01-ip-only',status:'draft',siteUrl:'',updatedAt:new Date().toISOString()}])));
   await page.reload();
   await page.locator('[data-admin-page="stats"]').click();
-  await expect(page.locator('#statsMessage')).toContainText('还没有发布');
+  await expect(page.locator('#statsMessage')).toContainText('还没发布');
   await expect(page.locator('#statsCards')).toBeHidden();
 });

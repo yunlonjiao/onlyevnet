@@ -223,10 +223,10 @@ function renderPublishDialog(){
  if(!hasSite)renamingSite=false;
  publishSlug.value=slug;publishSlug.readOnly=hasSite&&!renamingSite;
  $('#publishRename').hidden=!hasSite||renamingSite;
- $('#publishSlugHint').textContent=renamingSite?'改成新网址后，旧网址会自动跳转到新网址，已经发出去的链接不会失效。':'发布后会生成独立游客网站。再次发布会更新同一个地址。';
+ $('#publishSlugHint').textContent=renamingSite?'改网址后，旧网址会自动跳到新网址。':'发布后得到一个游客网址，再次发布会更新同一个网站。';
  $('#publishHost').textContent='.onlyevent.cn';
  publishPrimary.textContent=hasSite?(renamingSite?'保存新网址并更新':'更新网站'):'发布网站';
- publishStatus.textContent=hasSite?'已发布，可将最新修改同步到线上网站。':'设置网站地址后即可发布。';
+ publishStatus.textContent=hasSite?'已发布。点「更新网站」把最新修改发上去。':'先填一个网站地址。';
  publishResult.hidden=!publishRecord?.url;
  publishUrl.textContent=publishRecord?.url||'';
  $('#publishOpen').disabled=!publishRecord?.url;$('#publishCopy').disabled=!publishRecord?.url;

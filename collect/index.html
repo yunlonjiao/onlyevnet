@@ -40,7 +40,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
   <div id="stateBox" class="state" hidden><b id="stateTitle"></b><span id="stateText"></span></div>
   <form id="collectForm" hidden>
     <h1 id="formTitle">社团信息填写</h1>
-    <p class="lead">主办方会用这里填的内容制作社团和摊位页面。填完提交就行，不用登录。</p>
+    <p class="lead">填好后提交，主办方审核后会放进活动网站。不需要登录。</p>
     <div class="card">
       <h2>社团信息</h2>
       <label>社团名称 <small>（必填）</small><input type="text" id="fName" maxlength="40" autocomplete="off" required></label>
@@ -50,7 +50,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
         <span class="pick"><span class="thumb" id="logoThumb">未上传</span>
         <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp,image/gif"></span>
       </label>
-      <label>联系方式 <small>（必填，只有主办方能看到，不会公开）</small><input type="text" id="fContact" maxlength="80" placeholder="QQ、微信或邮箱"></label>
+      <label>联系方式 <small>（必填，仅主办方可见）</small><input type="text" id="fContact" maxlength="80" placeholder="QQ、微信或邮箱"></label>
     </div>
     <div class="card">
       <h2>摊位制品 <small style="font-weight:400;color:var(--muted)">（最多 8 件，可以不填）</small></h2>
@@ -108,9 +108,9 @@ button:disabled{opacity:.55;cursor:not-allowed}
   }
   function renumber(){[...$('#productList').children].forEach((b,i)=>b.querySelector('header span').textContent='制品 '+(i+1));$('#addProduct').hidden=$('#productList').children.length>=MAX}
   async function init(){
-    if(!token)return show('链接不完整','请向主办方要一个完整的填写链接。');
+    if(!token)return show('链接不完整','请向主办方要完整的填写链接。');
     let info;try{const res=await fetch(api);info=await res.json();if(!res.ok)throw new Error(info.error||'')}catch(e){return show('这个链接用不了',e.message||'链接无效或已失效，请向主办方确认。')}
-    if(!info.open)return show('收集已结束','主办方已经关闭了这次填写。如果还需要补充，请直接联系主办方。');
+    if(!info.open)return show('收集已结束','主办方已关闭填写，需要补充请联系主办方。');
     $('#formTitle').textContent=info.eventName+' · 社团信息';document.title=info.eventName+' · 社团信息填写';
     $('#collectForm').hidden=false;addProduct();
   }
@@ -124,7 +124,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
       const res=await fetch(api,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:$('#fName').value,type:$('#fType').value,intro:$('#fIntro').value,contact:$('#fContact').value,logo,products})});
       const data=await res.json().catch(()=>({}));
       if(!res.ok)throw new Error(data.error||'提交失败，请稍后再试');
-      show('提交成功','主办方审核后会放进活动网站。如果要修改，请联系主办方。');
+      show('提交成功','已收到。需要修改请直接联系主办方。');
     }catch(err){msg(err.message,'error');$('#submitBtn').disabled=false}
   };
   init();
