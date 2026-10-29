@@ -62,7 +62,7 @@ test('Studio identifiers stay English while organizer event names remain editabl
   const {context,page,errors}=await openEditor(id,'ci-identity-'+id);
   assert.equal(await page.locator('#projectTemplateName').textContent(),label);
   assert.equal(await page.locator('#workspaceTemplateName').textContent(),label);
-  assert.equal(await page.locator('#studioVersion').textContent(),'v8.41.5');
+  assert.equal(await page.locator('#studioVersion').textContent(),'v'+(await import(new URL('../v8/version.js',import.meta.url))).STUDIO_VERSION);
   assert.deepEqual(errors,[]);
   await context.close();
  }

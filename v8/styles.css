@@ -1177,3 +1177,5 @@ body.previewing .canvas-stage:before{display:none}
   .mobile-edit-group button span:last-child{display:none}
 }
 
+
+.studio-version[hidden]{display:none}
