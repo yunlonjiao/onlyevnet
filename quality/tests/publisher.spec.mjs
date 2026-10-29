@@ -67,3 +67,28 @@ test('publishing while signed out explains that an organizer login is required',
   await expect(page.locator('#publishStatus')).toHaveText('请先登录主办方账号');
   expect(cloud.requests).toHaveLength(0);
 });
+
+test('a published site can change its address and the old address still reaches it',async({page})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'rename-organizer');
+  await page.goto('/v8/?template=01-ip-only&project=rename-01');
+  await expect(page.frameLocator('#liveFrame').locator('.hero')).toBeVisible();
+  await page.locator('#publishBtn').click();
+  await expect(page.locator('#publishRename')).toBeHidden();
+  await page.locator('#publishSlug').fill('first-name');
+  await page.locator('#publishPrimary').click();
+  await expect(page.locator('#publishUrl')).toHaveText('https://first-name.onlyevent.cn');
+
+  await expect(page.locator('#publishSlug')).toHaveJSProperty('readOnly',true);
+  await page.locator('#publishRename').click();
+  await expect(page.locator('#publishSlug')).toBeEnabled();
+  await expect(page.locator('#publishPrimary')).toHaveText('保存新网址并更新');
+  await page.locator('#publishSlug').fill('second-name');
+  await page.locator('#publishPrimary').click();
+  await expect(page.locator('#publishUrl')).toHaveText('https://second-name.onlyevent.cn');
+  await expect(page.locator('#publishStatus')).toContainText('旧网址会自动跳转');
+  await expect(page.locator('#publishSlug')).toHaveJSProperty('readOnly',true);
+  expect((await visitSite(cloud,'second-name')).status).toBe(200);
+  const old=await visitSite(cloud,'first-name');
+  expect([200,301]).toContain(old.status);
+});

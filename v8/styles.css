@@ -1179,3 +1179,6 @@ body.previewing .canvas-stage:before{display:none}
 
 
 .studio-version[hidden]{display:none}
+
+.publish-rename{align-self:flex-start;margin-top:8px;padding:5px 12px;border:1px solid #d8d4ea;border-radius:8px;background:#fff;font:inherit;font-size:12px;cursor:pointer}
+.publish-rename[hidden]{display:none}

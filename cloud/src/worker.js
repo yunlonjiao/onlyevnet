@@ -209,7 +209,7 @@ async function collectInfo(req,env,token){
 }
 async function collectImage(req,env,token){
   const f=await collectFormByToken(env,token);if(!f||!f.open)return json({ok:false,error:'这个收集链接已关闭'},404);
-  await rateLimit(env,'collect-img:'+clientIp(req),40,3600);await rateLimit(env,'collect-img-form:'+f.project_id,600,86400);
+  await rateLimit(env,'collect-img:'+clientIp(req),100,3600);await rateLimit(env,'collect-img-form:'+f.project_id,600,86400);
   const form=await req.formData(),file=[...form.values()].find(v=>v instanceof File);
   if(!file)return json({ok:false,error:'没有收到图片文件'},400);
   if(file.size>5*1024*1024)return json({ok:false,error:'图片不能超过 5MB'},413);

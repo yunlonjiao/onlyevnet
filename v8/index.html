@@ -155,7 +155,8 @@
         <section class="publish-site-card">
           <span>网站地址</span>
           <div class="publish-domain-input"><span>https://</span><input id="publishSlug" autocomplete="off" spellcheck="false" inputmode="url" aria-label="网站地址前缀"><b id="publishHost">.onlyevent.cn</b></div>
-          <small>发布后会生成独立游客网站。再次发布会更新同一个地址。</small>
+          <small id="publishSlugHint">发布后会生成独立游客网站。再次发布会更新同一个地址。</small>
+          <button id="publishRename" type="button" class="publish-rename" hidden>修改网址</button>
         </section>
         <div class="publish-status" id="publishStatus">设置网站地址后即可发布。</div>
         <section class="publish-result" id="publishResult" hidden>
@@ -172,7 +173,7 @@
   </dialog>
 
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="/v8/editor/studio-entry.js"></script>
+  <script type="module" src="/v8/editor/studio-entry.js?v=8.47.0"></script>
 <!-- v8.33.9 preview trigger -->
 </body>
 </html>

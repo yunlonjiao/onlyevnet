@@ -1,7 +1,7 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.45.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.47.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
@@ -217,21 +217,26 @@ function syncPublishButton(){
 function savePublishRecord(next){
  publishRecord={...publishRecord,...next};localStorage.setItem(PUBLISH_STORAGE,JSON.stringify(publishRecord));syncPublishButton();
 }
+let renamingSite=false;
 function renderPublishDialog(){
  const hasSite=hasLiveSite(publishRecord),slug=cleanSlug(publishRecord?.slug||suggestSlug(state.eventName,state.date));
- publishSlug.value=slug;publishSlug.readOnly=hasSite;
+ if(!hasSite)renamingSite=false;
+ publishSlug.value=slug;publishSlug.readOnly=hasSite&&!renamingSite;
+ $('#publishRename').hidden=!hasSite||renamingSite;
+ $('#publishSlugHint').textContent=renamingSite?'改成新网址后，旧网址会自动跳转到新网址，已经发出去的链接不会失效。':'发布后会生成独立游客网站。再次发布会更新同一个地址。';
  $('#publishHost').textContent='.onlyevent.cn';
- publishPrimary.textContent=hasSite?'更新网站':'发布网站';
+ publishPrimary.textContent=hasSite?(renamingSite?'保存新网址并更新':'更新网站'):'发布网站';
  publishStatus.textContent=hasSite?'已发布，可将最新修改同步到线上网站。':'设置网站地址后即可发布。';
  publishResult.hidden=!publishRecord?.url;
  publishUrl.textContent=publishRecord?.url||'';
  $('#publishOpen').disabled=!publishRecord?.url;$('#publishCopy').disabled=!publishRecord?.url;
 }
 function openPublishDialog(){
- renderPublishDialog();publishDialog.showModal();if(!hasLiveSite(publishRecord))setTimeout(()=>publishSlug.select(),0);
+ renamingSite=false;renderPublishDialog();publishDialog.showModal();if(!hasLiveSite(publishRecord))setTimeout(()=>publishSlug.select(),0);
 }
 function setPublishBusy(busy,text=''){
- publishPrimary.disabled=busy;$('#publishDownload').disabled=busy;publishSlug.disabled=busy||hasLiveSite(publishRecord);
+ publishPrimary.disabled=busy;$('#publishDownload').disabled=busy;publishSlug.disabled=busy||(hasLiveSite(publishRecord)&&!renamingSite);
+ $('#publishRename').disabled=busy;
  if(text)publishStatus.textContent=text;
 }
 async function publishGeneratedHtml(html){
@@ -244,7 +249,8 @@ async function publishGeneratedHtml(html){
    publishRecord={};
    savePublishRecord({...result,url:publishedUrl});
    syncAdminProject({siteUrl:publishedUrl,status:'published'});
-   renderPublishDialog();publishStatus.textContent='网站已上线';toast('网站已发布');
+   const renamed=renamingSite;renamingSite=false;
+   renderPublishDialog();publishStatus.textContent=renamed?'网址已修改，旧网址会自动跳转到新网址':'网站已上线';toast(renamed?'网址已修改':'网站已发布');
  }catch(error){
    publishStatus.textContent=error?.message||'发布失败，请稍后重试';
  }finally{setPublishBusy(false)}
@@ -1656,6 +1662,7 @@ publishPrimary.onclick=()=>{publishIntent='site';send({type:'OE_EXPORT_HTML'})};
 $('#publishDownload').onclick=()=>{publishIntent='download';send({type:'OE_EXPORT_HTML'})};
 $('#publishOpen').onclick=()=>{if(publishRecord?.url)window.open(publishRecord.url,'_blank','noopener')};
 $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navigator.clipboard.writeText(publishRecord.url);toast('链接已复制')}catch{toast('复制失败')}};
+$('#publishRename').addEventListener('click',()=>{renamingSite=true;renderPublishDialog();publishSlug.disabled=false;publishSlug.focus();publishSlug.select()});
 publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});
 if(projectId!=='default'&&!hasSavedProject){localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject()}
 syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
