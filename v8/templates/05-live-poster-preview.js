@@ -5,7 +5,7 @@
 import {coreStyle,coreSection,coreRibbon,head} from '/v8/templates/shared-sections.js?v=8.51.0';
 
 const style=`
-.ls-site{--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
+.ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
  position:relative;min-height:100vh;color:#fff;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
  background:radial-gradient(ellipse 70% 40% at 50% 0,#3b1d7a55,transparent 70%),linear-gradient(180deg,var(--ls-bg),#100c2b 60%,var(--ls-bg))}
 .ls-site .wrap{max-width:1200px;margin:0 auto;padding:0 22px}

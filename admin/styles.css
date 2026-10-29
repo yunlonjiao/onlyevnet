@@ -241,3 +241,17 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 .overview-bar small{color:var(--muted);font-size:12px;font-weight:700}.overview-bar b{font-size:26px;line-height:1.15}
 .overview-bar .ov-link{cursor:pointer}.overview-bar .ov-link:hover{border-color:var(--accent)}
 .project-time .stale{color:#b45f06;font-weight:800;margin-left:6px}
+
+/* quick setup for small events */
+.quick-setup[hidden]{display:none}
+.quick-setup{display:flex;flex-direction:column;gap:12px;padding:14px;border:1px dashed var(--line);border-radius:14px;background:#faf9ff}
+.quick-title{font-size:12px;color:var(--muted);line-height:1.6}
+.quick-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quick-setup label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:800}
+.quick-setup input[type=text],.quick-setup input:not([type]),.quick-setup input[type=file]{padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit}
+.quick-modules{border:0;padding:0;margin:0}.quick-modules legend{font-size:12px;font-weight:800;margin-bottom:6px;padding:0}
+.quick-modules label{display:inline-flex;flex-direction:row;align-items:center;gap:6px;margin:0 14px 6px 0;font-weight:700}
+
+.template-group{grid-column:1/-1;display:flex;align-items:baseline;gap:12px;margin:10px 0 -4px;padding-top:6px}
+.template-group:first-child{margin-top:0}
+.template-group b{font-size:17px}.template-group span{font-size:12.5px;color:var(--muted)}

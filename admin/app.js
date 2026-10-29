@@ -1,11 +1,11 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
-import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.52.0';
+import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.52.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
 // Short Chinese tags for the template gallery (the internal art-direction names stay English).
-const TEMPLATE_TAGS={'01-ip-only':'活泼 · 贴纸','02-scrapbook':'手账 · 叙事','03-creator-market':'社区 · 内容流','04-creator-catalogue':'二次元 · 电子场刊','05-live-poster':'舞台 · 节目表 · 嘉宾','06-tea-party':'小型活动 · 茶会 · 邀请函'};
+const TEMPLATE_TAGS={'01-ip-only':'活泼 · 贴纸','02-scrapbook':'手账 · 叙事','03-creator-market':'社区 · 内容流','04-creator-catalogue':'二次元 · 电子场刊','05-live-poster':'舞台 · 节目表 · 嘉宾','07-tea-party':'小型活动 · 茶会 · 邀请函'};
 const templateTag=t=>TEMPLATE_TAGS[t.id]||'';
 let selectedTemplateId=DEFAULT_TEMPLATE_ID;
 let projects=readProjects();
@@ -336,14 +336,20 @@ migrateLegacyProject();projects=readProjects();
 
 function renderTemplates(){
   const templates=listTemplates(),grid=$('#templateGrid');grid.innerHTML='';
+  let lastGroup='';
   templates.forEach((template,index)=>{
+    if(template.group!==lastGroup){
+      lastGroup=template.group;
+      const g=TEMPLATE_GROUPS.find(x=>x.id===template.group);
+      if(g){const h=document.createElement('div');h.className='template-group';h.innerHTML='<b></b><span></span>';h.firstChild.textContent=g.label;h.lastChild.textContent=g.text;grid.appendChild(h)}
+    }
     const card=document.createElement('article');
     card.className='template-card template-art-'+String(template.artDirection||'default').replace(/[^a-z0-9-]/gi,'')+(template.eventType==='creator-market'?' template-market-preview':'');
     card.dataset.templateId=template.id;
     const coverFile=template.id==='01-ip-only'?'template-01.png':template.id==='02-scrapbook'?'template-02.png':template.id==='03-creator-market'?'template-03.png':template.id==='04-creator-catalogue'?'template-04.png':'';
     const marketUrl='';
     card.innerHTML='<div class="template-preview"><div class="template-preview-window"><span class="bar"></span><div class="hero"><b>STAR<br>DUST<br>ONLY</b><span class="art"></span><em>'+String(template.structureProfile||'portal').toUpperCase()+'</em></div><div class="rows"><i></i><i></i><i></i></div></div>'+(coverFile?'<img class="template-real-cover" src="/admin/covers/'+coverFile+'" alt="'+template.name+' 真实网页首屏截图" loading="lazy" onerror="this.remove()">':'')+(marketUrl?'<iframe class="market-thumbnail" src="'+marketUrl+'" title="模板视觉预览" tabindex="-1" loading="lazy" aria-hidden="true"></iframe>':'')+'</div>'+
-      '<div class="template-card-body"><span>模板 '+String(index+1).padStart(2,'0')+'</span><h2>'+template.label+'</h2><p>'+template.description+'</p><div class="template-card-footer"><span class="template-tag">'+templateTag(template)+'</span><button class="use-template" data-template="'+template.id+'" type="button">使用此模板</button></div></div>';
+      '<div class="template-card-body"><span>模板 '+template.id.slice(0,2)+'</span><h2>'+template.label+'</h2><p>'+template.description+'</p><div class="template-card-footer"><span class="template-tag">'+templateTag(template)+'</span><button class="use-template" data-template="'+template.id+'" type="button">使用此模板</button></div></div>';
     grid.appendChild(card);
   });
 
@@ -427,11 +433,58 @@ function openCreate(templateId=DEFAULT_TEMPLATE_ID){
   const t=getTemplate(templateId);
   $('#selectedTemplateCard').innerHTML='<span class="thumb thumb-'+String(t.artDirection||'default').replace(/[^a-z0-9-]/gi,'')+'"></span><div><b>'+t.label+'</b><span>'+templateTag(t)+'</span></div>';
   $('#createProjectName').value=getTemplate(selectedTemplateId).defaults.eventName||'STARDUST ONLY';
+  const quick=t.quickSetup;
+  $('#quickSetup').hidden=!quick;
+  if(quick){
+    for(const id of ['quickHero','quickDate','quickPlace','quickTicketUrl','quickTagline'])$('#'+id).value='';
+    $('#quickModules').innerHTML=quick.modules.map(m=>'<label><input type="checkbox" value="'+m.key+'" checked> '+m.label+'</label>').join('');
+  }
   $('#createDialog').showModal();
   setTimeout(()=>$('#createProjectName').focus(),0);
 }
-function createProject(name){
+// Large phone photos are scaled down before they are stored or uploaded.
+async function shrinkImage(file){
+  try{
+    const bmp=await createImageBitmap(file),scale=Math.min(1,1800/Math.max(bmp.width,bmp.height));
+    if(scale===1&&file.size<800*1024)return file;
+    const c=document.createElement('canvas');c.width=Math.round(bmp.width*scale);c.height=Math.round(bmp.height*scale);
+    c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+    const blob=await new Promise(r=>c.toBlob(r,'image/webp',.86));
+    return blob&&blob.size<file.size?blob:file;
+  }catch{return file}
+}
+const fileToDataUrl=blob=>new Promise((ok,fail)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=fail;r.readAsDataURL(blob)});
+// Small-event templates take a few answers up front and start the editor with them filled in.
+async function quickSetupPatch(project){
+  const t=getTemplate(project.templateId),patch={};
+  const text=id=>$('#'+id).value.trim();
+  if(text('quickDate'))patch.date=text('quickDate');
+  if(text('quickPlace'))patch.location=text('quickPlace');
+  if(text('quickTicketUrl'))patch.ticketUrl=text('quickTicketUrl');
+  if(text('quickTagline'))patch.tagline=text('quickTagline');
+  const chosen=new Set([...qa('#quickModules input:checked')].map(i=>i.value));
+  patch.modules={...(t.defaults.modules||{})};
+  for(const m of t.quickSetup.modules)patch.modules[m.key]=chosen.has(m.key);
+  const file=$('#quickHero').files[0];
+  if(file){
+    const blob=await shrinkImage(file);
+    try{
+      const cid=await ensureCloudProjectFor({templateId:project.templateId,projectId:project.id,name:project.name});
+      patch.heroImage=await uploadCloudImage({blob,projectId:cid,filename:'hero.webp'});
+    }catch{patch.heroImage=await fileToDataUrl(blob)}
+  }
+  return patch;
+}
+async function createProject(name){
   const project={id:uid(),name:name.trim()||'未命名活动',templateId:selectedTemplateId,status:'draft',updatedAt:new Date().toISOString(),siteUrl:''};
+  if(getTemplate(selectedTemplateId).quickSetup){
+    const button=$('#createForm button[type=submit]');button.disabled=true;button.textContent='正在准备…';
+    try{
+      const patch=await quickSetupPatch(project);
+      localStorage.setItem(projectStorageKey(project),JSON.stringify({...patch,eventName:project.name}));
+    }catch{}
+    finally{button.disabled=false;button.textContent='使用此模板创建'}
+  }
   writeProjects([...projects,project]);
   location.href=studioUrl(project);
 }

@@ -1,11 +1,11 @@
 import {test,expect} from '@playwright/test';
 import {useCloudPublisher,signInCloud} from './cloud-publisher.mjs';
-const ids=['01-ip-only','02-scrapbook','03-creator-market','04-creator-catalogue','05-live-poster','06-tea-party'];
-test('admin lists six current, actionable templates',async({page})=>{
+const ids=['01-ip-only','02-scrapbook','03-creator-market','04-creator-catalogue','05-live-poster','06-band-live','07-tea-party','08-birthday'];
+test('admin lists eight current, actionable templates',async({page})=>{
  await signInCloud(page,await useCloudPublisher(page),'模板QA');
  await page.goto('/admin/');
  await page.locator('[data-admin-page="templates"]').click();
- await expect(page.locator('#templateGrid .template-card[data-template-id]')).toHaveCount(6);
+ await expect(page.locator('#templateGrid .template-card[data-template-id]')).toHaveCount(8);
  for(const id of ids)await expect(page.locator('#templateGrid [data-template="'+id+'"]')).toHaveText(/使用此模板/);
 });
 for(const id of ids)test(id+' opens the correct Studio instead of silently reverting to IP ONLY',async({page})=>{
@@ -19,6 +19,10 @@ for(const id of ids)test(id+' opens the correct Studio instead of silently rever
   await expect(frame.locator('.ls-site [data-oe-mirror="lineup"] .lineup-card').first()).toBeAttached();
   await expect(frame.locator('.ls-site [data-oe-mirror="timetable"] .timeline-row').first()).toBeAttached();
  }else if(id.startsWith('06')){
+  await expect(frame.locator('.bl-site [data-oe-mirror="lineup"] .lineup-card').first()).toBeAttached();
+ }else if(id.startsWith('08')){
+  await expect(frame.locator('.bd-site #participation .featured-activity-card').first()).toBeAttached();
+ }else if(id.startsWith('07')){
   await expect(frame.locator('.tp-site [data-oe-mirror="lineup"] .lineup-card').first()).toBeAttached();
   await expect(frame.locator('.tp-site #participation .featured-activity-card').first()).toBeAttached();
  }else if(id.startsWith('03')){

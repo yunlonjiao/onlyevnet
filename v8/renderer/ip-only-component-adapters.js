@@ -1,15 +1,18 @@
 
 // Templates whose art is pure CSS over the Template 01 component markup.
 const BASE_MARKUP_TEMPLATES=new Set(['01-ip-only']);
-const CM='03-creator-market',CC='04-creator-catalogue',TP='06-tea-party';
-const TP_CUSTOM=new Set(['ticketMarkup','guestMarkup','scheduleMarkup','updateMarkup','activityMarkup']);
+const CM='03-creator-market',CC='04-creator-catalogue',TP='07-tea-party',BL='06-band-live',BD='08-birthday';
+// These templates write their own markup for five components and use Template 01's for the rest.
+const OWN_MARKUP=new Set([TP,BL,BD]);
+const OWN_COMPONENTS=new Set(['ticketMarkup','guestMarkup','scheduleMarkup','updateMarkup','activityMarkup']);
+const usesBase=(id,fn)=>id==='01-ip-only'||(OWN_MARKUP.has(id)&&!OWN_COMPONENTS.has(fn));
 const tid=s=>{const id=String(s?.templateId||'01-ip-only');return BASE_MARKUP_TEMPLATES.has(id)?'01-ip-only':id};
 const isVariant=s=>tid(s)!=='01-ip-only';
 const num=i=>String(i+1).padStart(2,'0');
 
 export function ticketMarkup({state,x,i,field,esc,image}){
   const id=tid(state);
-  if(id==='01-ip-only')return '';
+  if(usesBase(id,'ticketMarkup'))return '';
   const name=field('tickets.'+i+'.name',x.name,'h3');
   const price=field('tickets.'+i+'.price',x.price||'','div','oe-ticket-price');
   const gift=field('tickets.'+i+'.gift',x.gift||'','span','oe-ticket-gift');
@@ -17,6 +20,8 @@ export function ticketMarkup({state,x,i,field,esc,image}){
   const common=' data-oe-item="tickets" data-oe-index="'+i+'"';
   if(id===CM)return '<article class="ticket cm-ticket"'+common+'><span class="cm-ticket-badge">入场</span><div class="cm-ticket-body">'+name+gift+note+'</div><div class="cm-ticket-price">'+price+'</div>'+(image||'')+'</article>';
   if(id===CC)return '<article class="ticket cc-ticket"'+common+'><div class="cc-ticket-main"><small>ADMISSION TICKET · 入場券</small>'+name+gift+note+'</div><div class="cc-ticket-stub"><span>No.'+num(i)+'</span>'+price+'<i>✦</i></div>'+(image||'')+'</article>';
+  if(id===BL)return '<article class="ticket bl-ticket"'+common+'><div class="bl-ticket-tag">TICKET '+num(i)+'</div><div class="bl-ticket-main">'+name+gift+note+'</div><div class="bl-ticket-price">'+price+'</div>'+(image||'')+'</article>';
+  if(id===BD)return '<article class="ticket bd-gift"'+common+'><div class="bd-gift-ribbon">GIFT '+num(i)+'</div><div class="bd-gift-main">'+name+gift+note+'</div><div class="bd-gift-price">'+price+'</div>'+(image||'')+'</article>';
   if(id===TP)return '<article class="ticket tp-ticket"'+common+'><div class="tp-ticket-main"><small>参加方式 '+num(i)+'</small>'+name+gift+note+'</div><div class="tp-ticket-price">'+price+'</div>'+(image||'')+'</article>';
   if(id==='02-scrapbook')return '<article class="ticket scrap-pass"'+common+'><div class="scrap-pass-watermark" aria-hidden="true"><svg class="stamp-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs><path id="journey-seal-ring" d="M100 100 m-73 0 a73 73 0 1 1 146 0 a73 73 0 1 1 -146 0"/></defs><circle cx="100" cy="100" r="88" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="100" cy="100" r="64" fill="none" stroke="currentColor" stroke-width="1.5"/><text fill="currentColor" font-family="Georgia,serif" font-size="12" letter-spacing="1.1" font-weight="bold"><textPath href="#journey-seal-ring" startOffset="50%" text-anchor="middle">YOUR SPECIAL JOURNEY • LUCKY DAY • OE</textPath></text><g transform="translate(100 103) rotate(-8)" fill="currentColor"><defs><path id="oe-clover-heart" d="M0 0 C-7 -8 -29 -22 -29 -39 C-29 -56 -7 -57 0 -42 C7 -57 29 -56 29 -39 C29 -22 7 -8 0 0 Z"/></defs><use href="#oe-clover-heart" transform="translate(0 -2) scale(.78)"/><use href="#oe-clover-heart" transform="rotate(90) translate(0 -2) scale(.78)"/><use href="#oe-clover-heart" transform="rotate(180) translate(0 -2) scale(.78)"/><use href="#oe-clover-heart" transform="rotate(270) translate(0 -2) scale(.78)"/><path d="M10 16 Q22 37 32 47" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></g></svg></div><div class="scrap-pass-main"><span class="scrap-pass-label">入场凭证 / ADMISSION</span>'+name+gift+note+'</div><div class="scrap-pass-art">'+image+'</div><aside>'+price+'<span>入场票 / TICKET</span></aside></article>';
   if(id==='03-school-festival')return '<article class="ticket school-ticket-card"'+common+'><div class="school-ticket-no">'+num(i)+'</div><div class="school-ticket-copy"><span>ADMISSION PASS</span>'+name+gift+note+'</div><div class="school-ticket-price">'+price+'</div>'+image+'</article>';
@@ -27,11 +32,13 @@ export function ticketMarkup({state,x,i,field,esc,image}){
 }
 
 export function guestMarkup({state,g,i,field,esc,img,related,worksBlock,introBlock,social,metaLabel,members,attendance,metaValue,guestType}){
-  const id=tid(state); if(id==='01-ip-only')return '';
+  const id=tid(state); if(usesBase(id,'guestMarkup'))return '';
   const meta=members?field('guests.'+i+'.members',members,'span','oe-secondary-copy'):attendance?field('guests.'+i+'.attendanceNote',attendance,'span','oe-secondary-copy'):'<span class="oe-secondary-copy">'+esc(metaValue)+'</span>';
   const name=field('guests.'+i+'.name',g.name||'','b','guest-poster-name');
   const role=field('guests.'+i+'.role',g.role||'GUEST','small');
   const common=' id="guest-'+esc(g.id)+'" data-oe-item="guests" data-oe-index="'+i+'"';
+  if(id===BL)return '<article class="bl-band guest-type-'+guestType+'"'+common+'><div class="bl-band-no">'+num(i)+'</div><div class="bl-band-photo">'+img+'</div><div class="bl-band-copy">'+role+name+'<div class="bl-band-members">'+meta+'</div>'+worksBlock+introBlock+social+related+'</div></article>';
+  if(id===BD)return '<article class="bd-guest guest-type-'+guestType+'"'+common+'><div class="bd-guest-photo">'+img+'</div><div class="bd-guest-copy">'+role+name+'<div class="bd-guest-meta">'+meta+'</div>'+worksBlock+introBlock+social+related+'</div></article>';
   if(id===TP)return '<article class="tp-guest guest-type-'+guestType+'"'+common+'><div class="tp-guest-photo">'+img+'</div><div class="tp-guest-copy">'+role+name+'<div class="tp-guest-meta">'+meta+'</div>'+worksBlock+introBlock+social+related+'</div></article>';
   if(id==='02-scrapbook')return '<article class="scrap-guest guest-type-'+guestType+'"'+common+'><div class="scrap-polaroid">'+img+'<span>MEMORY '+num(i)+'</span></div><div class="scrap-guest-note"><small>'+role+'</small>'+name+'<div class="scrap-tape-meta"><b>'+metaLabel+'</b>'+meta+'</div>'+worksBlock+introBlock+social+related+'</div></article>';
   if(id==='03-school-festival')return '<article class="school-profile guest-type-'+guestType+'"'+common+'><div class="school-profile-no">'+num(i)+'</div>'+img+'<div class="school-profile-copy"><span>GUEST PROFILE</span>'+name+role+'<div class="school-profile-meta">'+meta+'</div>'+worksBlock+introBlock+social+related+'</div></article>';
@@ -42,10 +49,12 @@ export function guestMarkup({state,g,i,field,esc,img,related,worksBlock,introBlo
 }
 
 export function scheduleMarkup({state,x,i,field,esc,day,area,endTime,guestHtml,planLink,reg}){
-  const id=tid(state); if(id==='01-ip-only')return '';
+  const id=tid(state); if(usesBase(id,'scheduleMarkup'))return '';
   const range=[x.time,endTime].filter(Boolean),time=range[0]||'时间待定',end=range[1]||'';
   const common=' id="schedule-'+esc(x.id||String(i))+'" data-activity-index="'+i+'" data-activity-day="'+esc(day)+'" data-activity-area="'+esc(area)+'" data-oe-item="schedule" data-oe-index="'+i+'"';
   const title=field('schedule.'+i+'.title',x.title,'b'),detail=field('schedule.'+i+'.detail',x.detail||'','p','oe-secondary-copy'),stage=field('schedule.'+i+'.stage',area,'span');
+  if(id===BL)return '<article class="bl-set"'+common+'><div class="bl-set-time">'+field('schedule.'+i+'.time',time,'strong')+(end?'<small>'+field('schedule.'+i+'.endTime',end,'span')+'</small>':'')+'</div><div class="bl-set-body"><span>'+esc(day)+(area?' / ':'')+stage+'</span>'+title+detail+guestHtml+planLink+reg+'</div></article>';
+  if(id===BD)return '<article class="bd-step"'+common+'><span class="bd-step-no">'+num(i)+'</span><div class="bd-step-time">'+field('schedule.'+i+'.time',time,'strong')+(end?'<small>'+field('schedule.'+i+'.endTime',end,'span')+'</small>':'')+'</div><div class="bd-step-body"><small>'+esc(day)+(area?' · ':'')+stage+'</small>'+title+detail+guestHtml+planLink+reg+'</div></article>';
   if(id===TP)return '<article class="tp-agenda"'+common+'><time>'+field('schedule.'+i+'.time',time,'strong')+(end?'<small>'+field('schedule.'+i+'.endTime',end,'span')+'</small>':'')+'</time><div class="tp-agenda-body"><span>'+esc(day)+(area?' · ':'')+stage+'</span>'+title+detail+guestHtml+planLink+reg+'</div></article>';
   if(id==='02-scrapbook')return '<article class="scrap-itinerary"'+common+'><span class="scrap-itinerary-no">'+num(i)+'</span><time>'+field('schedule.'+i+'.time',time,'strong')+(end?' – '+field('schedule.'+i+'.endTime',end,'small'):'')+'</time><div><small>'+esc(day)+' / '+stage+'</small>'+title+detail+guestHtml+'<footer>'+planLink+reg+'</footer></div></article>';
   if(id==='03-school-festival')return '<article class="school-timetable"'+common+'><div class="school-time">'+field('schedule.'+i+'.time',time,'strong')+(end?'<small>'+field('schedule.'+i+'.endTime',end,'span')+'</small>':'')+'</div><div class="school-period">'+num(i)+'</div><div><span>'+esc(day)+' · '+stage+'</span>'+title+detail+guestHtml+planLink+reg+'</div></article>';
@@ -56,10 +65,12 @@ export function scheduleMarkup({state,x,i,field,esc,day,area,endTime,guestHtml,p
 }
 
 export function updateMarkup({state,u,i,field,esc,target,mode}){
-  const id=tid(state); if(id==='01-ip-only')return '';
+  const id=tid(state); if(usesBase(id,'updateMarkup'))return '';
   const common=' href="#'+esc(target)+'" data-target-mode="'+mode+'" data-page-link="'+esc(target)+'" data-oe-item="updates" data-oe-index="'+i+'"';
   if(id===CM)return '<a class="cm-update"'+common+'><span class="cm-update-tag">公告</span>'+field('updates.'+i+'.title',u.title||'','b')+'<time>'+esc(u.date||'')+'</time></a>';
   if(id===CC)return '<a class="cc-update"'+common+'><span class="cc-update-star" aria-hidden="true">★</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<i aria-hidden="true">›</i></a>';
+  if(id===BL)return '<a class="bl-update"'+common+'><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<i aria-hidden="true">→</i></a>';
+  if(id===BD)return '<a class="bd-update"'+common+'><span class="bd-update-star" aria-hidden="true">★</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'</a>';
   if(id===TP)return '<a class="tp-update"'+common+'><span class="tp-update-heart" aria-hidden="true">♡</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'</a>';
   if(id==='02-scrapbook')return '<a class="scrap-update"'+common+'><time class="scrap-update-date">'+esc(u.date||'')+'</time><span class="scrap-update-type">INFO</span>'+field('updates.'+i+'.title',u.title||'','b')+'<span class="scrap-update-arrow" aria-hidden="true">↗</span></a>';
   if(id==='03-school-festival')return '<a class="school-update"'+common+'><span>NEWS '+num(i)+'</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<i>→</i></a>';
@@ -70,7 +81,7 @@ export function updateMarkup({state,u,i,field,esc,target,mode}){
 }
 
 export function sponsorMarkup({state,x,i,field,esc,logo,action}){
-  const id=tid(state); if(id==='01-ip-only'||id===TP)return '';
+  const id=tid(state); if(usesBase(id,'sponsorMarkup'))return '';
   const name=field('sponsors.'+i+'.name',x.name||'','b'),level=field('sponsors.'+i+'.level',x.level||'','small');
   const common=' data-oe-item="sponsors" data-oe-index="'+i+'"';
   if(id===CM)return '<article class="sponsor-card cm-sponsor"'+common+'>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
@@ -82,7 +93,7 @@ export function sponsorMarkup({state,x,i,field,esc,logo,action}){
 }
 
 export function boothMarkup({state,b,i,field,esc,logo,fav,search,productCount}){
-  const id=tid(state);if(id==='01-ip-only'||id===TP)return '';
+  const id=tid(state);if(usesBase(id,'boothMarkup'))return '';
   const common=' id="booth-'+esc(b.id)+'" data-directory-card data-kind="booth" data-booth-id="'+esc(b.id)+'" data-search="'+esc(search)+'" data-oe-item="booths" data-oe-index="'+i+'"';
   const name=field('booths.'+i+'.name',b.name||'','h3'),no=field('booths.'+i+'.no',b.no||'','span','booth-no'),type=field('booths.'+i+'.type',b.type||'','small'),intro=field('booths.'+i+'.intro',b.intro||'','p');
   const buttons='<button class="booth-products-link" type="button" data-view-booth-products="'+esc(b.id)+'" data-booth-label="'+esc((b.no?b.no+' · ':'')+(b.name||'摊位'))+'">'+(productCount?productCount+' 件制品 ↗':'暂无制品')+'</button><button class="favorite-booth'+(fav?' active':'')+'" type="button" data-favorite-booth="'+esc(b.id)+'" aria-pressed="'+fav+'">'+(fav?'♥ 已收藏':'♡ 收藏社团')+'</button>';
@@ -97,7 +108,7 @@ export function boothMarkup({state,b,i,field,esc,logo,fav,search,productCount}){
 }
 
 export function productMarkup({state,b,p,i,j,field,esc,img,wished,search}){
-  const id=tid(state);if(id==='01-ip-only'||id===TP)return '';
+  const id=tid(state);if(usesBase(id,'productMarkup'))return '';
   const common=' data-directory-card data-kind="product" data-product-id="'+esc(p.id)+'" data-booth-id="'+esc(b.id)+'" data-product-edit-booth="'+i+'" data-product-edit-index="'+j+'" data-search="'+esc(search)+'"';
   const name=field('booths.'+i+'.products.'+j+'.name',p.name||'','b'),tag=field('booths.'+i+'.products.'+j+'.tag',p.tag||'','em','product-tag'),price=field('booths.'+i+'.products.'+j+'.price',p.price||'','span');
   const wish='<button class="wishlist-product'+(wished?' active':'')+'" type="button" data-wishlist-product="'+esc(p.id)+'" data-booth-id="'+esc(b.id)+'" aria-pressed="'+wished+'">'+(wished?'★ 已加入':'☆ 心愿')+'</button>';
@@ -113,12 +124,14 @@ export function productMarkup({state,b,p,i,j,field,esc,img,wished,search}){
 
 
 export function activityMarkup({state,x,i,field,esc,image,scheduleInfo,venueInfo,guestHtml,action,modules,type,typeLabel}){
-  const id=tid(state);if(id==='01-ip-only')return '';
+  const id=tid(state);if(usesBase(id,'activityMarkup'))return '';
   const common=' id="participation-'+esc(x.id||String(i))+'" data-oe-item="participation" data-oe-index="'+i+'"';
   const title=field('participation.'+i+'.title',x.title||'活动','h3');
   const summary=String(x.text||'').trim()?field('participation.'+i+'.text',x.text,'p','oe-secondary-copy'):'';
   const body=modules.length?'<div class="oe-activity-modules">'+modules.join('')+'</div>':'';
   const meta=type==='venue'?venueInfo:scheduleInfo;
+  if(id===BL)return '<article class="bl-activity"'+common+'><header><span>'+num(i)+'</span>'+typeLabel+'</header><div class="bl-activity-body"><div class="bl-activity-visual">'+image+'</div><div class="bl-activity-copy">'+title+summary+meta+guestHtml+body+action+'</div></div></article>';
+  if(id===BD)return '<article class="bd-activity"'+common+'><div class="bd-activity-visual">'+image+'</div><div class="bd-activity-copy"><span class="bd-tag">'+typeLabel+'</span>'+title+summary+meta+guestHtml+body+action+'</div></article>';
   if(id===TP)return '<article class="tp-activity"'+common+'><div class="tp-activity-visual">'+image+'</div><div class="tp-activity-copy"><span class="tp-activity-tag">'+typeLabel+'</span>'+title+summary+meta+guestHtml+body+action+'</div></article>';
   if(id==='02-scrapbook')return '<article class="scrap-activity"'+common+'><div class="scrap-activity-photo">'+image+'</div><div class="scrap-activity-note"><span>MEMORY PLAN '+num(i)+'</span>'+title+'<small>'+typeLabel+'</small>'+summary+meta+guestHtml+action+body+'</div></article>';
   if(id==='03-school-festival')return '<article class="school-activity"'+common+'><header><span>'+num(i)+'</span><b>'+typeLabel+'</b></header><div class="school-activity-main">'+image+'<div>'+title+summary+meta+guestHtml+action+body+'</div></div></article>';
@@ -129,7 +142,7 @@ export function activityMarkup({state,x,i,field,esc,image,scheduleInfo,venueInfo
 }
 
 export function guideMarkup({state,x,i,field,esc,image,navigation,preset,kindLabel,scope}){
-  const id=tid(state);if(id==='01-ip-only'||id===TP)return '';
+  const id=tid(state);if(usesBase(id,'guideMarkup'))return '';
   const common=' id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"';
   const title=field('guide.items.'+i+'.title',x.title||'','span'),text=field('guide.items.'+i+'.text',x.text||'','p');
   const label=esc(x.label||kindLabel[preset]||'GUIDE');
@@ -144,7 +157,7 @@ export function guideMarkup({state,x,i,field,esc,image,navigation,preset,kindLab
 }
 
 export function communityMarkup({state,x,i,field,esc,img,action}){
-  const id=tid(state);if(id==='01-ip-only'||id===TP)return '';
+  const id=tid(state);if(usesBase(id,'communityMarkup'))return '';
   const common=' data-oe-item="socialLinks" data-oe-index="'+i+'"';
   const label=field('socialLinks.'+i+'.label',x.label,'b'),note=field('socialLinks.'+i+'.note',x.note||'','p');
   if(id===CM)return '<article class="cm-social"'+common+'><div class="cm-social-avatar">'+img+'</div><div class="cm-social-text">'+label+note+'</div>'+action+'</article>';
@@ -159,7 +172,7 @@ export function communityMarkup({state,x,i,field,esc,img,action}){
 
 
 export function quickMarkup({state,x,i,esc}){
-  const id=tid(state);if(id==='01-ip-only'||id===TP)return '';
+  const id=tid(state);if(usesBase(id,'quickMarkup'))return '';
   const href='#'+x[1],mode=x[4],label=x[2],hint=x[3],n=num(i);
   const common=' href="'+href+'" data-target-mode="'+mode+'" data-page-link="'+esc(x[1])+'"';
   if(id==='02-scrapbook')return '<a class="scrap-index-card"'+common+'><span>'+n+'</span><div><small>MEMORY FILE</small><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></div><i>↗</i></a>';
@@ -171,7 +184,7 @@ export function quickMarkup({state,x,i,esc}){
 }
 
 export function mapLinkMarkup({state,item,index,field,esc,target,kind,itemId}){
-  const id=tid(state);if(id==='01-ip-only'||id===TP)return '';
+  const id=tid(state);if(usesBase(id,'mapLinkMarkup'))return '';
   const common=' href="#'+esc(target)+'" data-target-mode="page" data-page-link="'+esc(target)+'" data-explore-link data-explore-kind="'+esc(kind)+'" data-explore-id="'+esc(itemId)+'" data-oe-item="explore" data-oe-index="'+index+'"';
   const label=field('venueMap.links.'+index+'.label',item.label,'span');
   if(id===CM)return '<a class="cm-map-tag"'+common+'><b>#</b>'+label+'</a>';

@@ -5,7 +5,7 @@
 import {coreStyle,coreSection,head} from '/v8/templates/shared-sections.js?v=8.51.0';
 
 const style=`
-.tp-site{--primary:#f08fa8;--secondary:#8fd3bb;--tp-cream:#fff6ec;--tp-paper:#fffdf8;--tp-pink:#f08fa8;--tp-rose:#fadbe3;--tp-mint:#bfe6d6;--tp-lav:#dccffa;--tp-brown:#5a3d3a;--tp-soft:#8c6f6a;--tp-gold:#d9a441;--tp-line:#ecd5cc;
+.tp-site{overflow-x:clip;--primary:#f08fa8;--secondary:#8fd3bb;--tp-cream:#fff6ec;--tp-paper:#fffdf8;--tp-pink:#f08fa8;--tp-rose:#fadbe3;--tp-mint:#bfe6d6;--tp-lav:#dccffa;--tp-brown:#5a3d3a;--tp-soft:#8c6f6a;--tp-gold:#d9a441;--tp-line:#ecd5cc;
  position:relative;min-height:100vh;color:var(--tp-brown);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
  background-color:var(--tp-cream);background-image:radial-gradient(circle,#f9d3dc99 1.6px,transparent 1.8px);background-size:30px 30px}
 .tp-site .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
@@ -145,6 +145,11 @@ const style=`
 .tp-site #activities .activity-view-tabs button.active,.tp-site #activities .activity-day-tabs button.active{background:var(--tp-pink)!important;border-color:var(--tp-pink)!important;color:#fff!important}
 .tp-site #activities .activity-view-tabs button:not(.active),.tp-site #activities .activity-day-tabs button:not(.active){background:transparent!important}
 .tp-site #activities .activity-page-subhead{border-color:var(--tp-line)!important}
+.tp-site .tp-site #activities .activity-page-subhead,.tp-site #activities .activity-page-block{border:0!important}
+.tp-site .tp-guest-photo{min-width:0}
+.tp-site .tp-guest-photo .guest-image,.tp-site .tp-guest-photo .guest-image.empty,.tp-site .tp-guest-photo img{display:block;width:100%!important;max-width:100%!important;aspect-ratio:1/1;border-radius:50%!important;object-fit:cover;border:0!important;padding:0;background:linear-gradient(150deg,#f9d3dc,#dccffa)!important;box-shadow:0 0 0 3px var(--tp-paper),0 0 0 5px var(--tp-pink);min-height:0}
+.tp-site #guests .tp-guest-copy b.guest-poster-name{color:var(--tp-brown)!important}
+.tp-site .tp-guest-copy .guest-note,.tp-site .tp-guest-copy .guest-related-note{background:#fff5f2!important;border:2px solid var(--tp-line)!important;border-radius:14px!important;box-shadow:none!important}
 @media(max-width:820px){
  .tp-site .hero-grid{grid-template-columns:minmax(0,1fr);gap:30px}.tp-site .hero-art{order:-1;max-width:260px}
  .tp-site .hero-copy{padding:30px 22px 26px}

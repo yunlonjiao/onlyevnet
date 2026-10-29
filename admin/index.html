@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>OnlyEvent Studio</title>
-  <link rel="stylesheet" href="/admin/styles.css?v=1.8.0">
+  <link rel="stylesheet" href="/admin/styles.css?v=1.9.0">
 </head>
 <body>
   <header class="admin-topbar">
@@ -332,6 +332,17 @@
       <div class="dialog-body">
         <section class="selected-template" id="selectedTemplateCard"></section>
         <label><span>活动名称</span><input id="createProjectName" maxlength="80" placeholder="例如：STARDUST ONLY" required></label>
+        <div class="quick-setup" id="quickSetup" hidden>
+          <div class="quick-title">先填这几项，进编辑器就是现成的页面，其余的以后再改。</div>
+          <label><span>主视觉图 <small>（可以先不传）</small></span><input id="quickHero" type="file" accept="image/png,image/jpeg,image/webp"></label>
+          <div class="quick-row">
+            <label><span>日期</span><input id="quickDate" maxlength="40" placeholder="例如：2026.11.08"></label>
+            <label><span>地点</span><input id="quickPlace" maxlength="60" placeholder="例如：杭州"></label>
+          </div>
+          <label><span>报名 / 预约链接</span><input id="quickTicketUrl" maxlength="300" placeholder="https://"></label>
+          <label><span>一句话介绍</span><input id="quickTagline" maxlength="120"></label>
+          <fieldset class="quick-modules"><legend>要哪几块内容</legend><div id="quickModules"></div></fieldset>
+        </div>
         <div class="dialog-note">创建后直接进入编辑器。</div>
       </div>
       <div class="dialog-foot">
@@ -388,6 +399,6 @@
     </article>
   </template>
 
-  <script type="module" src="/admin/app.js?v=1.8.0"></script>
+  <script type="module" src="/admin/app.js?v=1.9.0"></script>
 </body>
 </html>

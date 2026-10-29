@@ -1,15 +1,17 @@
 import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.37.2';
 /* Template 06 runs on the shared IP ONLY core; the invitation-card art and the activity-first home differ. */
-export const template06=makeIpOnlyTemplate({
- id:'06-tea-party',name:'06 · 茶会小聚',label:'茶会小聚',studioName:'茶会小聚',
+export const template07=makeIpOnlyTemplate({
+ id:'07-tea-party',name:'07 · 茶会小聚',label:'茶会小聚',studioName:'茶会小聚',
  description:'邀请函风格：首页先讲清楚当天玩什么、几点做什么，适合茶会、小型 ONLY、生日会和线下交流会。',
  structureProfile:'invitation',artDirection:'tea-party',motionProfile:'gentle',
  theme:'#f08fa8',heroTitleColor:'#5a3d3a',heroTitleAccentColor:'#f08fa8',
  presentationProfile:{mobileDock:true},
- studioPages:{hidden:['booths'],hiddenContent:[],customPages:false}
+ studioPages:{hidden:['booths'],hiddenContent:[],customPages:false},
+ group:'small',
+ quickSetup:{modules:[{key:'activities',label:'当天流程'},{key:'guests',label:'同席的人'},{key:'guide',label:'参加须知'},{key:'community',label:'联系与社群'}]}
 });
 // Starter content for a small gathering: a few activities, a short agenda and the hosts.
-const d=template06.defaults;
+const d=template07.defaults;
 d.tagline='喝茶，聊天，玩小游戏。一个下午，和同好待在一起。';
 d.modules={...d.modules,booths:false,sponsors:false,ribbon:false,guests:true,activities:true,guide:true,community:true};
 d.tickets=[
