@@ -78,6 +78,17 @@ async function register(req,env){await rateLimit(env,'register:'+clientIp(req),5
 async function login(req,env){const b=await bodyJson(req),username=cleanText(b.username,32),password=String(b.password||'');await rateLimit(env,'login-ip:'+clientIp(req),30,900);await rateLimit(env,'login:'+username.toLowerCase(),10,900);const row=await env.DB.prepare('SELECT id,username,password_hash,password_salt FROM users WHERE username=? COLLATE NOCASE').bind(username).first();if(!row)return json({ok:false,error:'账号或密码不正确'},401);const got=await hashPassword(password,row.password_salt);if(got!==row.password_hash)return json({ok:false,error:'账号或密码不正确'},401);return issueSession(env,row.id,row.username)}
 async function recoverAccount(req,env){const b=await bodyJson(req);await rateLimit(env,'recover-ip:'+clientIp(req),20,3600);await rateLimit(env,'recover:'+cleanText(b.username,32).toLowerCase(),5,3600);const username=cleanText(b.username,32),recoveryCode=String(b.recoveryCode||'').trim(),newPassword=String(b.newPassword||'');if(!validUsername(username)||!recoveryCode)return json({ok:false,error:'请输入账号和恢复码'},400);if(newPassword.length<6)return json({ok:false,error:'新密码至少 6 位'},400);const row=await env.DB.prepare(`SELECT users.id,account_recovery.code_hash,account_recovery.code_salt FROM users LEFT JOIN account_recovery ON account_recovery.user_id=users.id WHERE users.username=? COLLATE NOCASE LIMIT 1`).bind(username).first();if(!row?.code_hash)return json({ok:false,error:'账号或恢复码不正确'},400);let matched=false;for(const candidate of recoveryCandidates(recoveryCode)){if(await hashPassword(candidate,row.code_salt)===row.code_hash){matched=true;break}}if(!matched)return json({ok:false,error:'账号或恢复码不正确'},400);const salt=newSalt(),passwordHash=await hashPassword(newPassword,salt);await env.DB.batch([env.DB.prepare('UPDATE users SET password_hash=?,password_salt=? WHERE id=?').bind(passwordHash,salt,row.id),env.DB.prepare('DELETE FROM sessions WHERE user_id=?').bind(row.id)]);return json({ok:true})}
 async function rotateRecoveryCode(req,env){const u=await requireUser(req,env),recoveryCode=newRecoveryCode(),recoverySalt=newSalt(),recoveryHash=await hashPassword(recoveryCode,recoverySalt),updated=now();await env.DB.prepare(`INSERT INTO account_recovery(user_id,code_hash,code_salt,updated_at) VALUES(?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET code_hash=excluded.code_hash,code_salt=excluded.code_salt,updated_at=excluded.updated_at`).bind(u.id,recoveryHash,recoverySalt,updated).run();return json({ok:true,recoveryCode:formatRecoveryCode(recoveryCode),updatedAt:updated})}
+async function changePassword(req,env){
+  const u=await requireUser(req,env);await rateLimit(env,'password:'+u.id,10,3600);
+  const b=await bodyJson(req),oldPassword=String(b.oldPassword||''),newPassword=String(b.newPassword||'');
+  if(newPassword.length<6)return json({ok:false,error:'新密码至少 6 位'},400);
+  const row=await env.DB.prepare('SELECT password_hash,password_salt FROM users WHERE id=?').bind(u.id).first();
+  if(!row||await hashPassword(oldPassword,row.password_salt)!==row.password_hash)return json({ok:false,error:'当前密码不正确'},400);
+  const salt=newSalt(),hash=await hashPassword(newPassword,salt);
+  // Other devices must sign in again with the new password; this session stays.
+  await env.DB.batch([env.DB.prepare('UPDATE users SET password_hash=?,password_salt=? WHERE id=?').bind(hash,salt,u.id),env.DB.prepare('DELETE FROM sessions WHERE user_id=? AND token_hash<>?').bind(u.id,u.tokenHash)]);
+  return json({ok:true});
+}
 async function logout(req,env){const token=await tokenFromReq(req);if(token)await env.DB.prepare('DELETE FROM sessions WHERE token_hash=?').bind(await sha256(token)).run();return json({ok:true},200,{'set-cookie':cookie(SESSION_COOKIE,'',{maxAge:0})})}
 
 function currentProjectId(req){return cleanText(req.headers.get('x-onlyevent-project')||parseCookies(req)[PROJECT_COOKIE]||'',100)}
@@ -161,6 +172,7 @@ async function handleApi(req,env,path){
   if((path==='/api/account/login'||path==='/api/auth/login')&&req.method==='POST')return login(req,env);
   if(path==='/api/account/recover'&&req.method==='POST')return recoverAccount(req,env);
   if(path==='/api/account/recovery-code'&&req.method==='POST')return rotateRecoveryCode(req,env);
+  if(path==='/api/account/password'&&req.method==='POST')return changePassword(req,env);
   if((path==='/api/logout'||path==='/api/auth/logout')&&req.method==='POST')return logout(req,env);
   if(path==='/api/me'&&req.method==='GET'){const u=await requireUser(req,env);return json({ok:true,user:{id:u.id,username:u.username}})}
   if(path==='/api/session'&&req.method==='GET')return sessionInfo(req,env);

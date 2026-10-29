@@ -54,7 +54,7 @@ test('signed-in image uploads go to R2 and are served back by the Worker',async(
   await page.goto('/v8/?template=01-ip-only&project=upload-check');
   await expect(page.frameLocator('#liveFrame').locator('[data-oe-field="eventName"]').first()).toBeAttached();
   const url=await page.evaluate(async()=>{
-    const m=await import('/v8/publisher.js?v=8.45.0');
+    const m=await import('/v8/publisher.js?v=8.46.0');
     const cloudProjectId=await m.ensureCloudProjectFor({templateId:'01-ip-only',projectId:'upload-check',name:'上传测试'});
     return m.uploadCloudImage({blob:new Blob([new Uint8Array([71,73,70,56,57,97])],{type:'image/gif'}),projectId:cloudProjectId,filename:'x.gif'});
   });

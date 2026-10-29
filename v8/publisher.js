@@ -103,6 +103,15 @@ export async function loadCloudConfig(projectId){
 export async function saveCloudConfig({projectId,config}){
   return api('/api/config',{method:'PUT',projectId,body:{config}});
 }
+export async function restoreCloudProject(projectId){
+  return api('/api/projects/'+encodeURIComponent(projectId)+'/restore',{method:'POST',body:{}});
+}
+export async function purgeCloudProject(projectId){
+  return api('/api/projects/'+encodeURIComponent(projectId)+'/purge',{method:'DELETE'});
+}
+export async function changeAccountPassword({oldPassword,newPassword}){
+  return api('/api/account/password',{method:'POST',body:{oldPassword,newPassword}});
+}
 export async function deleteCloudProject(projectId){
   return api('/api/projects/'+encodeURIComponent(projectId),{method:'DELETE'});
 }

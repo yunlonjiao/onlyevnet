@@ -1,6 +1,6 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite} from '/v8/publisher.js?v=8.45.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode} from '/v8/publisher.js?v=8.46.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -55,31 +55,126 @@ async function unpublishProject(project){
     return false;
   }
 }
-async function deleteProject(project){
-  if(project.siteUrl){
-    const ok=confirm('这个项目已经发布。\n\n确定删除项目吗？系统会先下线游客网站，再删除本地项目数据。');
-    if(!ok)return;
-    const record=getPublishRecord(project);
-    if(!record.siteId||!record.cloudProjectId){
-      alert('为避免留下无法管理的线上网站，当前不会只删除本地项目。\n请先恢复发布凭证或下线网站。');
-      return;
+/* ---- recycle bin, duplicate and batch actions ---- */
+const TRASH_KEY='onlyevent-admin-trash-v1',TRASH_DAYS=30,DAY_MS=86400000;
+function readTrash(){try{return JSON.parse(localStorage.getItem(TRASH_KEY)||'[]')||[]}catch{return []}}
+let trash=readTrash();
+function writeTrash(next){trash=next;localStorage.setItem(TRASH_KEY,JSON.stringify(trash));renderBinBadge()}
+const cloudIdOf=project=>project.cloudProjectId||getCloudProjectId(project.templateId||DEFAULT_TEMPLATE_ID,project.id)||'';
+function daysLeft(project){return Math.max(0,TRASH_DAYS-Math.floor((Date.now()-(Date.parse(project.deletedAt)||Date.now()))/DAY_MS))}
+function renderBinBadge(){const badge=$('#binCount');if(!badge)return;badge.hidden=!trash.length;badge.textContent=String(trash.length)}
+let selectMode=false,visibleIds=[];
+const selected=new Set(),binSelected=new Set();
+const currentSearch=()=>$('#projectSearch')?.value||'';
+function updateSelectBar(){
+  $('#projectSelectBar').hidden=!selectMode;
+  $('#selectedCount').textContent=String(selected.size);
+  $('#bulkDuplicateBtn').disabled=!selected.size;$('#bulkTrashBtn').disabled=!selected.size;
+  $('#selectAllProjects').checked=!!visibleIds.length&&visibleIds.every(id=>selected.has(id));
+  $('#selectModeBtn').textContent=selectMode?'退出批量管理':'批量管理';
+}
+// A published site has to go offline before its project can be deleted; its content is kept.
+async function takeSiteOffline(project){
+  const record=getPublishRecord(project);
+  if(!record.siteId||!record.cloudProjectId)return false;
+  try{await deleteSite({siteId:record.siteId,projectId:record.cloudProjectId});localStorage.removeItem(publishStorageKey(project));return true}
+  catch{return false}
+}
+async function moveToTrash(list){
+  if(!list.length)return;
+  const published=list.filter(p=>p.siteUrl).length;
+  const ask='把 '+list.length+' 个活动移入回收站？'+(published?'\n其中 '+published+' 个已发布，网站会先下线，游客暂时打不开。':'')+'\n30 天内可以在回收站恢复，内容不会丢。';
+  if(!confirm(ask))return;
+  const moved=[],skipped=[];
+  for(const project of list){
+    if(project.siteUrl&&!(await takeSiteOffline(project))){skipped.push(project.name||'未命名活动');continue}
+    moved.push(project);
+  }
+  if(moved.length){
+    const ids=new Set(moved.map(p=>p.id)),when=new Date().toISOString();
+    writeTrash([...moved.map(p=>({...p,siteUrl:'',status:'draft',deletedAt:when,cloudProjectId:cloudIdOf(p)||undefined})),...trash]);
+    writeProjects(projects.filter(p=>!ids.has(p.id)));
+    // Without this the project would come back from the cloud on the next sign-in.
+    if(readCloudSession())for(const p of moved){const cid=cloudIdOf(p);if(cid)deleteCloudProject(cid).catch(()=>{})}
+  }
+  selected.clear();renderProjects(currentSearch());
+  if(skipped.length)alert('这些活动没能移入回收站，因为网站没能下线（缺少发布记录，或网络出错）：\n'+skipped.join('、')+'\n请登录发布它们的账号，或稍后再试。');
+}
+async function restoreFromTrash(list){
+  if(!list.length)return;
+  const ids=new Set(list.map(p=>p.id)),now=new Date().toISOString();
+  writeProjects([...projects,...list.map(({deletedAt,...p})=>({...p,status:'draft',siteUrl:'',updatedAt:now}))]);
+  writeTrash(trash.filter(p=>!ids.has(p.id)));
+  if(readCloudSession())for(const p of list){if(p.cloudProjectId)restoreCloudProject(p.cloudProjectId).catch(()=>{})}
+  binSelected.clear();renderBin();renderProjects(currentSearch());
+}
+function purgeLocalData(project){clearProjectLocalData(project);setCloudProjectId(project.templateId||DEFAULT_TEMPLATE_ID,project.id,'')}
+function purgeFromTrash(list,{ask=true}={}){
+  if(!list.length)return;
+  if(ask&&!confirm('永久删除 '+list.length+' 个活动？\n内容和上传的图片都会一起删掉，找不回来。'))return;
+  const ids=new Set(list.map(p=>p.id));
+  for(const p of list){purgeLocalData(p);if(p.cloudProjectId&&readCloudSession())purgeCloudProject(p.cloudProjectId).catch(()=>{})}
+  writeTrash(trash.filter(p=>!ids.has(p.id)));binSelected.clear();renderBin();
+}
+function purgeExpiredTrash(){purgeFromTrash(trash.filter(p=>p.deletedAt&&daysLeft(p)<=0),{ask:false})}
+async function duplicateProjects(list){
+  const made=[];
+  for(const project of list){
+    const templateId=project.templateId||DEFAULT_TEMPLATE_ID,id=uid();
+    const name=(String(project.name||'未命名活动')+' 副本').slice(0,80);
+    let state=null;try{state=JSON.parse(localStorage.getItem(projectStorageKey(project))||'null')}catch{}
+    if(state&&typeof state==='object'){
+      state={...state,projectId:id,templateId,eventName:name};
+      try{localStorage.setItem('onlyevent-studio-v8:'+templateId+':'+id+':iframe',JSON.stringify(state))}
+      catch{alert('浏览器存储空间不足，没能复制「'+(project.name||'未命名活动')+'」。');continue}
     }
-    try{await deleteSite({siteId:record.siteId,projectId:record.cloudProjectId})}
-    catch(error){alert('线上网站下线失败，项目未删除：'+(error?.message||'Publisher 暂未启用删除接口'));return}
-  }else if(!confirm('确定删除这个项目？\n项目内容会从当前浏览器中删除。'))return;
-  const cloudId=project.cloudProjectId||getCloudProjectId(project.templateId||DEFAULT_TEMPLATE_ID,project.id);
-  clearProjectLocalData(project);
-  writeProjects(projects.filter(p=>p.id!==project.id));
-  renderProjects($('#projectSearch').value);
-  // Without this the project would come back from the cloud on the next sign-in.
-  if(cloudId&&readCloudSession())deleteCloudProject(cloudId).catch(()=>alert('项目已从本机删除，但云端副本删除失败；下次登录时它可能重新出现。'));
+    made.push({project:{id,name,templateId,status:'draft',siteUrl:'',updatedAt:new Date().toISOString()},state});
+  }
+  if(!made.length)return 0;
+  writeProjects([...projects,...made.map(m=>m.project)]);
+  selected.clear();renderProjects(currentSearch());
+  // Keep the copy in the cloud right away so deleting the original later cannot take shared images with it.
+  if(readCloudSession())for(const {project,state} of made){
+    if(state)ensureCloudProjectFor({templateId:project.templateId,projectId:project.id,name:project.name}).then(cid=>saveCloudConfig({projectId:cid,config:state})).catch(()=>{});
+  }
+  return made.length;
+}
+function renderBin(){
+  const grid=$('#binGrid');grid.innerHTML='';
+  $('#emptyBin').hidden=trash.length>0;
+  [...trash].sort((a,b)=>String(b.deletedAt||'').localeCompare(String(a.deletedAt||''))).forEach(project=>{
+    const frag=$('#binCardTemplate').content.cloneNode(true),card=frag.querySelector('.bin-card');
+    card.dataset.projectId=project.id;
+    card.querySelector('.project-card-title b').textContent=project.name||'未命名活动';
+    card.querySelector('.project-card-title span').textContent='还剩 '+daysLeft(project)+' 天自动清除';
+    card.querySelector('.project-template').textContent=getTemplate(project.templateId)?.label||project.templateId||'模板';
+    card.querySelector('.project-time').textContent='删除于 '+formatTime(project.deletedAt);
+    const input=card.querySelector('.select-project');input.checked=binSelected.has(project.id);card.classList.toggle('is-selected',input.checked);
+    input.onchange=()=>{input.checked?binSelected.add(project.id):binSelected.delete(project.id);card.classList.toggle('is-selected',input.checked);updateBinBar()};
+    card.querySelector('.restore-project').onclick=()=>restoreFromTrash([project]);
+    card.querySelector('.purge-project').onclick=()=>purgeFromTrash([project]);
+    grid.appendChild(frag);
+  });
+  updateBinBar();
+}
+function updateBinBar(){
+  for(const id of [...binSelected])if(!trash.some(p=>p.id===id))binSelected.delete(id);
+  $('#binSelectedCount').textContent=String(binSelected.size);
+  $('#binRestoreBtn').disabled=!binSelected.size;$('#binPurgeBtn').disabled=!binSelected.size;
+  $('#binEmptyBtn').hidden=!trash.length;
+  $('#selectAllBin').checked=!!trash.length&&trash.every(p=>binSelected.has(p.id));
+}
+function renderSettings(){
+  $('#settingsUsername').textContent=readCloudSession()?.username||'';
+  $('#newRecoveryBox').hidden=true;authSetMessage('changePasswordMessage','');authSetMessage('rotateRecoveryMessage','');
 }
 /* Projects saved in the cloud on another device appear here after signing in. */
 async function restoreCloudProjects(){
   if(!readCloudSession())return;
   let remote=[];
   try{remote=await listCloudProjects()}catch{return}
-  const known=new Set(projects.map(p=>p.cloudProjectId||getCloudProjectId(p.templateId||DEFAULT_TEMPLATE_ID,p.id)).filter(Boolean));
+  // Projects sitting in the local recycle bin must not be restored from the cloud again.
+  const known=new Set([...projects,...trash].map(p=>p.cloudProjectId||getCloudProjectId(p.templateId||DEFAULT_TEMPLATE_ID,p.id)).filter(Boolean));
   const templateIds=new Set(listTemplates().map(t=>t.id));
   const added=[];
   // The site's ID lives in the browser that published it; rebuild the record so this device can update or unpublish it.
@@ -141,12 +236,18 @@ function renderProjects(filter=''){
   const term=filter.trim().toLocaleLowerCase(),grid=$('#projectGrid'),empty=$('#emptyProjects');
   grid.innerHTML='';
   const visible=projects.filter(p=>!term||String(p.name||'').toLocaleLowerCase().includes(term));
+  visibleIds=visible.map(p=>p.id);
   $('#projectCount').textContent=String(projects.length);
   empty.hidden=projects.length>0;
   visible.sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||''))).forEach(project=>{
     const frag=$('#projectCardTemplate').content.cloneNode(true),card=frag.querySelector('.project-card');
     const status=project.siteUrl?'published':'draft';
     card.dataset.projectId=project.id;
+    card.classList.toggle('is-selected',selected.has(project.id));
+    const pick=card.querySelector('.card-select'),pickInput=pick.querySelector('input');
+    pick.hidden=!selectMode;pickInput.checked=selected.has(project.id);
+    pickInput.onchange=()=>{pickInput.checked?selected.add(project.id):selected.delete(project.id);card.classList.toggle('is-selected',pickInput.checked);updateSelectBar()};
+    card.querySelector('.duplicate-project').onclick=async()=>{await duplicateProjects([project])};
     card.querySelector('.project-card-title b').textContent=project.name||'未命名活动';
     card.querySelector('.project-card-title span').textContent=project.siteUrl||'尚未发布游客网站';
     card.querySelector('.project-template').textContent=getTemplate(project.templateId)?.label||project.templateId||'模板';
@@ -165,14 +266,17 @@ function renderProjects(filter=''){
       });
     }
     unpublish.onclick=()=>unpublishProject(project);
-    card.querySelector('.delete-project').onclick=()=>deleteProject(project);
+    card.querySelector('.delete-project').onclick=()=>moveToTrash([project]);
     grid.appendChild(frag);
   });
   if(!visible.length&&projects.length){grid.innerHTML='<div class="empty-projects" style="grid-column:1/-1"><b>没有找到匹配项目</b><p>换一个关键词试试。</p></div>'}
+  updateSelectBar();
 }
 function showPage(name){
   qa('[data-admin-page]').forEach(b=>b.classList.toggle('active',b.dataset.adminPage===name));
   qa('[data-page-panel]').forEach(p=>{const on=p.dataset.pagePanel===name;p.hidden=!on;p.classList.toggle('active',on)});
+  if(name==='bin')renderBin();
+  if(name==='settings')renderSettings();
 }
 function openCreate(templateId=DEFAULT_TEMPLATE_ID){
   selectedTemplateId=templateId;
@@ -232,6 +336,37 @@ $('#importProjectBackupFile').addEventListener('change',async e=>{
  }catch(error){alert('导入失败：'+(error?.message||error))}
 });
 renderTemplates();renderProjects();
+purgeExpiredTrash();renderBinBadge();
+$('#selectModeBtn').onclick=()=>{selectMode=!selectMode;selected.clear();renderProjects(currentSearch())};
+$('#selectAllProjects').onchange=e=>{visibleIds.forEach(id=>e.target.checked?selected.add(id):selected.delete(id));renderProjects(currentSearch())};
+$('#bulkDuplicateBtn').onclick=async()=>{const n=await duplicateProjects(projects.filter(p=>selected.has(p.id)));if(n)alert('已复制 '+n+' 个活动，名字后面加了「副本」。')};
+$('#bulkTrashBtn').onclick=()=>moveToTrash(projects.filter(p=>selected.has(p.id)));
+$('#selectAllBin').onchange=e=>{trash.forEach(p=>e.target.checked?binSelected.add(p.id):binSelected.delete(p.id));renderBin()};
+$('#binRestoreBtn').onclick=()=>restoreFromTrash(trash.filter(p=>binSelected.has(p.id)));
+$('#binPurgeBtn').onclick=()=>purgeFromTrash(trash.filter(p=>binSelected.has(p.id)));
+$('#binEmptyBtn').onclick=()=>purgeFromTrash([...trash]);
+$('#changePasswordForm').addEventListener('submit',async e=>{
+  e.preventDefault();authSetMessage('changePasswordMessage','');
+  const btn=e.submitter;btn.disabled=true;
+  try{
+    const next=$('#newPassword').value;
+    if(next!==$('#newPassword2').value)throw Object.assign(new Error('两次输入的新密码不一致。'),{status:400});
+    await changeAccountPassword({oldPassword:$('#oldPassword').value,newPassword:next});
+    e.target.reset();authSetMessage('changePasswordMessage','密码已修改。其他设备需要用新密码重新登录。','ok');
+  }catch(err){authSetMessage('changePasswordMessage',authNetworkMessage(err),'error')}
+  finally{btn.disabled=false}
+});
+$('#rotateRecoveryBtn').onclick=async()=>{
+  if(!confirm('重新生成后，旧的找回码会立刻作废。继续吗？'))return;
+  authSetMessage('rotateRecoveryMessage','');
+  try{
+    const code=await rotateRecoveryCode();
+    $('#newRecoveryCodeValue').textContent=code;$('#newRecoveryBox').hidden=false;$('#copyNewRecoveryBtn').textContent='复制';
+    authSetMessage('rotateRecoveryMessage','请现在就抄下来或保存好，离开这个页面后就看不到了。','ok');
+  }catch(err){authSetMessage('rotateRecoveryMessage',authNetworkMessage(err),'error')}
+};
+$('#copyNewRecoveryBtn').onclick=async()=>{const code=$('#newRecoveryCodeValue').textContent;try{await navigator.clipboard.writeText(code);$('#copyNewRecoveryBtn').textContent='已复制'}catch{prompt('复制找回码',code)}};
+$('#settingsLogoutBtn').onclick=()=>$('#authLogoutBtn').click();
 
 
 /* -------------------------------------------------------------------------- */

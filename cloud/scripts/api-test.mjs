@@ -175,3 +175,20 @@ test('recovery codes are short and forgiving, and old long codes still work',asy
   assert.equal((await call(env,'/api/account/recover',{method:'POST',body:{username:'legacy-code',recoveryCode:legacy,newPassword:'another-1'}})).status,200);
   assert.equal((await call(env,'/api/account/recover',{method:'POST',body:{username:'legacy-code',recoveryCode:legacy.toLowerCase(),newPassword:'another-2'}})).status,400);
 });
+
+test('changing the password checks the old one and signs out other devices',async()=>{
+  const env=createEnv();
+  const {token}=await signUp(env,'pw-change');
+  const other=await call(env,'/api/account/login',{method:'POST',body:{username:'pw-change',password:'secret-123'}});
+  const otherToken=other.data.token;
+  const bad=await call(env,'/api/account/password',{method:'POST',token,body:{oldPassword:'wrong-pass',newPassword:'brand-new-1'}});
+  assert.equal(bad.status,400);
+  const short=await call(env,'/api/account/password',{method:'POST',token,body:{oldPassword:'secret-123',newPassword:'123'}});
+  assert.equal(short.status,400);
+  const ok=await call(env,'/api/account/password',{method:'POST',token,body:{oldPassword:'secret-123',newPassword:'brand-new-1'}});
+  assert.equal(ok.status,200);
+  assert.equal((await call(env,'/api/me',{token})).status,200);
+  assert.equal((await call(env,'/api/me',{token:otherToken})).status,401);
+  assert.equal((await call(env,'/api/account/login',{method:'POST',body:{username:'pw-change',password:'secret-123'}})).status,401);
+  assert.equal((await call(env,'/api/account/login',{method:'POST',body:{username:'pw-change',password:'brand-new-1'}})).status,200);
+});

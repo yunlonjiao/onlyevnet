@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>OnlyEvent Studio</title>
-  <link rel="stylesheet" href="/admin/styles.css?v=1.2.0">
+  <link rel="stylesheet" href="/admin/styles.css?v=1.3.0">
 </head>
 <body>
   <header class="admin-topbar">
@@ -124,6 +124,9 @@
       <nav>
         <button class="active" data-admin-page="projects" type="button"><span>⌂</span><b>我的活动</b></button>
         <button data-admin-page="templates" type="button"><span>◇</span><b>模板库</b></button>
+        <button data-admin-page="bin" type="button"><span>♻</span><b>回收站</b><i class="nav-badge" id="binCount" hidden>0</i></button>
+        <button data-admin-page="settings" type="button"><span>⚙</span><b>账号设置</b></button>
+        <button data-admin-page="help" type="button"><span>?</span><b>使用说明</b></button>
       </nav>
       <div class="sidebar-bottom">
         <span>OnlyEvent Studio</span>
@@ -144,6 +147,7 @@
         <div class="project-toolbar">
           <div class="project-stats"><b id="projectCount">0</b><span>个项目</span></div>
           <label class="project-search"><span>⌕</span><input id="projectSearch" placeholder="搜索活动名称"></label>
+          <button id="selectModeBtn" type="button" class="quiet">批量管理</button>
           <div class="project-backup-actions">
             <label class="backup-credential-option" title="包含已发布网站的管理记录，导入后登录同一主办方账号即可继续更新">
               <input id="includePublisherCredentials" type="checkbox"><span>含发布记录</span>
@@ -153,6 +157,12 @@
             <input id="importProjectBackupFile" type="file" accept=".json,application/json" hidden aria-label="选择 OnlyEvent 项目备份文件">
           </div>
         </div>
+        <div class="select-bar" id="projectSelectBar" hidden>
+          <label class="select-all"><input type="checkbox" id="selectAllProjects"> 全选</label>
+          <span>已选 <b id="selectedCount">0</b> 个</span>
+          <button type="button" id="bulkDuplicateBtn" class="quiet" disabled>复制</button>
+          <button type="button" id="bulkTrashBtn" class="quiet danger-outline" disabled>移入回收站</button>
+        </div>
         <p class="project-backup-notice">登录后，活动会自动保存到云端，换一台设备登录就能接着做。导出备份是额外的保险，备份里不含账号密码。</p>
         <div class="project-grid" id="projectGrid"></div>
         <div class="empty-projects" id="emptyProjects" hidden>
@@ -161,6 +171,86 @@
           <p>先选一个模板，开始做第一个活动网站。</p>
           <button class="primary" id="emptyCreateBtn" type="button">选择模板</button>
         </div>
+      </div>
+
+      <div class="admin-page" data-page-panel="bin" hidden>
+        <div class="page-head compact">
+          <div>
+            <span class="eyebrow">已删除的活动</span>
+            <h1>回收站</h1>
+            <p>删除的活动会在这里保留 30 天，到期自动清除。已发布的网站在删除时就已经下线了。</p>
+          </div>
+        </div>
+        <div class="select-bar" id="binSelectBar">
+          <label class="select-all"><input type="checkbox" id="selectAllBin"> 全选</label>
+          <span>已选 <b id="binSelectedCount">0</b> 个</span>
+          <button type="button" id="binRestoreBtn" class="quiet" disabled>恢复</button>
+          <button type="button" id="binPurgeBtn" class="quiet danger-outline" disabled>永久删除</button>
+          <button type="button" id="binEmptyBtn" class="danger-link">清空回收站</button>
+        </div>
+        <div class="project-grid" id="binGrid"></div>
+        <div class="empty-projects" id="emptyBin" hidden>
+          <div class="empty-orbit"><i></i><i></i></div>
+          <b>回收站是空的</b>
+          <p>删除的活动会先放在这里，30 天内都可以找回来。</p>
+        </div>
+      </div>
+
+      <div class="admin-page" data-page-panel="settings" hidden>
+        <div class="page-head compact">
+          <div>
+            <span class="eyebrow">账号</span>
+            <h1>账号设置</h1>
+            <p>当前登录的主办方：<b id="settingsUsername">—</b></p>
+          </div>
+        </div>
+        <div class="settings-grid">
+          <section class="settings-card">
+            <h2>修改密码</h2>
+            <p>改完之后，其他设备上的登录会失效，需要用新密码重新登录。</p>
+            <form id="changePasswordForm" class="auth-form">
+              <label><span>当前密码</span><input id="oldPassword" type="password" autocomplete="current-password" required></label>
+              <label><span>新密码</span><input id="newPassword" type="password" minlength="6" autocomplete="new-password" placeholder="至少 6 个字符" required></label>
+              <label><span>再输入一次新密码</span><input id="newPassword2" type="password" minlength="6" autocomplete="new-password" required></label>
+              <button class="primary" type="submit">修改密码</button>
+              <p class="auth-message" id="changePasswordMessage"></p>
+            </form>
+          </section>
+          <section class="settings-card">
+            <h2>找回码</h2>
+            <p>忘记密码时，靠找回码重设密码。找回码只会显示一次，重新生成后旧的立刻作废。</p>
+            <button class="quiet" id="rotateRecoveryBtn" type="button">重新生成找回码</button>
+            <div class="auth-code-display" id="newRecoveryBox" hidden>
+              <small>新的找回码</small><strong id="newRecoveryCodeValue">—</strong>
+              <button class="quiet" id="copyNewRecoveryBtn" type="button">复制</button>
+            </div>
+            <p class="auth-message" id="rotateRecoveryMessage"></p>
+          </section>
+          <section class="settings-card">
+            <h2>退出登录</h2>
+            <p>只退出这台设备，活动内容不会丢。</p>
+            <button class="quiet" id="settingsLogoutBtn" type="button">退出登录</button>
+          </section>
+        </div>
+      </div>
+
+      <div class="admin-page" data-page-panel="help" hidden>
+        <div class="page-head compact">
+          <div>
+            <span class="eyebrow">帮助</span>
+            <h1>使用说明</h1>
+            <p>第一次用，按下面的顺序走一遍就行。</p>
+          </div>
+        </div>
+        <ol class="help-list">
+          <li><b>新建活动</b><span>在「模板库」挑一个模板，起个活动名，就会进入编辑器。</span></li>
+          <li><b>编辑内容</b><span>左边选页面和内容，在画布上点文字或图片就能直接改。改的内容会自动保存。</span></li>
+          <li><b>发布网站</b><span>点编辑器右上角的「发布网站」，填一个网址前缀，就得到 xxx.onlyevent.cn。</span></li>
+          <li><b>改了内容之后</b><span>再点一次「更新网站」，游客看到的才是新内容。</span></li>
+          <li><b>下线或删除</b><span>「我的活动」里可以下线网站；删除的活动会先进回收站，30 天内能恢复。</span></li>
+          <li><b>换设备继续做</b><span>在另一台设备登录同一个账号，活动会自动出现。</span></li>
+          <li><b>忘记密码</b><span>在登录页点「忘记密码」，输入主办方名称和注册时保存的找回码。</span></li>
+        </ol>
       </div>
 
       <div class="admin-page" data-page-panel="templates" hidden>
@@ -202,6 +292,7 @@
 
   <template id="projectCardTemplate">
     <article class="project-card">
+      <label class="card-select" hidden><input type="checkbox" class="select-project" aria-label="选择这个活动"><span></span></label>
       <div class="project-cover">
         <div class="mini-site">
           <span class="mini-nav"></span><span class="mini-title"></span><span class="mini-art"></span>
@@ -209,13 +300,28 @@
         <span class="project-status"></span>
       </div>
       <div class="project-card-body">
-        <div class="project-card-title"><div><b></b><span></span></div><button type="button" class="delete-project danger-link">删除项目</button></div>
+        <div class="project-card-title"><div><b></b><span></span></div><button type="button" class="delete-project danger-link">移入回收站</button></div>
         <div class="project-meta-row"><span class="project-template"></span><span class="project-time"></span></div>
-        <div class="project-actions"><button class="edit-project" type="button">继续编辑</button><a class="open-site" target="_blank" rel="noopener" hidden>打开网站 ↗</a><button class="unpublish-site danger-outline" type="button" hidden>下线网站</button></div>
+        <div class="project-actions"><button class="edit-project" type="button">继续编辑</button><button class="duplicate-project quiet" type="button">复制</button><a class="open-site" target="_blank" rel="noopener" hidden>打开网站 ↗</a><button class="unpublish-site danger-outline" type="button" hidden>下线网站</button></div>
       </div>
     </article>
   </template>
 
-  <script type="module" src="/admin/app.js?v=1.2.4"></script>
+  <template id="binCardTemplate">
+    <article class="project-card bin-card">
+      <label class="card-select"><input type="checkbox" class="select-project" aria-label="选择这个活动"><span></span></label>
+      <div class="project-cover">
+        <div class="mini-site"><span class="mini-nav"></span><span class="mini-title"></span><span class="mini-art"></span></div>
+        <span class="project-status">已删除</span>
+      </div>
+      <div class="project-card-body">
+        <div class="project-card-title"><div><b></b><span></span></div></div>
+        <div class="project-meta-row"><span class="project-template"></span><span class="project-time"></span></div>
+        <div class="project-actions"><button class="restore-project" type="button">恢复</button><button class="purge-project danger-outline" type="button">永久删除</button></div>
+      </div>
+    </article>
+  </template>
+
+  <script type="module" src="/admin/app.js?v=1.3.0"></script>
 </body>
 </html>

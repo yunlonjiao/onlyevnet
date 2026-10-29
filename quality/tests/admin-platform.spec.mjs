@@ -18,7 +18,7 @@ test('admin is the product entry and exposes projects plus template library',asy
   await expect(page.locator('[data-page-panel="projects"] h1')).toHaveText('我的活动');
   await page.locator('[data-admin-page="templates"]').click();
   await expect(page.locator('[data-page-panel="templates"] h1')).toHaveText('选择网站模板');
-  await expect(page.locator('#templateGrid .template-card').first()).toContainText('波普庆典');
+  await expect(page.locator('#templateGrid .template-card').first()).toContainText('缤纷嘉年华');
   await expect(page.locator('#templateGrid [data-template="01-ip-only"]')).toBeVisible();
 });
 
@@ -66,7 +66,7 @@ test('admin exposes explicit project deletion and published-site unpublish contr
     localStorage.setItem('onlyevent-studio-publish:01-ip-only:published-test:iframe',JSON.stringify({siteId:'site-1',cloudProjectId:'prj_1',url:project.siteUrl,slug:'published-test'}));
   });
   await page.reload();
-  await expect(page.locator('.delete-project')).toHaveText('删除项目');
+  await expect(page.locator('.delete-project')).toHaveText('移入回收站');
   await expect(page.locator('.unpublish-site')).toHaveText('下线网站');
   await expect(page.locator('.project-menu')).toHaveCount(0);
 });
