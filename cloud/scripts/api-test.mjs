@@ -243,3 +243,31 @@ test('visits are counted per day, bots are ignored, and only the owner sees the 
   const other=await signUp(env,'stats-other');
   assert.equal((await call(env,'/api/projects/'+pid+'/stats',{token:other.token})).status,404);
 });
+
+test('visitor sites serve a service worker that keeps the page for offline visits',async()=>{
+  const env=createEnv();
+  const res=await worker.fetch(new Request('https://any-site.onlyevent.cn/sw.js'),env);
+  assert.equal(res.status,200);
+  assert.match(res.headers.get('content-type'),/javascript/);
+  assert.equal(res.headers.get('service-worker-allowed'),'/');
+  const source=await res.text();
+  // Run the script against a tiny fake Service Worker environment.
+  const store=new Map(),handlers={};let online=true;
+  const cacheApi={
+    async open(){return {async put(k,v){store.set(typeof k==='string'?k:k.url,v)},async match(k){return store.get(typeof k==='string'?k:k.url)},async keys(){return [...store.keys()].map(url=>({url}))},async delete(k){return store.delete(k.url||k)}}},
+    async match(k){return store.get(k)},async keys(){return ['oe-visitor-v1']},async delete(){return true},
+  };
+  const fakeSelf={addEventListener:(type,fn)=>{handlers[type]=fn},skipWaiting(){},clients:{claim(){}}};
+  const fetchStub=async req=>{if(!online)throw new Error('offline');const r=new Response('<h1>site</h1>',{status:200});Object.defineProperty(r,'url',{value:req.url});return r};
+  new Function('self','caches','fetch','Response','URL',source)(fakeSelf,cacheApi,fetchStub,Response,URL);
+  const run=async(request)=>{let out,pending=[];handlers.fetch({request,respondWith:p=>{out=p},waitUntil:p=>pending.push(p)});const r=out?await out:undefined;await Promise.all(pending);return r};
+  const nav={method:'GET',mode:'navigate',url:'https://any-site.onlyevent.cn/?from=qr',destination:'document'};
+  assert.equal(await (await run(nav)).text(),'<h1>site</h1>');
+  assert.ok(store.has('/'));
+  online=false;
+  const offline=await run(nav);
+  assert.equal(offline.status,200);assert.equal(await offline.text(),'<h1>site</h1>');
+  store.clear();
+  assert.equal((await run(nav)).status,503);
+  assert.equal(await run({method:'POST',mode:'cors',url:'https://any-site.onlyevent.cn/x',destination:''}),undefined);
+});

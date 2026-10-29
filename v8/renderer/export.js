@@ -236,6 +236,6 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       ogImage?'<meta property="og:image" content="'+esc(ogImage)+'">':'',
       canonical?'<meta property="og:url" content="'+esc(canonical)+'">':''
     ].join('');
-    return '<!doctype html><html lang="zh-CN" class="event-status-'+eventStatus+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+meta+'<style>'+(previewStyle+extra).replace(/\/\*[\s\S]*?\*\//g,'')+'</style></head><body class="event-status-'+eventStatus+'">'+clone.innerHTML+'<script>'+runtime+'</script></body></html>';
+    return '<!doctype html><html lang="zh-CN" class="event-status-'+eventStatus+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+meta+'<style>'+(previewStyle+extra).replace(/\/\*[\s\S]*?\*\//g,'')+'</style></head><body class="event-status-'+eventStatus+'">'+clone.innerHTML+'<script>'+runtime+'</script><script>'+"if('serviceWorker' in navigator&&location.protocol==='https:'&&/\\.onlyevent\\.cn$/.test(location.hostname))addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));"+'</script></body></html>';
   }
 }

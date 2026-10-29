@@ -11,6 +11,31 @@ const MAX_SITE_HTML_BYTES=25*1024*1024;
 const MAX_PROJECT_CONFIG_BYTES=1900000;
 const CORS_ALLOW_HEADERS='content-type,authorization,x-onlyevent-project';
 const CORS_ALLOW_METHODS='GET,POST,PUT,DELETE,OPTIONS';
+/* Offline support for visitor sites: the page and its images are kept after a first visit,
+   so the site still opens at a venue with no signal. Online visits always fetch the newest version. */
+const VISITOR_SW=`const CACHE='oe-visitor-v1',HOME='/',MAX_IMAGES=200;
+self.addEventListener('install',()=>self.skipWaiting());
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+async function trim(cache){const keys=await cache.keys();for(const k of keys.slice(0,Math.max(0,keys.length-MAX_IMAGES)))await cache.delete(k)}
+self.addEventListener('fetch',e=>{
+  const req=e.request;if(req.method!=='GET')return;
+  if(req.mode==='navigate'){
+    e.respondWith(fetch(req).then(res=>{
+      if(res.ok&&new URL(res.url||req.url).pathname==='/'){const copy=res.clone();e.waitUntil(caches.open(CACHE).then(c=>c.put(HOME,copy)))}
+      return res;
+    }).catch(async()=>(await caches.match(HOME))||new Response('现在没有网络，而且这台设备还没有保存过这个网站。联网打开一次之后，就可以离线查看了。',{status:503,headers:{'content-type':'text/plain; charset=utf-8'}})));
+    return;
+  }
+  if(req.destination==='image'){
+    e.respondWith(caches.open(CACHE).then(async cache=>{
+      const hit=await cache.match(req);
+      const net=fetch(req).then(res=>{if(res.ok||res.type==='opaque'){cache.put(req,res.clone()).then(()=>trim(cache))}return res}).catch(()=>hit);
+      return hit||net;
+    }));
+  }
+});
+`;
+const VISITOR_SW_HEADERS={'content-type':'application/javascript; charset=utf-8','cache-control':'no-cache','service-worker-allowed':'/','x-content-type-options':'nosniff'};
 const RESERVED_SUBDOMAINS=new Set(['www','publisher','api','admin','app']);
 
 function corsOrigin(req,env){
@@ -312,6 +337,7 @@ export default {
       if(path.startsWith('/media/'))return await serveMedia(req,env,decodeURIComponent(path.slice('/media/'.length)));
       if(path.startsWith('/api/'))return withCors(req,env,await handleApi(req,env,path));
       const hostSlug=getSlugFromHost(req,env);
+      if(hostSlug&&path==='/sw.js'&&req.method==='GET')return new Response(VISITOR_SW,{headers:VISITOR_SW_HEADERS});
       if(hostSlug&&path==='/robots.txt')return new Response('User-agent: *\nAllow: /\n',{headers:{'content-type':'text/plain; charset=utf-8','cache-control':'public,max-age=3600'}});
       if(hostSlug&&path==='/favicon.ico')return new Response(null,{status:204,headers:{'cache-control':'public,max-age=86400'}});
       if(hostSlug)return await serveSlug(req,env,hostSlug);

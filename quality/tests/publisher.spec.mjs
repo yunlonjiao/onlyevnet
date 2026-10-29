@@ -27,6 +27,7 @@ test('01 publishes and updates the visitor site through the Worker account API',
   const visit=await visitSite(cloud,'stardust-only');
   expect(visit.status).toBe(200);
   expect(visit.html).toContain('<!doctype html>');
+  expect(visit.html).toContain("serviceWorker.register('/sw.js')");
 
   const record=await page.evaluate(()=>JSON.parse(localStorage.getItem('onlyevent-studio-publish:01-ip-only:publish-01:iframe')));
   expect(record.siteId).toMatch(/^site_/);

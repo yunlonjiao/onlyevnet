@@ -22,7 +22,7 @@ import {createRuntime} from '/v8/renderer/runtime.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.40.30';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.38.3';
+import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.49.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {validateRendererContext} from '/v8/renderer/context.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
