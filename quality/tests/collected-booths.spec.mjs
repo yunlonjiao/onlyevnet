@@ -3,7 +3,8 @@ import {readFileSync} from 'node:fs';
 
 // The registry is the list of templates organizers can pick; read its imports so a new template is covered automatically.
 const registry=readFileSync(new URL('../../v8/templates/registry.js',import.meta.url),'utf8');
-const templates=[...registry.matchAll(/import \{template\d+\} from '\/v8\/templates\/(\d\d-[a-z0-9-]+)\.js/g)].map(m=>({id:m[1]}));
+const hasBooths=id=>!/hidden:\[[^\]]*'booths'/.test(readFileSync(new URL('../../v8/templates/'+id+'.js',import.meta.url),'utf8'));
+const templates=[...registry.matchAll(/import \{template\d+\} from '\/v8\/templates\/(\d\d-[a-z0-9-]+)\.js/g)].map(m=>({id:m[1]})).filter(t=>hasBooths(t.id));
 
 test.use({viewport:{width:1440,height:900}});
 

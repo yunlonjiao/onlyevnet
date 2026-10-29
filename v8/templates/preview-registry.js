@@ -3,6 +3,8 @@ import {createVariantPreview} from '/v8/templates/ip-only-visual-variants.js?v=8
 import {previewStyle as scrapbookStyle,previewBody as scrapbookBody} from '/v8/templates/02-scrapbook-preview.js?v=8.40.93';
 import {previewStyle as creatorMarketStyle,previewBody as creatorMarketBody} from '/v8/templates/03-creator-market-preview.js?v=8.42.0';
 import {previewStyle as creatorCatalogueStyle,previewBody as creatorCatalogueBody} from '/v8/templates/04-creator-catalogue-preview.js?v=8.43.0';
+import {previewStyle as livePosterStyle,previewBody as livePosterBody} from '/v8/templates/05-live-poster-preview.js?v=8.51.0';
+import {previewStyle as teaPartyStyle,previewBody as teaPartyBody} from '/v8/templates/06-tea-party-preview.js?v=8.51.0';
 import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.41.5';
 
 const previews=Object.freeze({
@@ -12,7 +14,8 @@ const previews=Object.freeze({
   '04-creator-catalogue':Object.freeze({id:'04-creator-catalogue',style:creatorCatalogueStyle,body:creatorCatalogueBody}),
   '03-school-festival':Object.freeze(createVariantPreview('03-school-festival')),
   '04-museum-editorial':Object.freeze(createVariantPreview('04-museum-editorial')),
-  '05-live-poster':Object.freeze(createVariantPreview('05-live-poster')),
+  '05-live-poster':Object.freeze({id:'05-live-poster',style:livePosterStyle,body:livePosterBody}),
+  '06-tea-party':Object.freeze({id:'06-tea-party',style:teaPartyStyle,body:teaPartyBody}),
   '06-expo-catalogue':Object.freeze(createVariantPreview('06-expo-catalogue')),
   '07-immersive-character':Object.freeze(createVariantPreview('07-immersive-character'))
 });

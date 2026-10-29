@@ -214,3 +214,22 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 .danger-outline:hover{background:#fff1ef!important;border-color:#e8aaa2!important}
 .danger-card .auth-form{align-items:flex-start}
 .danger-card .auth-form label{align-self:stretch}
+
+/* template cards for 05 and 06 */
+.template-art-live-stage .template-preview{background:#0b0a1c}
+.template-art-live-stage .template-preview:before{background:#ff3d8b66}
+.template-art-live-stage .template-preview-window{border:1px solid #4a4670;border-radius:0;box-shadow:10px 10px 0 #ff3d8b;background:#15123a}
+.template-art-live-stage .template-preview-window .bar{border-color:#3b3763}
+.template-art-live-stage .template-preview-window .hero{background:#15123a;color:#fff}
+.template-art-live-stage .template-preview-window .hero b{font-size:27px;font-style:italic;color:#fff}
+.template-art-live-stage .template-preview-window .art{border:0;border-radius:0;background:linear-gradient(135deg,#ff3d8b,#35e3ff)}
+.template-art-live-stage .template-preview-window .hero em{color:#ffe14d}
+.template-art-tea-party .template-preview{background:#fff6ec}
+.template-art-tea-party .template-preview:before{background:#f9d3dc99}
+.template-art-tea-party .template-preview-window{border:2px solid #ecd5cc;border-radius:20px;box-shadow:0 8px 0 #fadbe3;background:#fffdf8}
+.template-art-tea-party .template-preview-window .bar{border-color:#ecd5cc}
+.template-art-tea-party .template-preview-window .hero{background:#fffdf8;color:#5a3d3a}
+.template-art-tea-party .template-preview-window .hero b{font-family:Georgia,serif;font-size:25px;color:#5a3d3a}
+.template-art-tea-party .template-preview-window .art{border:3px solid #f08fa8;border-radius:50%;background:linear-gradient(150deg,#f9d3dc,#dccffa 60%,#bfe6d6)}
+.template-art-tea-party .template-preview-window .hero em{color:#b0405e}
+.template-art-tea-party .template-preview-window .rows i{background:#fff6ec;border-color:#ecd5cc}

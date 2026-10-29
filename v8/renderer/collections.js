@@ -545,9 +545,33 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       else send?.({type:'OE_SELECT_ITEM',collection:'booths',index:Number(circle.dataset.catalogueBooth)});
     },true);
   }
+  // Compact copies of the guest list and the running order for a template's home page. They carry
+  // data-oe-item so a click in the editor selects the real entry; the full pages stay the place for detail.
+  function renderHomeMirrors(){
+    const state=getState(),edit=getMode()==='edit',on=k=>(state.modules||{})[k]!==false;
+    const lineup=$('[data-oe-mirror="lineup"]');
+    if(lineup){
+      const guests=state.guests||[],section=lineup.closest('section');
+      lineup.innerHTML=guests.slice(0,12).map((g,i)=>{
+        const img=g.image?'<img src="'+esc(g.image)+'" alt="'+esc(g.name||'')+'">':'<span class="lineup-initial">'+esc(String(g.name||'?').trim().charAt(0))+'</span>';
+        return '<a class="lineup-card guest-type-'+esc(g.guestType||'person')+'" href="#guests" data-target-mode="page" data-page-link="guests" data-oe-item="guests" data-oe-index="'+i+'"><span class="lineup-img">'+img+'</span><b>'+esc(g.name||'')+'</b><small>'+esc(g.role||'')+'</small></a>';
+      }).join('')||(edit?'<p class="mirror-empty">还没有嘉宾，在左侧「嘉宾」里添加。</p>':'');
+      if(section)section.hidden=!on('guests')||(!guests.length&&!edit);
+    }
+    const timeline=$('[data-oe-mirror="timetable"]');
+    if(timeline){
+      const items=(state.schedule||[]).map((x,i)=>({x,i})),section=timeline.closest('section');
+      const days=[];items.forEach(it=>{const d=it.x.day||'';if(!days.includes(d))days.push(d)});
+      timeline.innerHTML=days.map(d=>{
+        const rows=items.filter(it=>(it.x.day||'')===d).sort((a,b)=>String(a.x.time||'').localeCompare(String(b.x.time||'')));
+        return '<div class="timeline-day">'+(d?'<h3>'+esc(d)+'</h3>':'')+rows.map(({x,i})=>'<a class="timeline-row" href="#activities" data-target-mode="page" data-page-link="activities" data-activity-index="'+i+'" data-oe-item="schedule" data-oe-index="'+i+'"><time>'+esc(x.time||'')+(x.endTime?'<small>'+esc(x.endTime)+'</small>':'')+'</time><span class="timeline-stage">'+esc(x.stage||'')+'</span><b>'+esc(x.title||'')+'</b></a>').join('')+'</div>';
+      }).join('')||(edit?'<p class="mirror-empty">还没有节目，在左侧「活动」里添加。</p>':'');
+      if(section)section.hidden=!on('activities')||(!items.length&&!edit);
+    }
+  }
   function renderCollections(){
-    renderProductSpotlight();renderCatalogueBook();renderRibbon();renderTickets();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderUpdates();renderCommunity();renderSponsors();renderCustomPages();renderOptionalPages();renderFooter();
+    renderProductSpotlight();renderCatalogueBook();renderRibbon();renderTickets();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderHomeMirrors();renderUpdates();renderCommunity();renderSponsors();renderCustomPages();renderOptionalPages();renderFooter();
     enhanceImages();
   }
-  return {openGiftLightbox,renderRibbon,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderUpdates,renderCommunity,renderSponsors,renderCustomPages,renderOptionalPages,renderFooter,renderCollections,enhanceImages};
+  return {openGiftLightbox,renderRibbon,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderHomeMirrors,renderUpdates,renderCommunity,renderSponsors,renderCustomPages,renderOptionalPages,renderFooter,renderCollections,enhanceImages};
 }

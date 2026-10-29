@@ -5,7 +5,7 @@ import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
 // Short Chinese tags for the template gallery (the internal art-direction names stay English).
-const TEMPLATE_TAGS={'01-ip-only':'活泼 · 贴纸','02-scrapbook':'手账 · 叙事','03-creator-market':'社区 · 内容流','04-creator-catalogue':'二次元 · 电子场刊'};
+const TEMPLATE_TAGS={'01-ip-only':'活泼 · 贴纸','02-scrapbook':'手账 · 叙事','03-creator-market':'社区 · 内容流','04-creator-catalogue':'二次元 · 电子场刊','05-live-poster':'舞台 · 节目表 · 嘉宾','06-tea-party':'小型活动 · 茶会 · 邀请函'};
 const templateTag=t=>TEMPLATE_TAGS[t.id]||'';
 let selectedTemplateId=DEFAULT_TEMPLATE_ID;
 let projects=readProjects();
@@ -201,6 +201,7 @@ async function loadCollect(){
   collectCloudId='';collectForm=null;collectEntries=[];
   if(!project){collectMsg('还没有活动，先去「模板库」新建一个。');return}
   if(!readCloudSession()){collectMsg('请先登录主办方账号。');return}
+  if((getTemplate(project.templateId)?.studioPages?.hidden||[]).includes('booths')){collectMsg('这个活动用的模板没有摊位页，不能收集社团。');return}
   try{
     collectCloudId=await ensureCloudProjectFor({templateId:project.templateId||DEFAULT_TEMPLATE_ID,projectId:project.id,name:project.name});
     const data=await getCollect(collectCloudId);collectForm=data.form;collectEntries=data.entries||[];

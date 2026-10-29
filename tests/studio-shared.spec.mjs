@@ -58,7 +58,7 @@ test('03 and 04 canvas focus uses the same 01/02 field highlight colors',async()
 });
 
 test('Studio identifiers stay English while organizer event names remain editable',async()=>{
- for(const [id,label] of [['01-ip-only','流行嘉年华'],['02-scrapbook','旅途手账'],['03-creator-market','创作者集市'],['04-creator-catalogue','创作者场刊']]){
+ for(const [id,label] of [['01-ip-only','流行嘉年华'],['02-scrapbook','旅途手账'],['03-creator-market','创作者集市'],['04-creator-catalogue','创作者场刊'],['05-live-poster','舞台现场'],['06-tea-party','茶会小聚']]){
   const {context,page,errors}=await openEditor(id,'ci-identity-'+id);
   assert.equal(await page.locator('#projectTemplateName').textContent(),label);
   assert.equal(await page.locator('#workspaceTemplateName').textContent(),label);
@@ -70,14 +70,15 @@ test('Studio identifiers stay English while organizer event names remain editabl
 test('template style labels are distinct; all fresh sites display STARDUST ONLY',async()=>{
  const styleNames={
   '01-ip-only':'流行嘉年华','02-scrapbook':'旅途手账',
-  '03-creator-market':'创作者集市','04-creator-catalogue':'创作者场刊'
+  '03-creator-market':'创作者集市','04-creator-catalogue':'创作者场刊',
+  '05-live-poster':'舞台现场','06-tea-party':'茶会小聚'
  };
  const {context:registryContext,page:registryPage}=await openEditor('01-ip-only','ci-style-contract');
  const templates=await registryPage.evaluate(async()=>{
   const {listTemplates}=await import('/v8/templates/registry.js?v=8.41.5');
   return listTemplates().map(t=>({id:t.id,name:t.name,label:t.label,studioName:t.studioName,defaultEvent:t.defaults.eventName}));
  });
- assert.equal(templates.length,4);
+ assert.equal(templates.length,6);
  for(const t of templates){
   assert.equal(t.label,styleNames[t.id]);
   assert.equal(t.studioName,t.label);
@@ -89,7 +90,7 @@ test('template style labels are distinct; all fresh sites display STARDUST ONLY'
   const {context,page,frame,errors}=await openEditor(id,'ci-default-'+id);
   await page.waitForFunction(()=>document.querySelector('#projectEventName')?.textContent==='STARDUST ONLY');
   assert.equal(await page.locator('#projectTemplateName').textContent(),style);
-  const nameField=Number(id.slice(0,2))<5?
+  const nameField=Number(id.slice(0,2))<7?
    frame.locator('[data-oe-field="eventName"]').first():
    frame.locator('[data-event-name]').first();
   await nameField.waitFor({timeout:15000});
