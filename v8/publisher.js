@@ -109,6 +109,9 @@ export async function restoreCloudProject(projectId){
 export async function purgeCloudProject(projectId){
   return api('/api/projects/'+encodeURIComponent(projectId)+'/purge',{method:'DELETE'});
 }
+export async function deleteAccount({password}){
+  return api('/api/account/delete',{method:'POST',body:{password}});
+}
 export async function changeAccountPassword({oldPassword,newPassword}){
   return api('/api/account/password',{method:'POST',body:{oldPassword,newPassword}});
 }

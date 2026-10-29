@@ -191,3 +191,17 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 .stats-bars i{flex:1;min-width:0;background:var(--accent);border-radius:4px 4px 0 0;min-height:2px;opacity:.85;position:relative}
 .stats-bars i:hover{opacity:1}
 .stats-bars i.zero{background:#e3dff5}
+
+/* phone layout: admin navigation as a bottom tab bar, and a roomier editor top bar */
+@media(max-width:760px){
+  .admin-shell{display:block}
+  .admin-sidebar{display:block;position:fixed;top:auto;left:0;right:0;bottom:0;height:auto;z-index:40;padding:4px 4px calc(4px + env(safe-area-inset-bottom));background:#fff;border:0;border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(24,20,48,.08)}
+  .admin-sidebar>*:not(nav){display:none}
+  .admin-sidebar nav{display:flex;flex-direction:row;gap:0}
+  .admin-sidebar nav button{flex:1;min-width:0;flex-direction:column;justify-content:center;gap:2px;padding:6px 2px;position:relative;border-radius:10px;text-align:center}
+  .admin-sidebar nav button b{font-size:10px;font-weight:700;white-space:nowrap}
+  .admin-sidebar nav button span{font-size:16px;line-height:1}
+  .admin-sidebar nav button .nav-badge{position:absolute;top:2px;right:calc(50% - 20px);margin:0;min-width:16px;height:16px;padding:0 4px;font-size:9px}
+  .admin-content{padding-bottom:92px}
+}
+.danger-card{border-color:#f0c9d1}.danger-card h2{color:var(--danger,#d6334f)}

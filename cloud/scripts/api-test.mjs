@@ -271,3 +271,21 @@ test('visitor sites serve a service worker that keeps the page for offline visit
   assert.equal((await run(nav)).status,503);
   assert.equal(await run({method:'POST',mode:'cors',url:'https://any-site.onlyevent.cn/x',destination:''}),undefined);
 });
+
+test('deleting an account removes its projects, sites and files, and needs the password',async()=>{
+  const env=createEnv();
+  const {token}=await signUp(env,'leaving'),pid=await newProject(env,token,'将被删除');
+  const site=await call(env,'/api/sites',{method:'POST',token,project:pid,body:{html:'<!doctype html><h1>bye</h1>',title:'x',slug:'leaving-site',templateId:'01-ip-only'}});
+  assert.equal(site.status,201);
+  const fd=new FormData();fd.append('file',new File([new Uint8Array([71,73,70,56,57,97])],'a.gif',{type:'image/gif'}));
+  const up=await worker.fetch(new Request(API+'/api/upload',{method:'POST',body:fd,headers:{authorization:'Bearer '+token,'x-onlyevent-project':pid}}),env);
+  assert.equal(up.status,201);const media=(await up.json()).url;
+  assert.equal((await worker.fetch(new Request(API+media),env)).status,200);
+  assert.equal((await call(env,'/api/account/delete',{method:'POST',token,body:{password:'wrong-one'}})).status,400);
+  assert.equal((await worker.fetch(new Request('https://leaving-site.onlyevent.cn/'),env)).status,200);
+  assert.equal((await call(env,'/api/account/delete',{method:'POST',token,body:{password:'secret-123'}})).status,200);
+  assert.equal((await call(env,'/api/me',{token})).status,401);
+  assert.equal((await worker.fetch(new Request('https://leaving-site.onlyevent.cn/'),env)).status,404);
+  assert.equal((await worker.fetch(new Request(API+media),env)).status,404);
+  assert.equal((await call(env,'/api/account/login',{method:'POST',body:{username:'leaving',password:'secret-123'}})).status,401);
+});

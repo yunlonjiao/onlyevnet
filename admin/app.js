@@ -1,6 +1,6 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.49.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.50.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -244,6 +244,22 @@ function renderCollect(){
     list.appendChild(frag);
   });
 }
+// CSV with a BOM so Excel opens the Chinese text correctly.
+function exportCollect(){
+  const project=collectProject();if(!project)return;
+  if(!collectEntries.length){collectMsg('还没有可以导出的提交。');return}
+  let booths=[];try{booths=JSON.parse(localStorage.getItem(projectStorageKey(project))||'{}').booths||[]}catch{}
+  const noByName=new Map(booths.map(b=>[b.name,b.no]));
+  const label={pending:'待审核',approved:'已通过',rejected:'未通过'};
+  const cell=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+  const rows=[['摊位号','社团名称','类型','介绍','联系方式','制品','状态','提交时间']];
+  [...collectEntries].sort((a,b)=>(a.status==='approved'?0:1)-(b.status==='approved'?0:1)||String(a.createdAt).localeCompare(String(b.createdAt))).forEach(e=>{
+    const d=e.data||{};
+    rows.push([noByName.get(d.name)||'',d.name,d.type,d.intro,d.contact,(d.products||[]).map(p=>p.name+(p.price?' '+p.price:'')).join('；'),label[e.status]||e.status,formatTime(e.createdAt)]);
+  });
+  const blob=new Blob(['﻿'+rows.map(r=>r.map(cell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(project.name||'活动')+'-社团名单.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
 async function changeEntry(entry,status){
   try{await setCollectEntryStatus(collectCloudId,entry.id,status);entry.status=status;renderCollect()}
   catch(err){collectMsg(authNetworkMessage(err),'error')}
@@ -474,7 +490,21 @@ $('#rotateRecoveryBtn').onclick=async()=>{
   }catch(err){authSetMessage('rotateRecoveryMessage',authNetworkMessage(err),'error')}
 };
 $('#copyNewRecoveryBtn').onclick=async()=>{const code=$('#newRecoveryCodeValue').textContent;try{await navigator.clipboard.writeText(code);$('#copyNewRecoveryBtn').textContent='已复制'}catch{prompt('复制找回码',code)}};
-$('#settingsLogoutBtn').onclick=()=>$('#authLogoutBtn').click();
+$('#deleteAccountForm').addEventListener('submit',async e=>{
+  e.preventDefault();authSetMessage('deleteAccountMessage','');
+  if(!confirm('最后确认：永久删除账号和全部数据？这一步不能撤销。'))return;
+  const btn=e.submitter;btn.disabled=true;
+  try{
+    await deleteAccount({password:$('#deleteAccountPassword').value});
+    // The data is gone from the cloud; also clear what this browser kept for the account.
+    const mine=[...projects,...trash];
+    for(const p of mine)try{purgeLocalData(p)}catch{}
+    localStorage.removeItem(PROJECTS_KEY);localStorage.removeItem(TRASH_KEY);
+    await logoutAccount().catch(()=>{});
+    location.reload();
+  }catch(err){authSetMessage('deleteAccountMessage',authNetworkMessage(err),'error');btn.disabled=false}
+});
+$('#collectExport').onclick=()=>exportCollect();
 
 
 /* -------------------------------------------------------------------------- */

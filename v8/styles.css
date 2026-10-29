@@ -1182,3 +1182,11 @@ body.previewing .canvas-stage:before{display:none}
 
 .publish-rename{align-self:flex-start;margin-top:8px;padding:5px 12px;border:1px solid #d8d4ea;border-radius:8px;background:#fff;font:inherit;font-size:12px;cursor:pointer}
 .publish-rename[hidden]{display:none}
+
+@media(max-width:520px){
+  .studio-topbar .brand-copy,.studio-topbar .brand-mark,.studio-version,.action-separator{display:none}
+  .studio-topbar .top-actions{gap:6px;min-width:0}
+  #publishBtn{white-space:nowrap;padding:0 12px;flex:none}
+  #publishBtn .publish-arrow{display:none}
+  .device-group{display:none}
+}

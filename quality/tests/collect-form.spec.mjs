@@ -1,3 +1,5 @@
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);
 import {test,expect} from '@playwright/test';
 import worker from '../../cloud/src/worker.js';
 import {useCloudPublisher,signInCloud} from './cloud-publisher.mjs';
@@ -66,4 +68,29 @@ test('organizer collects circle info through a public link and approves it into 
   await routeSameOrigin(closed,cloud.env);
   await closed.goto('/collect/?t='+token);
   await expect(closed.locator('#stateTitle')).toHaveText('收集已结束');
+});
+
+test('the circle list can be exported as a CSV file',async({page})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'export-organizer');
+  await page.goto('/admin/');
+  await page.evaluate(()=>{
+    localStorage.setItem('onlyevent-admin-projects-v1',JSON.stringify([{id:'e1',name:'导出测试',templateId:'01-ip-only',status:'draft',siteUrl:'',updatedAt:new Date().toISOString()}]));
+    localStorage.setItem('onlyevent-studio-v8:01-ip-only:e1:iframe',JSON.stringify({eventName:'导出测试',booths:[]}));
+  });
+  await page.reload();
+  await page.locator('[data-admin-page="collect"]').click();
+  await page.locator('#collectEnable').click();
+  await expect(page.locator('#collectLinkBox')).toBeVisible();
+  const token=(await page.locator('#collectLinkInput').inputValue()).match(/t=([a-f0-9]{20})/)[1];
+  await worker.fetch(new Request('https://convention-publisher.onlyevents.workers.dev/api/collect/'+token,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:'逗号,社',type:'插画',intro:'一行"引号"',contact:'QQ 1',products:[{name:'画集',price:'¥45'}]})}),cloud.env);
+  await page.locator('#collectRefresh').click();
+  await expect(page.locator('.collect-entry')).toHaveCount(1);
+  const [download]=await Promise.all([page.waitForEvent('download'),page.locator('#collectExport').click()]);
+  expect(download.suggestedFilename()).toBe('导出测试-社团名单.csv');
+  const text=require('node:fs').readFileSync(await download.path(),'utf8');
+  expect(text.charCodeAt(0)).toBe(0xFEFF);
+  expect(text).toContain('"逗号,社"');
+  expect(text).toContain('"一行""引号"""');
+  expect(text).toContain('画集 ¥45');
 });

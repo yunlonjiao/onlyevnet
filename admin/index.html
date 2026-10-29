@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>OnlyEvent Studio</title>
-  <link rel="stylesheet" href="/admin/styles.css?v=1.5.1">
+  <link rel="stylesheet" href="/admin/styles.css?v=1.6.0">
 </head>
 <body>
   <header class="admin-topbar">
@@ -211,6 +211,7 @@
         <div class="collect-toolbar">
           <label>选择活动 <select id="collectProject"></select></label>
           <button type="button" class="quiet" id="collectRefresh">刷新</button>
+          <button type="button" class="quiet" id="collectExport">导出名单</button>
         </div>
         <p class="auth-message" id="collectMessage"></p>
         <section class="settings-card" id="collectSetup" hidden>
@@ -284,10 +285,14 @@
             </div>
             <p class="auth-message" id="rotateRecoveryMessage"></p>
           </section>
-          <section class="settings-card">
-            <h2>退出登录</h2>
-            <p>只退出这台设备，活动内容不会丢。</p>
-            <button class="quiet" id="settingsLogoutBtn" type="button">退出登录</button>
+          <section class="settings-card danger-card">
+            <h2>删除账号</h2>
+            <p>会永久删除这个账号下的所有活动、已发布的网站、上传的图片和收集到的社团信息，找不回来。删除前建议先导出备份。</p>
+            <form id="deleteAccountForm" class="auth-form">
+              <label><span>输入密码确认</span><input id="deleteAccountPassword" type="password" autocomplete="current-password" required></label>
+              <button class="danger-outline" type="submit">删除账号和全部数据</button>
+              <p class="auth-message" id="deleteAccountMessage"></p>
+            </form>
           </section>
         </div>
       </div>
@@ -376,6 +381,6 @@
     </article>
   </template>
 
-  <script type="module" src="/admin/app.js?v=1.5.1"></script>
+  <script type="module" src="/admin/app.js?v=1.6.0"></script>
 </body>
 </html>

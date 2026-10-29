@@ -1,5 +1,5 @@
 /* Common publishing operations for every Studio template. HTML rendering remains template-specific. */
-import {ensureCloudProjectFor,createSite,updateSite} from '/v8/publisher.js?v=8.49.0';
+import {ensureCloudProjectFor,createSite,updateSite} from '/v8/publisher.js?v=8.50.0';
 export function downloadStudioHtml(html,name){
  const blob=new Blob([html],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
  a.href=url;a.download=(String(name||'onlyevent').replace(/[\\/:*?"<>|]+/g,'-').trim()||'onlyevent')+'.html';

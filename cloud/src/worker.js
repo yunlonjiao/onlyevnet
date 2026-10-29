@@ -114,6 +114,23 @@ async function changePassword(req,env){
   await env.DB.batch([env.DB.prepare('UPDATE users SET password_hash=?,password_salt=? WHERE id=?').bind(hash,salt,u.id),env.DB.prepare('DELETE FROM sessions WHERE user_id=? AND token_hash<>?').bind(u.id,u.tokenHash)]);
   return json({ok:true});
 }
+async function deleteAccount(req,env){
+  const u=await requireUser(req,env);await rateLimit(env,'account-delete:'+u.id,5,3600);
+  const b=await bodyJson(req),password=String(b.password||'');
+  const row=await env.DB.prepare('SELECT password_hash,password_salt FROM users WHERE id=?').bind(u.id).first();
+  if(!row||await hashPassword(password,row.password_salt)!==row.password_hash)return json({ok:false,error:'密码不正确'},400);
+  // Collect every stored file first: once the user row is gone the links to them are gone too.
+  const keys=new Set();
+  const add=rows=>{for(const r of rows.results||[])if(r.object_key)keys.add(r.object_key)};
+  add(await env.DB.prepare('SELECT object_key FROM sites WHERE user_id=?').bind(u.id).all());
+  add(await env.DB.prepare('SELECT v.object_key FROM site_versions v JOIN sites s ON s.id=v.site_id WHERE s.user_id=?').bind(u.id).all());
+  add(await env.DB.prepare('SELECT m.object_key FROM project_media m JOIN projects p ON p.id=m.project_id WHERE p.user_id=?').bind(u.id).all());
+  const {results=[]}=await env.DB.prepare('SELECT config_json FROM projects WHERE user_id=?').bind(u.id).all();
+  for(const r of results){try{for(const k of mediaKeysFromValue(JSON.parse(r.config_json||'{}')))keys.add(k)}catch{}}
+  await env.DB.prepare('DELETE FROM users WHERE id=?').bind(u.id).run();
+  for(const key of keys){try{await env.SITES.delete(key)}catch(e){console.error(e)}}
+  return json({ok:true});
+}
 async function logout(req,env){const token=await tokenFromReq(req);if(token)await env.DB.prepare('DELETE FROM sessions WHERE token_hash=?').bind(await sha256(token)).run();return json({ok:true},200,{'set-cookie':cookie(SESSION_COOKIE,'',{maxAge:0})})}
 
 function currentProjectId(req){return cleanText(req.headers.get('x-onlyevent-project')||parseCookies(req)[PROJECT_COOKIE]||'',100)}
@@ -291,6 +308,7 @@ async function handleApi(req,env,path){
   if(path==='/api/account/recover'&&req.method==='POST')return recoverAccount(req,env);
   if(path==='/api/account/recovery-code'&&req.method==='POST')return rotateRecoveryCode(req,env);
   if(path==='/api/account/password'&&req.method==='POST')return changePassword(req,env);
+  if(path==='/api/account/delete'&&req.method==='POST')return deleteAccount(req,env);
   if((path==='/api/logout'||path==='/api/auth/logout')&&req.method==='POST')return logout(req,env);
   if(path==='/api/me'&&req.method==='GET'){const u=await requireUser(req,env);return json({ok:true,user:{id:u.id,username:u.username}})}
   if(path==='/api/session'&&req.method==='GET')return sessionInfo(req,env);
