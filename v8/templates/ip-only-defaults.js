@@ -26,7 +26,7 @@ export const ipOnlyDefaults={
       ogDescription:'',
       ogImage:''
     },
-    tagline:'围绕单一作品 IP 的粉丝综合活动。主办方负责 KV、活动信息和内容；网站负责把摊位、嘉宾、舞台与地图组织成完整官网。',
+    tagline:'一场为喜欢这部作品的人办的小聚会：逛摊位、看舞台、见同好。',
     entryAnimation:{
       enabled:true,
       showSkip:true,

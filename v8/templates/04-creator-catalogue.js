@@ -2,8 +2,8 @@ import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.
 import {template03} from '/v8/templates/03-creator-market.js?v=8.42.0';
 /* Template 04 runs on the shared IP ONLY core; its art and the page-flip web catalogue differ. */
 export const template04=makeIpOnlyTemplate({
- id:'04-creator-catalogue',name:'04 · CREATOR CATALOGUE',label:'CREATOR CATALOGUE',studioName:'CREATOR CATALOGUE',
- description:'二次元插画主视觉与可翻阅的创作者电子场刊。',
+ id:'04-creator-catalogue',name:'04 · 创作者场刊',label:'创作者场刊',studioName:'创作者场刊',
+ description:'把活动做成一本能翻页的电子场刊：插画封面，社团按摊位号排好，适合同人展。',
  structureProfile:'catalogue',artDirection:'illustrated-catalogue',motionProfile:'catalogue',
  theme:'#ff7eb6',heroTitleColor:'#ffffff',heroTitleAccentColor:'#ff7eb6',
  presentationProfile:{entryAnimation:true,quickAccess:false,ribbon:false,mobileDock:false,scrollProgress:false,floatingStickers:false,passportProgress:false,decorativeSectionOrbits:false,catalogueBook:true},

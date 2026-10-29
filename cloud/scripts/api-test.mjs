@@ -154,3 +154,24 @@ test('visitor sites get robots.txt, no favicon noise and safe headers; the apex 
   const editor=await call(env,'/v8/',{host:'onlyevent.cn'});
   assert.equal(editor.headers.get('x-frame-options'),'SAMEORIGIN');
 });
+
+test('recovery codes are short and forgiving, and old long codes still work',async()=>{
+  const env=createEnv();
+  const {recoveryCode}=await signUp(env,'short-code');
+  assert.match(recoveryCode,/^[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}$/);
+  const typed=recoveryCode.toLowerCase().replace(/-/g,' ');
+  const ok=await call(env,'/api/account/recover',{method:'POST',body:{username:'short-code',recoveryCode:typed,newPassword:'another-1'}});
+  assert.equal(ok.status,200);
+
+  // A code issued by the previous version: 24 characters, hashed exactly as typed.
+  const {token}=await signUp(env,'legacy-code');
+  const legacy='Qk3x_9Lm-AbCdEfGhIjKlMnOp';
+  const salt=Buffer.from('legacy-salt-0001').toString('base64');
+  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(legacy),'PBKDF2',false,['deriveBits']);
+  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:Buffer.from(salt,'base64'),iterations:100000},key,256);
+  const hash=Buffer.from(new Uint8Array(bits)).toString('base64');
+  const user=await call(env,'/api/me',{token});
+  await env.DB.prepare('UPDATE account_recovery SET code_hash=?,code_salt=? WHERE user_id=?').bind(hash,salt,user.data.user.id).run();
+  assert.equal((await call(env,'/api/account/recover',{method:'POST',body:{username:'legacy-code',recoveryCode:legacy,newPassword:'another-1'}})).status,200);
+  assert.equal((await call(env,'/api/account/recover',{method:'POST',body:{username:'legacy-code',recoveryCode:legacy.toLowerCase(),newPassword:'another-2'}})).status,400);
+});

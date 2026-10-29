@@ -10,7 +10,7 @@
   <header class="admin-topbar">
     <a class="brand-zone" href="/admin/" aria-label="OnlyEvent Studio 首页">
       <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
-      <span class="brand-copy"><b>OnlyEvent <strong>Studio</strong></b><small>Organizer Platform</small></span>
+      <span class="brand-copy"><b>OnlyEvent <strong>Studio</strong></b><small>主办方平台</small></span>
     </a>
     <div class="auth-account-actions" id="authAccountActions" hidden>
       <span class="auth-user-dot"></span>
@@ -22,10 +22,10 @@
 
   <main class="auth-shell" id="authShell" hidden>
     <section class="auth-visual">
-      <span class="auth-eyebrow">ONLYEVENT ORGANIZER</span>
-      <h1>把活动网站<br><em>交给你自己。</em></h1>
-      <p>创建、编辑并发布 ONLY / 同好活动网站。</p>
-      <div class="auth-feature-row"><span>01 创建活动</span><span>02 编辑网站</span><span>03 一键发布</span></div>
+      <span class="auth-eyebrow">主办方入口</span>
+      <h1>活动网站，<br><em>自己动手做。</em></h1>
+      <p>选一个模板，填好摊位、日程和指南，就能发布。</p>
+      <div class="auth-feature-row"><span>01 选模板</span><span>02 填内容</span><span>03 发布</span></div>
     </section>
 
     <section class="auth-card" aria-live="polite">
@@ -82,7 +82,7 @@
 
         <form id="authCodeRecoveryForm" class="auth-form" data-recovery-panel="code">
           <label><span>主办方名称</span><input id="authRecoveryName" autocomplete="username" placeholder="注册时填写的名称" required></label>
-          <label><span>找回码</span><input id="authRecoveryCode" autocomplete="off" spellcheck="false" maxlength="64" placeholder="注册时保存的找回码" required></label>
+          <label><span>找回码</span><input id="authRecoveryCode" autocomplete="off" spellcheck="false" maxlength="64" placeholder="例如 K7QM-2XPA-9TNH" required></label>
           <label><span>新密码</span><input id="authRecoveryPassword" type="password" minlength="6" autocomplete="new-password" placeholder="设置新密码" required></label>
           <label><span>确认新密码</span><input id="authRecoveryPassword2" type="password" minlength="6" autocomplete="new-password" placeholder="再次输入新密码" required></label>
           <button class="primary auth-submit" type="submit">重设密码</button>
@@ -112,7 +112,7 @@
       <section class="auth-panel recovery-success" id="authRecoveryCodeResult" hidden>
         <span class="auth-success-icon">✓</span>
         <div class="auth-panel-head"><h2>账号创建完成</h2><p>这是你的找回码。请截图、抄下来或保存到密码管理器。</p></div>
-        <div class="auth-code-display"><small>RECOVERY CODE</small><strong id="authRecoveryCodeValue">—</strong></div>
+        <div class="auth-code-display"><small>找回码</small><strong id="authRecoveryCodeValue">—</strong></div>
         <div class="auth-code-warning"><b>只显示这一次</b><span>忘记密码时，输入主办方名称和这串找回码即可设置新密码。</span></div>
         <div class="auth-result-actions"><button id="authCopyRecoveryCode" class="quiet" type="button">复制找回码</button><button id="authEnterAdmin" class="primary" type="button">我已保存，进入后台</button></div>
       </section>
@@ -126,8 +126,8 @@
         <button data-admin-page="templates" type="button"><span>◇</span><b>模板库</b></button>
       </nav>
       <div class="sidebar-bottom">
-        <span>ONLYEVENT STUDIO</span>
-        <small>模板建站 · 发布游客网站</small>
+        <span>OnlyEvent Studio</span>
+        <small>活动网站制作工具</small>
       </div>
     </aside>
 
@@ -135,9 +135,9 @@
       <div class="admin-page active" data-page-panel="projects">
         <div class="page-head">
           <div>
-            <span class="eyebrow">ORGANIZER WORKSPACE</span>
+            <span class="eyebrow">主办方工作台</span>
             <h1>我的活动</h1>
-            <p>管理活动网站、继续编辑或发布最新版本。</p>
+            <p>你的所有活动都在这里，可以继续编辑、发布或下线。</p>
           </div>
           <button class="primary large" id="newProjectHeroBtn" type="button">新建活动 <span>↗</span></button>
         </div>
@@ -153,12 +153,12 @@
             <input id="importProjectBackupFile" type="file" accept=".json,application/json" hidden aria-label="选择 OnlyEvent 项目备份文件">
           </div>
         </div>
-        <p class="project-backup-notice">目前项目数据保存在当前浏览器；换设备、切换 Cloudflare 域名或清理浏览器数据前，请先导出备份。账号密码不包含在备份中。</p>
+        <p class="project-backup-notice">登录后，活动会自动保存到云端，换一台设备登录就能接着做。导出备份是额外的保险，备份里不含账号密码。</p>
         <div class="project-grid" id="projectGrid"></div>
         <div class="empty-projects" id="emptyProjects" hidden>
           <div class="empty-orbit"><i></i><i></i></div>
           <b>还没有活动项目</b>
-          <p>从模板开始创建第一个活动网站。</p>
+          <p>先选一个模板，开始做第一个活动网站。</p>
           <button class="primary" id="emptyCreateBtn" type="button">选择模板</button>
         </div>
       </div>
@@ -166,9 +166,9 @@
       <div class="admin-page" data-page-panel="templates" hidden>
         <div class="page-head compact">
           <div>
-            <span class="eyebrow">TEMPLATE LIBRARY</span>
+            <span class="eyebrow">模板库</span>
             <h1>选择网站模板</h1>
-            <p>模板决定网站的视觉、布局与交互；活动内容仍由 OnlyEvent Studio 统一管理。</p>
+            <p>模板只决定网站的外观和排版，摊位、日程、指南这些内容的填写方式都一样。</p>
           </div>
         </div>
         <div class="template-filter-row">
@@ -185,7 +185,7 @@
   <dialog class="create-dialog" id="createDialog">
     <form method="dialog" class="create-shell" id="createForm">
       <div class="dialog-head">
-        <div><span class="eyebrow">CREATE PROJECT</span><b>创建活动网站</b></div>
+        <div><span class="eyebrow">新建活动</span><b>创建活动网站</b></div>
         <button value="cancel" aria-label="关闭">×</button>
       </div>
       <div class="dialog-body">

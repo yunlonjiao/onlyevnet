@@ -2,12 +2,12 @@ import {IP_ONLY_CORE_MODULES,DEFAULT_IP_ONLY_PRESENTATION_PROFILE} from '/v8/tem
 import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.41.4';
 export const template01 = {
   id:'01-ip-only',
-  name:'01 · POP FESTIVAL',
-  label:'POP FESTIVAL',
-  studioName:'POP FESTIVAL',
+  name:'01 · 波普庆典',
+  label:'波普庆典',
+  studioName:'波普庆典',
   category:'单 IP / 同好活动',
   version:'1.0.0',
-  description:'以鲜明配色、趣味贴纸、粗描边和活力卡片构成的二次元活动网站。',
+  description:'颜色亮、贴纸多、描边粗，气氛热闹，适合围着一部作品或一个角色办的同好聚会。',
   structureProfile:'portal',
   artDirection:'international-festival',
   motionProfile:'energetic',

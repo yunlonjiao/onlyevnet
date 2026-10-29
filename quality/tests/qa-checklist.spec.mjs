@@ -25,7 +25,7 @@ test('organizer registration, recovery code, logout and login run against the Wo
 
   await expect(page.locator('#authRecoveryCodeResult')).toBeVisible();
   const code=(await page.locator('#authRecoveryCodeValue').textContent())?.trim()||'';
-  expect(code).toMatch(/^[A-Za-z0-9_-]{20,}$/);
+  expect(code).toMatch(/^[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}$/);
 
   await page.locator('#authEnterAdmin').click();
   await expect(page.locator('#adminShell')).toBeVisible();

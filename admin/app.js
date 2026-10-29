@@ -4,6 +4,9 @@ import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
+// Short Chinese tags for the template gallery (the internal art-direction names stay English).
+const TEMPLATE_TAGS={'01-ip-only':'活泼 · 贴纸','02-scrapbook':'手账 · 叙事','03-creator-market':'社区 · 内容流','04-creator-catalogue':'二次元 · 电子场刊'};
+const templateTag=t=>TEMPLATE_TAGS[t.id]||'';
 let selectedTemplateId=DEFAULT_TEMPLATE_ID;
 let projects=readProjects();
 
@@ -129,7 +132,7 @@ function renderTemplates(){
     const coverFile=template.id==='01-ip-only'?'template-01.png':template.id==='02-scrapbook'?'template-02.png':template.id==='03-creator-market'?'template-03.png':template.id==='04-creator-catalogue'?'template-04.png':'';
     const marketUrl='';
     card.innerHTML='<div class="template-preview"><div class="template-preview-window"><span class="bar"></span><div class="hero"><b>STAR<br>DUST<br>ONLY</b><span class="art"></span><em>'+String(template.structureProfile||'portal').toUpperCase()+'</em></div><div class="rows"><i></i><i></i><i></i></div></div>'+(coverFile?'<img class="template-real-cover" src="/admin/covers/'+coverFile+'" alt="'+template.name+' 真实网页首屏截图" loading="lazy" onerror="this.remove()">':'')+(marketUrl?'<iframe class="market-thumbnail" src="'+marketUrl+'" title="模板视觉预览" tabindex="-1" loading="lazy" aria-hidden="true"></iframe>':'')+'</div>'+
-      '<div class="template-card-body"><span>TEMPLATE '+String(index+1).padStart(2,'0')+'</span><h2>'+template.label+'</h2><p>'+template.description+'</p><div class="template-card-footer"><span class="template-tag">'+template.artDirection+'</span><button class="use-template" data-template="'+template.id+'" type="button">使用此模板</button></div></div>';
+      '<div class="template-card-body"><span>模板 '+String(index+1).padStart(2,'0')+'</span><h2>'+template.label+'</h2><p>'+template.description+'</p><div class="template-card-footer"><span class="template-tag">'+templateTag(template)+'</span><button class="use-template" data-template="'+template.id+'" type="button">使用此模板</button></div></div>';
     grid.appendChild(card);
   });
 
@@ -174,7 +177,7 @@ function showPage(name){
 function openCreate(templateId=DEFAULT_TEMPLATE_ID){
   selectedTemplateId=templateId;
   const t=getTemplate(templateId);
-  $('#selectedTemplateCard').innerHTML='<span class="thumb thumb-'+String(t.artDirection||'default').replace(/[^a-z0-9-]/gi,'')+'"></span><div><b>'+t.label+'</b><span>'+t.artDirection+' · '+t.version+'</span></div>';
+  $('#selectedTemplateCard').innerHTML='<span class="thumb thumb-'+String(t.artDirection||'default').replace(/[^a-z0-9-]/gi,'')+'"></span><div><b>'+t.label+'</b><span>'+templateTag(t)+'</span></div>';
   $('#createProjectName').value=getTemplate(selectedTemplateId).defaults.eventName||'STARDUST ONLY';
   $('#createDialog').showModal();
   setTimeout(()=>$('#createProjectName').focus(),0);

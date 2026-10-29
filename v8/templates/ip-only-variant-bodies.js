@@ -124,7 +124,7 @@ function commonUtility(prefix){
 }
 
 function heroFields(extra=''){
- return `<div class="hero-copy ${extra}"><h1><span class="hero-title-line hero-title-1">STAR</span><br><em class="hero-title-line hero-title-2">BEAT</em><br><span class="hero-title-line hero-title-3">ONLY</span></h1><p>围绕单一作品 IP 的粉丝综合活动。所有内容由 OnlyEvent Studio 统一管理。</p><div class="meta"><span class="pill">11.08 SUN</span><span class="pill">杭州</span><a class="pill venue-nav" href="#" target="_blank" rel="noopener">杭州国际博览中心</a></div></div>`;
+ return `<div class="hero-copy ${extra}"><h1><span class="hero-title-line hero-title-1">STAR</span><br><em class="hero-title-line hero-title-2">BEAT</em><br><span class="hero-title-line hero-title-3">ONLY</span></h1><p>一场为喜欢这部作品的人办的小聚会：逛摊位、看舞台、见同好。</p><div class="meta"><span class="pill">11.08 SUN</span><span class="pill">杭州</span><a class="pill venue-nav" href="#" target="_blank" rel="noopener">杭州国际博览中心</a></div></div>`;
 }
 function heroKV(extra=''){return `<div class="hero-art ${extra}"><div class="kv"></div></div>`}
 

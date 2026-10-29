@@ -1,8 +1,8 @@
 import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.41.4';
 /* Template 03 runs on the shared IP ONLY core; only its art and the product spotlight differ. */
 export const template03=makeIpOnlyTemplate({
- id:'03-creator-market',name:'03 · CREATOR MARKET',label:'CREATOR MARKET',studioName:'CREATOR MARKET',
- description:'内容门户式布局、首页制品轮播与六件随机作品推荐。',
+ id:'03-creator-market',name:'03 · 创作者集市',label:'创作者集市',studioName:'创作者集市',
+ description:'首页像内容社区：一张轮换推荐图，加六件每次刷新都会变的制品，适合社团和摊位很多的创作者集市。',
  structureProfile:'catalogue',artDirection:'creator-portal',motionProfile:'portal',
  theme:'#00aeec',heroTitleColor:'#18191c',heroTitleAccentColor:'#00aeec',
  presentationProfile:{entryAnimation:true,quickAccess:false,ribbon:false,mobileDock:false,scrollProgress:false,floatingStickers:false,passportProgress:false,decorativeSectionOrbits:false,productSpotlight:true},

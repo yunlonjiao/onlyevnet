@@ -24,7 +24,7 @@ async function openStudio(page,project,seed){
 
 test('04 runs on the shared Studio with the catalogue on its homepage',async({page})=>{
   const {frame,errors}=await openStudio(page,'cat-pages');
-  await expect(page.locator('#workspaceTemplateName')).toHaveText('CREATOR CATALOGUE');
+  await expect(page.locator('#workspaceTemplateName')).toHaveText('创作者场刊');
   for(const row of ['activities','guests'])await expect(page.locator('[data-page-row="'+row+'"]')).toBeHidden();
   await expect(page.locator('#createCustomPageBtn')).toBeHidden();
   await expect(frame.locator('.cb-kind-cover')).toHaveCount(1);
