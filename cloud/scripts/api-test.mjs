@@ -192,3 +192,33 @@ test('changing the password checks the old one and signs out other devices',asyn
   assert.equal((await call(env,'/api/account/login',{method:'POST',body:{username:'pw-change',password:'secret-123'}})).status,401);
   assert.equal((await call(env,'/api/account/login',{method:'POST',body:{username:'pw-change',password:'brand-new-1'}})).status,200);
 });
+
+test('circle collection: public form, image upload, review queue and isolation',async()=>{
+  const env=createEnv();
+  const {token}=await signUp(env,'collector'),pid=await newProject(env,token,'收集测试展');
+  const other=await signUp(env,'someone-else');
+  assert.equal((await call(env,'/api/projects/'+pid+'/collect',{token:other.token})).status,404);
+  const on=await call(env,'/api/projects/'+pid+'/collect',{method:'POST',token,body:{action:'enable'}});
+  assert.equal(on.status,200);const t=on.data.form.token;assert.match(t,/^[a-f0-9]{20}$/);
+  assert.equal((await call(env,'/api/collect/'+t)).data.eventName,'收集测试展');
+  assert.equal((await call(env,'/api/collect/'+'0'.repeat(20))).status,404);
+  const fd=new FormData();fd.append('file',new File([new Uint8Array([71,73,70,56,57,97])],'a.gif',{type:'image/gif'}));
+  const up=await worker.fetch(new Request(API+'/api/collect/'+t+'/image',{method:'POST',body:fd}),env);
+  assert.equal(up.status,201);const logo=(await up.json()).url;assert.match(logo,/^\/media\/uploads\/collect\/.+\.gif$/);
+  const bad=new FormData();bad.append('file',new File(['x'],'a.exe',{type:'application/octet-stream'}));
+  assert.equal((await worker.fetch(new Request(API+'/api/collect/'+t+'/image',{method:'POST',body:bad}),env)).status,415);
+  assert.equal((await call(env,'/api/collect/'+t,{method:'POST',body:{name:'无联系方式'}})).status,400);
+  const sent=await call(env,'/api/collect/'+t,{method:'POST',body:{name:'浮光工房',type:'插画',intro:'介绍',contact:'QQ 123456',logo,products:[{name:'画集',price:'¥45',image:'https://evil.example/x.png'},{name:''}]}});
+  assert.equal(sent.status,201);
+  const list=await call(env,'/api/projects/'+pid+'/collect',{token});
+  assert.equal(list.data.entries.length,1);
+  const e=list.data.entries[0];
+  assert.equal(e.data.logo,logo);assert.equal(e.data.products.length,1);assert.equal(e.data.products[0].image,'');
+  assert.equal((await call(env,'/api/projects/'+pid+'/collect/entries/'+e.id,{method:'POST',token,body:{status:'approved'}})).status,200);
+  assert.equal((await call(env,'/api/projects/'+pid+'/collect',{token})).data.entries[0].status,'approved');
+  await call(env,'/api/projects/'+pid+'/collect',{method:'POST',token,body:{action:'close'}});
+  assert.equal((await call(env,'/api/collect/'+t,{method:'POST',body:{name:'迟到',contact:'x'}})).status,403);
+  const reset=await call(env,'/api/projects/'+pid+'/collect',{method:'POST',token,body:{action:'reset'}});
+  assert.notEqual(reset.data.form.token,t);assert.equal((await call(env,'/api/collect/'+t)).status,404);
+  assert.equal((await call(env,'/api/projects/'+pid+'/collect/entries/'+e.id,{method:'DELETE',token})).status,200);
+});

@@ -112,6 +112,20 @@ export async function purgeCloudProject(projectId){
 export async function changeAccountPassword({oldPassword,newPassword}){
   return api('/api/account/password',{method:'POST',body:{oldPassword,newPassword}});
 }
+export async function getCollect(cloudProjectId){
+  return api('/api/projects/'+encodeURIComponent(cloudProjectId)+'/collect');
+}
+export async function manageCollect(cloudProjectId,action){
+  return api('/api/projects/'+encodeURIComponent(cloudProjectId)+'/collect',{method:'POST',body:{action}});
+}
+export async function setCollectEntryStatus(cloudProjectId,entryId,status){
+  return api('/api/projects/'+encodeURIComponent(cloudProjectId)+'/collect/entries/'+encodeURIComponent(entryId),{method:'POST',body:{status}});
+}
+export async function deleteCollectEntry(cloudProjectId,entryId){
+  return api('/api/projects/'+encodeURIComponent(cloudProjectId)+'/collect/entries/'+encodeURIComponent(entryId),{method:'DELETE'});
+}
+export const collectLink=token=>PUBLISHER_ORIGIN+'/collect/?t='+token;
+export const cloudMediaUrl=url=>/^\/media\//.test(url||'')?PUBLISHER_ORIGIN+url:(url||'');
 export async function deleteCloudProject(projectId){
   return api('/api/projects/'+encodeURIComponent(projectId),{method:'DELETE'});
 }

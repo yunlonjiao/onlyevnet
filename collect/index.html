@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>社团信息填写</title>
+<style>
+:root{--bg:#f6f4ff;--card:#fff;--text:#22203a;--muted:#6f6c88;--line:#e3dff5;--accent:#7c5cff;--danger:#d6334f;--ok:#12805c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+main{max-width:640px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:22px;margin:0 0 6px}
+.lead{margin:0 0 20px;color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}
+.card h2{font-size:15px;margin:0 0 12px}
+label{display:block;margin-bottom:12px;font-size:13px;font-weight:700}
+label small{font-weight:400;color:var(--muted)}
+input[type=text],textarea{width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff;color:inherit}
+textarea{min-height:76px;resize:vertical}
+input:focus,textarea:focus{outline:2px solid #7c5cff55;border-color:var(--accent)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pick{display:flex;align-items:center;gap:12px;margin-top:6px}
+.thumb{width:64px;height:64px;border-radius:12px;border:1px dashed #bdb6e6;background:#faf9ff center/cover no-repeat;display:grid;place-items:center;color:var(--muted);font-size:11px;flex:none}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--text);padding:8px 14px}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;width:100%;padding:13px;font-size:16px}
+button:disabled{opacity:.55;cursor:not-allowed}
+.product{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:#fcfbff}
+.product header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.product header button{padding:2px 10px;font-size:12px}
+.msg{min-height:22px;margin:10px 0;font-size:14px}
+.msg.error{color:var(--danger)}.msg.ok{color:var(--ok)}
+.state{text-align:center;padding:60px 16px}
+.state b{display:block;font-size:18px;margin-bottom:8px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <div id="stateBox" class="state" hidden><b id="stateTitle"></b><span id="stateText"></span></div>
+  <form id="collectForm" hidden>
+    <h1 id="formTitle">社团信息填写</h1>
+    <p class="lead">主办方会用这里填的内容制作社团和摊位页面。填完提交就行，不用登录。</p>
+    <div class="card">
+      <h2>社团信息</h2>
+      <label>社团名称 <small>（必填）</small><input type="text" id="fName" maxlength="40" autocomplete="off" required></label>
+      <label>类型 <small>（例如：原创插画、同人志、周边）</small><input type="text" id="fType" maxlength="40"></label>
+      <label>一句话介绍<textarea id="fIntro" maxlength="200"></textarea></label>
+      <label>社团标志 <small>（图片，不超过 5MB）</small>
+        <span class="pick"><span class="thumb" id="logoThumb">未上传</span>
+        <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp,image/gif"></span>
+      </label>
+      <label>联系方式 <small>（必填，只有主办方能看到，不会公开）</small><input type="text" id="fContact" maxlength="80" placeholder="QQ、微信或邮箱"></label>
+    </div>
+    <div class="card">
+      <h2>摊位制品 <small style="font-weight:400;color:var(--muted)">（最多 8 件，可以不填）</small></h2>
+      <div id="productList"></div>
+      <button type="button" id="addProduct">+ 添加一件制品</button>
+    </div>
+    <div class="msg" id="formMsg" role="status"></div>
+    <button class="primary" type="submit" id="submitBtn">提交</button>
+  </form>
+</main>
+<script>
+(()=>{
+  const $=s=>document.querySelector(s),token=(location.search.match(/[?&]t=([a-f0-9]{20})/)||[])[1]||'';
+  const api='/api/collect/'+token,MAX=8;
+  let logo='',busy=0;
+  function show(title,text){$('#collectForm').hidden=true;$('#stateBox').hidden=false;$('#stateTitle').textContent=title;$('#stateText').textContent=text||''}
+  function msg(text,kind=''){const el=$('#formMsg');el.textContent=text;el.className='msg '+kind}
+  // Large phone photos are scaled down first; GIFs are sent as they are to keep animation.
+  async function shrink(file){
+    if(file.type==='image/gif'||file.size<600*1024)return file;
+    try{
+      const bmp=await createImageBitmap(file),scale=Math.min(1,1600/Math.max(bmp.width,bmp.height));
+      const c=document.createElement('canvas');c.width=Math.round(bmp.width*scale);c.height=Math.round(bmp.height*scale);
+      c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+      const blob=await new Promise(r=>c.toBlob(r,'image/webp',.85));
+      return blob&&blob.size<file.size?new File([blob],'image.webp',{type:'image/webp'}):file;
+    }catch{return file}
+  }
+  async function upload(file){
+    if(file.size>20*1024*1024)throw new Error('图片太大了，请换一张小一点的');
+    const f=await shrink(file),fd=new FormData();fd.append('file',f,f.name);
+    const res=await fetch(api+'/image',{method:'POST',body:fd}),data=await res.json().catch(()=>({}));
+    if(!res.ok||!data.url)throw new Error(data.error||'图片上传失败，请稍后再试');
+    return data.url;
+  }
+  function thumb(el,url){el.style.backgroundImage=url?'url("'+url+'")':'';el.textContent=url?'':'未上传'}
+  async function pickImage(input,thumbEl,onUrl){
+    const file=input.files[0];if(!file)return;
+    busy++;$('#submitBtn').disabled=true;msg('图片上传中…');
+    try{const url=await upload(file);onUrl(url);thumb(thumbEl,url);msg('')}
+    catch(e){msg(e.message,'error');input.value=''}
+    finally{busy--;$('#submitBtn').disabled=busy>0}
+  }
+  function addProduct(){
+    const list=$('#productList');if(list.children.length>=MAX)return;
+    const box=document.createElement('div');box.className='product';
+    box.innerHTML='<header><span></span><button type="button">删除</button></header>'+
+      '<div class="row"><label>名称<input type="text" class="p-name" maxlength="40"></label><label>价格<input type="text" class="p-price" maxlength="20" placeholder="例如 ¥45"></label></div>'+
+      '<label>图片<span class="pick"><span class="thumb">未上传</span><input type="file" accept="image/png,image/jpeg,image/webp,image/gif"></span></label>';
+    box.dataset.image='';
+    box.querySelector('header button').onclick=()=>{box.remove();renumber()};
+    const input=box.querySelector('input[type=file]'),th=box.querySelector('.thumb');
+    input.onchange=()=>pickImage(input,th,url=>{box.dataset.image=url});
+    list.appendChild(box);renumber();
+  }
+  function renumber(){[...$('#productList').children].forEach((b,i)=>b.querySelector('header span').textContent='制品 '+(i+1));$('#addProduct').hidden=$('#productList').children.length>=MAX}
+  async function init(){
+    if(!token)return show('链接不完整','请向主办方要一个完整的填写链接。');
+    let info;try{const res=await fetch(api);info=await res.json();if(!res.ok)throw new Error(info.error||'')}catch(e){return show('这个链接用不了',e.message||'链接无效或已失效，请向主办方确认。')}
+    if(!info.open)return show('收集已结束','主办方已经关闭了这次填写。如果还需要补充，请直接联系主办方。');
+    $('#formTitle').textContent=info.eventName+' · 社团信息';document.title=info.eventName+' · 社团信息填写';
+    $('#collectForm').hidden=false;addProduct();
+  }
+  $('#logoFile').onchange=()=>pickImage($('#logoFile'),$('#logoThumb'),u=>{logo=u});
+  $('#addProduct').onclick=addProduct;
+  $('#collectForm').onsubmit=async e=>{
+    e.preventDefault();if(busy)return;
+    const products=[...$('#productList').children].map(b=>({name:b.querySelector('.p-name').value,price:b.querySelector('.p-price').value,image:b.dataset.image||''})).filter(p=>p.name.trim());
+    $('#submitBtn').disabled=true;msg('提交中…');
+    try{
+      const res=await fetch(api,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:$('#fName').value,type:$('#fType').value,intro:$('#fIntro').value,contact:$('#fContact').value,logo,products})});
+      const data=await res.json().catch(()=>({}));
+      if(!res.ok)throw new Error(data.error||'提交失败，请稍后再试');
+      show('提交成功','主办方审核后会放进活动网站。如果要修改，请联系主办方。');
+    }catch(err){msg(err.message,'error');$('#submitBtn').disabled=false}
+  };
+  init();
+})();
+</script>
+</body>
+</html>

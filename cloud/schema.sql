@@ -115,3 +115,21 @@ CREATE TABLE IF NOT EXISTS rate_limits (
   count INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_rate_limits_window ON rate_limits(window_start);
+
+-- Circle (社团) collection: organizers share a link, circle leaders submit their info, organizers approve.
+CREATE TABLE IF NOT EXISTS collect_forms (
+  project_id TEXT PRIMARY KEY,
+  token TEXT NOT NULL UNIQUE,
+  open INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS collect_entries (
+  id TEXT PRIMARY KEY,
+  project_id TEXT NOT NULL,
+  data_json TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_collect_entries_project ON collect_entries(project_id,created_at);

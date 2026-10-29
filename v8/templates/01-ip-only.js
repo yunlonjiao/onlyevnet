@@ -2,9 +2,9 @@ import {IP_ONLY_CORE_MODULES,DEFAULT_IP_ONLY_PRESENTATION_PROFILE} from '/v8/tem
 import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.41.4';
 export const template01 = {
   id:'01-ip-only',
-  name:'01 · 缤纷嘉年华',
-  label:'缤纷嘉年华',
-  studioName:'缤纷嘉年华',
+  name:'01 · 流行嘉年华',
+  label:'流行嘉年华',
+  studioName:'流行嘉年华',
   category:'单 IP / 同好活动',
   version:'1.0.0',
   description:'颜色亮、贴纸多、描边粗，气氛热闹，适合围着一部作品或一个角色办的同好聚会。',

@@ -58,7 +58,7 @@ test('03 and 04 canvas focus uses the same 01/02 field highlight colors',async()
 });
 
 test('Studio identifiers stay English while organizer event names remain editable',async()=>{
- for(const [id,label] of [['01-ip-only','缤纷嘉年华'],['02-scrapbook','旅途手账'],['03-creator-market','创作者集市'],['04-creator-catalogue','创作者场刊']]){
+ for(const [id,label] of [['01-ip-only','流行嘉年华'],['02-scrapbook','旅途手账'],['03-creator-market','创作者集市'],['04-creator-catalogue','创作者场刊']]){
   const {context,page,errors}=await openEditor(id,'ci-identity-'+id);
   assert.equal(await page.locator('#projectTemplateName').textContent(),label);
   assert.equal(await page.locator('#workspaceTemplateName').textContent(),label);
@@ -69,7 +69,7 @@ test('Studio identifiers stay English while organizer event names remain editabl
 });
 test('template style labels are distinct; all fresh sites display STARDUST ONLY',async()=>{
  const styleNames={
-  '01-ip-only':'缤纷嘉年华','02-scrapbook':'旅途手账',
+  '01-ip-only':'流行嘉年华','02-scrapbook':'旅途手账',
   '03-creator-market':'创作者集市','04-creator-catalogue':'创作者场刊'
  };
  const {context:registryContext,page:registryPage}=await openEditor('01-ip-only','ci-style-contract');

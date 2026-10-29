@@ -18,7 +18,7 @@ test('admin is the product entry and exposes projects plus template library',asy
   await expect(page.locator('[data-page-panel="projects"] h1')).toHaveText('我的活动');
   await page.locator('[data-admin-page="templates"]').click();
   await expect(page.locator('[data-page-panel="templates"] h1')).toHaveText('选择网站模板');
-  await expect(page.locator('#templateGrid .template-card').first()).toContainText('缤纷嘉年华');
+  await expect(page.locator('#templateGrid .template-card').first()).toContainText('流行嘉年华');
   await expect(page.locator('#templateGrid [data-template="01-ip-only"]')).toBeVisible();
 });
 

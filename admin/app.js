@@ -1,6 +1,6 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode} from '/v8/publisher.js?v=8.46.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.47.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -164,6 +164,82 @@ function updateBinBar(){
   $('#binEmptyBtn').hidden=!trash.length;
   $('#selectAllBin').checked=!!trash.length&&trash.every(p=>binSelected.has(p.id));
 }
+/* ---- circle collection ---- */
+let collectCloudId='',collectForm=null,collectEntries=[];
+const collectProject=()=>projects.find(p=>p.id===$('#collectProject').value)||null;
+function collectMsg(text,kind){authSetMessage('collectMessage',text,kind||'')}
+function renderCollectProjects(){
+  const select=$('#collectProject'),keep=select.value;
+  select.innerHTML=projects.map(p=>'<option value="'+p.id+'">'+String(p.name||'未命名活动').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'})[c])+'</option>').join('');
+  if(keep&&projects.some(p=>p.id===keep))select.value=keep;
+}
+async function loadCollect(){
+  const project=collectProject();
+  $('#collectSetup').hidden=true;$('#collectLinkBox').hidden=true;$('#collectList').innerHTML='';$('#collectEmpty').hidden=true;collectMsg('');
+  collectCloudId='';collectForm=null;collectEntries=[];
+  if(!project){collectMsg('还没有活动，先去「模板库」新建一个。');return}
+  if(!readCloudSession()){collectMsg('请先登录主办方账号。');return}
+  try{
+    collectCloudId=await ensureCloudProjectFor({templateId:project.templateId||DEFAULT_TEMPLATE_ID,projectId:project.id,name:project.name});
+    const data=await getCollect(collectCloudId);collectForm=data.form;collectEntries=data.entries||[];
+  }catch(err){collectMsg(authNetworkMessage(err),'error');return}
+  renderCollect();
+}
+function renderCollect(){
+  const form=collectForm;
+  $('#collectSetup').hidden=!!form;$('#collectLinkBox').hidden=!form;
+  if(form){
+    $('#collectLinkInput').value=collectLink(form.token);
+    $('#collectState').textContent=form.open?'收集中':'已关闭';$('#collectState').classList.toggle('off',!form.open);
+    $('#collectToggle').textContent=form.open?'关闭收集':'重新开启';
+  }
+  const list=$('#collectList');list.innerHTML='';
+  $('#collectEmpty').hidden=!form||collectEntries.length>0;
+  const label={pending:'待审核',approved:'已加入摊位',rejected:'未通过'};
+  const pending=collectEntries.filter(e=>e.status==='pending').length,badge=$('#collectCount');
+  badge.hidden=!pending;badge.textContent=String(pending);
+  collectEntries.forEach(entry=>{
+    const d=entry.data||{},frag=$('#collectEntryTemplate').content.cloneNode(true),card=frag.querySelector('.collect-entry');
+    card.classList.add('is-'+entry.status);
+    card.querySelector('.collect-title b').textContent=d.name||'未命名社团';
+    card.querySelector('.collect-title small').textContent=[d.type,formatTime(entry.createdAt)].filter(Boolean).join(' · ');
+    card.querySelector('.collect-pill').textContent=label[entry.status]||entry.status;
+    if(d.logo)card.querySelector('.collect-logo').style.backgroundImage='url("'+cloudMediaUrl(d.logo)+'")';
+    card.querySelector('.collect-intro').textContent=d.intro||'（没有填写介绍）';
+    card.querySelector('.collect-contact').textContent='联系方式：'+(d.contact||'—');
+    const products=card.querySelector('.collect-products');
+    (d.products||[]).forEach(p=>{
+      const item=document.createElement('div');item.className='collect-product';
+      const img=document.createElement('i');if(p.image)img.style.backgroundImage='url("'+cloudMediaUrl(p.image)+'")';
+      const name=document.createElement('b');name.textContent=p.name;
+      const price=document.createElement('span');price.textContent=p.price||'';
+      item.append(img,name,price);products.appendChild(item);
+    });
+    card.querySelector('.approve').onclick=()=>approveEntry(entry,card.querySelector('.collect-no input').value.trim());
+    card.querySelector('.reject').onclick=()=>changeEntry(entry,'rejected');
+    card.querySelector('.remove').onclick=async()=>{if(!confirm('删除这条提交？删除后找不回来。'))return;try{await deleteCollectEntry(collectCloudId,entry.id);collectEntries=collectEntries.filter(e=>e.id!==entry.id);renderCollect()}catch(err){collectMsg(authNetworkMessage(err),'error')}};
+    if(entry.status==='rejected'){const back=document.createElement('button');back.type='button';back.className='quiet';back.textContent='恢复待审';back.onclick=()=>changeEntry(entry,'pending');card.querySelector('.collect-ops').prepend(back)}
+    list.appendChild(frag);
+  });
+}
+async function changeEntry(entry,status){
+  try{await setCollectEntryStatus(collectCloudId,entry.id,status);entry.status=status;renderCollect()}
+  catch(err){collectMsg(authNetworkMessage(err),'error')}
+}
+// The approved entry becomes a normal booth in the project, so every template shows it the same way.
+async function approveEntry(entry,no){
+  const project=collectProject();if(!project)return;
+  const d=entry.data||{},key=projectStorageKey(project);
+  let state=null;try{state=JSON.parse(localStorage.getItem(key)||'null')}catch{}
+  try{if(!state)state=await loadCloudConfig(collectCloudId)}catch(err){collectMsg(authNetworkMessage(err),'error');return}
+  if(!state||typeof state!=='object'){collectMsg('这个活动还没有保存过内容，请先打开编辑器保存一次。','error');return}
+  const booth={id:uid(),no,name:d.name||'',logo:cloudMediaUrl(d.logo||''),type:d.type||'',intro:d.intro||'',products:(d.products||[]).map(p=>({id:uid(),name:p.name||'',tag:'',price:p.price||'',note:p.note||'',image:cloudMediaUrl(p.image||'')}))};
+  state.booths=[...(Array.isArray(state.booths)?state.booths:[]),booth];
+  try{localStorage.setItem(key,JSON.stringify(state))}catch{collectMsg('浏览器存储空间不足，没能加入摊位。','error');return}
+  try{await saveCloudConfig({projectId:collectCloudId,config:state})}catch{}
+  await changeEntry(entry,'approved');
+  collectMsg('已把「'+booth.name+'」加入摊位列表'+(no?'，摊位号 '+no:'')+'。回到编辑器可以继续调整，改完记得更新网站。','ok');
+}
 function renderSettings(){
   $('#settingsUsername').textContent=readCloudSession()?.username||'';
   $('#newRecoveryBox').hidden=true;authSetMessage('changePasswordMessage','');authSetMessage('rotateRecoveryMessage','');
@@ -276,6 +352,7 @@ function showPage(name){
   qa('[data-admin-page]').forEach(b=>b.classList.toggle('active',b.dataset.adminPage===name));
   qa('[data-page-panel]').forEach(p=>{const on=p.dataset.pagePanel===name;p.hidden=!on;p.classList.toggle('active',on)});
   if(name==='bin')renderBin();
+  if(name==='collect'){renderCollectProjects();loadCollect()}
   if(name==='settings')renderSettings();
 }
 function openCreate(templateId=DEFAULT_TEMPLATE_ID){
@@ -345,6 +422,12 @@ $('#selectAllBin').onchange=e=>{trash.forEach(p=>e.target.checked?binSelected.ad
 $('#binRestoreBtn').onclick=()=>restoreFromTrash(trash.filter(p=>binSelected.has(p.id)));
 $('#binPurgeBtn').onclick=()=>purgeFromTrash(trash.filter(p=>binSelected.has(p.id)));
 $('#binEmptyBtn').onclick=()=>purgeFromTrash([...trash]);
+$('#collectProject').onchange=loadCollect;
+$('#collectRefresh').onclick=loadCollect;
+$('#collectEnable').onclick=async()=>{try{collectForm=(await manageCollect(collectCloudId,'enable')).form;renderCollect()}catch(err){collectMsg(authNetworkMessage(err),'error')}};
+$('#collectToggle').onclick=async()=>{try{collectForm=(await manageCollect(collectCloudId,collectForm.open?'close':'open')).form;renderCollect()}catch(err){collectMsg(authNetworkMessage(err),'error')}};
+$('#collectReset').onclick=async()=>{if(!confirm('换新链接后，已经发出去的旧链接会马上失效。继续吗？'))return;try{collectForm=(await manageCollect(collectCloudId,'reset')).form;renderCollect()}catch(err){collectMsg(authNetworkMessage(err),'error')}};
+$('#collectCopy').onclick=async()=>{const v=$('#collectLinkInput').value;try{await navigator.clipboard.writeText(v);$('#collectCopy').textContent='已复制';setTimeout(()=>{$('#collectCopy').textContent='复制链接'},1500)}catch{$('#collectLinkInput').select()}};
 $('#changePasswordForm').addEventListener('submit',async e=>{
   e.preventDefault();authSetMessage('changePasswordMessage','');
   const btn=e.submitter;btn.disabled=true;

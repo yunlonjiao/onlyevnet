@@ -157,3 +157,30 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 .help-list li:before{content:counter(step);grid-row:span 2;width:34px;height:34px;border-radius:50%;background:#efeaff;color:var(--accent);display:grid;place-items:center;font-weight:900}
 .help-list b{font-size:14px}.help-list span{font-size:12.5px;line-height:1.7;color:var(--muted)}
 .project-actions{grid-template-columns:minmax(0,1fr) auto auto auto}
+
+/* circle collection */
+.collect-toolbar{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.collect-toolbar label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:800;color:var(--muted)}
+.collect-toolbar select{min-width:240px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;color:var(--text)}
+#collectSetup,#collectLinkBox{max-width:720px;margin-bottom:18px}
+#collectSetup[hidden],#collectLinkBox[hidden],#collectEmpty[hidden]{display:none}
+.collect-link{display:flex;gap:10px}.collect-link input{flex:1;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:10px;font:12px ui-monospace,Consolas,monospace;background:#faf9ff}
+.collect-actions{display:flex;gap:10px;flex-wrap:wrap}
+.collect-state{margin-left:8px;font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px;background:#e2f6ee;color:#12805c;vertical-align:middle}
+.collect-state.off{background:#f1f1f5;color:#6f6c88}
+.collect-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px;max-width:1100px}
+.collect-entry{display:flex;flex-direction:column;gap:10px;padding:16px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.collect-head{display:flex;align-items:center;gap:12px}
+.collect-logo{width:48px;height:48px;border-radius:12px;background:#efeaff center/cover no-repeat;flex:none}
+.collect-title{flex:1;min-width:0;display:flex;flex-direction:column}.collect-title b{font-size:15px}.collect-title small{color:var(--muted);font-size:12px}
+.collect-pill{font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;background:#fff3d6;color:#9a6200}
+.collect-entry.is-approved .collect-pill{background:#e2f6ee;color:#12805c}.collect-entry.is-rejected .collect-pill{background:#f1f1f5;color:#6f6c88}
+.collect-intro,.collect-contact{margin:0;font-size:13px;line-height:1.6}.collect-contact{color:var(--muted)}
+.collect-products{display:flex;gap:8px;flex-wrap:wrap}
+.collect-product{width:76px;font-size:11px;line-height:1.4;color:var(--muted)}
+.collect-product i{display:block;width:76px;height:76px;border-radius:10px;background:#f2f0fb center/cover no-repeat;margin-bottom:3px}
+.collect-product b{display:block;color:var(--text);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.collect-ops{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.collect-no{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800}.collect-no input{width:84px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;font:inherit}
+.collect-entry:not(.is-pending) .collect-no,.collect-entry:not(.is-pending) .approve{display:none}
+.collect-entry.is-approved .reject{display:none}
