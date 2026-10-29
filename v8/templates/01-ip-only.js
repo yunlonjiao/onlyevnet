@@ -9,6 +9,7 @@ export const template01 = {
   version:'1.0.0',
   description:'颜色亮、贴纸多、描边粗，气氛热闹，适合围着一部作品或一个角色办的同好聚会。',
   structureProfile:'portal',
+  design:{hero:'split-title+framed-art',motif:'sticker'},
   artDirection:'international-festival',
   motionProfile:'energetic',
   supportedModules:[...IP_ONLY_CORE_MODULES],

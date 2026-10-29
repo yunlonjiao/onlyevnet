@@ -142,6 +142,40 @@ const style=`
 .bd-site .bd-gift:before,.bd-site .bd-gift:after{display:none!important}
 .bd-site .bd-gift .oe-ticket-gift,.bd-site .bd-gift .gift,.bd-site .bd-gift-main *{border:0!important;background:none!important;padding:0!important;box-shadow:none!important;text-decoration:none!important}
 .bd-site .bd-site #activities .activity-page-subhead,.bd-site #activities .activity-page-block{border:0!important}
+.bd-site{background-color:#fff;background-image:none}
+.bd-site h1,.bd-site .head h2,.bd-site .bd-gift h3,.bd-site .bd-step-body b,.bd-site .bd-activity h3,.bd-site .bd-guest-copy b.guest-poster-name,.bd-site #participation .featured-activity-copy h3,.bd-site #participation .featured-activity-copy b,.bd-site .brand{font-family:"M PLUS Rounded 1c","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif}
+.bd-site .hero{background:var(--bd-accent);color:#fff;padding:78px 0 84px;position:relative;overflow:hidden}
+.bd-site .hero:before{display:block;content:"";position:absolute;inset:0;background:radial-gradient(circle,#ffffff55 3px,transparent 3.4px) 0 0/46px 46px;pointer-events:none}
+.bd-site .hero:after{display:block;content:"";position:absolute;left:0;right:0;bottom:-1px;height:30px;background:radial-gradient(circle at 20px 0,transparent 19px,#fff 20px) 0 0/40px 30px repeat-x}
+.bd-site .hero-copy{text-align:left}
+.bd-site .hero h1{color:#fff;font-weight:900;text-shadow:4px 4px 0 color-mix(in srgb,var(--bd-accent) 55%,#000)}
+.bd-site .hero-kicker{background:#fff;color:var(--bd-accent);clip-path:none;border-radius:999px;letter-spacing:.2em}
+.bd-site .hero p{background:#ffffff26;border:2px solid #ffffff88;color:#fff;box-shadow:none;margin-left:0}
+.bd-site .hero p:before{display:none}
+.bd-site .meta,.bd-site .bd-cta{justify-content:flex-start}
+.bd-site .pill{background:#fff;border-color:#fff}
+.bd-site .bd-btn{background:transparent;color:#fff;border-color:#fff}.bd-site .bd-btn.accent{background:#fff;color:var(--bd-accent);box-shadow:none}
+.bd-balloon{display:none}
+.bd-site .head{flex-direction:row;flex-wrap:wrap;align-items:flex-end;text-align:left}.bd-site .head>div{width:auto;flex:1}
+.bd-site .head h2{background:linear-gradient(transparent 62%,#ffd86b 62%);padding:0 6px;display:inline-block;font-weight:700;letter-spacing:.02em}
+.bd-site .head h2:after{display:none}
+.bd-site .head .ey{display:inline-block;padding:3px 12px;border-radius:999px;background:color-mix(in srgb,var(--bd-accent) 14%,#fff);color:var(--bd-accent)!important;margin-bottom:6px}
+.bd-site .head .section-back{position:static;margin-left:auto}
+.bd-site #participation .featured-activity-card,.bd-site #participation .featured-activity-card.reveal,.bd-site #participation .featured-activity-card:first-child{border:0!important;border-radius:28px!important;box-shadow:none!important;background:color-mix(in srgb,var(--bd-accent) 12%,#fff)!important}
+.bd-site #participation .featured-activity-card:nth-child(3n+2){background:#e8f5ff!important}.bd-site #participation .featured-activity-card:nth-child(3n+3){background:#fff5d6!important}
+.bd-site #participation .featured-activity-media,.bd-site #participation .featured-activity-media.is-empty{background:#ffffffaa!important;margin:12px 12px 0;width:auto!important;border-radius:20px!important}
+.bd-site .bd-gift{border:0;border-radius:28px;box-shadow:none;background:color-mix(in srgb,var(--bd-accent) 14%,#fff)}
+.bd-site .bd-gift:nth-child(3n+2){background:#e8f5ff}.bd-site .bd-gift:nth-child(3n+3){background:#fff5d6}
+.bd-site .bd-gift-price{background:#fff;color:var(--bd-ink)}
+.bd-site .timeline{max-width:none}
+.bd-site .timeline-row{grid-template-columns:96px minmax(0,1fr);padding:12px 18px;margin-bottom:10px;border-radius:999px;background:color-mix(in srgb,var(--bd-accent) 11%,#fff)}
+.bd-site .timeline-row:nth-child(3n+2){background:#e8f5ff}.bd-site .timeline-row:nth-child(3n+3){background:#fff5d6}
+.bd-site .timeline-row:before{display:none}.bd-site .timeline-row b:before{display:none}.bd-site .timeline-row b{padding-left:0}
+.bd-site .timeline-row time{background:#fff;color:var(--bd-ink)}
+.bd-site .bd-step,.bd-site .bd-activity,.bd-site .bd-guest,.bd-site .guide-grid article,.bd-site .community article{border:0;box-shadow:none;border-radius:28px;background:color-mix(in srgb,var(--bd-accent) 9%,#fff)}
+.bd-site .bd-update{border:0;background:color-mix(in srgb,var(--bd-accent) 14%,#fff)}
+.bd-site .footer{background:var(--bd-accent);color:#fff;border-top:0}.bd-site .footer h2,.bd-site .footer b,.bd-site .footer a{color:#fff}
+.bd-site .ticket:before,.bd-site .ticket:after,.bd-site .ticket *:before,.bd-site .ticket *:after{pointer-events:none}
 @media(max-width:820px){
  .bd-site .hero{padding-top:56px}.bd-site .hero-grid{grid-template-columns:minmax(0,1fr);gap:34px}.bd-site .hero-art{order:-1;max-width:250px}
  .bd-balloon{display:none}
@@ -159,7 +193,7 @@ const stepsSection=coreSection('activities',{ey:'SCHEDULE',title:'当天安排'}
 
 export const previewStyle=coreStyle+style;
 export const previewBody=`<div class="bd-site">
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#participation">应援内容</a><a href="#tickets">赠品</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天安排</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">预约领取 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#participation">应援内容</a><a href="#tickets">赠品</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">预约领取 ↗</a></div></header>
 <main id="top">
 <section class="hero"><span class="bd-balloon a"></span><span class="bd-balloon b"></span><span class="bd-balloon c"></span><div class="wrap hero-grid"><div class="hero-copy"><span class="hero-kicker">HAPPY BIRTHDAY</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bd-cta"><a class="bd-btn accent ticket-purchase-link" href="#tickets">预约领取</a><a class="bd-btn" href="#participation">看应援内容</a></div></div><div class="hero-art"><div class="kv"><strong class="bd-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section>
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新消息'))}

@@ -2,6 +2,7 @@
    Layout hooks (ids, data-oe-field, collection containers) follow Template 01 so the shared
    renderer, editor and exporter work unchanged; everything visual is scoped to .cm-site. */
 import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.41.4';
+import {coreSection} from '/v8/templates/shared-sections.js?v=8.51.0';
 
 const marketStyle=`
 .cm-site{--primary:#00aeec;--secondary:#a4d9f4;--cm-accent:#00aeec;--cm-accent-ink:#008ac0;--cm-ink:#18191c;--cm-muted:#61666d;--cm-soft:#9499a0;--cm-line:#e3e5e7;--cm-bg:#f7f8fa;--cm-card:#fff;background:var(--cm-bg);color:var(--cm-ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
@@ -199,7 +200,46 @@ const marketStyle=`
 
 `;
 
-export const previewStyle=coreStyle+marketStyle;
+const parityStyle=`
+/* activities and guests (shared pages) */
+.cm-site .featured-activity-grid{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))!important;grid-template-rows:none!important;grid-auto-rows:auto!important;gap:16px;align-items:start}
+.cm-site #participation .featured-activity-card,.cm-site #participation .featured-activity-card.reveal,.cm-site #participation .featured-activity-card:first-child{display:flex!important;flex-direction:column!important;grid-row:auto!important;grid-column:auto!important;min-height:0!important;height:auto!important;background:var(--cm-card)!important;color:var(--cm-ink)!important;border:1px solid var(--cm-line)!important;border-radius:12px!important;box-shadow:none!important;overflow:hidden;text-decoration:none}
+.cm-site #participation .featured-activity-media,.cm-site #participation .featured-activity-media.is-empty{position:static!important;width:100%!important;height:auto!important;aspect-ratio:16/9!important;background:linear-gradient(135deg,#e8f7ff,#eef0ff)!important;color:var(--cm-soft)!important;display:grid;place-items:center;font-size:12px;font-weight:800;letter-spacing:.16em;border:0!important}
+.cm-site #participation .featured-activity-media img{width:100%;height:100%;object-fit:cover;display:block}
+.cm-site #participation .featured-activity-copy{position:static!important;transform:none!important;background:none!important;width:auto!important;padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px}
+.cm-site #participation .featured-activity-copy h3,.cm-site #participation .featured-activity-copy b{color:var(--cm-ink)!important;font-size:17px;font-weight:850;margin:0}
+.cm-site #participation .featured-activity-copy p{color:var(--cm-muted)!important;margin:0;line-height:1.7}
+.cm-site #participation .featured-activity-kicker{color:var(--cm-accent-ink)!important;font-weight:800;font-size:12px}
+.cm-site #participation .featured-activity-link{color:var(--cm-accent-ink)!important;font-weight:800}
+.cm-site .guest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.cm-site .cm-guest{display:grid;grid-template-columns:104px minmax(0,1fr);gap:16px;padding:16px;background:var(--cm-card);border:1px solid var(--cm-line);border-radius:12px;align-items:start}
+.cm-site .cm-guest-photo{min-width:0}
+.cm-site .cm-guest-photo .guest-image,.cm-site .cm-guest-photo .guest-image.empty,.cm-site .cm-guest-photo img{display:block;width:100%!important;max-width:100%!important;aspect-ratio:1/1;object-fit:cover;border:0!important;padding:0;border-radius:10px!important;background:linear-gradient(135deg,#e8f7ff,#eef0ff)!important;min-height:0}
+.cm-site .cm-guest-copy small{display:inline-block;padding:2px 8px;border-radius:4px;background:#e8f7ff;color:var(--cm-accent-ink);font-size:11px;font-weight:800;letter-spacing:.06em}
+.cm-site #guests .cm-guest-copy b.guest-poster-name,.cm-site .cm-guest-copy b.guest-poster-name{display:block;margin:6px 0;font-size:18px;font-weight:850;color:var(--cm-ink)!important}
+.cm-site .cm-guest-copy,.cm-site .cm-guest-copy p,.cm-site .cm-guest-copy .oe-secondary-copy{color:var(--cm-muted);font-size:13.5px;line-height:1.7}
+.cm-site .cm-guest-copy .guest-note,.cm-site .cm-guest-copy .guest-related-note{background:var(--cm-bg)!important;border:1px solid var(--cm-line)!important;border-radius:8px!important;box-shadow:none!important}
+.cm-site .cm-agenda{display:grid;grid-template-columns:110px minmax(0,1fr);gap:14px;padding:6px 0 12px}
+.cm-site .cm-agenda time{align-self:start;padding:10px 12px;border-radius:10px;background:#e8f7ff;color:var(--cm-accent-ink);text-align:center}
+.cm-site .cm-agenda time strong{font-size:19px;font-weight:900}.cm-site .cm-agenda time small{display:block;font-size:12px;color:var(--cm-muted)}
+.cm-site .cm-agenda-body{background:var(--cm-card);border:1px solid var(--cm-line);border-radius:12px;padding:14px 18px}
+.cm-site .cm-agenda-body>span{color:var(--cm-accent-ink);font-size:12px;font-weight:800}
+.cm-site .cm-agenda-body b{display:block;font-size:17px;font-weight:850;margin:2px 0 4px;color:var(--cm-ink)}.cm-site .cm-agenda-body p{margin:0;color:var(--cm-muted);line-height:1.7}
+.cm-site .cm-activity{display:grid;grid-template-columns:220px minmax(0,1fr);gap:18px;padding:16px;margin-bottom:14px;background:var(--cm-card);border:1px solid var(--cm-line);border-radius:12px}
+.cm-site .cm-activity-visual:empty{display:none}.cm-site .cm-activity:has(.cm-activity-visual:empty){grid-template-columns:1fr}
+.cm-site .cm-activity-visual img{width:100%;border-radius:10px;display:block}
+.cm-site .cm-activity-tag{display:inline-block;padding:2px 10px;border-radius:4px;background:#e8f7ff;color:var(--cm-accent-ink);font-size:12px;font-weight:800}
+.cm-site .cm-activity h3{margin:8px 0;font-size:19px;font-weight:850;color:var(--cm-ink)}.cm-site .cm-activity p{color:var(--cm-muted);line-height:1.75}
+.cm-site .activity-switch-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:18px}
+.cm-site .activity-view-tabs,.cm-site .activity-day-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.cm-site #activities .activity-view-tabs button,.cm-site #activities .activity-day-tabs button{background:var(--cm-card)!important;color:var(--cm-muted)!important;border:1px solid var(--cm-line)!important;border-radius:8px!important;padding:8px 16px;font-weight:800;box-shadow:none!important}
+.cm-site #activities .activity-view-tabs button.active,.cm-site #activities .activity-day-tabs button.active{background:var(--cm-accent)!important;border-color:var(--cm-accent)!important;color:#fff!important}
+.cm-site .activity-page-subhead{display:flex;align-items:baseline;gap:10px;margin:0 0 14px}.cm-site .activity-page-subhead span{color:var(--cm-accent-ink);font-weight:800;font-size:12px;letter-spacing:.14em}.cm-site .activity-page-subhead b{font-size:18px}
+.cm-site #activities .activity-page-subhead,.cm-site #activities .activity-page-block{border:0!important}
+.cm-site #activities .activity-page-block>*{border-top:0!important;border-bottom:0!important}
+@media(max-width:820px){.cm-site .cm-agenda{grid-template-columns:78px minmax(0,1fr);gap:10px}.cm-site .cm-activity{grid-template-columns:1fr}.cm-site .cm-guest{grid-template-columns:84px minmax(0,1fr)}}
+`;
+export const previewStyle=coreStyle+marketStyle+parityStyle;
 
 const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
@@ -207,15 +247,18 @@ const head=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2
 const pageHead=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></div>';
 
 export const previewBody=`<div class="cm-site">${loader}
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团</a><a href="#map-home">场地图</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">前往官方售票平台 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团</a><a href="#activities" data-target-mode="page" data-page-link="activities">活动</a><a href="#guests" data-target-mode="page" data-page-link="guests">嘉宾</a><a href="#map-home">场地图</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">前往官方售票平台 ↗</a></div></header>
 <main id="top">
 <section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="cm-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy"><span class="hero-kicker">同人创作展</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></div></section>
 <section class="cm-spotlight oe-home-only" id="spotlight" aria-label="随机推荐制品"><div class="wrap" data-oe-mount="product-spotlight"></div></section>
 <section class="updates-strip oe-home-only" id="updates"><div class="wrap">${head('NEWS','最新公告')}<div class="updates-list"></div></div></section>
+${coreSection('participation',{ey:'ACTIVITIES',title:'活动精选'})}
 <section class="section" id="tickets"><div class="wrap">${head('ADMISSION','入场票')}<div class="ticket-grid"></div><div class="ticket-actions"></div></div></section>
 <section class="section" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="map-explorer"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><aside class="map-link-rail" data-oe-collection="explore"><span class="ey">EXPLORE</span><b>继续探索</b><div class="map-link-list"></div></aside></div></div></section>
 <section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLES & WORKS','参展社团与制品')}<div class="booth-directory-rich"></div></div></section>
 <section class="section oe-page-view" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>
+${coreSection('activities',{ey:'PROGRAM',title:'活动日程'})}
+${coreSection('guests',{ey:'GUESTS',title:'特邀嘉宾'})}
 <section class="section" id="community"><div class="wrap">${head('COMMUNITY','社群')}<div class="community"></div></div></section>
 <section class="section" id="sponsors"><div class="wrap">${head('SPONSORS','合作伙伴')}<div class="sponsors"></div></div></section>
 </main>

@@ -46,7 +46,8 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
         markEditable();
         return;
       }
-      qa('[data-oe-field="'+CSS.escape(path)+'"]').forEach(el=>{el.textContent=value??''});
+      // The field being typed in already holds this text; rewriting it would throw the caret back to the start.
+      qa('[data-oe-field="'+CSS.escape(path)+'"]').forEach(el=>{if(el!==document.activeElement)el.textContent=value??''});
       return;
     }
 

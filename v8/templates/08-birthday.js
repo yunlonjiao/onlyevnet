@@ -8,7 +8,8 @@ export const template08=makeIpOnlyTemplate({
  presentationProfile:{mobileDock:true},
  studioPages:{hidden:['booths'],hiddenContent:[],customPages:false},
  group:'small',
- quickSetup:{modules:[{key:'activities',label:'当天安排'},{key:'guests',label:'协力的人'},{key:'guide',label:'领取须知'},{key:'community',label:'联系与社群'}]}
+ quickSetup:{modules:[{key:'activities',label:'当天安排'},{key:'guests',label:'协力的人'},{key:'guide',label:'领取须知'},{key:'community',label:'联系与社群'}]},
+ design:{hero:'saturated-block+polaroid',motif:'confetti-scallop'}
 });
 // Starter content for a birthday support event: what is set up, what can be taken home, and when.
 const d=template08.defaults;

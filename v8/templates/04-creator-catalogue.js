@@ -7,9 +7,10 @@ export const template04=makeIpOnlyTemplate({
  structureProfile:'catalogue',artDirection:'illustrated-catalogue',motionProfile:'catalogue',
  theme:'#ff7eb6',heroTitleColor:'#ffffff',heroTitleAccentColor:'#ff7eb6',
  presentationProfile:{entryAnimation:true,quickAccess:false,ribbon:false,mobileDock:false,scrollProgress:false,floatingStickers:false,passportProgress:false,decorativeSectionOrbits:false,catalogueBook:true},
- studioPages:{hidden:['activities','guests'],hiddenContent:['ribbonItems','featuredActivities'],customPages:false}
+ studioPages:{hidden:[],hiddenContent:['ribbonItems'],customPages:false},
+ design:{hero:'split-framed-art+title',motif:'rays-and-stars'}
 });
 // Same creator-fair starter content as 03; only the presentation differs.
 const d=template04.defaults,base=structuredClone(template03.defaults);
-for(const key of ['tagline','modules','tickets','booths','venueMap','updates','socialLinks','featuredActivities'])d[key]=base[key];
+for(const key of ['tagline','modules','tickets','booths','venueMap','updates','socialLinks','featuredActivities','guests','schedule','participation'])d[key]=base[key];
 d.tagline='翻开电子场刊，找到你想去的每一个社团。';

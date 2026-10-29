@@ -114,6 +114,8 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
     }
     const item=e.target.closest?.('[data-oe-item]');if(item&&getMode()==='edit'&&!e.target.closest?.('[data-oe-field]')){send({type:'OE_SELECT_ITEM',collection:item.dataset.oeItem,index:Number(item.dataset.oeIndex)});if(e.target.closest?.('a,button'))e.preventDefault();return}
     if(e.target.closest?.('.booth-directory-rich')){e.preventDefault();return}
+    // Clicking text inside a link edits the text; it must not follow the link (an update that points at another page would otherwise leave the page being edited).
+    if(getMode()==='edit'&&e.target.closest?.('[data-oe-field]')){e.preventDefault();return}
     const a=e.target.closest?.('a[href^="#"]');if(a){
       const target=(a.dataset.pageLink||a.getAttribute('href').slice(1)||'home');
       if(target==='top')return;

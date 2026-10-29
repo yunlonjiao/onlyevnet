@@ -7,7 +7,8 @@ export const template05=makeIpOnlyTemplate({
  theme:'#ff3d8b',heroTitleColor:'#ffffff',heroTitleAccentColor:'#35e3ff',
  presentationProfile:{entryAnimation:true,ribbon:true,mobileDock:true},
  studioPages:{hidden:['booths'],hiddenContent:[],customPages:false},
- group:'stage'
+ group:'stage',
+ design:{hero:'fullbleed-centered',motif:'stage-beams'}
 });
 // Starter content for a live show: a short running order and four performers.
 const d=template05.defaults;
