@@ -30,6 +30,9 @@ async function typeInto(page,locator,text){
   await page.keyboard.type(text);
 }
 
+// Creator events (03, 04: Comiket and CP style) have circles and booths, not guests or a programme, so they have no such pages.
+const withGuestsAndProgramme=id=>!['03-creator-market','04-creator-catalogue'].includes(id);
+
 for(const id of ids){
   test(id+' can be edited the same way as 01 and 02',async({page})=>{
     const frame=await openEditor(page,id);
@@ -50,9 +53,17 @@ for(const id of ids){
     // 3. clicking the hero image opens the image controls
     const hero=frame.locator('[data-oe-image="heroImage"]').first();
     await hero.evaluate(el=>el.scrollIntoView({block:'center'}));
-    await hero.click({force:true});
+    await hero.click({position:{x:14,y:14},force:true}); // a corner of the picture, away from the title and text
     await expect(page.locator('#inspector [data-hero-image],#inspector #replaceImage,#inspector [data-media-path]').first()).toBeVisible();
 
+    if(!withGuestsAndProgramme(id)){
+      // the booth page is their equivalent: a card opens in the side panel
+      expect(await showPage(page,'booths')).toBe(true);
+      await page.waitForTimeout(500);
+      await frame.locator('[data-oe-item="booths"]:visible').first().evaluate(el=>el.click());
+      await expect(page.locator('#inspector [data-key="name"]').first()).toBeVisible();
+      return;
+    }
     // 4. the guest page: edit a name in place, open a card
     expect(await showPage(page,'guests')).toBe(true);
     await page.waitForTimeout(500);

@@ -4,7 +4,7 @@ export const template07=makeIpOnlyTemplate({
  id:'07-tea-party',name:'07 · 茶会小聚',label:'茶会小聚',studioName:'茶会小聚',
  description:'邀请函风格：首页先讲清楚当天玩什么、几点做什么，适合茶会、小型 ONLY、生日会和线下交流会。',
  structureProfile:'invitation',artDirection:'tea-party',motionProfile:'gentle',
- theme:'#6fbf9d',heroTitleColor:'#5a3d3a',heroTitleAccentColor:'#6fbf9d',
+ theme:'#f08fa8',heroTitleColor:'#5a3d3a',heroTitleAccentColor:'#f08fa8',
  presentationProfile:{mobileDock:true},
  studioPages:{hidden:['booths'],hiddenContent:[],customPages:false},
  group:'small',

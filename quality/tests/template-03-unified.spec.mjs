@@ -25,13 +25,14 @@ async function openStudio(page,project,seed){
   return {frame,errors};
 }
 
-test('03 opens in the shared Studio with the same pages as 01 and 02, minus custom pages and the ribbon',async({page})=>{
+test('03 opens in the shared Studio with only its own pages and content groups',async({page})=>{
   const {frame,errors}=await openStudio(page,'unified-pages');
   await expect(page.locator('#workspaceTemplateName')).toHaveText('创作者集市');
-  for(const row of ['booths','activities','guests','guide'])await expect(page.locator('[data-page-row="'+row+'"]')).toBeVisible();
+  for(const row of ['activities','guests'])await expect(page.locator('[data-page-row="'+row+'"]')).toBeHidden();
+  for(const row of ['booths','guide'])await expect(page.locator('[data-page-row="'+row+'"]')).toBeVisible();
   await expect(page.locator('#createCustomPageBtn')).toBeHidden();
   await expect(page.locator('#pageContentNav')).not.toContainText('滚动公告');
-  await expect(page.locator('#pageContentNav')).toContainText('活动精选');
+  await expect(page.locator('#pageContentNav')).not.toContainText('活动精选');
   await expect(frame.locator('.spotlight-six .spotlight-tile')).toHaveCount(6);
   expect(errors).toEqual([]);
 });

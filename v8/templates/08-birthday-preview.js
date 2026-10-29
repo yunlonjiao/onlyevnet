@@ -142,11 +142,10 @@ const style=`
 .bd-site .bd-gift:before,.bd-site .bd-gift:after{display:none!important}
 .bd-site .bd-gift .oe-ticket-gift,.bd-site .bd-gift .gift,.bd-site .bd-gift-main *{border:0!important;background:none!important;padding:0!important;box-shadow:none!important;text-decoration:none!important}
 .bd-site .bd-site #activities .activity-page-subhead,.bd-site #activities .activity-page-block{border:0!important}
-.bd-site{background-color:#fff;background-image:none}
 .bd-site h1,.bd-site .head h2,.bd-site .bd-gift h3,.bd-site .bd-step-body b,.bd-site .bd-activity h3,.bd-site .bd-guest-copy b.guest-poster-name,.bd-site #participation .featured-activity-copy h3,.bd-site #participation .featured-activity-copy b,.bd-site .brand{font-family:"M PLUS Rounded 1c","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif}
 .bd-site .hero{background:var(--bd-accent);color:#fff;padding:78px 0 84px;position:relative;overflow:hidden}
 .bd-site .hero:before{display:block;content:"";position:absolute;inset:0;background:radial-gradient(circle,#ffffff55 3px,transparent 3.4px) 0 0/46px 46px;pointer-events:none}
-.bd-site .hero:after{display:block;content:"";position:absolute;left:0;right:0;bottom:-1px;height:30px;background:radial-gradient(circle at 20px 0,transparent 19px,#fff 20px) 0 0/40px 30px repeat-x}
+.bd-site .hero:after{display:block;content:"";position:absolute;left:0;right:0;bottom:-1px;height:30px;background:radial-gradient(circle at 20px 0,transparent 19px,var(--bd-cream) 20px) 0 0/40px 30px repeat-x;pointer-events:none}
 .bd-site .hero-copy{text-align:left}
 .bd-site .hero h1{color:#fff;font-weight:900;text-shadow:4px 4px 0 color-mix(in srgb,var(--bd-accent) 55%,#000)}
 .bd-site .hero-kicker{background:#fff;color:var(--bd-accent);clip-path:none;border-radius:999px;letter-spacing:.2em}
@@ -176,6 +175,10 @@ const style=`
 .bd-site .bd-update{border:0;background:color-mix(in srgb,var(--bd-accent) 14%,#fff)}
 .bd-site .footer{background:var(--bd-accent);color:#fff;border-top:0}.bd-site .footer h2,.bd-site .footer b,.bd-site .footer a{color:#fff}
 .bd-site .ticket:before,.bd-site .ticket:after,.bd-site .ticket *:before,.bd-site .ticket *:after{pointer-events:none}
+.bd-site .nav{height:72px}
+.bd-site .nav .wrap>.btn{border-radius:14px}
+.bd-site .head h2{font-size:clamp(30px,3.6vw,46px)}
+.bd-site .kv{border-radius:24px}
 @media(max-width:820px){
  .bd-site .hero{padding-top:56px}.bd-site .hero-grid{grid-template-columns:minmax(0,1fr);gap:34px}.bd-site .hero-art{order:-1;max-width:250px}
  .bd-balloon{display:none}

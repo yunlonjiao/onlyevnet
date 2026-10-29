@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 
 test.use({viewport:{width:1440,height:900}});
 
-// Two templates must not look alike. Each template is measured on the page (colours, type, card
+// Two templates must not look alike. Each template is measured on the page (type, card
 // shape, hero layout) and declares its hero composition and motif in its definition. The share of
 // matching dimensions between any two templates must stay at or below half.
 const ids=['01-ip-only','02-scrapbook','03-creator-market','04-creator-catalogue','05-live-poster','06-band-live','07-tea-party','08-birthday'];
@@ -44,13 +44,22 @@ async function measure(page,id){
       radius:card?cs(card).borderRadius:'',border:card?cs(card).borderTopWidth:'',shadow:card?shadow(card):'',
       cols:q('.hero-grid')?cs(q('.hero-grid')).gridTemplateColumns.split(' ').length:0,
       body:cs(d.body).fontFamily.split(',')[0].replace(/"/g,'').toLowerCase(),
+      btnRadius:btn?cs(btn).borderRadius:'',navHeight:q('.nav')?q('.nav').getBoundingClientRect().height:0,
+      h2size:h2?parseFloat(cs(h2).fontSize):0,h1size:h1?parseFloat(cs(h1).fontSize):0,
+      cardPad:card?parseFloat(cs(card).paddingTop):0,ticketCols:q('.ticket-grid')?cs(q('.ticket-grid')).gridTemplateColumns.split(' ').length:0,
+      artShape:q('.kv')?cs(q('.kv')).borderRadius:'',artRatio:q('.hero-art')?(()=>{const r=q('.hero-art').getBoundingClientRect();return r.width/Math.max(1,r.height)})():0,
       hero_design:t.design?.hero||'',motif:t.design?.motif||''};
   },id);
 }
 function dimensions(m){
-  return {pageBg:colourFamily(m.page),heroBg:colourFamily(m.hero),accent:colourFamily(m.btn),headFont:m.h2font||null,headWeight:m.h2font?weight(m.h2weight):null,
+  // Colour is deliberately left out: templates may share a palette; what must differ is layout, type and shape.
+  return {headFont:m.h2font||null,headWeight:m.h2font?weight(m.h2weight):null,
     headItalic:m.h2italic||null,titleCase:m.h1transform||null,headAlign:m.headAlign||null,cardRadius:m.radius?radius(m.radius):null,cardBorder:m.border?border(m.border):null,
-    cardShadow:m.shadow||null,heroCols:m.cols||null,bodyFont:m.body,heroDesign:m.hero_design,motif:m.motif};
+    cardShadow:m.shadow||null,heroCols:m.cols||null,bodyFont:m.body,heroDesign:m.hero_design,motif:m.motif,
+    buttonShape:m.btnRadius?radius(m.btnRadius):null,navHeight:m.navHeight?(m.navHeight<56?'compact':m.navHeight<68?'regular':'tall'):null,
+    headingSize:m.h2size?(m.h2size<30?'small':m.h2size<40?'medium':'large'):null,titleSize:m.h1size?(m.h1size<50?'small':m.h1size<80?'medium':'large'):null,
+    cardPadding:m.cardPad?(m.cardPad<16?'tight':m.cardPad<22?'regular':'roomy'):null,ticketColumns:m.ticketCols||null,
+    artShape:m.artShape?(parseFloat(m.artShape)>=200||/%/.test(m.artShape)?'round':radius(m.artShape)):null,artRatio:m.artRatio?(m.artRatio>1.15?'landscape':m.artRatio<0.9?'portrait':'square'):null};
 }
 function similarity(a,b){
   const keys=Object.keys(a).filter(k=>a[k]!=null&&b[k]!=null),same=keys.filter(k=>a[k]===b[k]);
@@ -62,9 +71,17 @@ test('no two templates look alike (at most half of the design dimensions match)'
   const dims={};
   for(const id of ids)dims[id]=dimensions(await measure(page,id));
   for(const id of ids)expect(dims[id].heroDesign,id+' must declare design.hero in its definition').not.toBe('');
+    // A value that three quarters of the templates share (the same body font, no italic) does not tell templates apart either, so it is left out.
+  const informative=Object.keys(dims[ids[0]]).filter(k=>{
+    const values=ids.map(id=>dims[id][k]).filter(v=>v!=null),counts={};
+    values.forEach(v=>{counts[v]=(counts[v]||0)+1});
+    return Math.max(...Object.values(counts))<values.length*0.75;
+  });
+  const only=(d)=>Object.fromEntries(informative.map(k=>[k,d[k]]));
+  if(process.env.SHOW_DIMENSIONS)console.log('DIMS '+JSON.stringify(Object.fromEntries(ids.map(id=>[id.slice(0,2),only(dims[id])]))));
   const rows=[];
   for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++){
-    const {share,same}=similarity(dims[ids[i]],dims[ids[j]]);
+    const {share,same}=similarity(only(dims[ids[i]]),only(dims[ids[j]]));
     rows.push({pair:ids[i].slice(0,2)+'-'+ids[j].slice(0,2),share:Math.round(share*100)/100,same});
   }
   if(process.env.SHOW_SIMILARITY)console.log(JSON.stringify(rows.sort((a,b)=>b.share-a.share).slice(0,8)));

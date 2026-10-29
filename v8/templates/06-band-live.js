@@ -2,9 +2,9 @@ import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.
 /* Template 06 runs on the shared IP ONLY core; the live-house flyer art, the band list and the set times differ. */
 export const template06=makeIpOnlyTemplate({
  id:'06-band-live',name:'06 · 乐队演出',label:'乐队演出',studioName:'乐队演出',
- description:'演出传单风格：黑白复印质感加一抹信号橙，先看哪几组乐队、几点上场，适合 Live House 和乐队合演。',
+ description:'演出传单风格：黑白复印质感加一抹荧光黄，先看哪几组乐队、几点上场，适合 Live House 和乐队合演。',
  structureProfile:'lineup',artDirection:'band-live',motionProfile:'energetic',
- theme:'#ff4a1c',heroTitleColor:'#ffffff',heroTitleAccentColor:'#ff4a1c',
+ theme:'#ffd500',heroTitleColor:'#ffffff',heroTitleAccentColor:'#ffd500',
  presentationProfile:{ribbon:true,mobileDock:true},
  studioPages:{hidden:['booths'],hiddenContent:[],customPages:false},
  group:'stage',
