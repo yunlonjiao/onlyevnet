@@ -97,3 +97,14 @@ under `uploads/`; deployment never deletes R2 data.
   3 R2 objects, per-user limit rows); the site returns 404 and the original 61 data rows are unchanged.
 - Not yet checked by a human in a browser: sign-in and cloud sync from the v8 editor on
   `onlyevent-preview.pages.dev` against the live Worker.
+
+## Scripted deploy (Windows PowerShell)
+`cloud/scripts/deploy.ps1` wraps the steps above and keeps screen output short
+(full logs go to `%TEMP%\oe-*.log`):
+- `-Step Verify`: read-only checks of onlyevent.cn (version, new admin UI, headers, robots, 404s).
+- `-Step Backup`: exports production D1 to `Documents\OnlyEvent-backups\<date>\`.
+- `-Step Deploy`: needs a clean git tree, records the live version, asks for `yes`, backs up D1,
+  runs `npm run deploy` (front-end build + checks + tests + wrangler deploy), then verifies.
+- `-Step Rollback`: returns to the version recorded before the last deploy (asks for `yes`).
+
+Note: `/health` shows the Worker (API) version, e.g. 7.27.x; the editor has its own v8.x number.
