@@ -233,3 +233,11 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 .template-art-tea-party .template-preview-window .art{border:3px solid #f08fa8;border-radius:50%;background:linear-gradient(150deg,#f9d3dc,#dccffa 60%,#bfe6d6)}
 .template-art-tea-party .template-preview-window .hero em{color:#b0405e}
 .template-art-tea-party .template-preview-window .rows i{background:#fff6ec;border-color:#ecd5cc}
+
+/* overview numbers on the start page */
+.overview-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:0 0 18px}
+.overview-bar>*{padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff;display:flex;flex-direction:column;gap:2px;text-align:left;font:inherit;color:inherit}
+.overview-bar[hidden],.overview-bar>[hidden]{display:none}
+.overview-bar small{color:var(--muted);font-size:12px;font-weight:700}.overview-bar b{font-size:26px;line-height:1.15}
+.overview-bar .ov-link{cursor:pointer}.overview-bar .ov-link:hover{border-color:var(--accent)}
+.project-time .stale{color:#b45f06;font-weight:800;margin-left:6px}

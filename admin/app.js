@@ -1,6 +1,6 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.50.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.52.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -285,6 +285,7 @@ function renderSettings(){
 }
 /* Projects saved in the cloud on another device appear here after signing in. */
 async function restoreCloudProjects(){
+  loadOverview();
   if(!readCloudSession())return;
   let remote=[];
   try{remote=await listCloudProjects()}catch{return}
@@ -347,12 +348,37 @@ function renderTemplates(){
   });
 
 }
+// Start-page numbers: the local ones are always known, the cloud ones arrive after sign-in.
+let overviewCloud=null;
+const hasUnpublishedChanges=project=>{
+  if(!project.siteUrl)return false;
+  const at=Date.parse(getPublishRecord(project).publishedAt||''),edited=Date.parse(project.updatedAt||'');
+  return Number.isFinite(at)&&Number.isFinite(edited)&&edited-at>60000;
+};
+function renderOverview(){
+  $('#ovProjects').textContent=String(projects.length);
+  $('#ovPublished').textContent=String(projects.filter(p=>p.siteUrl).length);
+  const stale=projects.filter(hasUnpublishedChanges).length;
+  $('#ovStale').hidden=!stale;$('#ovStaleCount').textContent=String(stale);
+  const cloud=overviewCloud;
+  $('#ovPendingBtn').hidden=!cloud||!cloud.pendingCircles;
+  $('#ovViewsBtn').hidden=!cloud||!cloud.views7;
+  if(cloud){
+    $('#ovPending').textContent=String(cloud.pendingCircles);$('#ovViews').textContent=String(cloud.views7);
+    const badge=$('#collectCount');badge.hidden=!cloud.pendingCircles;badge.textContent=String(cloud.pendingCircles);
+  }
+}
+async function loadOverview(){
+  if(!readCloudSession())return;
+  try{overviewCloud=await getOverview();renderOverview()}catch{}
+}
 function renderProjects(filter=''){
   const term=filter.trim().toLocaleLowerCase(),grid=$('#projectGrid'),empty=$('#emptyProjects');
   grid.innerHTML='';
   const visible=projects.filter(p=>!term||String(p.name||'').toLocaleLowerCase().includes(term));
   visibleIds=visible.map(p=>p.id);
   $('#projectCount').textContent=String(projects.length);
+  renderOverview();
   empty.hidden=projects.length>0;
   visible.sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||''))).forEach(project=>{
     const frag=$('#projectCardTemplate').content.cloneNode(true),card=frag.querySelector('.project-card');
@@ -366,7 +392,8 @@ function renderProjects(filter=''){
     card.querySelector('.project-card-title b').textContent=project.name||'未命名活动';
     card.querySelector('.project-card-title span').textContent=project.siteUrl||'尚未发布游客网站';
     card.querySelector('.project-template').textContent=getTemplate(project.templateId)?.label||project.templateId||'模板';
-    card.querySelector('.project-time').textContent='更新 '+formatTime(project.updatedAt);
+    const timeEl=card.querySelector('.project-time');timeEl.textContent='更新 '+formatTime(project.updatedAt);
+    if(hasUnpublishedChanges(project)){const tag=document.createElement('span');tag.className='stale';tag.textContent='有改动没发布';timeEl.appendChild(tag)}
     const st=card.querySelector('.project-status');st.textContent=status==='published'?'已发布':'草稿';st.classList.toggle('published',status==='published');
     card.querySelector('.edit-project').onclick=()=>location.href=studioUrl(project);
     const open=card.querySelector('.open-site'),unpublish=card.querySelector('.unpublish-site');
@@ -462,6 +489,8 @@ $('#selectAllBin').onchange=e=>{trash.forEach(p=>e.target.checked?binSelected.ad
 $('#binRestoreBtn').onclick=()=>restoreFromTrash(trash.filter(p=>binSelected.has(p.id)));
 $('#binPurgeBtn').onclick=()=>purgeFromTrash(trash.filter(p=>binSelected.has(p.id)));
 $('#binEmptyBtn').onclick=()=>purgeFromTrash([...trash]);
+$('#ovPendingBtn').onclick=()=>showPage('collect');
+$('#ovViewsBtn').onclick=()=>showPage('stats');
 $('#statsProject').onchange=loadStats;
 $('#statsRefresh').onclick=loadStats;
 $('#collectProject').onchange=loadCollect;

@@ -1190,3 +1190,8 @@ body.previewing .canvas-stage:before{display:none}
   #publishBtn .publish-arrow{display:none}
   .device-group{display:none}
 }
+
+.publish-checks-box{margin:0 0 12px}
+.publish-checks-box b{display:block;margin-bottom:6px;font-size:12px;color:#8a5a00}
+.publish-checks{margin:0;padding:10px 14px 10px 30px;border-radius:12px;background:#fff8e6;border:1px solid #f1dca0;font-size:12.5px;line-height:1.8;color:#5c4300}
+.publish-checks[hidden]{display:none}

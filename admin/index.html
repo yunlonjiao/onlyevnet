@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>OnlyEvent Studio</title>
-  <link rel="stylesheet" href="/admin/styles.css?v=1.7.0">
+  <link rel="stylesheet" href="/admin/styles.css?v=1.8.0">
 </head>
 <body>
   <header class="admin-topbar">
@@ -144,6 +144,13 @@
             <p>管理你的全部活动。</p>
           </div>
           <button class="primary large" id="newProjectHeroBtn" type="button">新建活动 <span>↗</span></button>
+        </div>
+        <div class="overview-bar" id="overviewBar">
+          <div><small>活动</small><b id="ovProjects">0</b></div>
+          <div><small>已发布</small><b id="ovPublished">0</b></div>
+          <button type="button" class="ov-link" id="ovPendingBtn" hidden><small>待审核的社团</small><b id="ovPending">0</b></button>
+          <button type="button" class="ov-link" id="ovViewsBtn" hidden><small>近 7 天访问</small><b id="ovViews">0</b></button>
+          <div id="ovStale" hidden><small>有改动没发布</small><b id="ovStaleCount">0</b></div>
         </div>
         <div class="project-toolbar">
           <div class="project-stats"><b id="projectCount">0</b><span>个项目</span></div>
@@ -381,6 +388,6 @@
     </article>
   </template>
 
-  <script type="module" src="/admin/app.js?v=1.7.0"></script>
+  <script type="module" src="/admin/app.js?v=1.8.0"></script>
 </body>
 </html>

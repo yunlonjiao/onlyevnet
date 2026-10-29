@@ -1,12 +1,13 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.52.0';
 import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.47.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage} from '/v8/publisher.js?v=8.50.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage} from '/v8/publisher.js?v=8.52.0';
 import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.42.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -227,6 +228,9 @@ function renderPublishDialog(){
  $('#publishHost').textContent='.onlyevent.cn';
  publishPrimary.textContent=hasSite?(renamingSite?'保存新网址并更新':'更新网站'):'发布网站';
  publishStatus.textContent=hasSite?'已发布。点「更新网站」把最新修改发上去。':'先填一个网站地址。';
+ const checks=publishChecks(state,{hasBoothPage:!(activeTemplate.studioPages?.hidden||[]).includes('booths')}),list=$('#publishChecks');
+ list.innerHTML=checks.map(t=>'<li></li>').join('');checks.forEach((t,i)=>{list.children[i].textContent=t});
+ list.hidden=!checks.length;$('#publishChecksTitle').hidden=!checks.length;
  publishResult.hidden=!publishRecord?.url;
  publishUrl.textContent=publishRecord?.url||'';
  $('#publishOpen').disabled=!publishRecord?.url;$('#publishCopy').disabled=!publishRecord?.url;
