@@ -26,8 +26,9 @@ export function mountProductSpotlight(root,items,{autoplay=true,storageKey='oe-s
   if(!order.length){root.innerHTML='<p class="spotlight-empty">暂无可推荐制品。</p>';return}
   // Editor clicks use data-product-edit-* to open the product; visitors follow the booth link.
   const link=p=>' href="#booths" data-target-mode="page" data-page-link="booths" data-spotlight-booth="'+esc(p.boothId)+'" data-product-edit-booth="'+p.boothIndex+'" data-product-edit-index="'+p.productIndex+'"';
+  const tiles=()=>'<div class="spotlight-six">'+order.slice(0,6).map(p=>'<a class="spotlight-tile"'+link(p)+'><span class="spotlight-tile-art">'+art(p)+'</span><b>'+esc(p.name)+'</b><small>'+meta(p)+'</small></a>').join('')+'</div>';
   root.innerHTML='<div class="spotlight-feature"><a class="spotlight-feature-art"'+link(order[0])+'></a><div class="spotlight-feature-info"><small class="spotlight-count"></small><h3 class="spotlight-title"></h3><p class="spotlight-meta"></p></div><div class="spotlight-controls"><button type="button" data-spotlight-step="-1" aria-label="上一件制品">←</button><button type="button" data-spotlight-step="1" aria-label="下一件制品">→</button></div></div>'+
-   '<div class="spotlight-six">'+order.slice(0,6).map(p=>'<a class="spotlight-tile"'+link(p)+'><span class="spotlight-tile-art">'+art(p)+'</span><b>'+esc(p.name)+'</b><small>'+meta(p)+'</small></a>').join('')+'</div>';
+   tiles();
   let index=0;
   const feature=root.querySelector('.spotlight-feature-art');
   const draw=()=>{const p=order[index];feature.innerHTML=art(p);feature.dataset.spotlightBooth=p.boothId;feature.dataset.productEditBooth=p.boothIndex;feature.dataset.productEditIndex=p.productIndex;root.querySelector('.spotlight-title').textContent=p.name;root.querySelector('.spotlight-meta').textContent=[p.boothNo,p.boothName,p.price].filter(Boolean).join(' · ');root.querySelector('.spotlight-count').textContent=(index+1)+' / '+order.length};
@@ -40,5 +41,14 @@ export function mountProductSpotlight(root,items,{autoplay=true,storageKey='oe-s
   feature.addEventListener('click',e=>{if(feature._oeSwiped){e.preventDefault();e.stopPropagation();feature._oeSwiped=false}},true);
   draw();
   const reduce=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(autoplay&&!reduce&&order.length>1)root._oeSpotlightTimer=setInterval(()=>{if(!document.hidden&&root.isConnected)step(1)},5500);
+  const play=()=>{clearInterval(root._oeSpotlightTimer);if(autoplay&&!reduce&&order.length>1)root._oeSpotlightTimer=setInterval(()=>{if(!document.hidden&&root.isConnected)step(1)},5500)};
+  play();
+  // Optional "换一换" button anywhere in the same section: new random order, back to the first slide.
+  const again=root.closest('section')?.querySelector('[data-spotlight-shuffle]');
+  if(again)again.onclick=e=>{
+    e.preventDefault();e.stopPropagation();
+    const before=order.map(p=>p.id).join('|');
+    for(let n=0;n<8&&order.length>1;n++){order=shuffle(items);if(order.map(p=>p.id).join('|')!==before)break}
+    index=0;root.querySelector('.spotlight-six').outerHTML=tiles();draw();play();
+  };
 }
