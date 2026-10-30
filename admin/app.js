@@ -1,5 +1,6 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
+import {mountCost} from '/admin/cost.js?v=1';
 import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.52.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
@@ -449,7 +450,17 @@ function showPage(name){
   if(name==='stats'){renderStatsProjects();loadStats()}
   if(name==='collect'){renderCollectProjects();loadCollect()}
   if(name==='settings')renderSettings();
+  if(name==='cost')loadCost();
 }
+function loadCost(){
+  const select=$('#costProject'),keep=select.value;
+  select.innerHTML=projects.map(p=>'<option value="'+p.id+'"></option>').join('');
+  [...select.options].forEach((o,i)=>{o.textContent=projects[i].name||'未命名活动'});
+  if(keep&&projects.some(p=>p.id===keep))select.value=keep;
+  $('#costRoot').innerHTML='';authSetMessage('costMessage',projects.length?'':'还没有活动，先去「模板库」新建一个。');
+  if(projects.length)mountCost($('#costRoot'),select.value);
+}
+$('#costProject').onchange=loadCost;
 function openCreate(templateId=DEFAULT_TEMPLATE_ID){
   selectedTemplateId=templateId;
   const t=getTemplate(templateId);

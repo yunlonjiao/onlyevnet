@@ -46,3 +46,27 @@ test('tagged links count visits per channel and the stats page lists them',async
   await expect(page.locator('#statsChannels .stats-channel').first().locator('b')).toHaveText('2 次');
   await expect(page.locator('#statsChannels')).toContainText('直接访问');
 });
+
+test('cost estimate adds up expenses and finds the break-even head count',async({page})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'cost-organizer');
+  await page.goto('/admin/');
+  await page.evaluate(()=>localStorage.setItem('onlyevent-admin-projects-v1',JSON.stringify([{id:'c1',name:'春季茶会',templateId:'07-tea-party',status:'draft',siteUrl:'',updatedAt:new Date().toISOString()}])));
+  await page.reload();
+  await page.locator('[data-admin-page="cost"]').click();
+  await page.locator('[data-group="venue"] [data-add]').click();
+  await page.locator('[data-group="venue"] [data-name="0"]').fill('场地');
+  await page.locator('[data-group="venue"] [data-amount="0"]').fill('1500');
+  await page.locator('[data-group="promo"] [data-add]').click();
+  await page.locator('[data-group="promo"] [data-amount="0"]').fill('500');
+  await page.locator('[data-field="price"]').fill('50');
+  await page.locator('[data-field="variable"]').fill('10');
+  await page.locator('[data-field="people"]').fill('80');
+  const cards=page.locator('.cost-cards b');
+  await expect(cards.nth(0)).toHaveText('¥2,000');
+  await expect(cards.nth(2)).toHaveText('50 人');
+  await expect(cards.nth(1)).toHaveText('¥1,200');
+  await page.reload();
+  await page.locator('[data-admin-page="cost"]').click();
+  await expect(page.locator('[data-group="venue"] [data-amount="0"]')).toHaveValue('1500');
+});
