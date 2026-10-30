@@ -199,7 +199,49 @@ const marketStyle=`
 
 `;
 
-export const previewStyle=coreStyle+marketStyle;
+/* Comiket official site: centred column, blue masthead, table navigation, boxed sections */
+const referenceStyle=`
+.cm-site{--cm-bluebar:#d5e5ff;--cm-bluedeep:#1b3f7a;--cm-rule:#8aa4cc;font-family:Arial,"Hiragino Kaku Gothic ProN","Noto Sans SC","Microsoft YaHei",sans-serif;font-size:14px;background:#fff;color:#222}
+.cm-site .wrap{max-width:860px}
+.cm-mast{background:linear-gradient(#e3eeff,#c3d8f8);border-bottom:3px solid #5e8ccc;padding:12px 0}
+.cm-mast .wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.cm-mast .brand{font-size:28px;font-weight:800;color:var(--cm-bluedeep);letter-spacing:0}
+.cm-mast-kicker{margin-left:auto;font-size:15px;font-weight:700;color:var(--cm-bluedeep)}
+.cm-site .nav{position:sticky;top:0;height:auto;background:#fff;border-bottom:1px solid var(--cm-rule);box-shadow:none}
+.cm-site .nav .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:stretch;gap:0;height:auto}
+.cm-site .nav .links{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin:0;border-left:1px solid var(--cm-rule)}
+.cm-site .nav .links a{padding:11px 6px;text-align:center;border-right:1px solid var(--cm-rule);font-weight:700;color:var(--cm-bluedeep);font-size:13px;background:#f3f7ff}
+.cm-site .nav .links a:hover{background:#e0ebff;color:#c1272d}
+.cm-site .nav .wrap>.btn{border-radius:0;background:#c1272d;color:#fff;padding:0 16px;display:grid;place-items:center;font-size:13px}
+.cm-titlebar{background:var(--cm-bluebar);border:1px solid var(--cm-rule);padding:7px 12px;color:var(--cm-bluedeep);font-size:14px}
+.cm-notice{padding:16px 0 0;background:#fff;border:0}
+.cm-notice .wrap{display:block}
+.cm-notice .updates-list{border:1px solid var(--cm-rule);border-top:0;padding:6px 12px;display:block}
+.cm-site .cm-update{display:flex;gap:12px;align-items:baseline;padding:6px 0;border:0;border-bottom:1px dotted #aab6cc;border-radius:0;background:none;box-shadow:none;color:#0b5cd5;text-decoration:underline}
+.cm-site .cm-update:last-child{border-bottom:0}.cm-site .cm-update-tag{background:#c1272d;color:#fff;border-radius:0;padding:1px 6px;font-size:11px;text-decoration:none}.cm-site .cm-update time{color:#555;font-family:ui-monospace,Consolas,monospace;font-size:12px;text-decoration:none}
+.cm-site .hero{padding:18px 0 6px;background:#fff}
+.cm-site .hero-grid{display:block;max-width:860px;margin:0 auto}
+.cm-site .hero-art{width:100%;aspect-ratio:3/1;min-height:0!important;height:auto!important;max-height:none;margin:0 0 12px;order:0}
+.cm-site .kv{border-radius:0;border:1px solid var(--cm-rule);box-shadow:none}
+.cm-kv-fallback{font-size:clamp(28px,5vw,60px)}
+.cm-site .hero-copy{border:1px solid var(--cm-rule);border-radius:0;padding:0;box-shadow:none;background:#fff;display:block}
+.cm-site .hero-copy .hero-kicker,.cm-site .hero-copy .event-status-badge{margin:8px 0 0 12px;display:inline-block}
+.cm-site .hero-copy h1{margin:8px 0 0;padding:10px 14px;background:#eaf1ff;border-top:1px solid var(--cm-rule);border-bottom:1px solid var(--cm-rule);font-size:22px;letter-spacing:0;line-height:1.3}
+.cm-site .hero-copy p{margin:0;padding:10px 14px;font-size:14px}
+.cm-rows{display:block!important;margin:0}.cm-row{display:grid;grid-template-columns:96px minmax(0,1fr);border-top:1px solid #c7d4ea}
+.cm-row b{background:#f3f7ff;padding:9px 12px;border-right:1px solid #c7d4ea;color:var(--cm-bluedeep);font-size:13px}
+.cm-row .pill{border:0;background:none;box-shadow:none;border-radius:0;padding:9px 12px;font-size:14px;font-weight:600;color:#222}
+.cm-site .cm-spotlight{padding:16px 0 0}.cm-site .cm-spotlight .wrap{display:block}
+.cm-site .section{padding:22px 0 0}
+.cm-site .head{background:var(--cm-bluebar);border:1px solid var(--cm-rule);padding:7px 12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.cm-site .head h2{font-size:14px;font-weight:700;color:var(--cm-bluedeep);margin:0;letter-spacing:0}
+.cm-site .head .ey{display:none}
+.cm-site .section-back{border-radius:0;font-size:12px}
+.cm-site .ticket,.cm-site .map-static,.cm-site .map-link-rail,.cm-site .community article,.cm-site .guide-grid article{border-radius:0;box-shadow:none;border:1px solid var(--cm-rule)}
+.cm-site .footer{margin-top:28px;border-top:3px solid #5e8ccc;background:#eaf1ff;color:#223}
+@media(max-width:820px){.cm-site .nav .links{grid-template-columns:repeat(3,minmax(0,1fr))}.cm-site .nav .wrap{grid-template-columns:1fr}.cm-site .nav .wrap>.btn{padding:10px}.cm-mast-kicker{margin-left:0}}
+`;
+export const previewStyle=coreStyle+marketStyle+referenceStyle;
 
 const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
@@ -207,11 +249,12 @@ const head=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2
 const pageHead=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></div>';
 
 export const previewBody=`<div class="cm-site">${loader}
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团</a><a href="#map-home">场地图</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">前往官方售票平台 ↗</a></div></header>
+<header class="cm-mast"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><span class="cm-mast-kicker">Welcome to the Official Site!</span></div></header>
+<header class="nav"><div class="wrap"><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#updates">公告</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团摊位</a><a href="#map-home">场地图</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
 <main id="top">
-<section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="cm-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy"><span class="hero-kicker">同人创作展</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></div></section>
-<section class="cm-spotlight oe-home-only" id="spotlight" aria-label="随机推荐制品"><div class="wrap" data-oe-mount="product-spotlight"></div></section>
-<section class="updates-strip oe-home-only" id="updates"><div class="wrap">${head('NEWS','最新公告')}<div class="updates-list"></div></div></section>
+<section class="updates-strip oe-home-only cm-notice" id="updates"><div class="wrap"><div class="cm-titlebar"><b>お知らせ · 公告</b></div><div class="updates-list"></div></div></section>
+<section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="cm-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy"><span class="hero-kicker">同人创作展</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta cm-rows"><div class="cm-row"><b>开催日</b><span class="pill" data-oe-field="date"></span></div><div class="cm-row"><b>会场</b><span class="pill" data-oe-field="location"></span></div><div class="cm-row"><b>详情</b><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></div></div></section>
+<section class="cm-spotlight oe-home-only" id="spotlight" aria-label="随机推荐制品"><div class="wrap"><div class="cm-titlebar"><b>ピックアップ · 随机推荐制品</b></div></div><div class="wrap" data-oe-mount="product-spotlight"></div></section>
 <section class="section" id="tickets"><div class="wrap">${head('ADMISSION','入场票')}<div class="ticket-grid"></div><div class="ticket-actions"></div></div></section>
 <section class="section" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="map-explorer"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><aside class="map-link-rail" data-oe-collection="explore"><span class="ey">EXPLORE</span><b>继续探索</b><div class="map-link-list"></div></aside></div></div></section>
 <section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLES & WORKS','参展社团与制品')}<div class="booth-directory-rich"></div></div></section>

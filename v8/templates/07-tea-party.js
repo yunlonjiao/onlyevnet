@@ -8,7 +8,6 @@ export const template07=makeIpOnlyTemplate({
  presentationProfile:{mobileDock:true},
  studioPages:{hidden:['booths'],hiddenContent:[],customPages:false},
  group:'small',
- quickSetup:{modules:[{key:'activities',label:'当天流程'},{key:'guests',label:'同席的人'},{key:'guide',label:'参加须知'},{key:'community',label:'联系与社群'}]},
  design:{hero:'invitation-card+round-photo',motif:'lace-dots'}
 });
 // Starter content for a small gathering: a few activities, a short agenda and the hosts.

@@ -3,7 +3,7 @@ import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.41.4';
 export function makeIpOnlyTemplate({
   id,name,label,description,structureProfile,artDirection,motionProfile,
   theme,heroTitleColor,heroTitleAccentColor,studioName,presentationProfile={},
-  studioPages={hidden:[],customPages:true},group,quickSetup,design
+  studioPages={hidden:[],customPages:true},group,design
 }){
   const defaults=createIpOnlyDefaults();
   const resolvedPresentation={...DEFAULT_IP_ONLY_PRESENTATION_PROFILE,...presentationProfile};
@@ -15,7 +15,7 @@ export function makeIpOnlyTemplate({
   if(heroTitleColor)defaults.heroTitleColor=heroTitleColor;
   if(heroTitleAccentColor)defaults.heroTitleAccentColor=heroTitleAccentColor;
   return {
-    id,name,label,studioName,group,quickSetup,design,category:'单 IP / 同好活动',version:'1.0.0',
+    id,name,label,studioName,group,design,category:'单 IP / 同好活动',version:'1.0.0',
     description,
     structureProfile,
     artDirection,

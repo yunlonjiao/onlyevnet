@@ -15,7 +15,7 @@ for(const c of cases){
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
     const cloud=await useCloudPublisher(page);
     await signInCloud(page,cloud,'tpl-'+c.id);
-    await page.goto('/v8/?template='+c.id+'&project=case-'+c.id+'&quick=skip');
+    await page.goto('/v8/?template='+c.id+'&project=case-'+c.id+'');
     const frame=page.frameLocator('#liveFrame');
     await expect(frame.locator(c.site+' .hero')).toBeAttached();
     await expect(frame.locator('[data-oe-mirror="lineup"] .lineup-card')).toHaveCount(c.lineup);
@@ -51,7 +51,7 @@ for(const id of ['05-live-poster','06-band-live','07-tea-party','08-birthday']){
     await page.setViewportSize({width:390,height:844});
     const cloud=await useCloudPublisher(page);
     await signInCloud(page,cloud,'wide-'+id);
-    await page.goto('/v8/?template='+id+'&project=wide-1&quick=skip');
+    await page.goto('/v8/?template='+id+'&project=wide-1');
     await expect(page.frameLocator('#liveFrame').locator('.hero')).toBeAttached();
     await page.waitForTimeout(800);
     const widths=await page.evaluate(()=>{const d=document.querySelector('#liveFrame').contentDocument;return {frame:d.documentElement.scrollWidth,page:document.documentElement.scrollWidth}});
@@ -103,41 +103,17 @@ test('every template can be previewed on desktop and phone before it is used',as
   await expect(page.locator('#createProjectName')).toBeVisible();
 });
 
-test('small-event templates are created like every other template; the quick questions come in the editor',async({page})=>{
+test('small-event templates are created like every other template, with no extra questions',async({page})=>{
   const cloud=await useCloudPublisher(page);
-  await signInCloud(page,cloud,'quick-organizer');
+  await signInCloud(page,cloud,'plain-organizer');
   await page.goto('/admin/');
   await page.locator('[data-admin-page="templates"]').click();
   await page.locator('#templateGrid [data-template="07-tea-party"]').click();
-  await expect(page.locator('#createDialog')).toBeVisible();
   await expect(page.locator('#createDialog input:visible')).toHaveCount(1);
   await page.locator('#createProjectName').fill('周末茶会');
   await page.locator('#createForm button[type=submit]').click();
   await page.waitForURL(/\/v8\//);
-  await expect(page.locator('#quickSetupDialog')).toBeVisible();
-  await page.locator('#quickHero').setInputFiles({name:'hero.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==','base64')});
-  await page.locator('#quickDate').fill('2026.12.20');
-  await page.locator('#quickPlace').fill('上海');
-  await page.locator('#quickTicketUrl').fill('https://example.com/signup');
-  await page.locator('#quickTagline').fill('下午茶，聊聊天。');
-  await page.locator('#quickModules input[value="guide"]').uncheck();
-  await page.locator('#quickSetupDone').click();
-  await expect(page.locator('#quickSetupDialog')).toBeHidden();
-  const frame=page.frameLocator('#liveFrame');
-  await expect(frame.locator('.tp-site .hero p')).toHaveText('下午茶，聊聊天。');
-  await expect(frame.locator('.tp-site .hero [data-oe-field="date"]')).toHaveText('2026.12.20');
-  await expect(frame.locator('.tp-site .hero [data-oe-field="location"]')).toHaveText('上海');
-  await expect(frame.locator('.tp-site #guide')).toBeHidden();
-  const readState=()=>page.evaluate(()=>{const k=Object.keys(localStorage).find(x=>x.startsWith('onlyevent-studio-v8:07-tea-party:'));return JSON.parse(localStorage.getItem(k))});
-  await expect.poll(async()=>(await readState()).quickSetupDone).toBe(true);
-  const state=await readState();
-  expect(state.heroImage).toMatch(/\/media\/uploads\//);
-  expect(state.ticketUrl).toBe('https://example.com/signup');
-  expect(state.modules.guide).toBe(false);
-  expect(state.quickSetupDone).toBe(true);
-  // reloading does not ask again
-  await page.reload();
   await expect(page.frameLocator('#liveFrame').locator('.tp-site .hero')).toBeAttached();
-  await page.waitForTimeout(800);
-  await expect(page.locator('#quickSetupDialog')).toBeHidden();
+  await page.waitForTimeout(900);
+  await expect(page.locator('dialog[open]')).toHaveCount(0);
 });

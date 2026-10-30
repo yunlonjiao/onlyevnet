@@ -5,15 +5,15 @@ export const template05=makeIpOnlyTemplate({
  description:'夜场舞台风格：首页先放出演嘉宾和节目表，适合乐队 Live、声优活动、演出和见面会。',
  structureProfile:'lineup',artDirection:'live-stage',motionProfile:'energetic',
  theme:'#ff3d8b',heroTitleColor:'#ffffff',heroTitleAccentColor:'#35e3ff',
- presentationProfile:{entryAnimation:true,ribbon:true,mobileDock:true},
- studioPages:{hidden:['booths'],hiddenContent:[],customPages:false},
+ presentationProfile:{entryAnimation:true,mobileDock:true},
+ studioPages:{hidden:['booths'],hiddenContent:['ribbonItems'],customPages:false},
  group:'stage',
  design:{hero:'fullbleed-centered',motif:'stage-beams'}
 });
 // Starter content for a live show: a short running order and four performers.
 const d=template05.defaults;
 d.tagline='喜欢的乐队和声优都在台上，来现场听。';
-d.modules={...d.modules,booths:false,sponsors:true,ribbon:true};
+d.modules={...d.modules,booths:false,sponsors:true,ribbon:false};
 d.ribbonItems=[{id:'rb1',text:'出演阵容公开'},{id:'rb2',text:'节目表已更新'},{id:'rb3',text:'票务开售中'},{id:'rb4',text:'应援规则见指南'}];
 d.tickets=[
  {id:'t1',name:'一般席',price:'¥280',gift:'入场资格',note:'购买与退票规则以售票平台为准',image:''},

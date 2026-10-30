@@ -175,11 +175,38 @@ const heroStyle=`
 .bl-site .hero-info p{margin:0;grid-column:1}.bl-site .hero-info .meta{margin:0;grid-column:1}.bl-site .hero-info .bl-cta{grid-column:2;grid-row:1 / span 2;justify-content:flex-end}
 @media(max-width:820px){.bl-site .hero-art{order:0;aspect-ratio:16/10}.bl-site .hero-info{grid-template-columns:minmax(0,1fr)}.bl-site .hero-info .bl-cta{grid-column:1;grid-row:auto;justify-content:flex-start}}
 `;
-export const previewStyle=coreStyle+style+heroStyle;
+/* Shinjuku LOFT schedule pages: black bar, ink-spattered paper, vertical date rail, flyer as the picture */
+const referenceStyle=`
+.bl-site{background-color:#fff;background-image:radial-gradient(circle at 12% 18%,#111 0 1.2px,transparent 1.6px),radial-gradient(circle at 78% 33%,#111 0 .9px,transparent 1.3px),radial-gradient(circle at 44% 71%,#111 0 1.6px,transparent 2px),radial-gradient(circle at 90% 88%,#111 0 1px,transparent 1.4px),radial-gradient(circle at 25% 52%,#111 0 .7px,transparent 1.1px);background-size:310px 270px,270px 330px,420px 380px,360px 300px,190px 220px}
+.bl-site .nav{height:62px;background:#000;border:0}
+.bl-site .nav .links a{text-transform:uppercase;letter-spacing:.14em;font-size:11px;font-weight:700}
+.bl-site .brand{font-style:italic;letter-spacing:.02em}
+.bl-site .hero{background:transparent;color:#111;padding:34px 0 40px}
+.bl-site .hero:before,.bl-site .hero:after{display:none}
+.bl-site .hero-grid{grid-template-columns:96px minmax(0,1fr) minmax(0,.72fr);gap:34px;align-items:stretch}
+.bl-rail{display:flex;flex-direction:column;align-items:center;gap:14px;border-right:2px solid #111;padding-right:20px}
+.bl-rail-label{writing-mode:vertical-rl;font-size:11px;font-weight:900;letter-spacing:.34em}
+.bl-rail b{writing-mode:vertical-rl;font-family:Impact,"Arial Black",sans-serif;font-size:30px;font-weight:400;letter-spacing:.06em;line-height:1.1}
+.bl-rail small{writing-mode:vertical-rl;font-size:10px;letter-spacing:.3em;color:#555;margin-top:auto}
+.bl-site .hero-copy{align-self:center}
+.bl-site .hero h1{color:#111;text-shadow:none;font-size:clamp(40px,6.4vw,100px);margin:0 0 14px}
+.bl-site .hero p{color:#333;margin:0 0 16px}
+.bl-site .hero-kicker{background:#111;color:#fff;transform:none}
+.bl-site .event-status-badge{background:#111;color:#fff}
+.bl-site .pill{border-color:#111;color:#111;background:none}
+.bl-site .bl-btn{color:#111;border-color:#111}.bl-site .bl-btn.yellow{background:#111;color:#fff;transform:none}
+.bl-site .hero-art{order:0;aspect-ratio:3/4;max-height:560px;width:100%;transform:rotate(1.6deg);align-self:center}
+.bl-site .kv{border:0;box-shadow:none;background-size:cover}
+.bl-site .hero-art{filter:drop-shadow(0 14px 22px #0006)}
+.bl-kv-fallback{font-size:clamp(30px,4.4vw,64px)}
+.bl-site .ribbon{margin:0}
+@media(max-width:820px){.bl-site .hero-grid{grid-template-columns:64px minmax(0,1fr);gap:18px}.bl-site .hero-art{grid-column:1 / -1;order:3;aspect-ratio:4/5;max-height:none;transform:none}.bl-rail{padding-right:12px}.bl-rail b{font-size:22px}}
+`;
+export const previewStyle=coreStyle+style+heroStyle+referenceStyle;
 export const previewBody=`<div class="bl-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#guests" data-target-mode="page" data-page-link="guests">乐队</a><a href="#activities" data-target-mode="page" data-page-link="activities">出场顺序</a><a href="#tickets">门票</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">买票 ↗</a></div></header>
 <main id="top">
-<section class="hero"><div class="wrap hero-grid"><div class="hero-copy"><span class="hero-kicker">LIVE HOUSE</span><h1 data-oe-field="eventName">STARDUST ONLY</h1></div><div class="hero-art"><div class="kv"><strong class="bl-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-info"><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bl-cta"><a class="bl-btn yellow ticket-purchase-link" href="#tickets">买票</a><a class="bl-btn" href="#timetable">出场顺序</a></div></div></div></section>
+<section class="hero"><div class="wrap hero-grid"><aside class="bl-rail"><span class="bl-rail-label">TODAY'S EVENT</span><b data-oe-field="date"></b><small>LIVE HOUSE</small></aside><div class="hero-copy"><span class="hero-kicker">LIVE HOUSE</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bl-cta"><a class="bl-btn yellow ticket-purchase-link" href="#tickets">买票</a><a class="bl-btn" href="#timetable">出场顺序</a></div></div><div class="hero-art"><div class="kv"><strong class="bl-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section>
 ${coreRibbon()}
 <section class="section oe-home-only" id="lineup"><div class="wrap">${head('LINE UP','出演乐队')}<div class="lineup-strip" data-oe-mirror="lineup"></div>${more('guests','乐队介绍')}</div></section>
 <section class="section oe-home-only" id="timetable"><div class="wrap">${head('SET TIMES','出场顺序')}<div class="timeline" data-oe-mirror="timetable"></div>${more('activities','完整出场顺序')}</div></section>

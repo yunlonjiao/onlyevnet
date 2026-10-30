@@ -206,11 +206,45 @@ const heroStyle=`
 .bd-site .hero-copy{position:relative;z-index:2;max-width:500px;padding:64px 48px}
 @media(max-width:820px){.bd-site .hero-grid{min-height:0}.bd-site .hero-art{position:relative;inset:auto;width:100%;max-width:none;aspect-ratio:16/10!important;order:-1}.bd-site .kv{clip-path:none}.bd-site .hero-copy{padding:28px 22px 34px;max-width:none}}
 `;
-export const previewStyle=coreStyle+style+heroStyle;
+/* Sanrio / animate cafe birthday pages: arched header, round picture on the arch, pill buttons, dotted dividers, page-top bump */
+const referenceStyle=`
+.bd-site{background:linear-gradient(180deg,#fff,#fff4f8 40%,#fff)}
+.bd-site .nav{height:auto;padding:16px 0 12px;background:#fffefb;box-shadow:none}
+.bd-site .nav .wrap{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 22px}
+.bd-site .brand{font-size:clamp(20px,3vw,30px)}
+.bd-site .nav .links{order:3;flex:1 1 100%;justify-content:center;margin:0}
+.bd-site .nav .wrap>.btn{position:absolute;right:22px;top:14px;border-radius:999px}
+.bd-site .nav:after{display:none}
+.bd-site .hero{position:relative;background:none;padding:0 0 30px;overflow:visible}
+.bd-site .hero:before{content:"";display:block;position:absolute;left:-6%;right:-6%;top:0;height:410px;background:var(--bd-accent);border-radius:0 0 50% 50% / 0 0 150px 150px;z-index:0;pointer-events:none}
+.bd-site .hero:after{display:none}
+.bd-site .hero-grid{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;max-width:760px;min-height:0;background:none;border-radius:0;overflow:visible;padding:0;margin:0 auto}
+.bd-site .hero-grid:before{display:none}
+.bd-title{max-width:640px;text-align:center;padding:34px 0 0!important}
+.bd-site .hero h1{font-size:clamp(34px,6vw,70px);color:#fff}
+.bd-site .hero p{margin:0 auto;max-width:520px}
+.bd-site .hero-art{position:relative;inset:auto;order:0;width:250px;max-width:250px;aspect-ratio:1/1!important;height:auto!important;margin:22px auto 0;transform:none}
+.bd-site .kv{inset:0;clip-path:none;border-radius:50%;border:8px solid #fff;box-shadow:0 14px 30px #4a335833;background-size:cover}
+.bd-kv-fallback{padding:12%;font-size:clamp(20px,3vw,34px)}
+.bd-detail{max-width:640px;text-align:center;padding:26px 0 0!important}
+.bd-site .meta,.bd-site .bd-cta{justify-content:center}
+.bd-site .pill{background:#fff;border:2px dotted var(--bd-accent);color:var(--bd-ink)}
+.bd-site .bd-btn{background:#fff;color:var(--bd-accent);border:2px solid var(--bd-accent);box-shadow:none}.bd-site .bd-btn.accent{background:var(--bd-accent);color:#fff}
+.bd-site .section{border-top:0}
+.bd-site .head{border-bottom:2px dotted #f0b6cb!important;padding-bottom:12px!important}
+.bd-top{display:grid;place-items:center;width:110px;height:56px;margin:56px auto -1px;border-radius:56px 56px 0 0;background:var(--bd-accent);color:#fff;font-size:11px;font-weight:900;letter-spacing:.14em;text-decoration:none}
+.bd-site .footer{margin-top:0}
+.bd-site .bd-title{max-width:640px;text-align:center;margin:0 auto}.bd-site .bd-detail{max-width:640px;text-align:center;margin:0 auto}
+.bd-site .hero .hero-kicker{margin-bottom:10px}
+.bd-site .featured-activity-grid{grid-template-rows:none!important;grid-auto-rows:auto!important;align-items:start}
+.bd-site #participation .featured-activity-card,.bd-site #participation .featured-activity-card:first-child{grid-row:auto!important;grid-column:auto!important;height:auto!important;min-height:0!important}
+@media(max-width:820px){.bd-site .hero:before{height:380px;border-radius:0 0 50% 50% / 0 0 90px 90px}.bd-site .nav .wrap>.btn{position:static}.bd-site .hero-art{width:210px;max-width:210px}}
+`;
+export const previewStyle=coreStyle+style+heroStyle+referenceStyle;
 export const previewBody=`<div class="bd-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#participation">应援内容</a><a href="#tickets">赠品</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">预约领取 ↗</a></div></header>
 <main id="top">
-<section class="hero"><span class="bd-balloon a"></span><span class="bd-balloon b"></span><span class="bd-balloon c"></span><div class="wrap hero-grid"><div class="hero-copy"><span class="hero-kicker">HAPPY BIRTHDAY</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bd-cta"><a class="bd-btn accent ticket-purchase-link" href="#tickets">预约领取</a><a class="bd-btn" href="#participation">看应援内容</a></div></div><div class="hero-art"><div class="kv"><strong class="bd-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section>
+<section class="hero"><div class="wrap hero-grid"><div class="hero-copy bd-title"><span class="hero-kicker">HAPPY BIRTHDAY</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="hero-art"><div class="kv"><strong class="bd-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy bd-detail"><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bd-cta"><a class="bd-btn accent ticket-purchase-link" href="#tickets">预约领取</a><a class="bd-btn" href="#participation">看应援内容</a></div></div></div></section>
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新消息'))}
 ${coreSection('participation',{ey:'SUPPORT',title:'应援内容'})}
 ${coreSection('tickets',{ey:'GIFTS',title:'赠品与领取'})}
@@ -223,5 +257,6 @@ ${coreSection('guide',{ey:'NOTICE',title:'领取与参观须知'})}
 ${coreSection('community',{ey:'CONTACT',title:'联系与交流'})}
 </main>
 <nav class="mobile-dock"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
+<a class="bd-top" href="#top">PAGE TOP</a>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
 </div>`;

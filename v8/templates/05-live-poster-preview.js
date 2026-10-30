@@ -203,6 +203,11 @@ const style=`
 .ls-entry .ls-entry-kicker{align-self:center;width:auto;height:auto;flex:none}
 .ls-entry .entry-ticket-title{max-width:100%;overflow-wrap:anywhere;font-size:clamp(30px,7vw,56px)}
 .ls-entry .ls-entry-meta,.ls-entry .ls-entry-hint{width:auto}
+.ls-site .ls-info{display:block}
+.ls-site .live-pass-copy *{border:0!important;background:none!important;text-decoration:none!important}
+.ls-site .live-pass :before,.ls-site .live-pass :after{display:none}
+.ls-site .featured-activity-grid{grid-template-rows:none!important;grid-auto-rows:auto!important;align-items:start}
+.ls-site #participation .featured-activity-card,.ls-site #participation .featured-activity-card:first-child{grid-row:auto!important;grid-column:auto!important;height:auto!important;min-height:0!important}
 @media(max-width:820px){
  .ls-site .hero-grid{grid-template-columns:minmax(0,1fr)}.ls-site .hero-art{aspect-ratio:16/11;order:-1}
  .ls-site .nav .links{display:none}.ls-site .nav .wrap>.btn{margin-left:auto;padding:9px 16px}
@@ -221,14 +226,46 @@ const timetableSection=coreSection('activities',{ey:'TIME TABLE',title:'节目�
   .replace('>日程<','>节目表<').replace('<b>当天日程</b>','<b>当天节目</b>').replace('<span>SCHEDULE</span>','<span>RUNNING ORDER</span>')
   .replace('>活动详情<','>企划详情<').replace('<b>活动详情</b>','<b>特别企划</b>');
 
-export const previewStyle=coreStyle+style;
+/* Love Live! live special sites: centred logo header, title bar, portrait KV with info table, tab pills, day cards */
+const referenceStyle=`
+.ls-site .nav{position:relative;height:auto;padding:22px 0 18px;background:linear-gradient(180deg,#0b0a1c,#15103a)}
+.ls-site .nav .wrap{justify-content:center;position:relative;display:flex}
+.ls-site .brand{font-size:clamp(28px,4vw,52px);text-align:center;line-height:1}
+.ls-site .brand:before{display:none}
+.ls-site .nav .wrap>.btn{position:absolute;right:22px;top:50%;transform:translateY(-50%)}
+.ls-titlebar{background:linear-gradient(90deg,var(--ls-pink),var(--ls-violet));color:#fff;font-weight:900;letter-spacing:.3em;font-size:13px}
+.ls-titlebar .wrap{padding-top:7px;padding-bottom:7px}
+.ls-site .hero{min-height:0;padding:30px 0 10px}
+.ls-site .hero-grid{grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:44px;padding:20px 0;align-items:start}
+.ls-site .hero-art{order:0;aspect-ratio:3/4;max-height:540px;width:100%}
+.ls-site .kv{clip-path:none;border-radius:4px}
+.ls-site .hero-art:after{display:none}
+.ls-site .hero-copy{align-self:center}
+.ls-site .hero h1{font-size:clamp(34px,4.6vw,76px);margin:0 0 12px}
+.ls-info{display:block;margin:0 0 22px;border-top:1px dotted #ffffff44}
+.ls-info .pill{display:block;clip-path:none;border:0;border-bottom:1px dotted #ffffff44;background:none;padding:9px 0;font-size:15px;font-weight:700}
+.ls-info .pill:nth-child(1):before{content:"日程　";color:var(--ls-soft);font-weight:400}.ls-info .pill:nth-child(2):before{content:"会场　";color:var(--ls-soft);font-weight:400}.ls-info .pill:nth-child(3):before{content:"详情　";color:var(--ls-soft);font-weight:400}
+.ls-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:6px 22px 22px;max-width:1100px;margin:0 auto}
+.ls-pills a{padding:9px 20px;background:linear-gradient(180deg,var(--ls-violet),#6a46d8);color:#fff;font-weight:800;font-size:14px;text-decoration:none;border-radius:4px;border:1px solid #ffffff33}
+.ls-pills a:hover{background:var(--ls-pink)}
+.ls-site .timeline-day{background:#ffffff10;border:1px solid #ffffff26;border-radius:4px;padding:18px 22px 10px;margin-bottom:18px}
+.ls-site .timeline-day h3{display:block;background:none;color:#fff;transform:none;padding:0;margin:0 0 8px;font-size:20px;letter-spacing:.1em}
+.ls-site .timeline-day h3:before{content:"＜ "}.ls-site .timeline-day h3:after{content:" ＞"}
+.ls-site .timeline-row{grid-template-columns:130px 150px minmax(0,1fr);background:none;border:0;border-bottom:1px dotted #ffffff33;border-left:0;padding:10px 0;margin:0}
+.ls-site .timeline-row:hover{background:#ffffff0d;transform:none}
+.ls-site .timeline-row time{font-size:17px;font-style:normal;font-weight:800}
+.ls-site .timeline-stage{font-size:12px}
+@media(max-width:820px){.ls-site .nav .wrap>.btn{position:static;transform:none;margin-left:10px}.ls-site .nav .wrap{flex-wrap:wrap;gap:10px}.ls-site .hero-grid{grid-template-columns:1fr}.ls-site .hero-art{max-height:380px;aspect-ratio:4/3}.ls-site .timeline-row{grid-template-columns:90px minmax(0,1fr)}.ls-site .timeline-row time{grid-row:auto}}
+`;
+export const previewStyle=coreStyle+style+referenceStyle;
 export const previewBody=`<div class="ls-site">${loader}
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">节目表</a><a href="#guests" data-target-mode="page" data-page-link="guests">嘉宾</a><a href="#tickets">票务</a><a href="#map-home">场地</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
 <main id="top">
-<section class="hero"><div class="wrap hero-grid"><div class="hero-copy"><span class="hero-kicker">LIVE</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="ls-cta"><a class="ls-btn pink ticket-purchase-link" href="#tickets">购票</a><a class="ls-btn" href="#timetable">看节目表</a></div></div><div class="hero-art"><div class="kv"><strong class="ls-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section>
-${coreRibbon()}
+<div class="ls-titlebar"><div class="wrap"><span>LIVE</span></div></div>
+<section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="ls-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy"><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta ls-info"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="ls-cta"><a class="ls-btn pink ticket-purchase-link" href="#tickets">购票</a><a class="ls-btn" href="#timetable">看节目表</a></div></div></div></section>
+<nav class="ls-pills" data-oe-mount="nav-links" aria-label="站内导航"><a href="#home" data-page-link="home">特设首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">节目表</a><a href="#guests" data-target-mode="page" data-page-link="guests">出演嘉宾</a><a href="#tickets">票务信息</a><a href="#map-home">场地</a><a href="#guide" data-target-mode="page" data-page-link="guide">注意事项</a></nav>
+<section class="section oe-home-only" id="timetable"><div class="wrap">${head('SCHEDULE','公演日程')}<div class="timeline" data-oe-mirror="timetable"></div>${more('#activities','activities','完整节目表')}</div></section>
 <section class="section oe-home-only" id="lineup"><div class="wrap">${head('LINE UP','出演嘉宾')}<div class="lineup-strip" data-oe-mirror="lineup"></div>${more('#guests','guests','全部嘉宾')}</div></section>
-<section class="section oe-home-only" id="timetable"><div class="wrap">${head('TIME TABLE','节目表')}<div class="timeline" data-oe-mirror="timetable"></div>${more('#activities','activities','完整节目表')}</div></section>
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新公告'))}
 ${coreSection('participation',{ey:'SPECIAL',title:'特别企划'})}
 ${coreSection('tickets',{ey:'TICKET',title:'票务'})}

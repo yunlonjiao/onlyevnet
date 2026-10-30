@@ -7,7 +7,7 @@ const ids=['01-ip-only','02-scrapbook','03-creator-market','04-creator-catalogue
 // Every template must let the organizer do the same things on the page: type into visible copy,
 // click a card to open it in the side panel, click an image to replace it. 01 and 02 set the bar.
 async function openEditor(page,id){
-  await page.goto('/v8/?template='+id+'&project=parity-'+id+'&quick=skip');
+  await page.goto('/v8/?template='+id+'&project=parity-'+id+'');
   const frame=page.frameLocator('#liveFrame');
   await expect(frame.locator('[data-oe-field="eventName"]').first()).toBeAttached();
   await page.waitForTimeout(1500);
