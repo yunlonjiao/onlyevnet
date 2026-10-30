@@ -158,3 +158,35 @@ test('staged reveal: pages that are not public yet are not served, and appear wh
   await expect(page.locator('#publishStatus')).toHaveText('网站已上线',{timeout:20000});
   expect((await visitSite(cloud,'stage-site')).html).toContain('浮光工房');
 });
+
+test('sign-up forms can be created, filled by a visitor, reviewed and exported',async({page})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'signup-organizer');
+  await page.goto('/admin/');
+  await page.evaluate(()=>localStorage.setItem('onlyevent-admin-projects-v1',JSON.stringify([{id:'su1',name:'秋季展',templateId:'01-ip-only',status:'draft',siteUrl:'',updatedAt:new Date().toISOString()}])));
+  await page.reload();
+  await page.locator('[data-admin-page="signup"]').click();
+  await page.locator('[data-new="cos"]').click();
+  await expect(page.locator('.signup-card')).toHaveCount(1);
+  await expect(page.locator('.signup-link code')).toContainText('/signup/?t=');
+  const token=(await page.locator('.signup-link code').innerText()).match(/t=([a-f0-9]{20})/)[1];
+  const {default:worker}=await import('../../cloud/src/worker.js');
+  const submit=values=>worker.fetch(new Request('https://convention-publisher.onlyevents.workers.dev/api/signup/'+token,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({values})}),cloud.env);
+  expect((await submit({f1:'小明',f2:'某角色',f3:'qq123'})).status).toBe(201);
+  await page.locator('#signupRefresh').click();
+  await expect(page.locator('#signupCount')).toHaveText('1');
+  await page.locator('[data-entries]').click();
+  await expect(page.locator('.signup-entry')).toHaveCount(1);
+  await expect(page.locator('.signup-entry')).toContainText('小明');
+  await page.locator('.signup-entry [data-st="approved"]').click();
+  await expect(page.locator('.signup-entry em')).toHaveText('已通过');
+  const download=page.waitForEvent('download');
+  await page.locator('[data-export]').click();
+  expect((await download).suggestedFilename()).toContain('.csv');
+  await page.locator('[data-edit]').click();
+  await page.locator('.sf-title').fill('COS 报名（改）');
+  await page.locator('[data-saveform]').click();
+  await expect(page.locator('.signup-card b').first()).toHaveText('COS 报名（改）');
+  await page.locator('[data-open]').uncheck();
+  expect((await submit({f1:'小红',f2:'x',f3:'y'})).status).toBe(403);
+});

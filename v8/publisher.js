@@ -119,6 +119,15 @@ export async function changeAccountPassword({oldPassword,newPassword}){
 export const PROMO_CHANNELS=[{key:'weibo',label:'微博'},{key:'bilibili',label:'B站'},{key:'xhs',label:'小红书'},{key:'qq',label:'QQ群'},{key:'wechat',label:'微信'}];
 export const channelLabel=key=>PROMO_CHANNELS.find(c=>c.key===key)?.label||key;
 // Later versions of the visitor site that go live at a set time: [{at:ISO string,html}]. [] clears them.
+export const signupLink=token=>PUBLISHER_ORIGIN+'/signup/?t='+token;
+const sg=cid=>'/api/projects/'+encodeURIComponent(cid)+'/signups';
+export const listSignups=cid=>api(sg(cid));
+export const createSignup=(cid,kind,config)=>api(sg(cid),{method:'POST',body:{kind,config}});
+export const updateSignup=(cid,fid,patch)=>api(sg(cid)+'/'+encodeURIComponent(fid),{method:'POST',body:patch});
+export const deleteSignup=(cid,fid)=>api(sg(cid)+'/'+encodeURIComponent(fid),{method:'DELETE'});
+export const listSignupEntries=(cid,fid)=>api(sg(cid)+'/'+encodeURIComponent(fid)+'/entries');
+export const setSignupEntryStatus=(cid,fid,eid,status)=>api(sg(cid)+'/'+encodeURIComponent(fid)+'/entries/'+encodeURIComponent(eid),{method:'POST',body:{status}});
+export const deleteSignupEntry=(cid,fid,eid)=>api(sg(cid)+'/'+encodeURIComponent(fid)+'/entries/'+encodeURIComponent(eid),{method:'DELETE'});
 export async function setSiteStages(siteId,stages){
   return api('/api/sites/'+encodeURIComponent(siteId)+'/stages',{method:'PUT',body:{stages}});
 }

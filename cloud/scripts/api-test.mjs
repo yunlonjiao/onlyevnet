@@ -322,3 +322,30 @@ test('staged reveal serves the first version until each stage time passes, never
   const other=await signUp(env,'stage-other');
   assert.equal((await call(env,'/api/sites/'+siteId+'/stages',{method:'PUT',token:other.token,body:{stages:[]}})).status,403);
 });
+
+test('sign-up forms: organizer builds a form, visitors submit without an account, required fields are enforced',async()=>{
+  const env=createEnv();
+  const {token}=await signUp(env,'signup-owner'),pid=await newProject(env,token,'报名测试');
+  const made=await call(env,'/api/projects/'+pid+'/signups',{method:'POST',token,body:{kind:'cos',config:{title:'COS 自由行报名',intro:'欢迎来玩',fields:[{label:'ID',required:true},{label:'角色'},{label:'备注',long:true}]}}});
+  assert.equal(made.status,201);
+  const form=made.data.form;
+  assert.equal(form.config.fields.length,3);
+  assert.equal((await call(env,'/api/projects/'+pid+'/signups',{method:'POST',token,body:{kind:'cos',config:{title:'x',fields:[]}}})).status,400);
+  const info=await call(env,'/api/signup/'+form.token,{});
+  assert.equal(info.data.title,'COS 自由行报名');assert.equal(info.data.fields[0].required,true);
+  assert.equal((await call(env,'/api/signup/'+form.token,{method:'POST',body:{values:{f2:'某角色'}}})).status,400);
+  assert.equal((await call(env,'/api/signup/'+form.token,{method:'POST',body:{values:{f1:'小明',f2:'某角色'}}})).status,201);
+  const entries=await call(env,'/api/projects/'+pid+'/signups/'+form.id+'/entries',{token});
+  assert.equal(entries.data.entries.length,1);
+  assert.deepEqual(entries.data.entries[0].answers.map(a=>a.value),['小明','某角色','']);
+  const list=await call(env,'/api/projects/'+pid+'/signups',{token});
+  assert.equal(list.data.forms[0].pending,1);
+  const eid=entries.data.entries[0].id;
+  assert.equal((await call(env,'/api/projects/'+pid+'/signups/'+form.id+'/entries/'+eid,{method:'POST',token,body:{status:'approved'}})).status,200);
+  assert.equal((await call(env,'/api/projects/'+pid+'/signups/'+form.id,{method:'POST',token,body:{open:false}})).status,200);
+  assert.equal((await call(env,'/api/signup/'+form.token,{method:'POST',body:{values:{f1:'小红'}}})).status,403);
+  const other=await signUp(env,'signup-other');
+  assert.equal((await call(env,'/api/projects/'+pid+'/signups',{token:other.token})).status,404);
+  assert.equal((await call(env,'/api/projects/'+pid+'/signups/'+form.id,{method:'DELETE',token})).status,200);
+  assert.equal((await call(env,'/api/signup/'+form.token,{})).status,404);
+});

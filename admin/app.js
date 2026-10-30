@@ -3,6 +3,7 @@ import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8
 import {mountCost} from '/admin/cost.js?v=1';
 import {mountDeadlines} from '/admin/deadlines.js?v=1';
 import {loadAsk} from '/admin/ask.js?v=1';
+import {loadSignups} from '/admin/signups.js?v=1';
 import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.52.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
@@ -460,6 +461,7 @@ function showPage(name){
   if(name==='settings')renderSettings();
   if(name==='cost')loadCost();
   if(name==='ask'){renderAskProjects();loadAskPage()}
+  if(name==='signup'){renderSignupProjects();loadSignupPage()}
 }
 function renderAskProjects(){
   const select=$('#askProject'),keep=select.value;
@@ -475,6 +477,22 @@ function loadAskPage(){
     onCount:n=>{const b=$('#askCount');b.hidden=!n;b.textContent=String(n)}});
 }
 $('#askProject').onchange=loadAskPage;$('#askRefresh').onclick=loadAskPage;
+function renderSignupProjects(){
+  const select=$('#signupProject'),keep=select.value;
+  select.innerHTML=projects.map(p=>'<option value="'+p.id+'"></option>').join('');
+  [...select.options].forEach((o,i)=>{o.textContent=projects[i].name||'未命名活动'});
+  if(keep&&projects.some(p=>p.id===keep))select.value=keep;
+}
+function loadSignupPage(){
+  if(!readCloudSession()){authSetMessage('signupMessage','请先登录主办方账号。');return}
+  return loadSignups({$,getProject:()=>projects.find(p=>p.id===$('#signupProject').value)||null,
+    cloudIdFor:project=>ensureCloudProjectFor({templateId:project.templateId||DEFAULT_TEMPLATE_ID,projectId:project.id,name:project.name}),
+    message:(t,k)=>authSetMessage('signupMessage',t,k||''),
+    onCount:n=>{const b=$('#signupCount');b.hidden=!n;b.textContent=String(n)},
+    copy:text=>navigator.clipboard?.writeText(text),
+    download:(text,name)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv;charset=utf-8'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}});
+}
+$('#signupProject').onchange=loadSignupPage;$('#signupRefresh').onclick=loadSignupPage;
 function loadCost(){
   const select=$('#costProject'),keep=select.value;
   select.innerHTML=projects.map(p=>'<option value="'+p.id+'"></option>').join('');

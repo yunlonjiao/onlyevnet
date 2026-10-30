@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>报名</title>
+<style>
+:root{--bg:#f6f4ff;--card:#fff;--text:#22203a;--muted:#6f6c88;--line:#e3dff5;--accent:#7c5cff;--danger:#d6334f;--ok:#12805c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+main{max-width:640px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:22px;margin:0 0 6px}
+.event{margin:0 0 4px;color:var(--muted);font-size:13px}
+.lead{margin:0 0 20px;color:var(--muted);font-size:14px;white-space:pre-line}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}
+label{display:block;margin-bottom:14px;font-size:13px;font-weight:700}
+label small{font-weight:400;color:var(--muted)}
+input[type=text],textarea{width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff;color:inherit}
+textarea{min-height:90px;resize:vertical}
+input:focus,textarea:focus{outline:2px solid #7c5cff55;border-color:var(--accent)}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:#fff;font-weight:700;width:100%;padding:13px;font-size:16px}
+button:disabled{opacity:.55;cursor:not-allowed}
+.msg{min-height:22px;margin:10px 0;font-size:14px}
+.msg.error{color:var(--danger)}.msg.ok{color:var(--ok)}
+.state{text-align:center;padding:60px 16px}
+.state b{display:block;font-size:18px;margin-bottom:8px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <div id="stateBox" class="state" hidden><b id="stateTitle"></b><span id="stateText"></span></div>
+  <form id="signupForm" hidden>
+    <p class="event" id="eventName"></p>
+    <h1 id="formTitle">报名</h1>
+    <p class="lead" id="formIntro"></p>
+    <div class="card" id="fields"></div>
+    <div class="msg" id="formMsg" role="status"></div>
+    <button type="submit" id="submitBtn">提交报名</button>
+  </form>
+</main>
+<script>
+(()=>{
+  const $=s=>document.querySelector(s),token=(location.search.match(/[?&]t=([a-f0-9]{20})/)||[])[1]||'';
+  const api='/api/signup/'+token;
+  const show=(title,text)=>{$('#signupForm').hidden=true;$('#stateBox').hidden=false;$('#stateTitle').textContent=title;$('#stateText').textContent=text||''};
+  const msg=(text,kind='')=>{const el=$('#formMsg');el.textContent=text;el.className='msg '+kind};
+  let info=null;
+  async function load(){
+    if(!token){show('链接不完整','请向主办方重新要一份报名链接。');return}
+    let res,data;
+    try{res=await fetch(api);data=await res.json()}catch{show('连不上','请检查网络后刷新页面。');return}
+    if(!res.ok||!data.ok){show('这个报名链接无效','请向主办方确认链接是否正确。');return}
+    info=data;
+    document.title=data.title+' · '+data.eventName;
+    if(!data.open){show('报名已关闭','这个报名表现在不接受新的报名。');return}
+    $('#eventName').textContent=data.eventName||'';$('#formTitle').textContent=data.title;$('#formIntro').textContent=data.intro||'';
+    const box=$('#fields');box.innerHTML='';
+    data.fields.forEach(f=>{
+      const label=document.createElement('label'),small=document.createElement('small'),input=document.createElement(f.long?'textarea':'input');
+      label.append(f.label+' ');small.textContent=f.required?'（必填）':'';label.appendChild(small);
+      if(!f.long)input.type='text';input.maxLength=f.long?500:100;input.dataset.key=f.key;input.autocomplete='off';
+      label.appendChild(input);box.appendChild(label);
+    });
+    $('#signupForm').hidden=false;
+  }
+  $('#signupForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const values={};document.querySelectorAll('#fields [data-key]').forEach(i=>{values[i.dataset.key]=i.value.trim()});
+    for(const f of info.fields)if(f.required&&!values[f.key]){msg('请填写：'+f.label,'error');return}
+    $('#submitBtn').disabled=true;msg('');
+    try{
+      const res=await fetch(api,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({values})}),data=await res.json().catch(()=>({}));
+      if(!res.ok)throw new Error(data.error||'提交失败，请稍后再试');
+      show('已提交','主办方审核后会联系你。可以关闭这个页面了。');
+    }catch(err){msg(err.message,'error');$('#submitBtn').disabled=false}
+  });
+  load();
+})();
+</script>
+</body>
+</html>

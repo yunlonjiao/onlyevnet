@@ -192,3 +192,25 @@ CREATE TABLE IF NOT EXISTS site_stages (
   PRIMARY KEY(site_id,idx),
   FOREIGN KEY(site_id) REFERENCES sites(id) ON DELETE CASCADE
 );
+
+-- Sign-up forms (COS, photographer, volunteer, custom): one public link per form, entries reviewed by the organizer.
+CREATE TABLE IF NOT EXISTS signup_forms (
+  id TEXT PRIMARY KEY,
+  project_id TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  config_json TEXT NOT NULL,
+  token TEXT NOT NULL UNIQUE,
+  open INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_signup_forms_project ON signup_forms(project_id);
+CREATE TABLE IF NOT EXISTS signup_entries (
+  id TEXT PRIMARY KEY,
+  form_id TEXT NOT NULL,
+  data_json TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(form_id) REFERENCES signup_forms(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_signup_entries_form ON signup_entries(form_id,created_at);
