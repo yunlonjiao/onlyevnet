@@ -3,7 +3,7 @@
 import {renderRecap} from '/v8/renderer/recap.js?v=1';
 import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.41.5';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.41.4';
+import {getTemplatePreview,loadTemplatePreview} from '/v8/templates/preview-registry.js?v=8.41.4';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
@@ -72,7 +72,7 @@ const runtimeStyle=document.createElement('style');
 runtimeStyle.dataset.oeRuntime='1';
 document.head.appendChild(runtimeStyle);
 
-let currentTemplateId='',currentPreview=getTemplatePreview(DEFAULT_TEMPLATE_ID);
+let currentTemplateId='',currentPreview={id:'',style:'',body:''};
 function mountTemplate(templateId=DEFAULT_TEMPLATE_ID){
   const next=getTemplatePreview(templateId);
   if(currentTemplateId===next.id&&document.body.children.length)return;
@@ -237,9 +237,15 @@ bindEditorEvents({
   openGiftLightbox:collections.openGiftLightbox,qsa:qa
 });
 
+// Messages are handled one at a time, in order, because loading a template's preview is asynchronous.
+let messageQueue=Promise.resolve();
 window.addEventListener('message',e=>{
   if(e.origin!==ORIGIN||e.source!==parent)return;
   const m=e.data||{};
+  messageQueue=messageQueue.then(()=>handleMessage(m)).catch(err=>console.error('[OnlyEvent renderer]',err));
+});
+async function handleMessage(m){
+  if(m.type==='OE_INIT_STATE'||m.type==='OE_REPLACE_STATE')await loadTemplatePreview(m.state?.templateId||DEFAULT_TEMPLATE_ID);
   if(m.type==='OE_INIT_STATE'){
     mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);
     router.setCurrentPage(m.page||'home');
@@ -272,7 +278,7 @@ window.addEventListener('message',e=>{
   if(m.type==='OE_HIDE_ENTRY_PREVIEW')hideEntryPreview();
   if(m.type==='OE_SHOW_PAGE'){router.showPage(m.page||'home');requestAnimationFrame(setupHomeMotion)}
   if(m.type==='OE_EXPORT_HTML')send({type:'OE_EXPORT_HTML_RESULT',html:buildStandaloneHtml()});
-});
+}
 // Synchronize native browser Back/Forward with the in-page router.
 window.addEventListener('popstate',()=>{
   const requested=decodeURIComponent((location.hash||'#home').slice(1)||'home');

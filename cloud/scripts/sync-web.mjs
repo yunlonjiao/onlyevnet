@@ -44,3 +44,14 @@ function addPreloadHints(htmlPath){
 const hinted={};
 for(const page of ['v8/index.html','v8/render.html','admin/index.html'])hinted[page]=addPreloadHints(page);
 console.log('modulepreload hints: '+Object.entries(hinted).map(([p,n])=>p+' '+n).join(', '));
+
+/* Previews load on demand (see v8/templates/preview-registry.js), so the hint list for the open template is
+   chosen in the page from the ?template= parameter: its module graph is fetched in parallel with the editor. */
+{
+  const registry=readFileSync(path.join(out,'v8/templates/preview-registry.js'),'utf8');
+  const graphs={};
+  for(const m of registry.matchAll(/'(\d\d-[a-z-]+)':'(\/v8\/templates\/[^']+)'/g))graphs[m[1]]=moduleGraph([m[2]]);
+  const file=path.join(out,'v8/index.html');let html=readFileSync(file,'utf8');
+  const script='<script>(function(){var G='+JSON.stringify(graphs)+',t=new URLSearchParams(location.search).get("template"),l=G[t]||G["01-ip-only"]||[];l.forEach(function(u){var k=document.createElement("link");k.rel="modulepreload";k.href=u;document.head.appendChild(k)})})()</script>';
+  if(html.includes('<head>')){writeFileSync(file,html.replace('<head>','<head>'+script));console.log('template preload graphs: '+Object.keys(graphs).length)}
+}
