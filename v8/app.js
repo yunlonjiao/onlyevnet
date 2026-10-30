@@ -1010,6 +1010,7 @@ function renderShareDialog(){
  const title=seo.ogTitle||seo.pageTitle||state.eventName||'活动网站',desc=seo.ogDescription||seo.metaDescription||state.tagline||'',img=seo.ogImage||state.heroImage||'';
  $('#shareBody').innerHTML=
   '<section class="share-block"><h3>网站地址</h3>'+(url?'<div class="share-url"><b>'+esc(url)+'</b><button type="button" data-share-copy-url>复制链接</button><button type="button" data-share-open>打开网站 ↗</button></div>':'<p class="inspector-note">还没有发布。发布后这里会显示游客网址。</p>')+'</section>'+
+  (url?'<section class="share-block"><h3>二维码</h3><div class="share-qr"><div id="shareQr" aria-label="活动网站二维码"></div><div><p class="inspector-note">印在海报或写进群公告，扫一下就能打开活动网站。</p><button type="button" id="shareQrSave">下载二维码</button></div></div></section>':'')+
   '<section class="share-block"><h3>别人转发时的样子</h3><div class="share-card"><div class="share-card-img">'+(img?'<img src="'+esc(img)+'" alt="">':'<span>分享封面</span>')+'</div><div class="share-card-text"><b>'+esc(title)+'</b><small>'+esc(desc)+'</small><i>'+esc(host)+'</i></div></div>'+
   '<div class="item-fields"><label><span>分享标题</span><input data-seo-field="ogTitle" value="'+esc(seo.ogTitle||'')+'" placeholder="留空则使用活动名称"></label>'+
   '<label><span>分享描述</span><textarea data-seo-field="ogDescription" rows="3" placeholder="留空则使用活动简介">'+esc(seo.ogDescription||'')+'</textarea></label></div>'+
@@ -1021,6 +1022,7 @@ function renderShareDialog(){
   '<label><span>标准网址 Canonical</span><input type="url" data-seo-field="canonical" value="'+esc(seo.canonical||'')+'" placeholder="一般不用填"></label></div></details>';
  const body=$('#shareBody');
  $('#shareMessage').value=shareText();
+ if(url)qrSvg(url).then(svg=>{const box=$('#shareQr');if(!box)return;box.innerHTML=svg;$('#shareQrSave').onclick=()=>downloadSvg(svg,(state.eventName||'活动')+'-二维码.svg')}).catch(()=>{const box=$('#shareQr');if(box)box.textContent='二维码没能生成，请刷新后重试。'});
  body.querySelectorAll('[data-seo-field]').forEach(input=>{
   bindInspectorStateInput(input,'seo.'+input.dataset.seoField,{clean:true});
   input.addEventListener('input',()=>{const t=state.seo,card=body.querySelector('.share-card-text');if(!card)return;card.querySelector('b').textContent=t.ogTitle||t.pageTitle||state.eventName||'活动网站';card.querySelector('small').textContent=t.ogDescription||t.metaDescription||state.tagline||''});
@@ -1032,6 +1034,13 @@ function renderShareDialog(){
  body.querySelector('[data-seo-image]')?.addEventListener('click',()=>{$('#imageInput').dataset.path='seo.ogImage';$('#imageInput').click()});
  body.querySelector('[data-seo-image-remove]')?.addEventListener('click',()=>{checkpoint();state.seo.ogImage='';save();send({type:'OE_REPLACE_STATE',state});renderShareDialog()});
 }
+// QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
+let qrLoader=null;
+function qrSvg(text){
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=1.4.4';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
+}
+function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
 function openShareDialog(){renderShareDialog();if(!shareDialog.open)shareDialog.showModal()}
 function openSeoInspector(){shareDialog.open?renderShareDialog():openShareDialog()}
 
