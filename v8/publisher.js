@@ -118,6 +118,18 @@ export async function changeAccountPassword({oldPassword,newPassword}){
 // Tagged links for the places organizers promote on; the key goes in ?from= and is counted per visit.
 export const PROMO_CHANNELS=[{key:'weibo',label:'微博'},{key:'bilibili',label:'B站'},{key:'xhs',label:'小红书'},{key:'qq',label:'QQ群'},{key:'wechat',label:'微信'}];
 export const channelLabel=key=>PROMO_CHANNELS.find(c=>c.key===key)?.label||key;
+export async function getQuestions(cloudProjectId){
+  return api('/api/projects/'+encodeURIComponent(cloudProjectId)+'/questions');
+}
+export async function setQuestionsEnabled(cloudProjectId,enabled){
+  return api('/api/projects/'+encodeURIComponent(cloudProjectId)+'/questions',{method:'POST',body:{enabled}});
+}
+export async function answerQuestion(cloudProjectId,questionId,{answer,published}){
+  return api('/api/projects/'+encodeURIComponent(cloudProjectId)+'/questions/'+encodeURIComponent(questionId),{method:'POST',body:{answer,published}});
+}
+export async function deleteQuestion(cloudProjectId,questionId){
+  return api('/api/projects/'+encodeURIComponent(cloudProjectId)+'/questions/'+encodeURIComponent(questionId),{method:'DELETE'});
+}
 export async function sendFeedback(message){
   return api('/api/feedback',{method:'POST',body:{message}});
 }

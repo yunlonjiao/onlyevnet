@@ -200,7 +200,7 @@ async function updateSite(req,env,siteId){const u=await requireUser(req,env);awa
 async function listSiteVersions(req,env,siteId){const u=await requireUser(req,env),p=await projectFor(req,env,u),site=p?await currentProjectSite(req,env,u,p):null;if(!site||site.id!==siteId)return json({ok:false,error:'这个网站不属于当前活动项目'},404);const {results=[]}=await env.DB.prepare('SELECT id,size_bytes,created_at FROM site_versions WHERE site_id=? ORDER BY created_at DESC LIMIT 5').bind(siteId).all();return json({ok:true,versions:results})}
 async function rollbackSite(req,env,siteId,versionId){const u=await requireUser(req,env),p=await projectFor(req,env,u),site=p?await currentProjectSite(req,env,u,p):null;if(!site||site.id!==siteId)return json({ok:false,error:'这个网站不属于当前活动项目'},404);const ver=await env.DB.prepare('SELECT * FROM site_versions WHERE id=? AND site_id=?').bind(versionId,siteId).first();if(!ver)return json({ok:false,error:'历史版本不存在'},404);const obj=await env.SITES.get(ver.object_key);if(!obj)return json({ok:false,error:'历史版本文件不存在'},404);await archiveCurrentSiteVersion(env,site);const body=await obj.arrayBuffer();await env.SITES.put(site.object_key,body,{httpMetadata:{contentType:'text/html; charset=utf-8'},customMetadata:{owner:u.id,slug:site.slug,project:p.id}});const t=now(),draftTime=new Date(Date.now()+1000).toISOString();await env.DB.batch([env.DB.prepare(`UPDATE sites SET size_bytes=?,status='active',removed_at=NULL,last_viewed_at=?,updated_at=? WHERE id=?`).bind(body.byteLength,t,t,siteId),env.DB.prepare('UPDATE project_state SET published_at=?,published_config_json=NULL,updated_at=? WHERE project_id=? AND user_id=?').bind(t,t,p.id,u.id),env.DB.prepare('UPDATE projects SET updated_at=? WHERE id=? AND user_id=?').bind(draftTime,p.id,u.id)]);return json({ok:true,site:{...site,status:'active',updated_at:t,url:publicUrl(env,site.slug,req)},onlineRollback:true})}
 async function deleteSite(req,env,siteId){const u=await requireUser(req,env),p=await projectFor(req,env,u),site=p?await currentProjectSite(req,env,u,p):null;if(!site||site.id!==siteId)return json({ok:false,error:'这个网站不属于当前活动项目'},404);await deleteSiteResources(env,site);await env.DB.prepare('DELETE FROM sites WHERE id=? AND user_id=?').bind(siteId,u.id).run();let cfg={};try{cfg=JSON.parse(p.config_json||'{}')}catch{}cfg.visitorSiteUrl='';const t=now();await env.DB.batch([env.DB.prepare('UPDATE projects SET config_json=?,updated_at=? WHERE id=? AND user_id=?').bind(JSON.stringify(cfg),t,p.id,u.id),env.DB.prepare('UPDATE project_state SET published_at=NULL,published_config_json=NULL,updated_at=? WHERE project_id=? AND user_id=?').bind(t,p.id,u.id)]);return json({ok:true})}
-async function serveSlug(req,env,slug){slug=cleanSlug(slug);if(!slug)return html('网站不存在',404);let site=await env.DB.prepare('SELECT id,slug,object_key,title,status FROM sites WHERE slug=? COLLATE NOCASE').bind(slug).first();if(!site){const alias=await env.DB.prepare('SELECT s.id,s.slug,s.object_key,s.title,s.status FROM site_aliases a JOIN sites s ON s.id=a.site_id WHERE a.old_slug=? COLLATE NOCASE').bind(slug).first();if(alias)return redirect(publicUrl(env,alias.slug,req),301,{'cache-control':'public,max-age=3600'});return html('<!doctype html><meta charset=utf-8><title>网站不存在</title><style>body{font-family:system-ui;padding:40px}</style><h1>网站不存在</h1><p>这个活动网站还没有发布。</p>',404)}if(site.status==='inactive')return html('<!doctype html><meta charset=utf-8><title>网站暂时下线</title><style>body{font-family:system-ui;padding:40px;max-width:720px;margin:auto}</style><h1>网站暂时下线</h1><p>该网站长时间没有访问，公开版本已自动休眠。主办方重新发布即可恢复，编辑数据不会删除。</p>',410,{'cache-control':'no-store'});const obj=await env.SITES.get(site.object_key);if(!obj)return html('网站文件不存在',404);await env.DB.prepare('UPDATE sites SET last_viewed_at=? WHERE id=?').bind(now(),site.id).run();try{await countView(env,req,site.id)}catch(e){console.error(e)}const h=new Headers(HTML_HEADERS);h.set('cache-control','public,max-age=60');h.set('x-onlyevent-site',slug);h.set('x-content-type-options','nosniff');h.set('referrer-policy','strict-origin-when-cross-origin');return new Response(obj.body,{headers:h})}
+async function serveSlug(req,env,slug){slug=cleanSlug(slug);if(!slug)return html('网站不存在',404);let site=await env.DB.prepare('SELECT id,slug,object_key,title,status FROM sites WHERE slug=? COLLATE NOCASE').bind(slug).first();if(!site){const alias=await env.DB.prepare('SELECT s.id,s.slug,s.object_key,s.title,s.status FROM site_aliases a JOIN sites s ON s.id=a.site_id WHERE a.old_slug=? COLLATE NOCASE').bind(slug).first();if(alias)return redirect(publicUrl(env,alias.slug,req),301,{'cache-control':'public,max-age=3600'});return html('<!doctype html><meta charset=utf-8><title>网站不存在</title><style>body{font-family:system-ui;padding:40px}</style><h1>网站不存在</h1><p>这个活动网站还没有发布。</p>',404)}if(site.status==='inactive')return html('<!doctype html><meta charset=utf-8><title>网站暂时下线</title><style>body{font-family:system-ui;padding:40px;max-width:720px;margin:auto}</style><h1>网站暂时下线</h1><p>该网站长时间没有访问，公开版本已自动休眠。主办方重新发布即可恢复，编辑数据不会删除。</p>',410,{'cache-control':'no-store'});const obj=await env.SITES.get(site.object_key);if(!obj)return html('网站文件不存在',404);await env.DB.prepare('UPDATE sites SET last_viewed_at=? WHERE id=?').bind(now(),site.id).run();try{await countView(env,req,site.id)}catch(e){console.error(e)}const h=new Headers(HTML_HEADERS);h.set('cache-control','public,max-age=60');h.set('x-onlyevent-site',slug);h.set('x-content-type-options','nosniff');h.set('referrer-policy','strict-origin-when-cross-origin');let body=obj.body;try{const a=await askTarget(env,site.slug);if(a?.enabled){const text=await obj.text();body=text.includes('</body>')?text.replace('</body>',()=>askWidget(site.slug)+'</body>'):text+askWidget(site.slug)}}catch(e){console.error(e)}return new Response(body,{headers:h})}
 async function cleanupInactiveSites(env){const cutoff=new Date(Date.now()-inactiveDays(env)*86400000).toISOString(),{results=[]}=await env.DB.prepare(`SELECT id,object_key FROM sites WHERE status='active' AND COALESCE(last_viewed_at,updated_at,created_at) < ?`).bind(cutoff).all();for(const s of results){await env.SITES.delete(s.object_key);await env.DB.prepare(`UPDATE sites SET status='inactive',removed_at=?,updated_at=? WHERE id=?`).bind(now(),now(),s.id).run()}await env.DB.prepare('DELETE FROM sessions WHERE expires_at < ?').bind(now()).run();await env.DB.prepare('DELETE FROM rate_limits WHERE window_start < ?').bind(new Date(Date.now()-86400000).toISOString()).run();return results.length}
 
 async function accountStatus(req,env){const u=await authUser(req,env);const row=await env.DB.prepare('SELECT COUNT(*) AS n FROM users').first();return json({ok:true,initialized:Number(row?.n||0)>0,authenticated:!!u,username:u?.username||null})}
@@ -280,6 +280,71 @@ async function collectSubmit(req,env,token){
   return json({ok:true},201);
 }
 
+/* ---- visitor question centre ---- */
+const ASK_MAX_PER_PROJECT=500;
+async function askTarget(env,slug){
+  slug=cleanSlug(slug);if(!slug)return null;
+  return env.DB.prepare('SELECT ps.project_id AS pid,COALESCE(a.enabled,0) AS enabled FROM sites s JOIN project_sites ps ON ps.site_id=s.id LEFT JOIN ask_settings a ON a.project_id=ps.project_id WHERE s.slug=? COLLATE NOCASE').bind(slug).first();
+}
+async function askPublic(req,env,slug){
+  const t=await askTarget(env,slug);
+  if(!t||!t.enabled)return json({ok:true,enabled:false,faq:[]},200,{'cache-control':'no-store'});
+  const {results=[]}=await env.DB.prepare("SELECT text,answer FROM questions WHERE project_id=? AND published=1 AND answer<>'' ORDER BY answered_at DESC LIMIT 100").bind(t.pid).all();
+  return json({ok:true,enabled:true,faq:results.map(r=>({q:r.text,a:r.answer}))},200,{'cache-control':'no-store'});
+}
+async function askSubmit(req,env,slug){
+  await rateLimit(env,'ask:'+clientIp(req),6,3600);
+  const t=await askTarget(env,slug);
+  if(!t||!t.enabled)return json({ok:false,error:'这个网站没有开放提问'},404);
+  const text=collectText((await bodyJson(req)).text,300);
+  if(text.length<2)return json({ok:false,error:'请写一下你想问的问题'},400);
+  const n=await env.DB.prepare('SELECT COUNT(*) AS n FROM questions WHERE project_id=?').bind(t.pid).first();
+  if(Number(n?.n||0)>=ASK_MAX_PER_PROJECT)return json({ok:false,error:'提问太多了，请稍后再试'},429);
+  await env.DB.prepare('INSERT INTO questions(id,project_id,text,created_at) VALUES(?,?,?,?)').bind(id('q'),t.pid,text,now()).run();
+  return json({ok:true},201);
+}
+async function askOverview(req,env,pid){
+  await ownedProject(req,env,pid);
+  const st=await env.DB.prepare('SELECT enabled FROM ask_settings WHERE project_id=?').bind(pid).first();
+  const {results=[]}=await env.DB.prepare('SELECT id,text,answer,published,created_at FROM questions WHERE project_id=? ORDER BY (answer=\'\') DESC,created_at DESC LIMIT 500').bind(pid).all();
+  return json({ok:true,enabled:!!st?.enabled,items:results.map(r=>({id:r.id,text:r.text,answer:r.answer,published:!!r.published,createdAt:r.created_at}))});
+}
+async function askManage(req,env,pid){
+  await ownedProject(req,env,pid);
+  const b=await bodyJson(req),enabled=b.enabled?1:0;
+  await env.DB.prepare('INSERT INTO ask_settings(project_id,enabled) VALUES(?,?) ON CONFLICT(project_id) DO UPDATE SET enabled=excluded.enabled').bind(pid,enabled).run();
+  return json({ok:true,enabled:!!enabled});
+}
+async function askQuestionUpdate(req,env,pid,qid){
+  await ownedProject(req,env,pid);
+  const row=await env.DB.prepare('SELECT id FROM questions WHERE id=? AND project_id=?').bind(qid,pid).first();
+  if(!row)return json({ok:false,error:'没有找到这个问题'},404);
+  if(req.method==='DELETE'){await env.DB.prepare('DELETE FROM questions WHERE id=?').bind(qid).run();return json({ok:true})}
+  const b=await bodyJson(req),answer=collectText(b.answer,1000),published=b.published&&answer?1:0;
+  await env.DB.prepare('UPDATE questions SET answer=?,published=?,answered_at=? WHERE id=?').bind(answer,published,answer?now():null,qid).run();
+  return json({ok:true});
+}
+// The widget is injected into the visitor page only when the organizer switched questions on.
+function askWidget(slug){
+  const code='(function(slug){if(window.__oeAsk)return;window.__oeAsk=1;'+
+  'var css=".oe-ask-btn{position:fixed;left:14px;bottom:84px;z-index:2147483000;border:0;border-radius:999px;padding:10px 16px;background:#222;color:#fff;font:600 14px system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 18px #0004}.oe-ask-panel{position:fixed;left:14px;bottom:134px;z-index:2147483000;width:min(340px,calc(100vw - 28px));max-height:70vh;overflow:auto;background:#fff;color:#222;border-radius:16px;box-shadow:0 12px 40px #0005;padding:16px;font:14px/1.6 system-ui,sans-serif}.oe-ask-panel[hidden]{display:none}.oe-ask-panel h3{margin:0 0 8px;font-size:16px}.oe-ask-panel details{border-top:1px solid #eee;padding:8px 0}.oe-ask-panel summary{cursor:pointer;font-weight:600}.oe-ask-panel p{margin:6px 0 0;white-space:pre-line}.oe-ask-panel textarea{width:100%;box-sizing:border-box;border:1px solid #ccc;border-radius:10px;padding:8px;font:inherit;margin-top:10px}.oe-ask-panel button.oe-send{margin-top:8px;border:0;border-radius:999px;padding:8px 18px;background:#222;color:#fff;font:inherit;cursor:pointer}.oe-ask-msg{color:#666;font-size:13px;margin-top:6px}";'+
+  'var st=document.createElement("style");st.textContent=css;document.head.appendChild(st);'+
+  'var btn=document.createElement("button");btn.type="button";btn.className="oe-ask-btn";btn.textContent="有问题？问主办方";'+
+  'var box=document.createElement("div");box.className="oe-ask-panel";box.hidden=true;'+
+  'var h=document.createElement("h3");h.textContent="常见问题";var list=document.createElement("div");'+
+  'var ta=document.createElement("textarea");ta.rows=3;ta.maxLength=300;ta.placeholder="没找到答案？在这里写下你的问题";'+
+  'var send=document.createElement("button");send.type="button";send.className="oe-send";send.textContent="发送给主办方";'+
+  'var msg=document.createElement("div");msg.className="oe-ask-msg";'+
+  'box.appendChild(h);box.appendChild(list);box.appendChild(ta);box.appendChild(send);box.appendChild(msg);'+
+  'var api="/api/ask/"+encodeURIComponent(slug),loaded=false;'+
+  'function load(){fetch(api).then(function(r){return r.json()}).then(function(d){loaded=true;list.textContent="";(d.faq||[]).forEach(function(f){var de=document.createElement("details"),su=document.createElement("summary"),p=document.createElement("p");su.textContent=f.q;p.textContent=f.a;de.appendChild(su);de.appendChild(p);list.appendChild(de)});if(!(d.faq||[]).length)h.textContent="向主办方提问"}).catch(function(){msg.textContent="现在连不上网络。"})}'+
+  'btn.onclick=function(){box.hidden=!box.hidden;if(!box.hidden&&!loaded)load()};'+
+  'send.onclick=function(){var t=ta.value.trim();if(t.length<2){msg.textContent="请写一下你想问的问题";return}send.disabled=true;msg.textContent="";'+
+  'fetch(api,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({text:t})}).then(function(r){return r.json()}).then(function(d){msg.textContent=d.ok?"已发给主办方，回复后会出现在上面的常见问题里。":(d.error||"没发出去，请稍后再试");if(d.ok)ta.value=""}).catch(function(){msg.textContent="没发出去，请检查网络"}).then(function(){send.disabled=false})};'+
+  'document.body.appendChild(btn);document.body.appendChild(box)})('+JSON.stringify(slug).replace(/</g,'\\u003c')+');';
+  return '<script>'+code+'</script>';
+}
+
 /* ---- visit statistics: a daily counter per site, nothing about the visitor is kept ---- */
 const BOT_UA=/bot|spider|crawl|slurp|preview|monitor|uptime|curl|wget|python|httpclient|headless|facebookexternalhit|lighthouse/i;
 const chinaDay=(t=Date.now())=>new Date(t+8*3600*1000).toISOString().slice(0,10);
@@ -339,6 +404,14 @@ async function handleApi(req,env,path){
   if(path==='/api/feedback'&&req.method==='POST')return sendFeedback(req,env);
   let m=path.match(/^\/api\/projects\/([^/]+)\/stats$/);
   if(m&&req.method==='GET')return projectStats(req,env,decodeURIComponent(m[1]));
+  m=path.match(/^\/api\/ask\/([a-zA-Z0-9_-]+)$/);
+  if(m&&req.method==='GET')return askPublic(req,env,m[1]);
+  if(m&&req.method==='POST')return askSubmit(req,env,m[1]);
+  m=path.match(/^\/api\/projects\/([^/]+)\/questions$/);
+  if(m&&req.method==='GET')return askOverview(req,env,decodeURIComponent(m[1]));
+  if(m&&req.method==='POST')return askManage(req,env,decodeURIComponent(m[1]));
+  m=path.match(/^\/api\/projects\/([^/]+)\/questions\/([^/]+)$/);
+  if(m&&(req.method==='POST'||req.method==='DELETE'))return askQuestionUpdate(req,env,decodeURIComponent(m[1]),decodeURIComponent(m[2]));
   m=path.match(/^\/api\/collect\/([a-f0-9]+)(\/image)?$/);
   if(m&&m[2]&&req.method==='POST')return collectImage(req,env,m[1]);
   if(m&&!m[2]&&req.method==='GET')return collectInfo(req,env,m[1]);

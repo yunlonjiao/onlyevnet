@@ -23,7 +23,7 @@ export function createR2(){
   return {
     objects,
     put:async(key,value,opts={})=>{const bytes=typeof value==='string'?new TextEncoder().encode(value):new Uint8Array(value);objects.set(key,{bytes,opts})},
-    get:async key=>{const o=objects.get(key);if(!o)return null;return {body:o.bytes,arrayBuffer:async()=>o.bytes.buffer.slice(0),writeHttpMetadata:h=>{if(o.opts.httpMetadata?.contentType)h.set('content-type',o.opts.httpMetadata.contentType)}}},
+    get:async key=>{const o=objects.get(key);if(!o)return null;return {body:o.bytes,text:async()=>new TextDecoder().decode(o.bytes),arrayBuffer:async()=>o.bytes.buffer.slice(0),writeHttpMetadata:h=>{if(o.opts.httpMetadata?.contentType)h.set('content-type',o.opts.httpMetadata.contentType)}}},
     delete:async key=>{objects.delete(key)}
   };
 }

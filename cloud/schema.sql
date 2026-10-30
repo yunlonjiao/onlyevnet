@@ -163,3 +163,21 @@ CREATE TABLE IF NOT EXISTS site_channel_stats (
   PRIMARY KEY(site_id,channel,day),
   FOREIGN KEY(site_id) REFERENCES sites(id) ON DELETE CASCADE
 );
+
+-- Visitor question centre: an opt-in box on the visitor site, answered by the organizer.
+CREATE TABLE IF NOT EXISTS ask_settings (
+  project_id TEXT PRIMARY KEY,
+  enabled INTEGER NOT NULL DEFAULT 0,
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS questions (
+  id TEXT PRIMARY KEY,
+  project_id TEXT NOT NULL,
+  text TEXT NOT NULL,
+  answer TEXT NOT NULL DEFAULT '',
+  published INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL,
+  answered_at TEXT,
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_questions_project ON questions(project_id,created_at);

@@ -95,3 +95,38 @@ test('the start page lists the event date and custom deadlines, soonest first',a
   await page.locator('[data-deadline-del]').click();
   await expect(page.locator('#deadlinePanel li')).toHaveCount(1);
 });
+
+test('visitors can ask a question and the answer shows up as a public FAQ',async({page})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'ask-organizer');
+  await publish(page,cloud,'ask-site');
+  const {default:worker}=await import('../../cloud/src/worker.js');
+  const human='Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile Safari/604.1';
+  const visit=()=>worker.fetch(new Request('https://ask-site.onlyevent.cn/',{headers:{'user-agent':human}}),cloud.env).then(r=>r.text());
+  expect(await visit()).not.toContain('oe-ask-btn');
+  const post=text=>worker.fetch(new Request('https://ask-site.onlyevent.cn/api/ask/ask-site',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({text})}),cloud.env);
+  expect((await post('现场能寄存行李吗？')).status).toBe(404);
+  await page.goto('/admin/');
+  await page.evaluate(()=>{const p=JSON.parse(localStorage.getItem('onlyevent-admin-projects-v1')||'[]');window.__n=p.length});
+  await page.locator('[data-admin-page="ask"]').click();
+  await expect(page.locator('#askSetup')).toBeVisible();
+  await page.locator('#askEnabled').check();
+  await expect(page.locator('#askMessage')).toContainText('已打开');
+  const withWidget=await visit();
+  expect(withWidget).toContain('oe-ask-btn');
+  const start=withWidget.indexOf('<script>(function(slug)'),code=withWidget.slice(start+8,withWidget.indexOf('</script>',start));
+  expect(()=>new Function(code)).not.toThrow();
+  expect((await post('现场能寄存行李吗？')).status).toBe(201);
+  expect((await post(' ')).status).toBe(400);
+  await page.locator('#askRefresh').click();
+  await expect(page.locator('.ask-item')).toHaveCount(1);
+  await expect(page.locator('#askCount')).toHaveText('1');
+  await page.locator('.ask-item textarea').fill('可以，入口旁边有寄存处。');
+  await page.locator('.ask-item [data-save]').click();
+  await expect(page.locator('.ask-item textarea')).toHaveValue('可以，入口旁边有寄存处。');
+  const faq=await worker.fetch(new Request('https://ask-site.onlyevent.cn/api/ask/ask-site'),cloud.env).then(r=>r.json());
+  expect(faq.faq).toEqual([{q:'现场能寄存行李吗？',a:'可以，入口旁边有寄存处。'}]);
+  await page.locator('#askEnabled').uncheck();
+  await expect(page.locator('#askMessage')).toContainText('已关闭');
+  expect(await visit()).not.toContain('oe-ask-btn');
+});

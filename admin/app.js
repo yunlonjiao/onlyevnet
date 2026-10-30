@@ -2,6 +2,7 @@ import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
 import {mountCost} from '/admin/cost.js?v=1';
 import {mountDeadlines} from '/admin/deadlines.js?v=1';
+import {loadAsk} from '/admin/ask.js?v=1';
 import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.52.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
@@ -458,7 +459,22 @@ function showPage(name){
   if(name==='collect'){renderCollectProjects();loadCollect()}
   if(name==='settings')renderSettings();
   if(name==='cost')loadCost();
+  if(name==='ask'){renderAskProjects();loadAskPage()}
 }
+function renderAskProjects(){
+  const select=$('#askProject'),keep=select.value;
+  select.innerHTML=projects.map(p=>'<option value="'+p.id+'"></option>').join('');
+  [...select.options].forEach((o,i)=>{o.textContent=projects[i].name||'未命名活动'});
+  if(keep&&projects.some(p=>p.id===keep))select.value=keep;
+}
+function loadAskPage(){
+  if(!readCloudSession()){authSetMessage('askMessage','请先登录主办方账号。');return}
+  return loadAsk({$,getProject:()=>projects.find(p=>p.id===$('#askProject').value)||null,
+    cloudIdFor:project=>ensureCloudProjectFor({templateId:project.templateId||DEFAULT_TEMPLATE_ID,projectId:project.id,name:project.name}),
+    message:(t,k)=>authSetMessage('askMessage',t,k||''),
+    onCount:n=>{const b=$('#askCount');b.hidden=!n;b.textContent=String(n)}});
+}
+$('#askProject').onchange=loadAskPage;$('#askRefresh').onclick=loadAskPage;
 function loadCost(){
   const select=$('#costProject'),keep=select.value;
   select.innerHTML=projects.map(p=>'<option value="'+p.id+'"></option>').join('');
