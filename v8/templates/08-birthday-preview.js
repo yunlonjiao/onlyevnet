@@ -239,6 +239,24 @@ const referenceStyle=`
 .bd-site .featured-activity-grid{grid-template-rows:none!important;grid-auto-rows:auto!important;align-items:start}
 .bd-site #participation .featured-activity-card,.bd-site #participation .featured-activity-card:first-child{grid-row:auto!important;grid-column:auto!important;height:auto!important;min-height:0!important}
 @media(max-width:820px){.bd-site .hero:before{height:380px;border-radius:0 0 50% 50% / 0 0 90px 90px}.bd-site .nav .wrap>.btn{position:static}.bd-site .hero-art{width:210px;max-width:210px}}
+
+/* skeleton: one narrow column like a phone page. Every section is its own sticker panel with a tab label, stacked with wide gaps */
+.bd-site main>.section,.bd-site main>.updates-strip,.bd-site main>div>.section{width:min(760px,calc(100% - 28px));margin-left:auto;margin-right:auto;box-sizing:border-box}
+.bd-site .section{margin:34px 0 0;padding:34px 22px 26px;background:var(--bd-paper);border:3px dotted var(--bd-accent);border-radius:34px;position:relative}
+.bd-site .section>.wrap{width:auto;max-width:none;padding:0;margin:0}
+.bd-site .section .head{display:block;margin:0 0 20px;padding:0;border:0!important;text-align:center}
+.bd-site .section .head>div{display:block}
+.bd-site .section .head .ey{position:absolute;left:26px;top:-16px;background:var(--bd-accent);color:#fff;padding:5px 16px;border-radius:999px;font-size:11px;letter-spacing:.16em;transform:rotate(-2deg);margin:0;border:0}
+.bd-site .section .head h2{font-size:clamp(22px,4vw,30px);margin:0;color:var(--bd-ink);text-shadow:none;transform:none}
+.bd-site .section-orbit,.bd-site .section-no{display:none}
+.bd-site .updates-strip{margin:34px 0 0}
+.bd-site .featured-activity-grid,.bd-site .ticket-grid,.bd-site .guest-grid,.bd-site .lineup,.bd-site .community{grid-template-columns:1fr}
+.bd-site .lineup-strip,.bd-site .lineup{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+.bd-site .timeline-day{background:none;border:0;padding:0}
+.bd-site .timeline-row{position:relative;border:0;border-left:3px dotted var(--bd-accent);border-radius:0;margin:0 0 6px 10px;padding:10px 12px 10px 24px;background:none}
+.bd-site .timeline-row:before{content:"♥";position:absolute;left:-11px;top:10px;color:var(--bd-accent);font-size:18px;background:var(--bd-paper);line-height:1}
+@media(max-width:560px){.bd-site .section{padding:30px 14px 22px;border-radius:26px}}
+.bd-site .section .head .ey{display:inline-block!important;font-size:11px!important;line-height:1.3!important;color:#fff!important;text-indent:0!important;width:auto!important;height:auto!important}
 `;
 export const previewStyle=coreStyle+style+heroStyle+referenceStyle;
 export const previewBody=`<div class="bd-site">

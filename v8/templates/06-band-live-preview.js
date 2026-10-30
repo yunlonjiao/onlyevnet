@@ -201,6 +201,25 @@ const referenceStyle=`
 .bl-kv-fallback{font-size:clamp(30px,4.4vw,64px)}
 .bl-site .ribbon{margin:0}
 @media(max-width:820px){.bl-site .hero-grid{grid-template-columns:64px minmax(0,1fr);gap:18px}.bl-site .hero-art{grid-column:1 / -1;order:3;aspect-ratio:4/5;max-height:none;transform:none}.bl-rail{padding-right:12px}.bl-rail b{font-size:22px}}
+
+/* skeleton: a printed schedule. Thick rules between sections, a poster-size heading, and list rows with big index numbers instead of cards */
+.bl-site .section{padding:0 0 44px;margin:0;border:0;border-top:10px solid #111;background:transparent}
+.bl-site .section>.wrap{width:min(1180px,calc(100% - 48px));max-width:none;padding:0;margin:0 auto}
+.bl-site .section .head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 6px;padding:26px 0 10px;border:0;border-bottom:4px solid #111}
+.bl-site .section .head>div{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.bl-site .section .head h2{font-family:Impact,"Arial Black","PingFang SC","Microsoft YaHei",sans-serif;font-weight:400;font-size:clamp(36px,5.4vw,72px);line-height:.95;letter-spacing:.02em;text-transform:uppercase;margin:0;color:#111;text-shadow:none;transform:none}
+.bl-site .section .head .ey{order:2;background:#111;color:#fff;padding:3px 10px;font-size:11px;letter-spacing:.2em;transform:rotate(-2deg);margin-bottom:8px}
+.bl-site .section-orbit,.bl-site .section-no{display:none}
+.bl-site .lineup,.bl-site .guest-grid{display:block;counter-reset:band}
+.bl-site .lineup-card,.bl-site .guest-card{counter-increment:band;display:grid;grid-template-columns:72px minmax(0,1fr) auto;align-items:center;gap:18px;padding:16px 0;border:0;border-bottom:2px solid #111;border-radius:0;background:none;box-shadow:none;transform:none}
+.bl-site .lineup-card:before,.bl-site .guest-card:before{content:counter(band,decimal-leading-zero);font:400 38px Impact,"Arial Black",sans-serif;color:#111;opacity:.28}
+.bl-site .lineup-card .lineup-img{display:none}
+.bl-site .lineup-card b{font-size:clamp(22px,3vw,38px);line-height:1.1}
+.bl-site .lineup-card small{font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.bl-site #tickets .ticket-grid{display:block}
+.bl-site #tickets .ticket{margin:0;border-radius:0;border:0;border-bottom:2px solid #111;background:none;box-shadow:none;transform:none}
+.bl-site #tickets .ticket:before,.bl-site #tickets .ticket:after{display:none}
+.bl-site .community,.bl-site .sponsors{display:flex;flex-wrap:wrap;gap:10px 22px}
 `;
 export const previewStyle=coreStyle+style+heroStyle+referenceStyle;
 export const previewBody=`<div class="bl-site">

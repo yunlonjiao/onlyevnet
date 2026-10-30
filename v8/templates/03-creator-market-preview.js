@@ -230,7 +230,54 @@ const referenceStyle=`
 .cm-feed-head span{color:var(--cm-soft);font-size:13px}
 .cm-shuffle{margin-left:auto;border:1px solid var(--cm-line);background:#fff;color:var(--cm-ink);border-radius:8px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer}
 .cm-shuffle:hover{color:var(--cm-accent-ink);border-color:var(--cm-accent)}
-@media(max-width:800px){.cm-site .nav .wrap>.btn{padding:7px 12px;font-size:12px}.cm-site .nav .links{display:none}.cm-site .hero-art{aspect-ratio:16/9;max-height:none}.cm-site .hero-copy{inset:0 13px;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:0 14px 12px;background:linear-gradient(transparent,#0c1a2ecc)}.cm-site .hero-copy .meta{display:none}.cm-feed-head span{display:none}.cm-site .event-status-badge{white-space:nowrap;left:12px;top:10px;writing-mode:horizontal-tb}}
+@media(max-width:800px){.cm-site .nav .wrap>.btn{padding:7px 12px;font-size:12px}.cm-site .nav .links{display:none}.cm-site .hero-art{aspect-ratio:16/9;max-height:none}.cm-site .hero-copy{inset:0;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:0 14px 12px;background:linear-gradient(transparent,#0c1a2ecc)}.cm-site .hero-copy .meta{display:none}.cm-feed-head span{display:none}.cm-site .event-status-badge{white-space:nowrap;left:12px;top:10px;writing-mode:horizontal-tb}}
+
+/* skeleton: a feed column with a side rail, like the home page of a video portal */
+.cm-site main{display:block}
+.cm-cols{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start;max-width:1380px;margin:0 auto;padding:0 24px}
+.cm-cols .wrap{max-width:none;padding:0;margin:0}
+.cm-cols .section,.cm-cols .updates-strip,.cm-cols .cm-spotlight{padding:0;margin:0 0 22px;background:transparent;border:0}
+.cm-feed{min-width:0}
+.cm-rail{position:sticky;top:78px;display:grid;gap:16px;min-width:0}
+.cm-rail .section,.cm-rail .updates-strip{background:#fff;border:1px solid var(--cm-line);border-radius:12px;padding:16px;margin:0}
+.cm-cols .head{margin-bottom:12px}
+.cm-cols .head h2{font-size:17px;letter-spacing:0;display:flex;align-items:center;gap:8px}
+.cm-cols .head h2:before{content:"";width:4px;height:16px;border-radius:2px;background:var(--cm-accent)}
+.cm-cols .head .ey{display:none}
+.cm-feed .section{background:#fff;border:1px solid var(--cm-line);border-radius:12px;padding:16px}
+.cm-feed .cm-spotlight{background:none;border:0;padding:0}
+.cm-rail .updates-list{border:0;border-radius:0;counter-reset:rank;background:none}
+.cm-rail .cm-update{counter-increment:rank;padding:9px 0;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.cm-rail .cm-update:before{content:counter(rank);flex:0 0 20px;height:20px;border-radius:4px;background:#e3e5e7;color:#61666d;font-size:12px;font-weight:800;display:grid;place-items:center}
+.cm-rail .cm-update:nth-child(-n+3):before{background:#fb7299;color:#fff}
+.cm-rail .cm-update-tag{display:none}
+.cm-rail .cm-update b{flex:1 1 0;min-width:0;font-size:14px;line-height:1.5}
+.cm-rail .cm-update time{flex:1 0 100%;padding-left:30px;font-size:12px;margin-top:-4px}
+.cm-rail .ticket-grid{grid-template-columns:1fr;gap:10px}
+.cm-rail .cm-ticket{flex-wrap:wrap;gap:6px 12px;padding:12px 14px}
+.cm-rail .cm-ticket-body{flex:1 1 60%}
+.cm-rail .ticket-actions{margin-top:12px}
+.cm-rail .ticket-actions .btn,.cm-rail .ticket-purchase-link{width:100%;text-align:center;padding:11px 16px}
+.cm-rail .map-explorer{grid-template-columns:1fr}
+.cm-rail .map-static{min-height:190px}
+.cm-rail .map-link-rail{padding:12px}
+.cm-feed .community{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+@media(max-width:1000px){.cm-cols{grid-template-columns:1fr;padding:0 13px}.cm-rail{position:static}}
+
+.cm-site .wrap{width:min(1380px,calc(100% - 48px));max-width:none;padding:0;margin-left:auto;margin-right:auto}
+.cm-cols{width:min(1380px,calc(100% - 48px));max-width:none;padding:0;margin:0 auto}
+.cm-site .spotlight-six{grid-template-rows:none;grid-auto-rows:min-content;align-content:space-between}
+.cm-ticket .oe-ticket-note:before,.cm-ticket .oe-ticket-note:after,.cm-ticket .oe-ticket-gift:before,.cm-ticket .oe-ticket-gift:after{display:none!important}
+.cm-rail .cm-ticket{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 12px}
+.cm-rail .cm-ticket-badge{display:none}
+.cm-rail .cm-ticket-price{grid-column:2;grid-row:1}
+@media(max-width:1000px){.cm-cols,.cm-site .wrap{width:calc(100% - 26px)}}
+
+.cm-cols .wrap{width:auto;margin:0}
+.cm-site .hero-copy{inset:0}
+.cm-site .cm-ticket:before,.cm-site .cm-ticket:after{display:none!important}
+
+.cm-site .kv{box-shadow:0 3px 14px #0c1a2e40}
 `;
 export const previewStyle=coreStyle+marketStyle+referenceStyle;
 
@@ -244,14 +291,17 @@ export const previewBody=`<div class="cm-site">${loader}
 <main id="top">
 <section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="cm-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy"><div class="cm-title"><span class="hero-kicker">同人创作展</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></div></section>
 <nav class="cm-channels oe-home-only" aria-label="频道"><div class="wrap"><a href="#spotlight">推荐</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团作品</a><a href="#updates">公告</a><a href="#tickets">票务</a><a href="#map-home">场地图</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></div></nav>
+<div class="cm-cols oe-home-only"><div class="cm-feed">
 <section class="cm-spotlight oe-home-only" id="spotlight" aria-label="随机推荐制品"><div class="wrap"><div class="cm-feed-head"><h2>推荐制品</h2><span>每次打开顺序都不一样</span><button type="button" class="cm-shuffle" data-spotlight-shuffle>换一换 ↻</button></div><div data-oe-mount="product-spotlight"></div></div></section>
+<section class="section" id="community"><div class="wrap">${head('COMMUNITY','社群')}<div class="community"></div></div></section>
+<section class="section" id="sponsors"><div class="wrap">${head('SPONSORS','合作伙伴')}<div class="sponsors"></div></div></section>
+</div><aside class="cm-rail" aria-label="公告与票务">
 <section class="updates-strip oe-home-only" id="updates"><div class="wrap">${head('NEWS','最新公告')}<div class="updates-list"></div></div></section>
 <section class="section" id="tickets"><div class="wrap">${head('ADMISSION','入场票')}<div class="ticket-grid"></div><div class="ticket-actions"></div></div></section>
 <section class="section" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="map-explorer"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><aside class="map-link-rail" data-oe-collection="explore"><span class="ey">EXPLORE</span><b>继续探索</b><div class="map-link-list"></div></aside></div></div></section>
+</aside></div>
 <section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLES & WORKS','参展社团与制品')}<div class="booth-directory-rich"></div></div></section>
 <section class="section oe-page-view" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>
-<section class="section" id="community"><div class="wrap">${head('COMMUNITY','社群')}<div class="community"></div></div></section>
-<section class="section" id="sponsors"><div class="wrap">${head('SPONSORS','合作伙伴')}<div class="sponsors"></div></div></section>
 </main>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
 </div>`;

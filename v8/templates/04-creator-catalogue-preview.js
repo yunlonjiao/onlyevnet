@@ -264,6 +264,26 @@ const referenceStyle=`
 .cc-tabs a:hover{color:#fff}.cc-tabs a.active{color:#fff;border-bottom-color:var(--cc-pink)}
 .cc-site .cc-catalogue{padding-top:22px}
 @media(max-width:820px){.cc-site .hero-art{aspect-ratio:16/9}.cc-site .hero-copy{grid-template-columns:1fr}.cc-site .hero-copy .cc-cta{grid-column:1;grid-row:auto;justify-self:start}}
+
+/* skeleton: a dashboard of titled panels in rows of three and two, like an event information board */
+.cc-site .cc-deck{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;width:min(1180px,calc(100% - 48px));margin:22px auto 0;align-items:start}
+.cc-site .cc-deck2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cc-site .cc-deck>section{padding:0;margin:0;background:#ffffff0f;border:1px solid #ffffff2e;border-radius:10px;overflow:hidden;box-shadow:none}
+.cc-site .cc-deck>section .wrap{width:auto;max-width:none;padding:0;margin:0}
+.cc-site .cc-deck .head{margin:0;padding:11px 16px;background:#24194d;border-left:4px solid var(--cc-pink);border-bottom:1px solid #ffffff22;display:block;text-align:left}
+.cc-site .cc-deck .head>div{text-align:left;display:block}
+.cc-site .cc-deck .head h2{font-size:15px;letter-spacing:.06em;margin:0;text-align:left;transform:none;text-shadow:none;-webkit-text-stroke:0}
+.cc-site .cc-deck .head .ey{display:none}
+.cc-site .cc-deck .updates-list,.cc-site .cc-deck .ticket-grid,.cc-site .cc-deck .map-explorer,.cc-site .cc-deck .community,.cc-site .cc-deck .sponsors,.cc-site .cc-deck .ticket-actions{padding:14px 16px}
+.cc-site .cc-deck .ticket-actions{padding-top:0}
+.cc-site .cc-deck .ticket-grid{grid-template-columns:1fr;gap:10px}
+.cc-site .cc-deck .map-explorer{grid-template-columns:1fr}
+.cc-site .cc-deck .map-static{min-height:170px}
+.cc-site .cc-deck .community,.cc-site .cc-deck .sponsors{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+@media(max-width:1000px){.cc-site .cc-deck,.cc-site .cc-deck2{grid-template-columns:1fr;width:calc(100% - 26px)}}
+
+@media(min-width:1001px){.cc-site .cc-deck{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.cc-site .cc-deck2{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}}
+.cc-site .cc-ticket:before,.cc-site .cc-ticket:after{display:none!important}
 `;
 export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle;
 
@@ -278,13 +298,17 @@ export const previewBody=`<div class="cc-site">${loader}
 <section class="hero"><div class="wrap hero-grid"><div class="hero-art"><span class="cc-sticker one">WEB CATALOGUE</span><div class="kv"><strong class="cc-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div><span class="cc-sticker two">電子場刊 公開中!</span></div><div class="hero-copy"><span class="hero-kicker">电子场刊</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><a class="cc-cta ticket-purchase-link" href="#tickets">购票 / 预约</a></div></div></section>
 <div class="cc-tabbar oe-home-only"><div class="wrap"><nav class="cc-crumb" aria-label="位置"><a href="#home" data-page-link="home">综合同人展</a><i>›</i><b data-oe-field="eventName">STARDUST ONLY</b></nav><div class="cc-tabs"><a class="active" href="#catalogue">电子场刊</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团 / 作品</a><a href="#map-home">场地图</a><a href="#tickets">票务</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></div></div></div>
 <section class="cc-catalogue oe-home-only" id="catalogue" aria-label="电子场刊"><div class="wrap">${head('WEB CATALOGUE · 電子場刊','翻阅电子场刊')}<div data-oe-mount="catalogue-book"></div></div></section>
+<div class="cc-deck oe-home-only">
 <section class="updates-strip oe-home-only" id="updates"><div class="wrap">${head('NEWS','最新公告')}<div class="updates-list"></div></div></section>
 <section class="section" id="tickets"><div class="wrap">${head('ADMISSION','入场票')}<div class="ticket-grid"></div><div class="ticket-actions"></div></div></section>
 <section class="section" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="map-explorer"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><aside class="map-link-rail" data-oe-collection="explore"><span class="ey">EXPLORE</span><b>继续探索</b><div class="map-link-list"></div></aside></div></div></section>
-<section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLE LIST','参展社团与制品')}<div class="booth-directory-rich"></div></div></section>
-<section class="section oe-page-view" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>
+</div>
+<div class="cc-deck cc-deck2 oe-home-only">
 <section class="section" id="community"><div class="wrap">${head('COMMUNITY','社群')}<div class="community"></div></div></section>
 <section class="section" id="sponsors"><div class="wrap">${head('SPONSORS','合作伙伴')}<div class="sponsors"></div></div></section>
+</div>
+<section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLE LIST','参展社团与制品')}<div class="booth-directory-rich"></div></div></section>
+<section class="section oe-page-view" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>
 </main>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
 </div>`;

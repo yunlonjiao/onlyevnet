@@ -256,6 +256,24 @@ const referenceStyle=`
 .ls-site .timeline-row time{font-size:17px;font-style:normal;font-weight:800}
 .ls-site .timeline-stage{font-size:12px}
 @media(max-width:820px){.ls-site .nav .wrap>.btn{position:static;transform:none;margin-left:10px}.ls-site .nav .wrap{flex-wrap:wrap;gap:10px}.ls-site .hero-grid{grid-template-columns:1fr}.ls-site .hero-art{max-height:380px;aspect-ratio:4/3}.ls-site .timeline-row{grid-template-columns:90px minmax(0,1fr)}.ls-site .timeline-row time{grid-row:auto}}
+
+/* skeleton: every section opens with a full-width title bar; the content sits on a narrower sheet beneath it */
+.ls-site .section{padding:0 0 54px;background:transparent;border:0}
+.ls-site .section>.wrap{width:100%;max-width:none;padding:0;margin:0}
+.ls-site .section .head{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:68px;line-height:1.4;overflow:visible;margin:0 0 28px;padding:12px 22px;text-align:center;border:0;background:linear-gradient(90deg,var(--ls-pink),var(--ls-violet))}
+.ls-site .section .head>div{display:block;text-align:center}
+.ls-site .section .head .ey{display:block;font-size:10px;letter-spacing:.34em;opacity:.85;color:#fff;transform:none;background:none;padding:0;border:0}
+.ls-site .section .head h2{font-size:22px;letter-spacing:.22em;margin:2px 0 0;text-shadow:none;transform:none;color:#fff;-webkit-text-stroke:0}
+.ls-site .section .head h2:before{content:"◆ ";opacity:.8}.ls-site .section .head h2:after{content:" ◆";opacity:.8}
+.ls-site .section .head .section-back{position:absolute;left:22px;top:50%;transform:translateY(-50%);font-size:12px;color:#fff}
+.ls-site .section>.wrap>:not(.head){width:min(1080px,calc(100% - 44px));margin-left:auto;margin-right:auto}
+.ls-site .section-orbit,.ls-site .section-no{display:none}
+.ls-site #tickets .ticket-grid{grid-template-columns:1fr;gap:12px}
+.ls-site .guest-grid,.ls-site .lineup{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.ls-site .section .head{align-items:center}
+.ls-site .ticket:before{display:none}
+.ls-site .section .head{align-items:center}
+.ls-site .ticket:before{display:none}
 `;
 export const previewStyle=coreStyle+style+referenceStyle;
 export const previewBody=`<div class="ls-site">${loader}

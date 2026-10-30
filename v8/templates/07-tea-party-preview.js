@@ -208,6 +208,26 @@ const referenceStyle=`
 .tp-site .featured-activity-grid{grid-template-rows:none!important;grid-auto-rows:auto!important;align-items:start}
 .tp-site #participation .featured-activity-card,.tp-site #participation .featured-activity-card:first-child{grid-row:auto!important;grid-column:auto!important;height:auto!important;min-height:0!important}
 @media(max-width:820px){.tp-site .nav .links{overflow:auto;justify-content:flex-start}.tp-site .nav .links a{padding:10px 14px}.tp-reserve{width:84px;height:84px;right:10px;bottom:76px}.tp-reserve b{font-size:11px}}
+
+/* skeleton: a cafe menu. Narrow centred sheets, tickets as a priced menu with dotted leaders, the schedule as a dotted timeline, bands that alternate with rounded tops */
+.tp-site .section>.wrap{max-width:900px;width:calc(100% - 44px);margin:0 auto}
+.tp-site #tickets,.tp-site #timetable{background:var(--tp-rose);border-radius:90px 90px 0 0 / 40px 40px 0 0;margin-top:30px;padding:56px 0 64px}
+.tp-site #lineup,.tp-site #map-home{background:var(--tp-mint);border-radius:90px 90px 0 0 / 40px 40px 0 0;margin-top:30px;padding:56px 0 64px}
+.tp-site #community{background:var(--tp-lav);border-radius:90px 90px 0 0 / 40px 40px 0 0;margin-top:30px;padding:56px 0 64px}
+.tp-site #tickets .ticket-grid{display:block;background:var(--tp-paper);border:3px solid var(--tp-brown);border-radius:26px;padding:8px 30px;box-shadow:8px 8px 0 #ffffff99}
+.tp-site #tickets .tp-ticket{display:flex;align-items:flex-end;gap:12px;padding:20px 0;margin:0;border:0;border-bottom:3px dotted var(--tp-line);border-radius:0;background:none;box-shadow:none}
+.tp-site #tickets .tp-ticket:last-child{border-bottom:0}
+.tp-site #tickets .tp-ticket:before{position:static;order:1;flex:1;border:0;border-bottom:3px dotted var(--tp-brown);height:0;margin-bottom:9px;opacity:.45}
+.tp-site #tickets .tp-ticket-main{order:0;flex:0 1 auto}
+.tp-site #tickets .tp-ticket-price{order:2;width:auto;text-align:right;font-size:28px}
+.tp-site #tickets .ticket-actions{justify-content:center;margin-top:22px}
+.tp-site .timeline{position:relative;max-width:640px;margin:0 auto}
+.tp-site .timeline-day{background:none;border:0;box-shadow:none;padding:0}
+.tp-site .timeline-day h3{text-align:center;margin:0 0 14px}
+.tp-site .timeline-row{position:relative;display:grid;grid-template-columns:96px minmax(0,1fr);gap:6px 18px;margin:0 0 8px 18px;padding:12px 16px 12px 24px;background:var(--tp-paper);border:2px solid var(--tp-line);border-left:3px dotted var(--tp-pink);border-radius:0 18px 18px 0}
+.tp-site .timeline-row:before{content:"";position:absolute;left:-12px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;background:var(--tp-pink);border:4px solid var(--tp-rose)}
+.tp-site .lineup-strip{justify-content:center}
+@media(max-width:700px){.tp-site #tickets .ticket-grid{padding:6px 18px}.tp-site #tickets .tp-ticket-price{font-size:22px}.tp-site .timeline-row{grid-template-columns:70px minmax(0,1fr)}}
 `;
 export const previewStyle=coreStyle+style+heroStyle+referenceStyle;
 export const previewBody=`<div class="tp-site">
