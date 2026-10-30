@@ -303,3 +303,8 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 @media(max-width:760px){.admin-sidebar nav .nav-help{display:none}}
 
 .project-status.stale-pill{background:#fff1dc;color:#b45f06}
+
+.admin-sidebar nav .nav-feedback{margin-top:auto}
+.admin-sidebar nav .nav-feedback+.nav-help{margin-top:0}
+.admin-sidebar nav .nav-help{margin-top:0}
+@media(max-width:760px){.admin-sidebar nav .nav-feedback{display:none}}

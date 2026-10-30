@@ -142,3 +142,14 @@ CREATE TABLE IF NOT EXISTS site_stats (
   PRIMARY KEY(site_id,day),
   FOREIGN KEY(site_id) REFERENCES sites(id) ON DELETE CASCADE
 );
+
+-- Feedback from organizers, read by the operator with a D1 query. Removed together with the account.
+CREATE TABLE IF NOT EXISTS feedback (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  username TEXT NOT NULL,
+  message TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_feedback_created ON feedback(created_at);

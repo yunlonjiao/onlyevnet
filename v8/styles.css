@@ -1201,3 +1201,33 @@ html.embed-preview .studio-topbar{display:none!important}
 html.embed-preview body.previewing .canvas-wrap{min-height:100vh;height:100vh}
 html.embed-preview body.previewing .canvas-stage{height:100vh}
 html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
+
+/* editor comfort layer: tonal surfaces, larger type, pill rows (desktop only; colours of the page are untouched) */
+@media(min-width:1001px){
+  body:not(.previewing) .sidebar{background:#f4f2f7;border-right:0;padding:16px 12px 20px}
+  body:not(.previewing) .canvas-wrap{background:#f4f2f7}
+  .sidebar-head{padding:2px 8px 12px}
+  .workspace-label{font-size:16px;font-weight:800}
+  .workspace-template{font-size:12px}
+  .workspace-panel-head b,.page-content-title b{font-size:12px;letter-spacing:.06em;color:#7a7785}
+  .page-tree-row{border-radius:999px;min-height:46px}
+  .page-tree-row>button{font-size:14px;font-weight:700;padding-left:14px;min-height:46px;gap:12px}
+  .page-tree-row:hover{background:#e9e6f0}
+  .page-tree-row.active{background:#dcd7f3}
+  .page-tree-row .nav-icon{font-size:16px;width:22px}
+  .create-custom-page{font-size:14px;min-height:44px;border-radius:999px}
+  .page-content-nav{grid-template-columns:1fr;gap:4px}
+  .page-content-nav button{font-size:14px;min-height:42px;border:0;border-radius:999px;padding:0 14px;background:transparent;font-weight:600}
+  .page-content-nav button:hover{background:#e9e6f0}
+  .page-content-nav button.active{background:#dcd7f3;color:#4c3fb0}
+  .page-content-nav button b{font-size:11px;min-width:22px;height:22px}
+  .canvas-toolbar{font-size:13px}
+  .canvas-stage .canvas:not(.mobile){border-radius:22px}
+  .inspector{border:0;border-radius:22px;background:#f4f2f7}
+  .inspector-header b{font-size:17px}
+  .inspector-kicker{font-size:11px}
+  .inspector-body label,.inspector-body .field>span,.inspector-body small{font-size:13px}
+  .inspector-body input:not([type=checkbox]):not([type=range]),.inspector-body select,.inspector-body textarea{font-size:14px;min-height:40px;border-radius:12px}
+  .inspector-body button{font-size:13px;border-radius:999px}
+}
+@media(min-width:1001px){.item-fields label>span{font-size:13px;font-weight:700;color:#55525f}}

@@ -289,3 +289,14 @@ test('deleting an account removes its projects, sites and files, and needs the p
   assert.equal((await worker.fetch(new Request(API+media),env)).status,404);
   assert.equal((await call(env,'/api/account/login',{method:'POST',body:{username:'leaving',password:'secret-123'}})).status,401);
 });
+
+test('feedback needs a signed-in organizer, rejects empty text and is removed with the account',async()=>{
+  const env=createEnv();
+  const anon=await call(env,'/api/feedback',{method:'POST',body:{message:'你好'}});
+  assert.equal(anon.status,401);
+  const {token}=await signUp(env,'fb-user');
+  assert.equal((await call(env,'/api/feedback',{method:'POST',token,body:{message:' '}})).status,400);
+  assert.equal((await call(env,'/api/feedback',{method:'POST',token,body:{message:'票务页希望能加一个说明'}})).status,201);
+  const row=await env.DB.prepare('SELECT username,message FROM feedback').first();
+  assert.deepEqual({...row},{username:'fb-user',message:'票务页希望能加一个说明'});
+});

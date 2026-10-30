@@ -115,6 +115,9 @@ export async function deleteAccount({password}){
 export async function changeAccountPassword({oldPassword,newPassword}){
   return api('/api/account/password',{method:'POST',body:{oldPassword,newPassword}});
 }
+export async function sendFeedback(message){
+  return api('/api/feedback',{method:'POST',body:{message}});
+}
 export async function getOverview(){
   return api('/api/overview');
 }

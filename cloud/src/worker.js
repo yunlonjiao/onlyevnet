@@ -301,6 +301,13 @@ async function projectStats(req,env,pid){
 }
 
 /* ---- overview numbers for the organizer's start page ---- */
+async function sendFeedback(req,env){
+  const u=await requireUser(req,env);await rateLimit(env,'feedback:'+u.id,10,86400);
+  const message=cleanText((await bodyJson(req)).message,2000);
+  if(message.length<2)return json({ok:false,error:'请写一下想反馈的内容。'},400);
+  await env.DB.prepare('INSERT INTO feedback(id,user_id,username,message,created_at) VALUES(?,?,?,?,?)').bind(id('fb'),u.id,u.username,message,now()).run();
+  return json({ok:true},201);
+}
 async function accountOverview(req,env){
   const u=await requireUser(req,env),since=chinaDay(Date.now()-6*86400000),today=chinaDay();
   const pending=await env.DB.prepare("SELECT COUNT(*) AS n FROM collect_entries e JOIN projects p ON p.id=e.project_id LEFT JOIN project_state s ON s.project_id=p.id WHERE p.user_id=? AND s.deleted_at IS NULL AND e.status='pending'").bind(u.id).first();
@@ -325,6 +332,7 @@ async function handleApi(req,env,path){
   if(path==='/api/projects'&&req.method==='POST')return createProject(req,env);
   if(path==='/api/projects/trash'&&req.method==='GET')return listProjects(req,env);
   if(path==='/api/overview'&&req.method==='GET')return accountOverview(req,env);
+  if(path==='/api/feedback'&&req.method==='POST')return sendFeedback(req,env);
   let m=path.match(/^\/api\/projects\/([^/]+)\/stats$/);
   if(m&&req.method==='GET')return projectStats(req,env,decodeURIComponent(m[1]));
   m=path.match(/^\/api\/collect\/([a-f0-9]+)(\/image)?$/);

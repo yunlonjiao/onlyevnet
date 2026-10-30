@@ -1,6 +1,6 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.52.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.52.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -699,3 +699,14 @@ async function authVerifySession(){
 authSyncView();authVerifySession();
 window.addEventListener('pageshow',()=>authSyncView());
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)authSyncView()});
+
+/* ---- feedback ---- */
+$('#feedbackBtn').onclick=()=>{$('#feedbackText').value='';$('#feedbackMessage').textContent='';$('#feedbackDialog').showModal()};
+$('#feedbackCancel').onclick=()=>$('#feedbackDialog').close();
+$('#feedbackForm').onsubmit=async e=>{
+  e.preventDefault();
+  const msg=$('#feedbackMessage'),btn=$('#feedbackSend');btn.disabled=true;msg.textContent='';
+  try{await sendFeedback($('#feedbackText').value.trim());$('#feedbackDialog').close();alert('已收到，谢谢你的反馈。')}
+  catch(err){msg.textContent=err?.status?err.message:'没能发出去，请检查网络后再试。'}
+  finally{btn.disabled=false}
+};
