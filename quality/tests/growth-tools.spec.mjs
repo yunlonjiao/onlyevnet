@@ -190,3 +190,44 @@ test('sign-up forms can be created, filled by a visitor, reviewed and exported',
   await page.locator('[data-open]').uncheck();
   expect((await submit({f1:'小红',f2:'x',f3:'y'})).status).toBe(403);
 });
+
+test('live updates and recap: the editor builds the section and it ships in the exported page',async({page})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'recap-organizer');
+  await page.goto('/v8/?template=03-creator-market&project=growth-recap');
+  const frame=page.frameLocator('#liveFrame');
+  await expect(frame.locator('.hero')).toBeAttached();
+  await expect(frame.locator('#recap')).toHaveCount(0);
+  await page.locator('[data-page-tool="recap"]').click();
+  await expect(page.locator('#recapDialog')).toBeVisible();
+  await page.locator('[data-recap="mode"]').selectOption('recap');
+  await page.locator('[data-recap="summary"]').fill('两天一共来了三千多位同好。');
+  await page.locator('[data-add="posts"]').click();
+  await page.locator('[data-list="posts"] [data-f="time"]').fill('15:00');
+  await page.locator('[data-list="posts"] [data-f="text"]').fill('舞台环节开始');
+  await page.locator('[data-add="videos"]').click();
+  await page.locator('[data-list="videos"] [data-f="url"]').fill('https://www.bilibili.com/video/BV1xx411c7mD');
+  await page.locator('[data-add="links"]').click();
+  await page.locator('[data-list="links"] [data-f="label"]').fill('微博话题');
+  await page.locator('[data-list="links"] [data-f="url"]').fill('https://weibo.com/topic');
+  await page.locator('[data-add="links"]').click();
+  await page.locator('[data-list="links"]').nth(1).locator('[data-f="url"]').fill('javascript:alert(1)');
+  await expect(frame.locator('#recap h2')).toHaveText('活动回顾');
+  await expect(frame.locator('#recap iframe')).toHaveAttribute('src',/player\.bilibili\.com\/player\.html\?bvid=BV1xx411c7mD/);
+  await expect(frame.locator('#recap .oe-recap-links a')).toHaveCount(1);
+  await page.locator('#recapClose').click();
+  await page.locator('#publishBtn').click();
+  await page.locator('#publishSlug').fill('recap-site');
+  await page.locator('#publishPrimary').click();
+  await expect(page.locator('#publishStatus')).toHaveText('网站已上线',{timeout:20000});
+  const html=(await visitSite(cloud,'recap-site')).html;
+  expect(html).toContain('id="recap"');
+  expect(html).toContain('舞台环节开始');
+  expect(html).toContain('两天一共来了三千多位同好');
+  expect(html).not.toContain('href="javascript:');
+  // switched off: the section is gone again
+  await page.locator('#publishClose').click();
+  await page.locator('[data-page-tool="recap"]').click();
+  await page.locator('[data-recap="mode"]').selectOption('off');
+  await expect(frame.locator('#recap')).toHaveCount(0);
+});

@@ -559,6 +559,7 @@ const PAGE_CONTENT_CONFIG={
    {tool:'lifecycle',label:'活动状态'},
    {tool:'hero',label:'主视觉'},
    {tool:'seo',label:'SEO / 分享'},
+   {tool:'recap',label:'实况与回顾'},
    {collection:'ribbonItems',label:'滚动公告'},
    {collection:'tickets',label:'票务'},
    {tool:'map',label:'场地图'},
@@ -806,6 +807,7 @@ function openPageTool(tool){
  if(tool==='hero'){openHeroTitleInspector();return}
  if(tool==='intro'){openFieldInspector('tagline');return}
  if(tool==='seo'){openSeoInspector();return}
+ if(tool==='recap'){openRecapDialog();return}
  if(tool==='map'){openImageInspector('venueMap.image');return}
  if(tool==='freewalk'||tool==='itasha'){openOptionalPageInspector(tool);return}
  showInspectorEmpty();
@@ -1045,6 +1047,39 @@ function openLifecycleInspector(){
  }));
 }
 
+/* ---- live updates and recap ---- */
+const recapDialog=$('#recapDialog');
+const recapCommit=({structural=false}={})=>{save();send({type:'OE_REPLACE_STATE',state});if(structural)renderRecapDialog()};
+function renderRecapDialog(){
+ state.recap??={mode:'off',title:'',summary:'',posts:[],photos:[],videos:[],links:[]};
+ const r=state.recap;for(const k of ['posts','photos','videos','links'])r[k]??=[];
+ $('#recapBody').innerHTML=
+  '<section class="share-block"><h3>显示方式</h3><div class="item-fields"><label><span>首页上的这一块</span><select data-recap="mode"><option value="off">不显示</option><option value="live">现场直击（活动当天用）</option><option value="recap">活动回顾（活动结束后用）</option></select></label>'+
+  '<label><span>标题</span><input data-recap="title" maxlength="40" placeholder="留空则用默认标题" value="'+esc(r.title||'')+'"></label>'+
+  '<label><span>简介</span><textarea data-recap="summary" rows="3" maxlength="600" placeholder="一两句话说说今天或这次活动">'+esc(r.summary||'')+'</textarea></label></div></section>'+
+  '<section class="share-block"><h3>现场动态</h3>'+r.posts.map((p,i)=>'<div class="recap-row" data-list="posts" data-i="'+i+'"><input data-f="time" maxlength="12" placeholder="时间" value="'+esc(p.time||'')+'"><textarea data-f="text" rows="2" maxlength="300" placeholder="发生了什么">'+esc(p.text||'')+'</textarea><button type="button" class="recap-rm" aria-label="删除">×</button></div>').join('')+'<button type="button" class="recap-add" data-add="posts">＋ 添加一条动态</button></section>'+
+  '<section class="share-block"><h3>现场照片</h3><div class="recap-photos">'+r.photos.map((p,i)=>'<div class="recap-photo" data-list="photos" data-i="'+i+'"><button type="button" class="recap-pick" data-pick="'+i+'">'+(p.image?'<img src="'+esc(p.image)+'" alt="">':'＋')+'</button><input data-f="caption" maxlength="40" placeholder="说明（可不填）" value="'+esc(p.caption||'')+'"><button type="button" class="recap-rm" aria-label="删除">×</button></div>').join('')+'</div><button type="button" class="recap-add" data-add="photos">＋ 添加一张照片</button></section>'+
+  '<section class="share-block"><h3>B站视频</h3><p class="inspector-note">粘贴视频链接，BV 号的视频会直接嵌入播放，其他链接显示成按钮。</p>'+r.videos.map((v,i)=>'<div class="recap-row" data-list="videos" data-i="'+i+'"><input data-f="url" placeholder="视频链接" value="'+esc(v.url||'')+'"><input data-f="title" maxlength="40" placeholder="标题（可不填）" value="'+esc(v.title||'')+'"><button type="button" class="recap-rm" aria-label="删除">×</button></div>').join('')+'<button type="button" class="recap-add" data-add="videos">＋ 添加一个视频</button></section>'+
+  '<section class="share-block"><h3>微博、小红书等平台的投稿链接</h3>'+r.links.map((l,i)=>'<div class="recap-row" data-list="links" data-i="'+i+'"><input data-f="label" maxlength="30" placeholder="按钮文字" value="'+esc(l.label||'')+'"><input data-f="url" placeholder="链接" value="'+esc(l.url||'')+'"><button type="button" class="recap-rm" aria-label="删除">×</button></div>').join('')+'<button type="button" class="recap-add" data-add="links">＋ 添加一个链接</button></section>';
+ $('#recapBody').querySelector('[data-recap="mode"]').value=r.mode||'off';
+}
+function bindRecapDialog(){
+ const body=$('#recapBody');
+ body.addEventListener('input',e=>{
+  const t=e.target,r=state.recap;
+  if(t.dataset.recap){checkpoint();r[t.dataset.recap]=t.value;recapCommit();return}
+  const row=t.closest('[data-list]');if(!row||!t.dataset.f)return;
+  checkpoint();r[row.dataset.list][Number(row.dataset.i)][t.dataset.f]=t.value;recapCommit();
+ });
+ body.addEventListener('click',e=>{
+  const r=state.recap,b=e.target.closest('button');if(!b)return;
+  if(b.dataset.add){checkpoint();const k=b.dataset.add;r[k].push(k==='posts'?{id:uid('rp'),time:'',text:''}:k==='photos'?{id:uid('ph'),image:'',caption:''}:k==='videos'?{id:uid('vd'),url:'',title:''}:{id:uid('lk'),label:'',url:''});recapCommit({structural:true});return}
+  if(b.classList.contains('recap-rm')){checkpoint();const row=b.closest('[data-list]');r[row.dataset.list].splice(Number(row.dataset.i),1);recapCommit({structural:true});return}
+  if(b.dataset.pick!==undefined){$('#imageInput').dataset.path='recap.photos.'+b.dataset.pick+'.image';$('#imageInput').click()}
+ });
+ body.addEventListener('change',e=>{if(e.target.dataset.recap==='mode')recapCommit()});
+}
+function openRecapDialog(){renderRecapDialog();if(!recapDialog.open)recapDialog.showModal()}
 const shareDialog=$('#shareDialog');
 function shareText(){
  const url=publishRecord?.url||'',bits=[state.date,state.location].map(v=>String(v||'').trim()).filter(Boolean).join(' · ');
@@ -1497,6 +1532,7 @@ function imageSlotConfig(path){
  if(path==='mobileHeroImage'&&state.templateId==='02-scrapbook')return {label:'手机主视觉（可选）',ratio:3/4,ratioLabel:'标准海报 · 比例 3:4',width:1080,height:1440,fixed:true};
  if(path==='mobileHeroImage')return {label:'手机主视觉 KV',ratio:4/5,ratioLabel:'手机端独立主视觉 · 比例 4:5',width:1080,height:1350,fixed:true};
  if(path==='seo.ogImage')return {label:'分享封面',ratio:1.91,ratioLabel:'社交分享推荐比例 1.91:1',width:1200,height:628,fixed:true};
+ if(/^recap\.photos\.\d+\.image$/.test(path))return {label:'现场照片',ratio:4/3,ratioLabel:'裁剪框可移动 · 比例 4:3',width:1200,height:900,fixed:true};
  if(/^tickets\.\d+\.image$/.test(path))return {label:'票务赠品图',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:900,height:900,fixed:true};
  if(/^participation\.\d+\.image$/.test(path))return {label:'活动宣传图',ratio:16/9,ratioLabel:'裁剪框可移动 · 比例 16:9',width:1440,height:810,fixed:true};
  if(/^featuredActivities\.\d+\.image$/.test(path))return {label:'首页活动精选图片',ratio:16/9,ratioLabel:'裁剪框可移动 · 比例 16:9',width:1440,height:810,fixed:true};
@@ -1693,6 +1729,7 @@ async function applyImageCrop(){
    toast('图片已应用');
    const c=cropContext.returnCollection,i=Number(cropContext.returnIndex),croppedPath=cropContext.path;closeImageCropper();
    if(/^venueMap\.(?:image|more\.\d+\.image)$/.test(croppedPath))openImageInspector('venueMap.image');
+   if(/^recap\./.test(croppedPath))renderRecapDialog();
    if(c&&Number.isInteger(i)){if(c.startsWith('custom:'))openCustomPageItemInspector(c.slice(7),i);else if(c.startsWith('product:'))openProductInspector(Number(c.slice(8)),i);else openItemInspector(c,i)}
  }catch(err){console.error('[OnlyEvent crop apply]',err);toast('裁剪失败，请重试')}
  finally{const b=$('#cropApply');if(b)b.disabled=false}
@@ -1756,7 +1793,7 @@ $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navi
 $('#publishRename').addEventListener('click',()=>{renamingSite=true;renderPublishDialog();publishSlug.disabled=false;publishSlug.focus();publishSlug.select()});
 publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});
 if(projectId!=='default'&&!hasSavedProject){localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject()}
-syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();bindStageRows();mountFrame();syncHistory();setStudioPage('home');
+syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();bindStageRows();bindRecapDialog();$('#recapClose').onclick=()=>recapDialog.close();mountFrame();syncHistory();setStudioPage('home');
 
 /* Shared mobile drawers, identical across every template. */
 bindStudioMobilePanels();

@@ -1,5 +1,6 @@
 // @ts-check
 // @ts-ignore -- browser cache-busted absolute ESM URL
+import {renderRecap} from '/v8/renderer/recap.js?v=1';
 import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.41.5';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {getTemplatePreview} from '/v8/templates/preview-registry.js?v=8.41.4';
@@ -224,6 +225,7 @@ function applyState(next){
   applyLifecycleState();
   collections.renderCollections();
   participation.renderParticipation();
+  renderRecap(state);
   bindEntryTicket();
   fields.markEditable();
   router.applyModules();
