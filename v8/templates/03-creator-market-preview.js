@@ -230,7 +230,7 @@ const referenceStyle=`
 .cm-feed-head span{color:var(--cm-soft);font-size:13px}
 .cm-shuffle{margin-left:auto;border:1px solid var(--cm-line);background:#fff;color:var(--cm-ink);border-radius:8px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer}
 .cm-shuffle:hover{color:var(--cm-accent-ink);border-color:var(--cm-accent)}
-@media(max-width:800px){.cm-site .nav .wrap>.btn{padding:7px 12px;font-size:12px}.cm-site .nav .links{display:none}.cm-site .hero-art{aspect-ratio:16/9;max-height:none}.cm-site .hero-copy{inset:0 13px;align-items:flex-end;justify-content:flex-end;padding:0 14px 12px;background:linear-gradient(transparent,#0c1a2ecc)}.cm-site .hero-copy .meta{display:none}.cm-feed-head span{display:none}.cm-site .event-status-badge{white-space:nowrap;left:12px;top:10px;writing-mode:horizontal-tb}}
+@media(max-width:800px){.cm-site .nav .wrap>.btn{padding:7px 12px;font-size:12px}.cm-site .nav .links{display:none}.cm-site .hero-art{aspect-ratio:16/9;max-height:none}.cm-site .hero-copy{inset:0 13px;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:0 14px 12px;background:linear-gradient(transparent,#0c1a2ecc)}.cm-site .hero-copy .meta{display:none}.cm-feed-head span{display:none}.cm-site .event-status-badge{white-space:nowrap;left:12px;top:10px;writing-mode:horizontal-tb}}
 `;
 export const previewStyle=coreStyle+marketStyle+referenceStyle;
 
@@ -255,3 +255,4 @@ export const previewBody=`<div class="cm-site">${loader}
 </main>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
 </div>`;
+

@@ -1273,3 +1273,17 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 .recap-photo .recap-rm{position:absolute;top:4px;right:4px;background:#fffc;border-radius:50%;width:24px;height:24px}
 .recap-rm{border:0;background:none;font-size:20px;cursor:pointer;line-height:1}
 .recap-add{border:1px solid #d8d4ea;background:#fff;border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+
+
+/* fields inside the share and recap dialogs (the inspector styles do not reach them) */
+.share-body .item-fields{display:grid;gap:12px;margin-top:4px}
+.share-body .item-fields label{display:grid;gap:6px}
+.share-body .item-fields label>span,.share-body .item-media>span{font-size:13px;font-weight:700;color:#55525f}
+.share-body input:not([type=checkbox]),.share-body select,.share-body textarea{width:100%;box-sizing:border-box;border:1px solid #d8d4ea;border-radius:12px;padding:0 12px;min-height:40px;font:inherit;font-size:14px;background:#fff;color:inherit}
+.share-body textarea{padding:10px 12px;resize:vertical;line-height:1.6}
+.share-body .item-media{margin-top:12px;display:grid;gap:6px}
+.share-body .item-media-row{display:flex;gap:12px;align-items:center}
+.share-body .item-media-row img,.share-body .item-media-empty{width:72px;height:72px;border-radius:12px;object-fit:cover;border:1px solid #e4e4e9;background:#faf9ff;display:grid;place-items:center;color:#8f8f99;font-size:22px;flex:none}
+.share-body .item-media-row button{border:1px solid #d8d4ea;background:#fff;border-radius:999px;padding:8px 16px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;margin-right:6px}
+.share-body .inspector-note{margin:8px 0 0;font-size:12px;line-height:1.6;color:#8f8f99}
+.share-body details summary{font-weight:800;font-size:14px}

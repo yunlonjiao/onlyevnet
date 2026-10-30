@@ -231,3 +231,35 @@ test('live updates and recap: the editor builds the section and it ships in the 
   await page.locator('[data-recap="mode"]').selectOption('off');
   await expect(frame.locator('#recap')).toHaveCount(0);
 });
+
+test('on a phone the admin bottom bar is one short row and the page content stays visible',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'phone-organizer');
+  await page.goto('/admin/');
+  const bar=await page.locator('.admin-sidebar').boundingBox();
+  expect(bar.height).toBeLessThan(90);
+  for(const p of ['templates','cost','stats','ask','signup','collect','settings']){
+    await page.locator('[data-admin-page="'+p+'"]').click();
+    const h1=await page.locator('[data-page-panel="'+p+'"] h1').boundingBox();
+    expect(h1,p).not.toBeNull();
+    expect(h1.y+h1.height,p).toBeLessThan(844-bar.height);
+  }
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+});
+
+test('the feedback and share dialogs keep their content away from the edges',async({page})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'dialog-organizer');
+  await page.goto('/admin/');
+  await page.locator('#feedbackBtn').click();
+  const box=await page.locator('#feedbackDialog').boundingBox(),area=await page.locator('#feedbackText').boundingBox();
+  expect(area.x-box.x).toBeGreaterThanOrEqual(12);
+  expect(box.x+box.width-(area.x+area.width)).toBeGreaterThanOrEqual(12);
+  await page.goto('/v8/?template=01-ip-only&project=dialog-1');
+  await expect(page.frameLocator('#liveFrame').locator('.hero')).toBeAttached();
+  await page.locator('#shareBtn').click();
+  const title=await page.locator('#shareDialog [data-seo-field="ogTitle"]').boundingBox();
+  expect(title.height).toBeGreaterThanOrEqual(36);
+  expect(title.width).toBeGreaterThan(300);
+});

@@ -759,7 +759,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)authSyncVi
 
 /* ---- feedback ---- */
 $('#feedbackBtn').onclick=()=>{$('#feedbackText').value='';$('#feedbackMessage').textContent='';$('#feedbackDialog').showModal()};
-$('#feedbackCancel').onclick=()=>$('#feedbackDialog').close();
+$('#feedbackCancel').onclick=()=>$('#feedbackDialog').close();$('#feedbackX').onclick=()=>$('#feedbackDialog').close();
 $('#feedbackForm').onsubmit=async e=>{
   e.preventDefault();
   const msg=$('#feedbackMessage'),btn=$('#feedbackSend');btn.disabled=true;msg.textContent='';

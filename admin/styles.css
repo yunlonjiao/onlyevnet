@@ -349,3 +349,13 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 .signup-entry{border-top:1px solid var(--line);padding:10px 0;display:grid;gap:8px}.signup-entry.is-rejected{opacity:.55}
 .signup-answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:6px 14px;font-size:14px}.signup-answers small{display:block;color:#8f8f99;font-size:11px}
 @media(max-width:760px){.signup-field{grid-template-columns:minmax(0,1fr) auto auto}.signup-field>button{grid-column:3}}
+.create-shell textarea{width:100%;box-sizing:border-box;border:1px solid #d8d4ea;border-radius:12px;padding:12px;font:inherit;resize:vertical;min-height:120px}
+
+
+@media(max-width:760px){
+  .admin-sidebar nav{flex-direction:row;flex:none;gap:0;overflow-x:auto}
+  .admin-sidebar nav button{border-radius:10px;min-height:0;padding:6px 2px;gap:2px;flex:1 0 auto;min-width:64px}
+  .admin-sidebar nav button.nav-last{border:0;margin:0}
+  .admin-sidebar nav button b{font-size:10px;white-space:nowrap}
+  .admin-sidebar nav button span{width:auto;height:auto}
+}
