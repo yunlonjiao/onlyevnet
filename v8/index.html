@@ -167,6 +167,12 @@
           <button id="publishRename" type="button" class="publish-rename" hidden>修改网址</button>
         </section>
         <section class="publish-checks-box"><b id="publishChecksTitle" hidden>发布前检查（不影响发布，只是提醒）</b><ul class="publish-checks" id="publishChecks" hidden></ul></section>
+        <details class="publish-stages" id="publishStages">
+          <summary>分阶段公开（可选）</summary>
+          <p class="inspector-note">先发布活动信息，社团、嘉宾等页面到了时间自动出现。没到时间的页面，游客拿不到它的内容。</p>
+          <div id="stageRows"></div>
+          <button type="button" id="stageAdd" class="publish-rename">＋ 添加一批</button>
+        </details>
         <div class="publish-status" id="publishStatus">设置网站地址后即可发布。</div>
         <section class="publish-result" id="publishResult" hidden>
           <span>线上网站</span>

@@ -7,7 +7,7 @@ import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS} from '/v8/publisher.js?v=8.52.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.52.0';
 import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.42.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -224,6 +224,7 @@ function savePublishRecord(next){
 }
 let renamingSite=false;
 function renderPublishDialog(){
+ renderStageRows();
  const hasSite=hasLiveSite(publishRecord),slug=cleanSlug(publishRecord?.slug||suggestSlug(state.eventName,state.date));
  if(!hasSite)renamingSite=false;
  publishSlug.value=slug;publishSlug.readOnly=hasSite&&!renamingSite;
@@ -247,6 +248,50 @@ function setPublishBusy(busy,text=''){
  $('#publishRename').disabled=busy;
  if(text)publishStatus.textContent=text;
 }
+/* ---- staged reveal: later versions of the site that go live at set times ---- */
+const exportWaiters=[];
+let pendingStages=null;
+const STAGE_MODULES=[['booths','社团'],['activities','活动'],['guests','嘉宾'],['guide','观展指南']];
+const stageModuleList=()=>STAGE_MODULES.filter(([k])=>!(activeTemplate.studioPages?.hidden||[]).includes(k)&&state.modules?.[k]!==false);
+function revealStages(){
+ const valid=new Set(stageModuleList().map(m=>m[0]));
+ return (state.reveal?.stages||[]).map(s=>({...s,modules:(s.modules||[]).filter(k=>valid.has(k))})).filter(s=>s.modules.length&&s.at&&!Number.isNaN(new Date(s.at).getTime())).sort((a,b)=>a.at.localeCompare(b.at));
+}
+function stateAtStage(stages,k){
+ const copy=structuredClone(state);copy.modules={...(copy.modules||{})};
+ // A page that is not public yet loses its data as well as its switch: the exported file must not contain it.
+ const strip={booths:c=>{c.booths=[]},activities:c=>{c.participation=[];c.schedule=[]},guests:c=>{c.guests=[]},guide:c=>{c.guide={...(c.guide||{}),items:[]}}};
+ const revealed=new Set(stages.slice(0,k).flatMap(s=>s.modules));
+ stages.forEach(s=>s.modules.forEach(m=>{if(revealed.has(m))return;copy.modules[m]=false;strip[m]?.(copy)}));
+ return copy;
+}
+function exportHtmlFor(st){return new Promise(ok=>{exportWaiters.push(ok);send({type:'OE_REPLACE_STATE',state:st});send({type:'OE_EXPORT_HTML'})})}
+async function exportStagedSite(){
+ const stages=revealStages(),htmls=[];
+ try{for(let k=0;k<=stages.length;k++)htmls.push(await exportHtmlFor(stateAtStage(stages,k)))}
+ finally{send({type:'OE_REPLACE_STATE',state})}
+ pendingStages=stages.map((s,i)=>({at:new Date(s.at).toISOString(),html:htmls[i+1]}));
+ publishGeneratedHtml(htmls[0]);
+}
+function renderStageRows(){
+ const box=$('#stageRows');if(!box)return;
+ const stages=state.reveal?.stages||[],mods=stageModuleList();
+ $('#publishStages').hidden=!mods.length;
+ box.innerHTML=stages.map((s,i)=>'<div class="stage-row" data-i="'+i+'"><div class="stage-top"><input class="stage-label" maxlength="20" placeholder="例如：二宣" value="'+esc(s.label||'')+'"><input class="stage-at" type="datetime-local" value="'+esc(s.at||'')+'"><button type="button" class="stage-remove" aria-label="删除这一批">×</button></div><div class="stage-mods">'+mods.map(([k,l])=>'<label><input type="checkbox" data-mod="'+k+'"'+((s.modules||[]).includes(k)?' checked':'')+'> '+l+'</label>').join('')+'</div></div>').join('');
+}
+function bindStageRows(){
+ const box=$('#stageRows');
+ const touch=()=>{state.reveal??={stages:[]};save()};
+ box.addEventListener('input',e=>{
+  const row=e.target.closest('.stage-row');if(!row)return;const s=(state.reveal.stages||[])[Number(row.dataset.i)];if(!s)return;
+  if(e.target.classList.contains('stage-label'))s.label=e.target.value;
+  else if(e.target.classList.contains('stage-at'))s.at=e.target.value;
+  else if(e.target.dataset.mod){s.modules=[...row.querySelectorAll('[data-mod]')].filter(i=>i.checked).map(i=>i.dataset.mod)}
+  save();
+ });
+ box.addEventListener('click',e=>{if(!e.target.closest('.stage-remove'))return;const i=Number(e.target.closest('.stage-row').dataset.i);state.reveal.stages.splice(i,1);save();renderStageRows()});
+ $('#stageAdd').onclick=()=>{touch();state.reveal.stages??=[];if(state.reveal.stages.length>=6){toast('最多 6 批');return}state.reveal.stages.push({id:'st'+Date.now().toString(36),label:'',at:'',modules:[]});save();renderStageRows()};
+}
 async function publishGeneratedHtml(html){
  const slug=cleanSlug(publishSlug.value);
  if(!isValidSlug(slug)){setPublishBusy(false,'地址需为 3–50 位小写字母、数字或连字符。');publishSlug.focus();return}
@@ -255,7 +300,8 @@ async function publishGeneratedHtml(html){
    const result=await publishStudioSite({html,title:state.eventName||'OnlyEvent',slug,templateId:state.templateId||activeTemplate.id,localProjectId:projectId,publication:publishRecord});
    const publishedUrl=result.url||('https://'+result.slug+'.onlyevent.cn');
    publishRecord={};
-   savePublishRecord({...result,url:publishedUrl});
+   if(pendingStages){setPublishBusy(true,'正在设置分批公开…');await setSiteStages(result.siteId,pendingStages)}
+   savePublishRecord({...result,url:publishedUrl,staged:!!pendingStages?.length});pendingStages=null;
    syncAdminProject({siteUrl:publishedUrl,status:'published'});
    const renamed=renamingSite;renamingSite=false;
    renderPublishDialog();publishStatus.textContent=renamed?'网址已修改，旧网址会自动跳转到新网址':'网站已上线';toast(renamed?'网址已修改':'网站已发布');
@@ -944,7 +990,7 @@ window.addEventListener('message',e=>{
    return
  }
 
- if(m.type==='OE_EXPORT_HTML_RESULT'){if(publishIntent==='download'){publishIntent='site';downloadPublishedHtml(m.html)}else publishGeneratedHtml(m.html);return}
+ if(m.type==='OE_EXPORT_HTML_RESULT'){if(exportWaiters.length){exportWaiters.shift()(m.html);return}if(publishIntent==='download'){publishIntent='site';downloadPublishedHtml(m.html)}else publishGeneratedHtml(m.html);return}
 });
 function downloadPublishedHtml(html){
  downloadStudioHtml(html,state.eventName||'onlyevent');
@@ -1698,7 +1744,11 @@ $('#backAdminBtn')?.addEventListener('click',()=>{location.href='/admin/'});
 $('#publishBtn').onclick=openPublishDialog;
 $('#publishClose').onclick=()=>publishDialog.close();
 $('#publishCancel').onclick=()=>publishDialog.close();
-publishPrimary.onclick=()=>{publishIntent='site';send({type:'OE_EXPORT_HTML'})};
+publishPrimary.onclick=()=>{
+ publishIntent='site';
+ if(revealStages().length){setPublishBusy(true,'正在生成各批页面…');exportStagedSite();return}
+ pendingStages=publishRecord?.staged?[]:null;send({type:'OE_EXPORT_HTML'});
+};
 $('#publishDownload').onclick=()=>{publishIntent='download';send({type:'OE_EXPORT_HTML'})};
 $('#publishOpen').onclick=()=>{if(publishRecord?.url)window.open(publishRecord.url,'_blank','noopener')};
 $('#shareBtn').onclick=openShareDialog;$('#shareClose').onclick=()=>shareDialog.close();$('#publishShare').onclick=()=>{publishDialog.close?.();openShareDialog()};
@@ -1706,7 +1756,7 @@ $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navi
 $('#publishRename').addEventListener('click',()=>{renamingSite=true;renderPublishDialog();publishSlug.disabled=false;publishSlug.focus();publishSlug.select()});
 publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});
 if(projectId!=='default'&&!hasSavedProject){localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject()}
-syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();mountFrame();syncHistory();setStudioPage('home');
+syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();bindStageRows();mountFrame();syncHistory();setStudioPage('home');
 
 /* Shared mobile drawers, identical across every template. */
 bindStudioMobilePanels();

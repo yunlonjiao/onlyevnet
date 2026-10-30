@@ -181,3 +181,14 @@ CREATE TABLE IF NOT EXISTS questions (
   FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS idx_questions_project ON questions(project_id,created_at);
+
+-- Staged reveal: later versions of a visitor site that go live at a set time. They are only
+-- served once their time has passed, so content that is not public yet is never sent early.
+CREATE TABLE IF NOT EXISTS site_stages (
+  site_id TEXT NOT NULL,
+  idx INTEGER NOT NULL,
+  at TEXT NOT NULL,
+  object_key TEXT NOT NULL,
+  PRIMARY KEY(site_id,idx),
+  FOREIGN KEY(site_id) REFERENCES sites(id) ON DELETE CASCADE
+);

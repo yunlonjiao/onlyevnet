@@ -130,3 +130,31 @@ test('visitors can ask a question and the answer shows up as a public FAQ',async
   await expect(page.locator('#askMessage')).toContainText('已关闭');
   expect(await visit()).not.toContain('oe-ask-btn');
 });
+
+test('staged reveal: pages that are not public yet are not served, and appear when their time comes',async({page})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'stage-organizer');
+  await page.goto('/v8/?template=03-creator-market&project=growth-stage');
+  await expect(page.frameLocator('#liveFrame').locator('.hero')).toBeAttached();
+  await page.locator('#publishBtn').click();
+  await page.locator('#publishSlug').fill('stage-site');
+  await page.locator('#publishStages summary').click();
+  const local=ms=>{const d=new Date(Date.now()+ms-new Date().getTimezoneOffset()*60000);return d.toISOString().slice(0,16)};
+  await page.locator('#stageAdd').click();
+  await page.locator('.stage-row').nth(0).locator('.stage-label').fill('二宣');
+  await page.locator('.stage-row').nth(0).locator('.stage-at').fill(local(86400000*30));
+  await page.locator('.stage-row').nth(0).locator('[data-mod="booths"]').check();
+  await page.locator('#publishPrimary').click();
+  await expect(page.locator('#publishStatus')).toHaveText('网站已上线',{timeout:20000});
+  const base=JSON.parse(cloud.requests.find(r=>r.method==='POST'&&r.path==='/api/sites').body).html;
+  expect(base).not.toContain('浮光工房');
+  expect(cloud.requests.some(r=>r.method==='PUT'&&/\/stages$/.test(r.path))).toBe(true);
+  expect((await visitSite(cloud,'stage-site')).html).not.toContain('浮光工房');
+  // the editor itself still has the full page
+  await expect(page.frameLocator('#liveFrame').locator('#booths')).toHaveCount(1);
+  // move the stage into the past: the next publish serves the full version
+  await page.locator('.stage-row').nth(0).locator('.stage-at').fill(local(-3600000));
+  await page.locator('#publishPrimary').click();
+  await expect(page.locator('#publishStatus')).toHaveText('网站已上线',{timeout:20000});
+  expect((await visitSite(cloud,'stage-site')).html).toContain('浮光工房');
+});

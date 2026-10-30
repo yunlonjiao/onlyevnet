@@ -300,3 +300,25 @@ test('feedback needs a signed-in organizer, rejects empty text and is removed wi
   const row=await env.DB.prepare('SELECT username,message FROM feedback').first();
   assert.deepEqual({...row},{username:'fb-user',message:'票务页希望能加一个说明'});
 });
+
+test('staged reveal serves the first version until each stage time passes, never earlier',async()=>{
+  const env=createEnv();
+  const {token}=await signUp(env,'stage-owner'),pid=await newProject(env,token,'分批公开');
+  const created=await call(env,'/api/sites',{method:'POST',token,project:pid,body:{html:'<!doctype html><body>首宣</body>',title:'分批公开',slug:'stage-site',templateId:'01-ip-only'}});
+  assert.equal(created.status,201);
+  const siteId=created.data.site.id;
+  const get=()=>worker.fetch(new Request('https://stage-site.onlyevent.cn/',{headers:{'user-agent':'Mozilla/5.0 Mobile'}}),env).then(r=>r.text());
+  const past=new Date(Date.now()-3600000).toISOString(),future=new Date(Date.now()+86400000*30).toISOString();
+  const put=stages=>call(env,'/api/sites/'+siteId+'/stages',{method:'PUT',token,project:pid,body:{stages}});
+  assert.equal((await put([{at:past,html:'<body>二宣</body>'},{at:future,html:'<body>三宣：摊位名单</body>'}])).status,200);
+  assert.match(await get(),/二宣/);
+  assert.doesNotMatch(await get(),/摊位名单/);
+  const keys=[...env.SITES.objects.keys()].filter(k=>k.includes('stage-'));
+  assert.equal(keys.length,2);
+  assert.equal((await put([{at:'not a date',html:'x'}])).status,400);
+  assert.equal((await put([])).status,200);
+  assert.match(await get(),/首宣/);
+  assert.equal([...env.SITES.objects.keys()].filter(k=>k.includes('stage-')).length,0);
+  const other=await signUp(env,'stage-other');
+  assert.equal((await call(env,'/api/sites/'+siteId+'/stages',{method:'PUT',token:other.token,body:{stages:[]}})).status,403);
+});
