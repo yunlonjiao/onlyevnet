@@ -282,3 +282,15 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 .preview-stage.mobile{padding:16px 0;background:#e6e6ee}
 .preview-stage.mobile iframe{width:390px;max-width:100%;border-radius:22px;box-shadow:0 16px 50px #0003}
 @media(max-width:760px){.preview-dialog{width:100vw;height:100vh;max-height:none;border-radius:0}.preview-head{flex-wrap:wrap;gap:8px}.preview-title{flex-basis:100%}.preview-device{display:none}}
+
+/* sidebar: grouped, outlined icons, rounded active pill, account pinned to the bottom */
+.admin-shell{grid-template-columns:184px minmax(0,1fr)}
+.admin-sidebar{padding:16px 10px}
+.admin-sidebar nav{flex:1;display:flex;flex-direction:column;gap:2px}
+.admin-sidebar nav .nav-group{margin:14px 12px 6px;font-size:11px;font-weight:800;letter-spacing:.08em;color:#8f8f99}
+.admin-sidebar nav .nav-group:first-child{margin-top:4px}
+.admin-sidebar nav button{min-height:46px;border-radius:999px;padding:0 14px;gap:12px}
+.admin-sidebar nav button span{display:grid;place-items:center;width:22px;height:22px}
+.admin-sidebar nav button b{font-size:14px;font-weight:700}
+.admin-sidebar nav button.nav-last{margin-top:auto;border-top:1px solid var(--line);border-radius:0 0 999px 999px}
+@media(max-width:760px){.admin-sidebar nav .nav-group{display:none}.admin-sidebar nav button.nav-last{margin-top:0;border-top:0;border-radius:10px}.admin-sidebar nav button b{font-size:10px}}
