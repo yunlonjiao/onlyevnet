@@ -153,3 +153,13 @@ CREATE TABLE IF NOT EXISTS feedback (
   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS idx_feedback_created ON feedback(created_at);
+
+-- Visits that arrived through a tagged link (?from=weibo), counted per site, channel and day.
+CREATE TABLE IF NOT EXISTS site_channel_stats (
+  site_id TEXT NOT NULL,
+  channel TEXT NOT NULL,
+  day TEXT NOT NULL,
+  views INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY(site_id,channel,day),
+  FOREIGN KEY(site_id) REFERENCES sites(id) ON DELETE CASCADE
+);

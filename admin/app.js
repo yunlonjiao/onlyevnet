@@ -1,6 +1,6 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.52.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.52.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -167,7 +167,7 @@ function updateBinBar(){
 /* ---- visit statistics ---- */
 async function loadStats(){
   const project=projects.find(p=>p.id===$('#statsProject').value);
-  $('#statsCards').hidden=true;$('#statsChartBox').hidden=true;authSetMessage('statsMessage','');
+  $('#statsCards').hidden=true;$('#statsChartBox').hidden=true;$('#statsChannelBox').hidden=true;authSetMessage('statsMessage','');
   if(!project){authSetMessage('statsMessage','还没有活动，先去「模板库」新建一个。');return}
   if(!readCloudSession()){authSetMessage('statsMessage','请先登录主办方账号。');return}
   try{
@@ -177,7 +177,12 @@ async function loadStats(){
     $('#statToday').textContent=s.today;$('#statWeek').textContent=s.last7;$('#statMonth').textContent=s.last30;$('#statTotal').textContent=s.total;
     const max=Math.max(1,...s.days.map(d=>d.views)),bars=$('#statsBars');bars.innerHTML='';
     s.days.forEach(d=>{const bar=document.createElement('i');bar.style.height=Math.round(d.views/max*100)+'%';bar.title=d.day+'：'+d.views+' 次';bar.classList.toggle('zero',!d.views);bars.appendChild(bar)});
-    $('#statsCards').hidden=false;$('#statsChartBox').hidden=false;
+    const tagged=(s.channels||[]).reduce((n,c)=>n+c.views,0),rows=[...(s.channels||[]).map(c=>[channelLabel(c.channel),c.views])];
+    if(s.last30-tagged>0)rows.push(['直接访问',s.last30-tagged]);
+    const top=Math.max(1,...rows.map(r=>r[1]));
+    $('#statsChannels').innerHTML=rows.length?rows.map(r=>'<div class="stats-channel"><span></span><i style="width:'+Math.round(r[1]/top*100)+'%"></i><b></b></div>').join(''):'<p>还没有访问。</p>';
+    $('#statsChannels').querySelectorAll('.stats-channel').forEach((el,i)=>{el.querySelector('span').textContent=rows[i][0];el.querySelector('b').textContent=rows[i][1]+' 次'});
+    $('#statsCards').hidden=false;$('#statsChartBox').hidden=false;$('#statsChannelBox').hidden=false;
   }catch(err){authSetMessage('statsMessage',authNetworkMessage(err),'error')}
 }
 function renderStatsProjects(){

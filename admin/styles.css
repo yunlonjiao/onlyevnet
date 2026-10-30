@@ -308,3 +308,4 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 .admin-sidebar nav .nav-feedback+.nav-help{margin-top:0}
 .admin-sidebar nav .nav-help{margin-top:0}
 @media(max-width:760px){.admin-sidebar nav .nav-feedback{display:none}}
+.stats-channel{display:grid;grid-template-columns:90px minmax(0,1fr) 70px;align-items:center;gap:10px;margin:8px 0;font-size:14px}.stats-channel i{height:10px;border-radius:999px;background:var(--accent,#7a5cff);min-width:4px}.stats-channel b{text-align:right;font-weight:700}

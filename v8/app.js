@@ -7,7 +7,7 @@ import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage} from '/v8/publisher.js?v=8.52.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS} from '/v8/publisher.js?v=8.52.0';
 import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.42.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -1011,6 +1011,7 @@ function renderShareDialog(){
  $('#shareBody').innerHTML=
   '<section class="share-block"><h3>网站地址</h3>'+(url?'<div class="share-url"><b>'+esc(url)+'</b><button type="button" data-share-copy-url>复制链接</button><button type="button" data-share-open>打开网站 ↗</button></div>':'<p class="inspector-note">还没有发布。发布后这里会显示游客网址。</p>')+'</section>'+
   (url?'<section class="share-block"><h3>二维码</h3><div class="share-qr"><div id="shareQr" aria-label="活动网站二维码"></div><div><p class="inspector-note">印在海报或写进群公告，扫一下就能打开活动网站。</p><button type="button" id="shareQrSave">下载二维码</button></div></div></section>':'')+
+  (url?'<section class="share-block"><h3>各平台的宣传链接</h3><p class="inspector-note">不同平台发不同的链接，后台「数据统计」里就能看到哪个平台带来的访问多。</p>'+PROMO_CHANNELS.map(c=>'<div class="share-channel"><b>'+c.label+'</b><code>'+esc(url.replace(/\/$/,'')+'/?from='+c.key)+'</code><button type="button" data-share-channel="'+c.key+'">复制</button></div>').join('')+'</section>':'')+
   '<section class="share-block"><h3>别人转发时的样子</h3><div class="share-card"><div class="share-card-img">'+(img?'<img src="'+esc(img)+'" alt="">':'<span>分享封面</span>')+'</div><div class="share-card-text"><b>'+esc(title)+'</b><small>'+esc(desc)+'</small><i>'+esc(host)+'</i></div></div>'+
   '<div class="item-fields"><label><span>分享标题</span><input data-seo-field="ogTitle" value="'+esc(seo.ogTitle||'')+'" placeholder="留空则使用活动名称"></label>'+
   '<label><span>分享描述</span><textarea data-seo-field="ogDescription" rows="3" placeholder="留空则使用活动简介">'+esc(seo.ogDescription||'')+'</textarea></label></div>'+
@@ -1029,6 +1030,7 @@ function renderShareDialog(){
  });
  const copy=async(text)=>{try{await navigator.clipboard.writeText(text);toast('已复制')}catch{toast('复制失败')}};
  body.querySelector('[data-share-copy-url]')?.addEventListener('click',()=>copy(url));
+ body.querySelectorAll('[data-share-channel]').forEach(b=>b.addEventListener('click',()=>copy(url.replace(/\/$/,'')+'/?from='+b.dataset.shareChannel)));
  body.querySelector('[data-share-open]')?.addEventListener('click',()=>window.open(url,'_blank','noopener'));
  body.querySelector('[data-share-copy-text]')?.addEventListener('click',()=>copy($('#shareMessage').value));
  body.querySelector('[data-seo-image]')?.addEventListener('click',()=>{$('#imageInput').dataset.path='seo.ogImage';$('#imageInput').click()});
