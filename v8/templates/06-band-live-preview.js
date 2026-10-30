@@ -165,11 +165,21 @@ const setSection=coreSection('activities',{ey:'SET TIMES',title:'出场顺序'})
   .replace('>日程<','>出场顺序<').replace('<b>当天日程</b>','<b>当晚出场顺序</b>').replace('<span>SCHEDULE</span>','<span>RUNNING ORDER</span>')
   .replace('>活动详情<','>物贩与交流<').replace('<b>活动详情</b>','<b>物贩与交流</b>');
 
-export const previewStyle=coreStyle+style;
+/* hero composition: what the first screen is built from differs from every other template */
+const heroStyle=`
+.bl-site .hero{padding:44px 0 58px}
+.bl-site .hero-grid{grid-template-columns:minmax(0,1fr);gap:26px;align-items:start}
+.bl-site .hero h1{font-size:clamp(52px,12.4vw,176px);line-height:.86;margin:0}
+.bl-site .hero-art{order:0;aspect-ratio:21/8;max-height:none;width:100%;transform:rotate(-1.2deg)}
+.bl-site .hero-info{display:grid;grid-template-columns:minmax(0,1.2fr) auto;gap:16px 40px;align-items:center}
+.bl-site .hero-info p{margin:0;grid-column:1}.bl-site .hero-info .meta{margin:0;grid-column:1}.bl-site .hero-info .bl-cta{grid-column:2;grid-row:1 / span 2;justify-content:flex-end}
+@media(max-width:820px){.bl-site .hero-art{order:0;aspect-ratio:16/10}.bl-site .hero-info{grid-template-columns:minmax(0,1fr)}.bl-site .hero-info .bl-cta{grid-column:1;grid-row:auto;justify-content:flex-start}}
+`;
+export const previewStyle=coreStyle+style+heroStyle;
 export const previewBody=`<div class="bl-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#guests" data-target-mode="page" data-page-link="guests">乐队</a><a href="#activities" data-target-mode="page" data-page-link="activities">出场顺序</a><a href="#tickets">门票</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">买票 ↗</a></div></header>
 <main id="top">
-<section class="hero"><div class="wrap hero-grid"><div class="hero-copy"><span class="hero-kicker">LIVE HOUSE</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bl-cta"><a class="bl-btn yellow ticket-purchase-link" href="#tickets">买票</a><a class="bl-btn" href="#timetable">出场顺序</a></div></div><div class="hero-art"><div class="kv"><strong class="bl-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section>
+<section class="hero"><div class="wrap hero-grid"><div class="hero-copy"><span class="hero-kicker">LIVE HOUSE</span><h1 data-oe-field="eventName">STARDUST ONLY</h1></div><div class="hero-art"><div class="kv"><strong class="bl-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-info"><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bl-cta"><a class="bl-btn yellow ticket-purchase-link" href="#tickets">买票</a><a class="bl-btn" href="#timetable">出场顺序</a></div></div></div></section>
 ${coreRibbon()}
 <section class="section oe-home-only" id="lineup"><div class="wrap">${head('LINE UP','出演乐队')}<div class="lineup-strip" data-oe-mirror="lineup"></div>${more('guests','乐队介绍')}</div></section>
 <section class="section oe-home-only" id="timetable"><div class="wrap">${head('SET TIMES','出场顺序')}<div class="timeline" data-oe-mirror="timetable"></div>${more('activities','完整出场顺序')}</div></section>

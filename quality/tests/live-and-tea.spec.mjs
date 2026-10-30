@@ -15,7 +15,7 @@ for(const c of cases){
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
     const cloud=await useCloudPublisher(page);
     await signInCloud(page,cloud,'tpl-'+c.id);
-    await page.goto('/v8/?template='+c.id+'&project=case-'+c.id);
+    await page.goto('/v8/?template='+c.id+'&project=case-'+c.id+'&quick=skip');
     const frame=page.frameLocator('#liveFrame');
     await expect(frame.locator(c.site+' .hero')).toBeAttached();
     await expect(frame.locator('[data-oe-mirror="lineup"] .lineup-card')).toHaveCount(c.lineup);
@@ -51,7 +51,7 @@ for(const id of ['05-live-poster','06-band-live','07-tea-party','08-birthday']){
     await page.setViewportSize({width:390,height:844});
     const cloud=await useCloudPublisher(page);
     await signInCloud(page,cloud,'wide-'+id);
-    await page.goto('/v8/?template='+id+'&project=wide-1');
+    await page.goto('/v8/?template='+id+'&project=wide-1&quick=skip');
     await expect(page.frameLocator('#liveFrame').locator('.hero')).toBeAttached();
     await page.waitForTimeout(800);
     const widths=await page.evaluate(()=>{const d=document.querySelector('#liveFrame').contentDocument;return {frame:d.documentElement.scrollWidth,page:document.documentElement.scrollWidth}});
@@ -60,46 +60,84 @@ for(const id of ['05-live-poster','06-band-live','07-tea-party','08-birthday']){
   });
 }
 
-test('the gallery shows four groups with two templates each',async({page})=>{
+test('the gallery shows every template and filters by category',async({page})=>{
   const cloud=await useCloudPublisher(page);
   await signInCloud(page,cloud,'gallery-organizer');
   await page.goto('/admin/');
   await page.locator('[data-admin-page="templates"]').click();
-  await expect(page.locator('#templateGrid .template-group')).toHaveText([/IP ONLY/,/创作者展/,/舞台演出/,/小型活动/]);
-  const groups=await page.evaluate(()=>{
-    const out=[];let cur=null;
-    for(const el of document.querySelector('#templateGrid').children){
-      if(el.classList.contains('template-group'))out.push(cur={count:0});else if(cur&&el.dataset.templateId)cur.count++;
-    }
-    return out.map(g=>g.count);
-  });
-  expect(groups).toEqual([2,2,2,2]);
+  const chips=page.locator('#templateFilters button');
+  await expect(chips).toHaveCount(5);
+  await expect(chips.first()).toContainText('全部');
+  await expect(page.locator('#templateGrid .template-card')).toHaveCount(8);
+  await expect(page.locator('#templateGrid .template-group')).toHaveCount(0);
+  for(const [label,count] of [['IP ONLY',2],['创作者展',2],['舞台演出',2],['小型活动',2]]){
+    await chips.filter({hasText:label}).click();
+    await expect(page.locator('#templateGrid .template-card')).toHaveCount(count);
+  }
+  await chips.first().click();
+  await expect(page.locator('#templateGrid .template-card')).toHaveCount(8);
 });
 
-test('a small-event template starts with the quick answers already in the editor',async({page})=>{
+test('every template can be previewed on desktop and phone before it is used',async({page})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'preview-organizer');
+  await page.goto('/admin/');
+  await page.locator('[data-admin-page="templates"]').click();
+  for(const id of ['01-ip-only','05-live-poster','08-birthday']){
+    await page.locator('#templateGrid [data-template-id="'+id+'"] .preview-template').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const frame=page.frameLocator('#previewFrame').frameLocator('#liveFrame');
+    await expect(frame.locator('.hero').first()).toBeAttached({timeout:15000});
+    await page.locator('[data-preview-device="mobile"]').click();
+    await expect(page.locator('#previewStage')).toHaveClass(/mobile/);
+    await page.locator('[data-preview-device="desktop"]').click();
+    await page.locator('#previewClose').click();
+    await expect(page.locator('#previewDialog')).toBeHidden();
+  }
+  // previewing creates nothing
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('onlyevent-admin-projects-v1')||'[]').length)).toBe(0);
+  // from the preview, "use this template" goes to the normal create dialog
+  await page.locator('#templateGrid [data-template-id="07-tea-party"] .template-cover').click();
+  await page.locator('#previewUse').click();
+  await expect(page.locator('#createDialog')).toBeVisible();
+  await expect(page.locator('#createProjectName')).toBeVisible();
+});
+
+test('small-event templates are created like every other template; the quick questions come in the editor',async({page})=>{
   const cloud=await useCloudPublisher(page);
   await signInCloud(page,cloud,'quick-organizer');
   await page.goto('/admin/');
   await page.locator('[data-admin-page="templates"]').click();
   await page.locator('#templateGrid [data-template="07-tea-party"]').click();
-  await expect(page.locator('#quickSetup')).toBeVisible();
+  await expect(page.locator('#createDialog')).toBeVisible();
+  await expect(page.locator('#createDialog input:visible')).toHaveCount(1);
   await page.locator('#createProjectName').fill('周末茶会');
+  await page.locator('#createForm button[type=submit]').click();
+  await page.waitForURL(/\/v8\//);
+  await expect(page.locator('#quickSetupDialog')).toBeVisible();
   await page.locator('#quickHero').setInputFiles({name:'hero.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==','base64')});
   await page.locator('#quickDate').fill('2026.12.20');
   await page.locator('#quickPlace').fill('上海');
   await page.locator('#quickTicketUrl').fill('https://example.com/signup');
   await page.locator('#quickTagline').fill('下午茶，聊聊天。');
   await page.locator('#quickModules input[value="guide"]').uncheck();
-  await page.locator('#createForm button[type=submit]').click();
-  await page.waitForURL(/\/v8\//);
+  await page.locator('#quickSetupDone').click();
+  await expect(page.locator('#quickSetupDialog')).toBeHidden();
   const frame=page.frameLocator('#liveFrame');
-  await expect(frame.locator('.tp-site .hero')).toBeAttached();
   await expect(frame.locator('.tp-site .hero p')).toHaveText('下午茶，聊聊天。');
   await expect(frame.locator('.tp-site .hero [data-oe-field="date"]')).toHaveText('2026.12.20');
   await expect(frame.locator('.tp-site .hero [data-oe-field="location"]')).toHaveText('上海');
   await expect(frame.locator('.tp-site #guide')).toBeHidden();
-  const state=await page.evaluate(()=>{const k=Object.keys(localStorage).find(x=>x.startsWith('onlyevent-studio-v8:07-tea-party:'));return JSON.parse(localStorage.getItem(k))});
+  const readState=()=>page.evaluate(()=>{const k=Object.keys(localStorage).find(x=>x.startsWith('onlyevent-studio-v8:07-tea-party:'));return JSON.parse(localStorage.getItem(k))});
+  await expect.poll(async()=>(await readState()).quickSetupDone).toBe(true);
+  const state=await readState();
   expect(state.heroImage).toMatch(/\/media\/uploads\//);
   expect(state.ticketUrl).toBe('https://example.com/signup');
   expect(state.modules.guide).toBe(false);
+  expect(state.quickSetupDone).toBe(true);
+  // reloading does not ask again
+  await page.reload();
+  await expect(page.frameLocator('#liveFrame').locator('.tp-site .hero')).toBeAttached();
+  await page.waitForTimeout(800);
+  await expect(page.locator('#quickSetupDialog')).toBeHidden();
 });

@@ -229,7 +229,15 @@ const shapeStyle=`
 .cc-site .ticket,.cc-site .cc-ticket,.cc-site .cc-booth,.cc-site .cc-product,.cc-site .cc-guide,.cc-site .cc-social,.cc-site .cc-sponsor,.cc-site .community article,.cc-site .guide-grid article,.cc-site .map-static,.cc-site .map-link-rail,.cc-site .booth-directory-card,.cc-site .directory-product-card{border-radius:22px!important}
 @media(max-width:820px){.cc-site .head .section-back{position:static;margin-top:6px}}
 `;
-export const previewStyle=coreStyle+catalogueStyle+shapeStyle;
+/* hero composition: what the first screen is built from differs from every other template */
+const heroStyle=`
+.cc-site .hero-grid{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;gap:30px}
+.cc-site .hero-art{order:0;width:min(380px,84%);max-height:520px}
+.cc-site .hero-copy{order:1;display:flex;flex-direction:column;align-items:center}
+.cc-site .meta{justify-content:center}.cc-site .cc-cta{align-self:center}
+.cc-site .cc-kv-fallback{font-size:clamp(30px,3.6vw,56px);word-break:keep-all;overflow-wrap:normal}
+`;
+export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle;
 
 const loader=`<div class="loader cc-entry" id="loader"><div class="gate cc-entry-gate" role="button" tabindex="0" aria-label="点击翻开电子场刊"><div class="cc-entry-book"><div class="cc-entry-page"><span class="cc-entry-kicker">WELCOME!</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cc-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><span class="cc-entry-hint">ようこそ · 欢迎光临 ✦</span></div><div class="cc-entry-cover"><div class="entry-photo cc-entry-photo" aria-label="活动KV"></div><span class="cc-entry-cover-title">WEB CATALOGUE</span><span class="cc-entry-tap">TAP TO OPEN ✦</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 

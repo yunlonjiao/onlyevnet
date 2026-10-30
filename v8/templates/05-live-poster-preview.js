@@ -189,23 +189,20 @@ const style=`
 .ls-site #activities .activity-view-tabs button.active,.ls-site #activities .activity-day-tabs button.active{background:var(--ls-pink)!important;border-color:var(--ls-pink)!important;color:#fff!important}
 .ls-site #activities .activity-view-tabs button:not(.active),.ls-site #activities .activity-day-tabs button:not(.active){background:transparent!important}
 .ls-site #activities .activity-page-subhead{border-color:#ffffff22!important}
-.ls-site .hero{padding:0;min-height:660px;display:flex;align-items:center;text-align:center}
-.ls-site .hero-grid{position:static;grid-template-columns:minmax(0,1fr);justify-items:center;padding:96px 0 84px}
-.ls-site .hero-copy{position:relative;z-index:2;max-width:880px;margin:0 auto}
-.ls-site .hero h1{font-size:clamp(46px,min(10vw,7vw + 12px),128px)}
-.ls-site .hero p{margin-left:auto;margin-right:auto;font-size:18px}
-.ls-site .meta,.ls-site .ls-cta{justify-content:center}
-.ls-site .hero-art{position:absolute;inset:0;max-height:none;aspect-ratio:auto!important;width:auto;z-index:0;order:0!important}
-.ls-site .hero-art:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,#0b0a1c55,#0b0a1cb8 70%,#0b0a1c)}
-.ls-site .hero-art:after{display:none}
-.ls-site .kv{clip-path:none;opacity:.7}
-.ls-site .ls-kv-fallback{display:none!important}
-/* the hero picture sits behind the title: let clicks reach it so it can be replaced in the editor */
-.ls-site .hero:before,.ls-site .hero-art:before,.ls-site .hero-grid,.ls-site .hero-copy{pointer-events:none}
-.ls-site .hero-copy>*{pointer-events:auto}
+.ls-site .hero{min-height:620px}
+.ls-site .hero-grid{grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:48px;padding:70px 0}
+.ls-site .hero-art{order:-1;aspect-ratio:3/2;max-height:480px;width:100%}
+.ls-site .kv{clip-path:polygon(0 0,100% 0,88% 100%,0 100%);border-radius:10px}
+.ls-site .hero-art:after{right:auto;left:-14px}
+.ls-site .hero h1{font-size:clamp(34px,4.6vw,76px);overflow-wrap:normal;word-break:keep-all}
 .ls-site .ticket:before,.ls-site .ticket:after,.ls-site .ticket *:before,.ls-site .ticket *:after{pointer-events:none}
 .ls-site .live-pass,.ls-site .guide-grid article,.ls-site .community article,.ls-site .live-performer,.ls-site .live-guide{border-radius:8px}
 .ls-site .kv{border-radius:10px}
+/* entry gate: a plain centred stack (the shared gate is a grid) */
+.ls-entry .ls-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;grid-template-columns:none;min-height:0;height:auto;aspect-ratio:auto;box-sizing:border-box}
+.ls-entry .ls-entry-kicker{align-self:center;width:auto;height:auto;flex:none}
+.ls-entry .entry-ticket-title{max-width:100%;overflow-wrap:anywhere;font-size:clamp(30px,7vw,56px)}
+.ls-entry .ls-entry-meta,.ls-entry .ls-entry-hint{width:auto}
 @media(max-width:820px){
  .ls-site .hero-grid{grid-template-columns:minmax(0,1fr)}.ls-site .hero-art{aspect-ratio:16/11;order:-1}
  .ls-site .nav .links{display:none}.ls-site .nav .wrap>.btn{margin-left:auto;padding:9px 16px}

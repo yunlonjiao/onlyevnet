@@ -22,7 +22,7 @@ const radius=r=>{const v=parseFloat(r)||0;return v<4?'sharp':v<10?'small':v<20?'
 const border=b=>{const v=parseFloat(b)||0;return v===0?'none':v<2.5?'thin':'thick'};
 
 async function measure(page,id){
-  await page.goto('/v8/?template='+id+'&project=distinct');
+  await page.goto('/v8/?template='+id+'&embed=preview');
   const frame=page.frameLocator('#liveFrame');
   await expect(frame.locator('[data-oe-field="eventName"]').first()).toBeAttached();
   await page.waitForTimeout(1800);
@@ -48,7 +48,20 @@ async function measure(page,id){
       h2size:h2?parseFloat(cs(h2).fontSize):0,h1size:h1?parseFloat(cs(h1).fontSize):0,
       cardPad:card?parseFloat(cs(card).paddingTop):0,ticketCols:q('.ticket-grid')?cs(q('.ticket-grid')).gridTemplateColumns.split(' ').length:0,
       artShape:q('.kv')?cs(q('.kv')).borderRadius:'',artRatio:q('.hero-art')?(()=>{const r=q('.hero-art').getBoundingClientRect();return r.width/Math.max(1,r.height)})():0,
-      hero_design:t.design?.hero||'',motif:t.design?.motif||''};
+      hero_design:t.design?.hero||'',motif:t.design?.motif||'',composition:(()=>{
+        const hero=q('.hero'),artEl=q('.hero-art')||q('.kv'),copy=q('.hero-copy')||q('.hero h1');
+        if(!hero||!artEl||!copy)return {kind:'scene'};
+        const A=artEl.getBoundingClientRect(),C=copy.getBoundingClientRect(),H=hero.getBoundingClientRect(),cx=r=>r.x+r.width/2,cy=r=>r.y+r.height/2;
+        let kind;
+        if(A.width*A.height>=0.8*H.width*H.height)kind='full-bleed-overlay';
+        else if(Math.abs(cx(A)-cx(C))<0.15*H.width)kind=cy(A)<cy(C)?'art-over-text':'text-over-art';
+        else kind=cx(A)>cx(C)?'text-left-art-right':'art-left-text-right';
+        const kvEl=q('.kv')||artEl,br=cs(kvEl).borderRadius,round=parseFloat(br)>=100||/%/.test(br);
+        const share=x=>Math.min(3,Math.floor(x*4)),rot=e=>{const t=cs(e).transform;if(!t||t==='none')return 0;const m=new DOMMatrixReadOnly(t);return Math.abs(Math.atan2(m.b,m.a)*180/Math.PI)};
+        const k=cs(kvEl),cxRel=(cx(C)-H.x)/H.width;
+        return {kind,artWidth:share(A.width/H.width),artHeight:share(A.height/H.height),align:cs(copy).textAlign==='center'?'center':'left',
+          copyX:cxRel<0.4?'L':cxRel>0.6?'R':'C',tilt:rot(artEl)>0.5||rot(kvEl)>0.5,round,framed:parseFloat(k.borderTopWidth)>=2||k.boxShadow!=='none'};
+      })()};
   },id);
 }
 function dimensions(m){
@@ -68,8 +81,22 @@ function similarity(a,b){
 
 test('no two templates look alike (at most half of the design dimensions match)',async({page})=>{
   test.setTimeout(240000);
-  const dims={};
-  for(const id of ids)dims[id]=dimensions(await measure(page,id));
+  const dims={},compositions={},masks={};
+  for(const id of ids){
+    const m=await measure(page,id);
+    dims[id]=dimensions(m);compositions[id]=m.composition;
+    // layout fingerprint: where the strong edges of the first screen sit (card borders, picture and text blocks), independent of colour
+    const shot=await page.screenshot();
+    masks[id]=await page.evaluate(async b64=>{
+      const bmp=await createImageBitmap(await (await fetch('data:image/png;base64,'+b64)).blob());
+      const W=128,H=80,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.drawImage(bmp,0,0,W,H);
+      const d=g.getImageData(0,0,W,H).data,L=(x,y)=>.299*d[(y*W+x)*4]+.587*d[(y*W+x)*4+1]+.114*d[(y*W+x)*4+2];
+      const cells=[];
+      for(let cy=0;cy<20;cy++)for(let cx=0;cx<32;cx++){let sum=0;for(let y=cy*4;y<cy*4+4;y++)for(let x=cx*4;x<cx*4+4;x++){if(x+1<W&&y+1<H)sum+=Math.abs(L(x+1,y)-L(x,y))+Math.abs(L(x,y+1)-L(x,y))}cells.push(sum)}
+      const sorted=[...cells].sort((a,b)=>a-b),cut=sorted[Math.floor(sorted.length*0.75)];
+      return cells.map(v=>v>cut&&v>0?1:0);
+    },shot.toString('base64'));
+  }
   for(const id of ids)expect(dims[id].heroDesign,id+' must declare design.hero in its definition').not.toBe('');
     // A value that three quarters of the templates share (the same body font, no italic) does not tell templates apart either, so it is left out.
   const informative=Object.keys(dims[ids[0]]).filter(k=>{
@@ -87,4 +114,22 @@ test('no two templates look alike (at most half of the design dimensions match)'
   if(process.env.SHOW_SIMILARITY)console.log(JSON.stringify(rows.sort((a,b)=>b.share-a.share).slice(0,8)));
   const worst=rows.filter(r=>r.share>0.5);
   expect(worst,'pairs above 50%: '+JSON.stringify(worst)).toEqual([]);
+
+  // The first screen is built differently in every template: no two share the same composition...
+  if(process.env.SHOW_SIMILARITY)console.log('COMPOSITIONS '+JSON.stringify(compositions));
+  // Two compositions count as the same unless they differ in at least two of: arrangement, picture width, picture height, text alignment and position, tilt, picture shape, frame.
+  const compositionGap=(a,b)=>['kind','artWidth','artHeight','align','copyX','tilt','round','framed'].filter(k=>a[k]!==b[k]).length;
+  const sameComposition=[];
+  for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++)if(compositionGap(compositions[ids[i]],compositions[ids[j]])<2)sameComposition.push(ids[i].slice(0,2)+'-'+ids[j].slice(0,2));
+  expect(sameComposition,'templates whose first screen is built the same way: '+JSON.stringify(compositions)).toEqual([]);
+  // ...and the strong edges of the first screen (where blocks, cards and pictures sit) do not line up. 0 is unrelated, 1 is identical.
+  const layout=[];
+  for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++){
+    const a=masks[ids[i]],b=masks[ids[j]];let both=0,either=0;
+    a.forEach((v,k)=>{if(v&&b[k])both++;if(v||b[k])either++});
+    layout.push({pair:ids[i].slice(0,2)+'-'+ids[j].slice(0,2),similarity:Math.round(both/Math.max(1,either)*100)/100});
+  }
+  if(process.env.SHOW_SIMILARITY)console.log('LAYOUT '+JSON.stringify([...layout].sort((x,y)=>y.similarity-x.similarity).slice(0,8)));
+  const alike=layout.filter(r=>r.similarity>0.5);
+  expect(alike,'first screens that look alike: '+JSON.stringify(alike)).toEqual([]);
 });

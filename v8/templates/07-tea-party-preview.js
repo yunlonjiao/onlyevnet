@@ -168,11 +168,19 @@ const agendaSection=coreSection('activities',{ey:'AGENDA',title:'当天流程'})
   .replace('>日程<','>流程<').replace('<b>当天日程</b>','<b>当天流程</b>').replace('<span>SCHEDULE</span>','<span>PROGRAM</span>')
   .replace('>活动详情<','>活动介绍<').replace('<b>活动详情</b>','<b>每个活动怎么玩</b>');
 
-export const previewStyle=coreStyle+style;
+/* hero composition: what the first screen is built from differs from every other template */
+const heroStyle=`
+.tp-site .hero-grid{grid-template-columns:minmax(0,1fr);max-width:780px;gap:0;justify-items:center}
+.tp-site .hero-art{order:0;width:230px;max-width:230px;margin:0 auto -120px;position:relative;z-index:3}
+.tp-site .hero-copy{order:1;width:100%;padding:150px 40px 36px;text-align:center}
+.tp-site .meta,.tp-site .tp-cta{justify-content:center}.tp-site .hero p{margin-left:auto;margin-right:auto}
+@media(max-width:820px){.tp-site .hero-art{max-width:190px;width:190px;margin-bottom:-96px}.tp-site .hero-copy{padding:120px 22px 28px}}
+`;
+export const previewStyle=coreStyle+style+heroStyle;
 export const previewBody=`<div class="tp-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席的人</a><a href="#tickets">报名</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">去报名 ↗</a></div></header>
 <main id="top">
-<section class="hero"><div class="wrap hero-grid"><div class="hero-copy"><span class="hero-kicker">TEA PARTY · 茶会邀请</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="tp-cta"><a class="tp-btn pink ticket-purchase-link" href="#tickets">去报名</a><a class="tp-btn" href="#today">看今天玩什么</a></div></div><div class="hero-art"><div class="kv"><strong class="tp-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section>
+<section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="tp-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy"><span class="hero-kicker">TEA PARTY · 茶会邀请</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="tp-cta"><a class="tp-btn pink ticket-purchase-link" href="#tickets">去报名</a><a class="tp-btn" href="#today">看今天玩什么</a></div></div></div></section>
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NOTICE','茶会通知'))}
 <div id="today">${coreSection('participation',{ey:"TODAY'S MENU",title:'今天玩什么'})}</div>
 <section class="section oe-home-only" id="timetable"><div class="wrap">${head('TIMETABLE','当天流程')}<div class="timeline" data-oe-mirror="timetable"></div>${more('activities','查看完整流程')}</div></section>

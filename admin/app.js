@@ -334,26 +334,43 @@ function migrateLegacyProject(){
 }
 migrateLegacyProject();projects=readProjects();
 
+let templateFilter='all';
+function renderTemplateFilters(){
+  const all=listTemplates(),row=$('#templateFilters');row.innerHTML='';
+  const options=[{id:'all',label:'全部',count:all.length},...TEMPLATE_GROUPS.map(g=>({id:g.id,label:g.label,count:all.filter(t=>t.group===g.id).length})).filter(g=>g.count)];
+  options.forEach(o=>{
+    const b=document.createElement('button');b.type='button';b.setAttribute('role','tab');b.dataset.filter=o.id;
+    b.className=o.id===templateFilter?'active':'';b.setAttribute('aria-selected',String(o.id===templateFilter));
+    b.innerHTML='<span></span><i></i>';b.firstChild.textContent=o.label;b.lastChild.textContent=String(o.count);
+    row.appendChild(b);
+  });
+}
 function renderTemplates(){
-  const templates=listTemplates(),grid=$('#templateGrid');grid.innerHTML='';
-  let lastGroup='';
-  templates.forEach((template,index)=>{
-    if(template.group!==lastGroup){
-      lastGroup=template.group;
-      const g=TEMPLATE_GROUPS.find(x=>x.id===template.group);
-      if(g){const h=document.createElement('div');h.className='template-group';h.innerHTML='<b></b><span></span>';h.firstChild.textContent=g.label;h.lastChild.textContent=g.text;grid.appendChild(h)}
-    }
+  renderTemplateFilters();
+  const templates=listTemplates().filter(t=>templateFilter==='all'||t.group===templateFilter),grid=$('#templateGrid');grid.innerHTML='';
+  templates.forEach(template=>{
     const card=document.createElement('article');
-    card.className='template-card template-art-'+String(template.artDirection||'default').replace(/[^a-z0-9-]/gi,'')+(template.eventType==='creator-market'?' template-market-preview':'');
-    card.dataset.templateId=template.id;
-    const coverFile=template.id==='01-ip-only'?'template-01.png':template.id==='02-scrapbook'?'template-02.png':template.id==='03-creator-market'?'template-03.png':template.id==='04-creator-catalogue'?'template-04.png':'';
-    const marketUrl='';
-    card.innerHTML='<div class="template-preview"><div class="template-preview-window"><span class="bar"></span><div class="hero"><b>STAR<br>DUST<br>ONLY</b><span class="art"></span><em>'+String(template.structureProfile||'portal').toUpperCase()+'</em></div><div class="rows"><i></i><i></i><i></i></div></div>'+(coverFile?'<img class="template-real-cover" src="/admin/covers/'+coverFile+'" alt="'+template.name+' 真实网页首屏截图" loading="lazy" onerror="this.remove()">':'')+(marketUrl?'<iframe class="market-thumbnail" src="'+marketUrl+'" title="模板视觉预览" tabindex="-1" loading="lazy" aria-hidden="true"></iframe>':'')+'</div>'+
-      '<div class="template-card-body"><span>模板 '+template.id.slice(0,2)+'</span><h2>'+template.label+'</h2><p>'+template.description+'</p><div class="template-card-footer"><span class="template-tag">'+templateTag(template)+'</span><button class="use-template" data-template="'+template.id+'" type="button">使用此模板</button></div></div>';
+    card.className='template-card template-art-'+String(template.artDirection||'default').replace(/[^a-z0-9-]/gi,'');
+    card.dataset.templateId=template.id;card.dataset.group=template.group||'';
+    const label=template.label.replace(/[<>&"]/g,'');
+    card.innerHTML='<button class="template-cover" type="button" data-preview="'+template.id+'" aria-label="预览 '+label+'"><img src="/admin/covers/template-'+template.id.slice(0,2)+'.png" alt="'+label+' 的首页" loading="lazy"><span class="template-cover-hint">点击预览</span></button>'+
+      '<div class="template-card-body"><span>模板 '+template.id.slice(0,2)+'</span><h2>'+label+'</h2><p></p><div class="template-card-footer"><span class="template-tag"></span><div class="template-card-actions"><button class="preview-template" data-preview="'+template.id+'" type="button">预览</button><button class="use-template" data-template="'+template.id+'" type="button">使用此模板</button></div></div></div>';
+    card.querySelector('p').textContent=template.description;
+    card.querySelector('.template-tag').textContent=templateTag(template);
     grid.appendChild(card);
   });
-
 }
+// Preview: the real template with its sample content, on a desktop or a phone width, without creating a project.
+function openPreview(templateId){
+  const t=getTemplate(templateId);previewTemplateId=t.id;
+  $('#previewTitle').textContent=t.label;$('#previewText').textContent=templateTag(t);
+  qa('[data-preview-device]').forEach(b=>b.classList.toggle('active',b.dataset.previewDevice==='desktop'));
+  $('#previewStage').classList.remove('mobile');
+  $('#previewFrame').src='/v8/?template='+encodeURIComponent(t.id)+'&embed=preview';
+  $('#previewDialog').showModal();
+}
+function closePreview(){$('#previewDialog').close();$('#previewFrame').src='about:blank'}
+let previewTemplateId='';
 // Start-page numbers: the local ones are always known, the cloud ones arrive after sign-in.
 let overviewCloud=null;
 const hasUnpublishedChanges=project=>{
@@ -433,64 +450,28 @@ function openCreate(templateId=DEFAULT_TEMPLATE_ID){
   const t=getTemplate(templateId);
   $('#selectedTemplateCard').innerHTML='<span class="thumb thumb-'+String(t.artDirection||'default').replace(/[^a-z0-9-]/gi,'')+'"></span><div><b>'+t.label+'</b><span>'+templateTag(t)+'</span></div>';
   $('#createProjectName').value=getTemplate(selectedTemplateId).defaults.eventName||'STARDUST ONLY';
-  const quick=t.quickSetup;
-  $('#quickSetup').hidden=!quick;
-  if(quick){
-    for(const id of ['quickHero','quickDate','quickPlace','quickTicketUrl','quickTagline'])$('#'+id).value='';
-    $('#quickModules').innerHTML=quick.modules.map(m=>'<label><input type="checkbox" value="'+m.key+'" checked> '+m.label+'</label>').join('');
-  }
   $('#createDialog').showModal();
   setTimeout(()=>$('#createProjectName').focus(),0);
 }
-// Large phone photos are scaled down before they are stored or uploaded.
-async function shrinkImage(file){
-  try{
-    const bmp=await createImageBitmap(file),scale=Math.min(1,1800/Math.max(bmp.width,bmp.height));
-    if(scale===1&&file.size<800*1024)return file;
-    const c=document.createElement('canvas');c.width=Math.round(bmp.width*scale);c.height=Math.round(bmp.height*scale);
-    c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
-    const blob=await new Promise(r=>c.toBlob(r,'image/webp',.86));
-    return blob&&blob.size<file.size?blob:file;
-  }catch{return file}
-}
-const fileToDataUrl=blob=>new Promise((ok,fail)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=fail;r.readAsDataURL(blob)});
-// Small-event templates take a few answers up front and start the editor with them filled in.
-async function quickSetupPatch(project){
-  const t=getTemplate(project.templateId),patch={};
-  const text=id=>$('#'+id).value.trim();
-  if(text('quickDate'))patch.date=text('quickDate');
-  if(text('quickPlace'))patch.location=text('quickPlace');
-  if(text('quickTicketUrl'))patch.ticketUrl=text('quickTicketUrl');
-  if(text('quickTagline'))patch.tagline=text('quickTagline');
-  const chosen=new Set([...qa('#quickModules input:checked')].map(i=>i.value));
-  patch.modules={...(t.defaults.modules||{})};
-  for(const m of t.quickSetup.modules)patch.modules[m.key]=chosen.has(m.key);
-  const file=$('#quickHero').files[0];
-  if(file){
-    const blob=await shrinkImage(file);
-    try{
-      const cid=await ensureCloudProjectFor({templateId:project.templateId,projectId:project.id,name:project.name});
-      patch.heroImage=await uploadCloudImage({blob,projectId:cid,filename:'hero.webp'});
-    }catch{patch.heroImage=await fileToDataUrl(blob)}
-  }
-  return patch;
-}
-async function createProject(name){
+function createProject(name){
   const project={id:uid(),name:name.trim()||'未命名活动',templateId:selectedTemplateId,status:'draft',updatedAt:new Date().toISOString(),siteUrl:''};
-  if(getTemplate(selectedTemplateId).quickSetup){
-    const button=$('#createForm button[type=submit]');button.disabled=true;button.textContent='正在准备…';
-    try{
-      const patch=await quickSetupPatch(project);
-      localStorage.setItem(projectStorageKey(project),JSON.stringify({...patch,eventName:project.name}));
-    }catch{}
-    finally{button.disabled=false;button.textContent='使用此模板创建'}
-  }
   writeProjects([...projects,project]);
   location.href=studioUrl(project);
 }
 qa('[data-admin-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.adminPage));
 for(const id of ['newProjectHeroBtn','emptyCreateBtn'])$('#'+id).onclick=()=>showPage('templates');
-$('#templateGrid').addEventListener('click',e=>{const b=e.target.closest('[data-template]');if(b)openCreate(b.dataset.template)});
+$('#templateGrid').addEventListener('click',e=>{
+  const p=e.target.closest('[data-preview]');if(p){openPreview(p.dataset.preview);return}
+  const b=e.target.closest('[data-template]');if(b)openCreate(b.dataset.template);
+});
+$('#templateFilters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(!b)return;templateFilter=b.dataset.filter;renderTemplates()});
+qa('[data-preview-device]').forEach(b=>b.onclick=()=>{
+  qa('[data-preview-device]').forEach(x=>x.classList.toggle('active',x===b));
+  $('#previewStage').classList.toggle('mobile',b.dataset.previewDevice==='mobile');
+});
+$('#previewClose').onclick=closePreview;
+$('#previewDialog').addEventListener('cancel',()=>{$('#previewFrame').src='about:blank'});
+$('#previewUse').onclick=()=>{const id=previewTemplateId;closePreview();openCreate(id)};
 $('#createCancel').onclick=()=>$('#createDialog').close();
 $('#createForm').addEventListener('submit',e=>{e.preventDefault();createProject($('#createProjectName').value)});
 $('#projectSearch').addEventListener('input',e=>renderProjects(e.target.value));

@@ -15,9 +15,12 @@ const query=new URLSearchParams(location.search);
 const requestedTemplateId=query.get('template')||DEFAULT_TEMPLATE_ID;
 const activeTemplate=getTemplate(requestedTemplateId);
 const projectId=query.get('project')||'default';
+// ?embed=preview shows the template with its sample content as a visitor would see it (used by the template gallery).
+const embedPreview=query.get('embed')==='preview';
+if(embedPreview)document.documentElement.classList.add('embed-preview');
 const initialProjectName=String(query.get('name')||'').trim();
 const projectStorageSuffix=projectId==='default'?activeTemplate.id:(activeTemplate.id+':'+projectId);
-const STORAGE=`onlyevent-studio-v8:${projectStorageSuffix}:iframe`,LEGACY_STORAGE='onlyevent-studio-v8:01:iframe',PUBLISH_STORAGE=`onlyevent-studio-publish:${projectStorageSuffix}:iframe`,ADMIN_PROJECTS_KEY='onlyevent-admin-projects-v1',ORIGIN=location.origin;
+const STORAGE=embedPreview?'onlyevent-preview-scratch:'+activeTemplate.id:`onlyevent-studio-v8:${projectStorageSuffix}:iframe`,LEGACY_STORAGE='onlyevent-studio-v8:01:iframe',PUBLISH_STORAGE=`onlyevent-studio-publish:${projectStorageSuffix}:iframe`,ADMIN_PROJECTS_KEY='onlyevent-admin-projects-v1',ORIGIN=location.origin;
 const GUIDE_OLD_PLACEHOLDER_TEXT={"traffic":"填写场馆地址、地铁 / 公交、自驾 / 网约车、入口位置。可以上传路线图或入口示意图。","admission":"填写入场时间、检票方式、排队、现场购票、二次入场、禁止夜排等说明。","facilities":"填写卫生间、更衣室、寄存、餐饮、医疗点、休息区、充电或无障碍信息。","cosplay":"填写更衣、摄影、道具尺寸、仿真武器、妆造和现场拍摄规则。","safety":"填写禁止携带物品、禁止行为、紧急情况处理和 Staff 联系方式。"};
 const CUSTOM_PAGE_LAYOUTS={
  custom:'gallery',
@@ -29,11 +32,12 @@ const CUSTOM_PAGE_LAYOUTS={
  comic:'reading',novel:'reading',
  gameDemo:'activity',tabletop:'activity',cardGame:'activity',support:'activity'
 };
-let state=structuredClone(activeTemplate.defaults),preview=false,saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home',publishIntent='site',publishRecord={};
+let state=structuredClone(activeTemplate.defaults),preview=embedPreview,saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home',publishIntent='site',publishRecord={};
 let hasSavedProject=false;
 // The retired creator editor (03/04) stored project-less sessions under ':default:'; move them once.
-try{const legacyDefaultKey='onlyevent-studio-v8:'+activeTemplate.id+':default:iframe',legacyDefault=projectId==='default'?localStorage.getItem(legacyDefaultKey):null;if(legacyDefault){localStorage.setItem(STORAGE,legacyDefault);localStorage.removeItem(legacyDefaultKey)}}catch{}
-try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&activeTemplate.id===DEFAULT_TEMPLATE_ID?localStorage.getItem(LEGACY_STORAGE):null);if(saved){let parsed=JSON.parse(saved);if(activeTemplate.id==='03-creator-market'||activeTemplate.id==='04-creator-catalogue')parsed=migrateCreatorMarketState(parsed,activeTemplate.defaults);state={...state,...parsed};hasSavedProject=true}}catch{}
+try{const legacyDefaultKey='onlyevent-studio-v8:'+activeTemplate.id+':default:iframe',legacyDefault=projectId==='default'&&!embedPreview?localStorage.getItem(legacyDefaultKey):null;if(legacyDefault){localStorage.setItem(STORAGE,legacyDefault);localStorage.removeItem(legacyDefaultKey)}}catch{}
+if(embedPreview){try{localStorage.removeItem(STORAGE)}catch{}}
+try{const saved=localStorage.getItem(STORAGE)||(projectId==='default'&&!embedPreview&&activeTemplate.id===DEFAULT_TEMPLATE_ID?localStorage.getItem(LEGACY_STORAGE):null);if(saved){let parsed=JSON.parse(saved);if(activeTemplate.id==='03-creator-market'||activeTemplate.id==='04-creator-catalogue')parsed=migrateCreatorMarketState(parsed,activeTemplate.defaults);state={...state,...parsed};hasSavedProject=true}}catch{}
 if(!hasSavedProject&&initialProjectName)state.eventName=initialProjectName;
 migrateDemoEventName(state,projectId);
 state.templateId=activeTemplate.id;
@@ -1646,6 +1650,7 @@ function setPreview(next){
  toast(preview?'预览模式 · 页面交互已启用':'已返回编辑');
 }
 $('#previewBtn').onclick=()=>setPreview(!preview);
+if(embedPreview)setStudioPreviewChrome(true);
 $('#createCustomPageBtn').onclick=openCustomPageCreator;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&preview)setPreview(false)});
 $('.page-nav')?.addEventListener('click',e=>{
@@ -1673,3 +1678,61 @@ syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleContro
 
 /* Shared mobile drawers, identical across every template. */
 bindStudioMobilePanels();
+
+/* ---- quick setup for small-event templates: the first things an organizer fills in, asked once inside the editor ---- */
+const quickSetup=activeTemplate.quickSetup;
+async function shrinkQuickImage(file){
+  try{
+    const bmp=await createImageBitmap(file),scale=Math.min(1,1800/Math.max(bmp.width,bmp.height));
+    if(scale===1&&file.size<800*1024)return file;
+    const c=document.createElement('canvas');c.width=Math.round(bmp.width*scale);c.height=Math.round(bmp.height*scale);
+    c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+    const blob=await new Promise(r=>c.toBlob(r,'image/webp',.86));
+    return blob&&blob.size<file.size?blob:file;
+  }catch{return file}
+}
+const quickFileToDataUrl=blob=>new Promise((ok,fail)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=fail;r.readAsDataURL(blob)});
+function openQuickSetup(){
+  const dialog=$('#quickSetupDialog');if(!dialog)return;
+  $('#quickDate').value=state.date===activeTemplate.defaults.date?'':(state.date||'');
+  $('#quickPlace').value=state.location===activeTemplate.defaults.location?'':(state.location||'');
+  $('#quickTicketUrl').value=state.ticketUrl||'';
+  $('#quickTagline').value='';
+  $('#quickHero').value='';
+  $('#quickModules').innerHTML=quickSetup.modules.map(m=>'<label><input type="checkbox" value="'+m.key+'"'+(state.modules?.[m.key]!==false?' checked':'')+'> '+m.label+'</label>').join('');
+  dialog.showModal();
+}
+async function finishQuickSetup(apply){
+  const dialog=$('#quickSetupDialog'),button=$('#quickSetupDone');
+  if(apply){
+    button.disabled=true;button.textContent='正在准备…';
+    checkpoint();
+    const text=id=>$('#'+id).value.trim();
+    if(text('quickDate'))state.date=text('quickDate');
+    if(text('quickPlace'))state.location=text('quickPlace');
+    if(text('quickTicketUrl'))state.ticketUrl=text('quickTicketUrl');
+    if(text('quickTagline'))state.tagline=text('quickTagline');
+    state.modules??={};
+    const chosen=new Set([...dialog.querySelectorAll('#quickModules input:checked')].map(i=>i.value));
+    for(const m of quickSetup.modules)state.modules[m.key]=chosen.has(m.key);
+    const file=$('#quickHero').files[0];
+    if(file){
+      const blob=await shrinkQuickImage(file);
+      try{
+        const cloudId=await ensureCloudProjectFor({templateId:activeTemplate.id,projectId,name:state.eventName});
+        state.heroImage=await uploadCloudImage({blob,projectId:cloudId,filename:'hero.webp'});
+      }catch{state.heroImage=await quickFileToDataUrl(blob)}
+    }
+    button.disabled=false;button.textContent='完成，开始编辑';
+  }
+  state.quickSetupDone=true;save();
+  syncModuleControls();send({type:'OE_REPLACE_STATE',state});
+  dialog.close();
+}
+// ?quick=skip is for automated checks that open a fresh project and must not meet the dialog.
+if(quickSetup&&!embedPreview&&query.get('quick')!=='skip'&&projectId!=='default'&&!state.quickSetupDone&&!hasSavedProject){
+  $('#quickSetupDone').addEventListener('click',e=>{e.preventDefault();finishQuickSetup(true)});
+  $('#quickSetupSkip').addEventListener('click',e=>{e.preventDefault();finishQuickSetup(false)});
+  $('#quickSetupDialog').addEventListener('cancel',e=>{e.preventDefault();finishQuickSetup(false)});
+  setTimeout(openQuickSetup,400);
+}

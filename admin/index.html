@@ -312,16 +312,25 @@
             <p>模板只影响外观，摊位、日程这些内容在每个模板里的填法都一样。</p>
           </div>
         </div>
-        <div class="template-filter-row">
-          <button class="active" type="button">全部</button>
-          <button type="button">ONLY / 同好活动</button>
-          <button type="button">同人创作展</button>
-          <button type="button" disabled>Live / 舞台</button>
-        </div>
+        <div class="template-filter-row" id="templateFilters" role="tablist" aria-label="模板分类"></div>
         <div class="template-grid" id="templateGrid"></div>
       </div>
     </section>
   </main>
+
+  <dialog class="preview-dialog" id="previewDialog">
+    <div class="preview-shell">
+      <header class="preview-head">
+        <div class="preview-title"><span class="eyebrow">模板预览</span><b id="previewTitle"></b><small id="previewText"></small></div>
+        <div class="preview-device" role="group" aria-label="预览设备">
+          <button type="button" data-preview-device="desktop" class="active">电脑</button>
+          <button type="button" data-preview-device="mobile">手机</button>
+        </div>
+        <div class="preview-actions"><button class="primary" type="button" id="previewUse">使用此模板</button><button type="button" id="previewClose" aria-label="关闭">×</button></div>
+      </header>
+      <div class="preview-stage" id="previewStage"><iframe id="previewFrame" title="模板预览" src="about:blank"></iframe></div>
+    </div>
+  </dialog>
 
   <dialog class="create-dialog" id="createDialog">
     <form method="dialog" class="create-shell" id="createForm">
@@ -332,17 +341,6 @@
       <div class="dialog-body">
         <section class="selected-template" id="selectedTemplateCard"></section>
         <label><span>活动名称</span><input id="createProjectName" maxlength="80" placeholder="例如：STARDUST ONLY" required></label>
-        <div class="quick-setup" id="quickSetup" hidden>
-          <div class="quick-title">先填这几项，进编辑器就是现成的页面，其余的以后再改。</div>
-          <label><span>主视觉图 <small>（可以先不传）</small></span><input id="quickHero" type="file" accept="image/png,image/jpeg,image/webp"></label>
-          <div class="quick-row">
-            <label><span>日期</span><input id="quickDate" maxlength="40" placeholder="例如：2026.11.08"></label>
-            <label><span>地点</span><input id="quickPlace" maxlength="60" placeholder="例如：杭州"></label>
-          </div>
-          <label><span>报名 / 预约链接</span><input id="quickTicketUrl" maxlength="300" placeholder="https://"></label>
-          <label><span>一句话介绍</span><input id="quickTagline" maxlength="120"></label>
-          <fieldset class="quick-modules"><legend>要哪几块内容</legend><div id="quickModules"></div></fieldset>
-        </div>
         <div class="dialog-note">创建后直接进入编辑器。</div>
       </div>
       <div class="dialog-foot">

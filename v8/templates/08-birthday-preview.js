@@ -194,7 +194,19 @@ const stepsSection=coreSection('activities',{ey:'SCHEDULE',title:'当天安排'}
   .replace('>日程<','>当天安排<').replace('<b>当天日程</b>','<b>当天安排</b>').replace('<span>SCHEDULE</span>','<span>TODAY</span>')
   .replace('>活动详情<','>应援内容<').replace('<b>活动详情</b>','<b>每一项怎么参加</b>');
 
-export const previewStyle=coreStyle+style;
+/* hero composition: what the first screen is built from differs from every other template */
+const heroStyle=`
+.bd-site .hero{background:none;padding:30px 0 36px;overflow:visible}
+.bd-site .hero:before,.bd-site .hero:after{display:none}
+.bd-site .hero-grid{position:relative;display:block;max-width:1120px;margin:0 auto;min-height:460px;border-radius:36px;overflow:hidden;background:var(--bd-accent)}
+.bd-site .hero-grid:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(circle,#ffffff44 3px,transparent 3.4px) 0 0/46px 46px}
+.bd-site .hero-art{position:absolute;inset:0 0 0 27%;width:auto;max-width:none;height:auto!important;aspect-ratio:auto!important;margin:0;transform:none;min-height:0!important}
+.bd-site .hero-art:before,.bd-site .hero-art:after{display:none}
+.bd-site .kv{border-radius:0;box-shadow:none;inset:0;clip-path:ellipse(100% 100% at 100% 50%)}
+.bd-site .hero-copy{position:relative;z-index:2;max-width:500px;padding:64px 48px}
+@media(max-width:820px){.bd-site .hero-grid{min-height:0}.bd-site .hero-art{position:relative;inset:auto;width:100%;max-width:none;aspect-ratio:16/10!important;order:-1}.bd-site .kv{clip-path:none}.bd-site .hero-copy{padding:28px 22px 34px;max-width:none}}
+`;
+export const previewStyle=coreStyle+style+heroStyle;
 export const previewBody=`<div class="bd-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#participation">应援内容</a><a href="#tickets">赠品</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">预约领取 ↗</a></div></header>
 <main id="top">
