@@ -70,3 +70,28 @@ test('cost estimate adds up expenses and finds the break-even head count',async(
   await page.locator('[data-admin-page="cost"]').click();
   await expect(page.locator('[data-group="venue"] [data-amount="0"]')).toHaveValue('1500');
 });
+
+test('the start page lists the event date and custom deadlines, soonest first',async({page})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'deadline-organizer');
+  await page.goto('/admin/');
+  const soon=new Date(Date.now()+8*3600000+5*86400000).toISOString().slice(0,10);
+  await page.evaluate(day=>{
+    localStorage.setItem('onlyevent-admin-projects-v1',JSON.stringify([{id:'d1',name:'夏日展',templateId:'01-ip-only',status:'draft',siteUrl:'',updatedAt:new Date().toISOString()}]));
+    localStorage.setItem('onlyevent-studio-v8:01-ip-only:d1:iframe',JSON.stringify({eventName:'夏日展',eventStartDateTime:day+'T10:00'}));
+  },new Date(Date.now()+8*3600000+25*86400000).toISOString().slice(0,10));
+  await page.reload();
+  await expect(page.locator('#deadlinePanel li')).toHaveCount(1);
+  await expect(page.locator('#deadlinePanel li').first()).toContainText('活动举办');
+  await page.locator('[data-deadline-add]').click();
+  await page.locator('.deadline-form input[name=label]').fill('社团招募截止');
+  await page.locator('.deadline-form input[name=date]').fill(soon);
+  await page.locator('.deadline-form button[type=submit]').click();
+  await expect(page.locator('#deadlinePanel li')).toHaveCount(2);
+  await expect(page.locator('#deadlinePanel li').first()).toContainText('社团招募截止');
+  await expect(page.locator('#deadlinePanel li').first()).toHaveClass(/soon/);
+  await page.reload();
+  await expect(page.locator('#deadlinePanel li')).toHaveCount(2);
+  await page.locator('[data-deadline-del]').click();
+  await expect(page.locator('#deadlinePanel li')).toHaveCount(1);
+});

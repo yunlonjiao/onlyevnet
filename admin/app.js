@@ -1,6 +1,7 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
 import {mountCost} from '/admin/cost.js?v=1';
+import {mountDeadlines} from '/admin/deadlines.js?v=1';
 import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.52.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
@@ -384,7 +385,13 @@ const hasUnpublishedChanges=project=>{
   const at=Date.parse(getPublishRecord(project).publishedAt||''),edited=Date.parse(project.updatedAt||'');
   return Number.isFinite(at)&&Number.isFinite(edited)&&edited-at>60000;
 };
+let redrawDeadlines=null;
+function renderDeadlines(){
+  if(!redrawDeadlines)redrawDeadlines=mountDeadlines($('#deadlinePanel'),{getProjects:()=>projects,readState:p=>{try{return JSON.parse(localStorage.getItem(projectStorageKey(p))||'null')}catch{return null}}});
+  else redrawDeadlines();
+}
 function renderOverview(){
+  renderDeadlines();
   $('#ovProjects').textContent=String(projects.length);
   $('#ovPublished').textContent=String(projects.filter(p=>p.siteUrl).length);
   const stale=projects.filter(hasUnpublishedChanges).length;
