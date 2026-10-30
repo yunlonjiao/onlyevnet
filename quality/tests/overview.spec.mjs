@@ -21,7 +21,7 @@ test('start page shows counts, waiting circles and unpublished changes',async({p
   await expect(page.locator('#ovProjects')).toHaveText('2');
   await expect(page.locator('#ovPublished')).toHaveText('1');
   await expect(page.locator('#ovStaleCount')).toHaveText('1');
-  await expect(page.locator('.project-time .stale')).toHaveCount(1);
+  await expect(page.locator('.project-status.stale-pill')).toHaveCount(1);
   await expect(page.locator('#ovPendingBtn')).toBeHidden();
 
   // A circle submits through the public link; the start page then shows it as waiting.

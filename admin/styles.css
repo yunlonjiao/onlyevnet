@@ -294,3 +294,12 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 .admin-sidebar nav button b{font-size:14px;font-weight:700}
 .admin-sidebar nav button.nav-last{margin-top:auto;border-top:1px solid var(--line);border-radius:0 0 999px 999px}
 @media(max-width:760px){.admin-sidebar nav .nav-group{display:none}.admin-sidebar nav button.nav-last{margin-top:0;border-top:0;border-radius:10px}.admin-sidebar nav button b{font-size:10px}}
+
+.admin-sidebar nav .nav-help{display:flex;align-items:center;gap:12px;min-height:46px;border-radius:999px;padding:0 14px;color:#676771;text-decoration:none;margin-top:auto}
+.admin-sidebar nav .nav-help span{display:grid;place-items:center;width:22px;height:22px}
+.admin-sidebar nav .nav-help b{font-size:14px;font-weight:700}
+.admin-sidebar nav .nav-help:hover{background:#eeeef3;color:#222}
+.admin-sidebar nav .nav-help+button.nav-last{margin-top:4px}
+@media(max-width:760px){.admin-sidebar nav .nav-help{display:none}}
+
+.project-status.stale-pill{background:#fff1dc;color:#b45f06}

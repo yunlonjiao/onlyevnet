@@ -416,8 +416,8 @@ function renderProjects(filter=''){
     card.querySelector('.project-card-title span').textContent=project.siteUrl||'尚未发布游客网站';
     card.querySelector('.project-template').textContent=getTemplate(project.templateId)?.label||project.templateId||'模板';
     const timeEl=card.querySelector('.project-time');timeEl.textContent='更新 '+formatTime(project.updatedAt);
-    if(hasUnpublishedChanges(project)){const tag=document.createElement('span');tag.className='stale';tag.textContent='有改动没发布';timeEl.appendChild(tag)}
-    const st=card.querySelector('.project-status');st.textContent=status==='published'?'已发布':'草稿';st.classList.toggle('published',status==='published');
+    
+    const st=card.querySelector('.project-status'),stale=hasUnpublishedChanges(project);st.textContent=stale?'有未发布修改':status==='published'?'已发布':'草稿';st.classList.toggle('published',status==='published'&&!stale);st.classList.toggle('stale-pill',stale);
     card.querySelector('.edit-project').onclick=()=>location.href=studioUrl(project);
     const open=card.querySelector('.open-site'),unpublish=card.querySelector('.unpublish-site');
     if(project.siteUrl){
