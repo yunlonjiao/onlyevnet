@@ -359,3 +359,11 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
   .admin-sidebar nav button b{font-size:10px;white-space:nowrap}
   .admin-sidebar nav button span{width:auto;height:auto}
 }
+
+.admin-sidebar nav button.nav-help{border:0;background:transparent;font:inherit;text-align:left;cursor:pointer;width:100%}
+.help-dialog{width:min(600px,calc(100vw - 24px))}
+.help-body{max-height:70vh;overflow:auto;gap:8px}
+.help-body details{border:1px solid #ececf1;border-radius:14px;padding:0 16px;background:#fff}
+.help-body summary{cursor:pointer;font-weight:800;padding:13px 0;font-size:14px}
+.help-body details p,.help-body details ol{margin:0 0 14px;color:#4d4d58;font-size:14px;line-height:1.8}
+.help-body details ol{padding-left:20px}

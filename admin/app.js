@@ -767,3 +767,7 @@ $('#feedbackForm').onsubmit=async e=>{
   catch(err){msg.textContent=err?.status?err.message:'没能发出去，请检查网络后再试。'}
   finally{btn.disabled=false}
 };
+
+/* ---- help ---- */
+$('#helpBtn').onclick=()=>$('#helpDialog').showModal();
+$('#helpClose').onclick=()=>$('#helpDialog').close();

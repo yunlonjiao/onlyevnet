@@ -263,3 +263,16 @@ test('the feedback and share dialogs keep their content away from the edges',asy
   expect(title.height).toBeGreaterThanOrEqual(36);
   expect(title.width).toBeGreaterThan(300);
 });
+
+test('help opens inside the page, not in a new tab',async({page,context})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'help-organizer');
+  await page.goto('/admin/');
+  const before=context.pages().length;
+  await page.locator('#helpBtn').click();
+  await expect(page.locator('#helpDialog')).toBeVisible();
+  await expect(page.locator('#helpDialog summary').first()).toBeVisible();
+  expect(context.pages().length).toBe(before);
+  await page.locator('#helpClose').click();
+  await expect(page.locator('#helpDialog')).toBeHidden();
+});
