@@ -143,7 +143,19 @@ test('new production feature inspectors are present and editable',async({page})=
   await expect(page.locator('#inspector [data-sync-path="heroFocalMobile"]')).toBeVisible();
 
   await page.locator('[data-page-tool="seo"]').click();
-  await expect(page.locator('#inspector [data-seo-field="pageTitle"]')).toBeVisible();
-  await expect(page.locator('#inspector [data-seo-field="metaDescription"]')).toBeVisible();
-  await expect(page.locator('#inspector [data-seo-image]')).toBeVisible();
+  // SEO and sharing live in their own dialog, not in the inspector
+  await expect(page.locator('#shareDialog')).toBeVisible();
+  await expect(page.locator('#shareDialog [data-seo-field="ogTitle"]')).toBeVisible();
+  await expect(page.locator('#shareDialog [data-seo-image]')).toBeVisible();
+  await page.locator('#shareDialog summary').click();
+  await expect(page.locator('#shareDialog [data-seo-field="pageTitle"]')).toBeVisible();
+  await expect(page.locator('#shareDialog [data-seo-field="metaDescription"]')).toBeVisible();
+  await page.locator('#shareDialog [data-seo-field="ogTitle"]').fill('转发标题');
+  await expect(page.locator('#shareDialog .share-card-text b')).toHaveText('转发标题');
+  await expect(page.locator('#shareMessage')).toHaveValue(/我会去/);
+  await page.locator('#shareClose').click();
+  await expect(page.locator('#shareDialog')).toBeHidden();
+  await page.locator('#shareBtn').click();
+  await expect(page.locator('#shareDialog .share-card-text b')).toHaveText('转发标题');
+  await page.locator('#shareClose').click();
 });

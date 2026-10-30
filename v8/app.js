@@ -999,21 +999,41 @@ function openLifecycleInspector(){
  }));
 }
 
-function openSeoInspector(){
- state.seo??={};
- const seo=state.seo;
- setInspector('SEO / 分享','搜索与社交卡片','<div class="item-fields">'+
-  '<label><span>页面标题</span><input data-seo-field="pageTitle" value="'+esc(seo.pageTitle||'')+'" placeholder="留空则使用活动名称"></label>'+
-  '<label><span>页面描述</span><textarea data-seo-field="metaDescription" rows="4" placeholder="用于搜索结果与分享摘要">'+esc(seo.metaDescription||'')+'</textarea></label>'+
-  '<label><span>标准网址 Canonical</span><input type="url" data-seo-field="canonical" value="'+esc(seo.canonical||'')+'" placeholder="https://example.onlyevent.cn/"></label>'+
-  '<label><span>分享标题</span><input data-seo-field="ogTitle" value="'+esc(seo.ogTitle||'')+'" placeholder="留空则使用页面标题"></label>'+
-  '<label><span>分享描述</span><textarea data-seo-field="ogDescription" rows="3" placeholder="留空则使用页面描述">'+esc(seo.ogDescription||'')+'</textarea></label>'+
- '</div><div class="item-media"><span>分享封面</span><div class="item-media-row">'+(seo.ogImage?'<img src="'+esc(seo.ogImage)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-seo-image>选择 / 裁剪</button>'+(seo.ogImage?'<button type="button" class="ghost" data-seo-image-remove>移除</button>':'')+'</div></div></div>'+
- '<p class="inspector-note">分享封面留空时正式导出会回退到活动 KV。SEO 信息会写入导出的游客 HTML。</p>');
- inspector.querySelectorAll('[data-seo-field]').forEach(input=>bindInspectorStateInput(input,'seo.'+input.dataset.seoField,{clean:true}));
- inspector.querySelector('[data-seo-image]')?.addEventListener('click',()=>{$('#imageInput').dataset.path='seo.ogImage';$('#imageInput').click()});
- inspector.querySelector('[data-seo-image-remove]')?.addEventListener('click',()=>{checkpoint();state.seo.ogImage='';save();send({type:'OE_REPLACE_STATE',state});openSeoInspector()});
+const shareDialog=$('#shareDialog');
+function shareText(){
+ const url=publishRecord?.url||'',bits=[state.date,state.location].map(v=>String(v||'').trim()).filter(Boolean).join(' · ');
+ return '我会去「'+(state.eventName||'活动')+'」！'+(bits?'\n'+bits:'')+(url?'\n活动网站：'+url:'');
 }
+function renderShareDialog(){
+ state.seo??={};
+ const seo=state.seo,url=publishRecord?.url||'',host=url?url.replace(/^https?:\/\//,'').replace(/\/$/,''):'发布后显示网址';
+ const title=seo.ogTitle||seo.pageTitle||state.eventName||'活动网站',desc=seo.ogDescription||seo.metaDescription||state.tagline||'',img=seo.ogImage||state.heroImage||'';
+ $('#shareBody').innerHTML=
+  '<section class="share-block"><h3>网站地址</h3>'+(url?'<div class="share-url"><b>'+esc(url)+'</b><button type="button" data-share-copy-url>复制链接</button><button type="button" data-share-open>打开网站 ↗</button></div>':'<p class="inspector-note">还没有发布。发布后这里会显示游客网址。</p>')+'</section>'+
+  '<section class="share-block"><h3>别人转发时的样子</h3><div class="share-card"><div class="share-card-img">'+(img?'<img src="'+esc(img)+'" alt="">':'<span>分享封面</span>')+'</div><div class="share-card-text"><b>'+esc(title)+'</b><small>'+esc(desc)+'</small><i>'+esc(host)+'</i></div></div>'+
+  '<div class="item-fields"><label><span>分享标题</span><input data-seo-field="ogTitle" value="'+esc(seo.ogTitle||'')+'" placeholder="留空则使用活动名称"></label>'+
+  '<label><span>分享描述</span><textarea data-seo-field="ogDescription" rows="3" placeholder="留空则使用活动简介">'+esc(seo.ogDescription||'')+'</textarea></label></div>'+
+  '<div class="item-media"><span>分享封面</span><div class="item-media-row">'+(seo.ogImage?'<img src="'+esc(seo.ogImage)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-seo-image>选择 / 裁剪</button>'+(seo.ogImage?'<button type="button" class="ghost" data-seo-image-remove>移除</button>':'')+'</div></div></div>'+
+  '<p class="inspector-note">封面留空时使用活动主视觉。</p></section>'+
+  '<section class="share-block"><h3>发给朋友的话</h3><textarea id="shareMessage" rows="4"></textarea><div class="share-actions"><button type="button" data-share-copy-text>复制文案</button></div></section>'+
+  '<details class="share-block"><summary>搜索引擎</summary><div class="item-fields"><label><span>页面标题</span><input data-seo-field="pageTitle" value="'+esc(seo.pageTitle||'')+'" placeholder="留空则使用活动名称"></label>'+
+  '<label><span>页面描述</span><textarea data-seo-field="metaDescription" rows="3" placeholder="用于搜索结果摘要">'+esc(seo.metaDescription||'')+'</textarea></label>'+
+  '<label><span>标准网址 Canonical</span><input type="url" data-seo-field="canonical" value="'+esc(seo.canonical||'')+'" placeholder="一般不用填"></label></div></details>';
+ const body=$('#shareBody');
+ $('#shareMessage').value=shareText();
+ body.querySelectorAll('[data-seo-field]').forEach(input=>{
+  bindInspectorStateInput(input,'seo.'+input.dataset.seoField,{clean:true});
+  input.addEventListener('input',()=>{const t=state.seo,card=body.querySelector('.share-card-text');if(!card)return;card.querySelector('b').textContent=t.ogTitle||t.pageTitle||state.eventName||'活动网站';card.querySelector('small').textContent=t.ogDescription||t.metaDescription||state.tagline||''});
+ });
+ const copy=async(text)=>{try{await navigator.clipboard.writeText(text);toast('已复制')}catch{toast('复制失败')}};
+ body.querySelector('[data-share-copy-url]')?.addEventListener('click',()=>copy(url));
+ body.querySelector('[data-share-open]')?.addEventListener('click',()=>window.open(url,'_blank','noopener'));
+ body.querySelector('[data-share-copy-text]')?.addEventListener('click',()=>copy($('#shareMessage').value));
+ body.querySelector('[data-seo-image]')?.addEventListener('click',()=>{$('#imageInput').dataset.path='seo.ogImage';$('#imageInput').click()});
+ body.querySelector('[data-seo-image-remove]')?.addEventListener('click',()=>{checkpoint();state.seo.ogImage='';save();send({type:'OE_REPLACE_STATE',state});renderShareDialog()});
+}
+function openShareDialog(){renderShareDialog();if(!shareDialog.open)shareDialog.showModal()}
+function openSeoInspector(){shareDialog.open?renderShareDialog():openShareDialog()}
 
 function openAddressInspector(){
  setInspector('基础信息','时间、场馆与导航','<div class="item-fields">'+
@@ -1670,6 +1690,7 @@ $('#publishCancel').onclick=()=>publishDialog.close();
 publishPrimary.onclick=()=>{publishIntent='site';send({type:'OE_EXPORT_HTML'})};
 $('#publishDownload').onclick=()=>{publishIntent='download';send({type:'OE_EXPORT_HTML'})};
 $('#publishOpen').onclick=()=>{if(publishRecord?.url)window.open(publishRecord.url,'_blank','noopener')};
+$('#shareBtn').onclick=openShareDialog;$('#shareClose').onclick=()=>shareDialog.close();$('#publishShare').onclick=()=>{publishDialog.close?.();openShareDialog()};
 $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navigator.clipboard.writeText(publishRecord.url);toast('链接已复制')}catch{toast('复制失败')}};
 $('#publishRename').addEventListener('click',()=>{renamingSite=true;renderPublishDialog();publishSlug.disabled=false;publishSlug.focus();publishSlug.select()});
 publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});

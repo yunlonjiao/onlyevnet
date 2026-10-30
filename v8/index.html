@@ -8,6 +8,13 @@
   <link rel="stylesheet" href="/v8/styles.css?v=8.41.4">
 </head>
 <body>
+  <dialog class="share-dialog" id="shareDialog">
+    <div class="share-shell">
+      <div class="share-head"><b>分享与推广</b><button id="shareClose" type="button" aria-label="关闭">×</button></div>
+      <div class="share-body" id="shareBody"></div>
+    </div>
+  </dialog>
+
   <header class="studio-topbar">
     <div class="brand-zone">
       <button id="backAdminBtn" class="back-admin-btn" type="button" title="返回我的活动">← 返回主页</button>
@@ -29,6 +36,7 @@
       </div>
       <span class="studio-version" id="studioVersion" title="当前 Studio 版本"></span>
       <div class="action-group preview-group">
+        <button id="shareBtn" type="button" title="分享卡片与宣传文案"><span class="action-icon">⇪</span><span>分享</span></button>
         <button id="previewBtn" type="button" title="查看发布效果"><span class="action-icon">◉</span><span id="previewLabel">预览</span></button>
       </div>
       <div class="action-separator"></div>
@@ -163,7 +171,7 @@
         <section class="publish-result" id="publishResult" hidden>
           <span>线上网站</span>
           <b id="publishUrl"></b>
-          <div><button id="publishOpen" type="button">打开网站 ↗</button><button id="publishCopy" type="button">复制链接</button></div>
+          <div><button id="publishOpen" type="button">打开网站 ↗</button><button id="publishCopy" type="button">复制链接</button><button id="publishShare" type="button">分享与推广</button></div>
         </section>
       </div>
       <div class="publish-foot">
