@@ -84,7 +84,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const spreadOf=i=>single()?i:(i%2?i+1:i);
   const render=()=>{
     at=spreadOf(at);
-    book.classList.toggle('is-single',single());book.classList.toggle('is-closed',!single()&&at===0);
+    book.classList.toggle('is-single',single());book.classList.toggle('is-closed',!single()&&at===0);book.classList.toggle('is-end',!single()&&at>=total);
     book.innerHTML=single()?page(at,'solo'):page(at-1,'left')+page(at,'right');
     count.textContent=single()?(at+1)+' / '+total:(at===0?'封面':at>=total?'封底':at+'-'+(at+1))+' / '+total;
     try{sessionStorage.setItem(storageKey,String(at))}catch{}
@@ -95,7 +95,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
     if(busy||next===at||next<0||next>=total+1)return;
     const forward=next>at,reduce=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(reduce){at=next;render();return}
-    busy=true;if(!single())book.classList.remove('is-closed');
+    busy=true;if(!single())book.classList.remove('is-closed','is-end');
     const leaf=document.createElement('div');
     leaf.className='cb-leaf '+(single()?'solo':forward?'right':'left')+(forward?' forward':' back');
     const frontIndex=single()?at:(forward?at:at-1),backIndex=single()?next:(forward?at+1:at-2);
