@@ -287,7 +287,15 @@ const featuredFix=`
 .tp-site .featured-all-link{display:flex!important;width:max-content!important;margin:24px auto 0!important;align-self:center!important;justify-self:center!important}
 .tp-site .featured-activity-grid{align-items:stretch}
 `;
-export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+menuStyle;
+const featuredShape=`
+/* featured plans: dishes on a menu, a round plate picture beside a title and a dotted rule */
+.tp-site #participation .featured-activity-grid{grid-template-columns:1fr!important;gap:0}
+.tp-site #participation .featured-activity-grid>.featured-activity-card.featured-activity-card{display:grid!important;grid-template-columns:104px minmax(0,1fr)!important;align-items:center;gap:20px;border:0!important;border-bottom:3px dotted var(--tp-line)!important;border-radius:0!important;background:none!important;box-shadow:none!important;padding:16px 0!important;height:auto!important}
+.tp-site #participation .featured-activity-card .featured-activity-media,.tp-site #participation .featured-activity-card .featured-activity-media.is-empty{width:104px!important;height:104px!important;min-height:0!important;aspect-ratio:1!important;border-radius:50%!important;overflow:hidden;border:3px solid var(--tp-brown)!important}
+.tp-site #participation .featured-activity-card .featured-activity-media.is-empty span{display:none}
+.tp-site #participation .featured-activity-copy{padding:0!important}
+`;
+export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+menuStyle+featuredShape;
 export const previewBody=`<div class="tp-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席的人</a><a href="#tickets">报名</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">去报名 ↗</a></div></header>
 <main id="top"><div class="tp-menu">

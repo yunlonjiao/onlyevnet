@@ -317,7 +317,18 @@ const phoneFix=`
 @media(max-width:620px){.ls-site .timeline-row{grid-template-columns:78px minmax(0,1fr);gap:2px 12px;padding:10px 0}.ls-site .timeline-row time{grid-row:span 2}.ls-site .timeline-row b{font-size:15px}}
 @media(max-width:820px){.ls-site .hero-grid{grid-template-columns:minmax(0,1fr);gap:22px;padding:14px 0}.ls-site .hero-art{order:-1;aspect-ratio:16/11;max-height:340px}.ls-site .hero-copy{min-width:0}}
 `;
-export const previewStyle=coreStyle+style+referenceStyle+ownStyle+featuredFix+phoneFix;
+const featuredShape=`
+.ls-site #updates .updates-list{width:100%;margin:0}
+.ls-site .featured-all-link{border-radius:0!important;background:none!important;color:var(--ls-cyan)!important;border:1px solid #35e3ff66!important;box-shadow:none!important}
+
+/* featured plans: wide stage tiles, a tall image strip on the left of each */
+.ls-site #participation .featured-activity-grid{grid-template-columns:1fr!important;gap:14px}
+.ls-site #participation .featured-activity-card{display:grid!important;grid-template-columns:170px minmax(0,1fr)!important;height:auto!important;align-items:stretch}
+.ls-site #participation .featured-activity-card .featured-activity-media,.ls-site #participation .featured-activity-card .featured-activity-media.is-empty{aspect-ratio:auto!important;height:auto!important;min-height:112px!important}
+.ls-site #participation .featured-activity-card .featured-activity-media.is-empty span{writing-mode:vertical-rl;letter-spacing:.3em}
+@media(max-width:620px){.ls-site #participation .featured-activity-card{grid-template-columns:96px minmax(0,1fr)!important}}
+`;
+export const previewStyle=coreStyle+style+referenceStyle+ownStyle+featuredFix+phoneFix+featuredShape;
 export const previewBody=`<div class="ls-site">${loader}
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
 <main id="top">

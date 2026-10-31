@@ -284,7 +284,20 @@ const featuredFix=`
 const phoneFix=`
 @media(max-width:820px){.bl-site .hero-grid{grid-template-columns:minmax(0,1fr)}.bl-rail{flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:4px 14px;border-right:0;border-bottom:2px solid #111;padding:0 0 10px}.bl-rail-label,.bl-rail b,.bl-rail small{writing-mode:horizontal-tb;margin:0}.bl-rail b{font-size:26px}}
 `;
-export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+phoneFix+splitStyle;
+const featuredShape=`
+.bl-site .featured-all-link{border-radius:0!important;background:#111!important;color:#fff!important;border:0!important;box-shadow:none!important}
+
+/* featured plans: numbered text rows like a printed list; no pictures */
+.bl-site #participation .featured-activity-grid{grid-template-columns:1fr!important;counter-reset:fa;gap:0}
+.bl-site #participation .featured-activity-grid>.featured-activity-card.featured-activity-card{display:grid!important;grid-template-columns:72px minmax(0,1fr)!important;align-items:center;counter-increment:fa;border:0!important;border-bottom:2px solid #111!important;border-radius:0!important;background:none!important;box-shadow:none!important;padding:12px 0!important;height:auto!important}
+.bl-site #participation .featured-activity-grid>.featured-activity-card.featured-activity-card:before{content:counter(fa,decimal-leading-zero);font:400 40px Impact,"Arial Black",sans-serif;opacity:.28;position:static;transform:none;width:auto;height:auto;background:none}
+.bl-site #participation .featured-activity-card:after{display:none}
+.bl-site #participation .featured-activity-card .featured-activity-media{display:none!important}
+.bl-site #participation .featured-activity-copy h3,.bl-site #participation .featured-activity-copy b{font-size:clamp(22px,2.6vw,34px)}
+.bl-site #updates .updates-list{display:block}
+.bl-site #updates .updates-list>a{display:grid!important;grid-template-columns:96px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;padding:10px 0;border:0;border-bottom:2px solid #111;text-align:left}
+`;
+export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+phoneFix+splitStyle+featuredShape;
 export const previewBody=`<div class="bl-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#guests" data-target-mode="page" data-page-link="guests">乐队</a><a href="#activities" data-target-mode="page" data-page-link="activities">出场顺序</a><a href="#tickets">门票</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">买票 ↗</a></div></header>
 <main id="top"><div class="bl-split"><aside class="bl-bill">
