@@ -172,7 +172,7 @@ const heroStyle=`
 `;
 /* Shinjuku LOFT schedule pages: black bar, ink-spattered paper, vertical date rail, flyer as the picture */
 const referenceStyle=`
-.bl-site{background-color:#fff;background-image:radial-gradient(circle at 12% 18%,#111 0 1.2px,transparent 1.6px),radial-gradient(circle at 78% 33%,#111 0 .9px,transparent 1.3px),radial-gradient(circle at 44% 71%,#111 0 1.6px,transparent 2px),radial-gradient(circle at 90% 88%,#111 0 1px,transparent 1.4px),radial-gradient(circle at 25% 52%,#111 0 .7px,transparent 1.1px);background-size:310px 270px,270px 330px,420px 380px,360px 300px,190px 220px}
+.bl-site{background-color:#fff}
 .bl-site .nav{height:62px;background:#000;border:0}
 .bl-site .nav .links a{text-transform:uppercase;letter-spacing:.14em;font-size:11px;font-weight:700}
 .bl-site .brand{font-style:italic;letter-spacing:.02em}
@@ -222,10 +222,12 @@ const splitStyle=`
 .bl-bill .hero{padding:26px 26px 30px;background:transparent;min-height:100%;display:flex}
 .bl-bill .hero-grid{width:100%;display:flex;flex-direction:column;gap:16px;align-items:stretch;padding:0}
 .bl-bill .hero-art{order:-1;aspect-ratio:4/3;max-height:36vh;width:100%;transform:rotate(-1.4deg)}
+.bl-bill .hero-art:after{top:-12px;bottom:auto;right:-16px;transform:rotate(24deg)}
 .bl-bill .bl-rail{flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:4px 14px;border-right:0;border-bottom:2px solid #111;padding:0 0 10px}
 .bl-bill .bl-rail-label,.bl-bill .bl-rail b,.bl-bill .bl-rail small{writing-mode:horizontal-tb;margin:0}
 .bl-bill .bl-rail b{font-size:26px}
 .bl-bill .hero h1{font-size:clamp(36px,4.2vw,70px);margin:0 0 10px}
+.bl-bill .hero-copy{padding-top:6px}
 .bl-bill .hero p{max-width:none}
 .bl-sheet{min-width:0}
 .bl-sheet .ribbon{margin:0}

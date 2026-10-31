@@ -168,6 +168,7 @@ const marketStyle=`
 .cm-social-avatar img,.cm-social-avatar>*{width:100%;height:100%;object-fit:cover;border:0!important;border-radius:50%;margin:0!important;min-height:0!important}
 .cm-social-text{flex:1;min-width:0}.cm-social-text b{font-size:14px}.cm-social-text p{margin:2px 0 0;font-size:12px;color:var(--cm-soft)}
 .cm-social .social-action{font-size:12px;color:var(--cm-accent-ink);white-space:nowrap;border:0;background:none;padding:0}
+.cm-site .sponsors:empty{display:none}
 .cm-site .sponsors{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
 .cm-site .cm-sponsor{display:flex;flex-direction:column;align-items:center;gap:8px;background:#fff;border:1px solid var(--cm-line)!important;border-radius:12px;padding:16px;box-shadow:none!important;text-align:center}
 .cm-site .cm-map-wrap{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:14px}
