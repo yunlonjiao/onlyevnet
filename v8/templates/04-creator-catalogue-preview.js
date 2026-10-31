@@ -90,7 +90,7 @@ const catalogueStyle=`
 .cc-site .cb-controls span{color:#e6dcff}
 /* Shared components on the night sky */
 .cc-site .updates-strip{background:#ffffff0d;border:0;border-block:1px solid var(--cc-line);padding:14px 0}
-.cc-site .ticket,.cc-site .community article,.cc-site .map-static,.cc-site .map-link-rail,.cc-site .booth-directory-card,.cc-site .directory-product-card,.cc-site .guide-grid article,.cc-site .sponsors>*,.cc-site .booth-directory-rich>*:first-child{border:2px solid var(--cc-ink)!important;border-radius:16px;background:var(--cc-cream);color:var(--cc-ink);box-shadow:6px 6px 0 var(--cc-pink)!important}
+.cc-site .ticket,.cc-site .community article,.cc-site .map-static,.cc-site .cc-routes,.cc-site .booth-directory-card,.cc-site .directory-product-card,.cc-site .guide-grid article,.cc-site .sponsors>*,.cc-site .booth-directory-rich>*:first-child{border:2px solid var(--cc-ink)!important;border-radius:16px;background:var(--cc-cream);color:var(--cc-ink);box-shadow:6px 6px 0 var(--cc-pink)!important}
 .cc-site .cut-ticket:before,.cc-site .cut-ticket:after{display:none}
 .cc-site .ticket .price{color:#c04f8a}
 .cc-site .ticket-actions .btn,.cc-site .ticket-purchase-link{background:var(--cc-pink);color:#2b1036;border-radius:999px}
@@ -194,7 +194,7 @@ const catalogueStyle=`
 .cc-sponsor-ribbon{position:absolute;top:-12px;background:var(--cc-ink);color:#ffe45c;font-size:10px;font-weight:1000;letter-spacing:.14em;padding:4px 10px;border-radius:4px}
 .cc-site .map-explorer{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px}
 .cc-site .map-static{min-height:400px}
-.cc-site .map-link-rail{padding:18px}
+.cc-site .cc-routes{padding:18px}
 .cc-site .map-link-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 .cc-map-tag{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--cc-ink);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:900;color:var(--cc-ink)}
 .cc-map-tag b{color:var(--cc-pink)}.cc-map-tag i{margin-left:auto;font-style:normal}
@@ -226,7 +226,7 @@ const shapeStyle=`
 .cc-site .head{position:relative;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px}
 .cc-site .head>div{width:100%}
 .cc-site .head .section-back{position:absolute;right:0;top:0}
-.cc-site .ticket,.cc-site .cc-ticket,.cc-site .cc-booth,.cc-site .cc-product,.cc-site .cc-guide,.cc-site .cc-social,.cc-site .cc-sponsor,.cc-site .community article,.cc-site .guide-grid article,.cc-site .map-static,.cc-site .map-link-rail,.cc-site .booth-directory-card,.cc-site .directory-product-card{border-radius:22px!important}
+.cc-site .ticket,.cc-site .cc-ticket,.cc-site .cc-booth,.cc-site .cc-product,.cc-site .cc-guide,.cc-site .cc-social,.cc-site .cc-sponsor,.cc-site .community article,.cc-site .guide-grid article,.cc-site .map-static,.cc-site .cc-routes,.cc-site .booth-directory-card,.cc-site .directory-product-card{border-radius:22px!important}
 @media(max-width:820px){.cc-site .head .section-back{position:static;margin-top:6px}}
 `;
 /* hero composition: what the first screen is built from differs from every other template */
@@ -285,7 +285,8 @@ const referenceStyle=`
 @media(min-width:1001px){.cc-site .cc-deck{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.cc-site .cc-deck2{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}}
 .cc-site .cc-ticket:before,.cc-site .cc-ticket:after{display:none!important}
 `;
-export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle;
+const routesStyle=`.cc-routes h3{margin:0 0 12px;text-align:center;font-size:16px;letter-spacing:.08em}.cc-routes .map-link-list{display:grid;gap:10px}.cc-routes[hidden]{display:none}`;
+export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle+routesStyle;
 
 const loader=`<div class="loader cc-entry" id="loader"><div class="gate cc-entry-gate" role="button" tabindex="0" aria-label="点击翻开电子场刊"><div class="cc-entry-book"><div class="cc-entry-page"><span class="cc-entry-kicker">WELCOME!</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cc-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><span class="cc-entry-hint">ようこそ · 欢迎光临 ✦</span></div><div class="cc-entry-cover"><div class="entry-photo cc-entry-photo" aria-label="活动KV"></div><span class="cc-entry-cover-title">WEB CATALOGUE</span><span class="cc-entry-tap">TAP TO OPEN ✦</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
@@ -301,7 +302,7 @@ export const previewBody=`<div class="cc-site">${loader}
 <div class="cc-deck oe-home-only">
 <section class="updates-strip oe-home-only" id="updates"><div class="wrap">${head('NEWS','最新公告')}<div class="updates-list"></div></div></section>
 <section class="section" id="tickets"><div class="wrap">${head('ADMISSION','入场票')}<div class="ticket-grid"></div><div class="ticket-actions"></div></div></section>
-<section class="section" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="map-explorer"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><aside class="map-link-rail" data-oe-collection="explore"><span class="ey">EXPLORE</span><b>继续探索</b><div class="map-link-list"></div></aside></div></div></section>
+<section class="section" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="map-explorer"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><aside class="cc-routes" data-oe-mount="map-rail" data-oe-collection="explore"><h3>✦ 逛展导览 ✦</h3><div class="map-link-list"></div></aside></div></div></section>
 </div>
 <div class="cc-deck cc-deck2 oe-home-only">
 <section class="section" id="community"><div class="wrap">${head('COMMUNITY','社群')}<div class="community"></div></div></section>

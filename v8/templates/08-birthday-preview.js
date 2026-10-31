@@ -2,7 +2,7 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head} from '/v8/templates/shared-sections.js?v=8.51.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.52.0';
 
 const style=`
 .bd-site{overflow-x:clip;--primary:#ff8fb8;--secondary:#8fd3ff;--bd-cream:#fffaf0;--bd-paper:#fffefb;--bd-accent:var(--primary);--bd-sky:#8fd3ff;--bd-yellow:#ffd86b;--bd-mint:#b9efd8;--bd-ink:#4a3358;--bd-soft:#85708f;--bd-line:#f0dfe6;
@@ -258,7 +258,46 @@ const referenceStyle=`
 @media(max-width:560px){.bd-site .section{padding:30px 14px 22px;border-radius:26px}}
 .bd-site .section .head .ey{display:inline-block!important;font-size:11px!important;line-height:1.3!important;color:#fff!important;text-indent:0!important;width:auto!important;height:auto!important}
 `;
-export const previewStyle=coreStyle+style+heroStyle+referenceStyle;
+const ownStyle=`
+
+.bd-map-box{position:relative;min-height:220px;display:flex;align-items:center;justify-content:center}
+.bd-map-box .map-image-view{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;position:relative}
+.bd-map-box img{display:block;width:100%;height:auto}
+.bd-map-box .map-image-view span{position:absolute;right:10px;bottom:10px;font-size:12px;padding:4px 10px;background:#000a;color:#fff;border-radius:999px}
+.bd-map-box .map-static-placeholder{display:grid;gap:4px;text-align:center;padding:40px 16px;opacity:.7}
+.bd-routes[hidden]{display:none}
+.bd-routes h3{margin:0}
+.bd-people .social-image,.bd-thanks .sponsor-logo{border:0;background:none;padding:0;cursor:pointer}
+.bd-people img,.bd-thanks img{display:block;max-width:100%}
+.bd-people .social-image.empty,.bd-thanks .sponsor-logo.empty{font-size:12px;opacity:.6;padding:10px}
+.bd-people .social-action,.bd-thanks .sponsor-link{font-weight:800;font-size:13px;text-decoration:none;color:inherit}
+.bd-people .social-action.muted{opacity:.5}
+
+/* map: a taped photo, stops as loose stickers; community as chat bubbles */
+.bd-map{display:block}
+.bd-map-frame{position:relative;margin:0 auto;max-width:640px;padding:12px 12px 36px;background:#fff;border:3px dotted var(--bd-accent);border-radius:8px;transform:rotate(-1.2deg)}
+.bd-map-frame:before{content:"";position:absolute;left:50%;top:-14px;width:96px;height:26px;margin-left:-48px;background:var(--bd-accent);opacity:.45;transform:rotate(3deg)}
+.bd-routes{margin-top:24px;text-align:center}
+.bd-routes h3{font-size:16px;margin-bottom:10px}
+.bd-route-list{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.bd-route{padding:7px 18px;border-radius:999px;background:var(--bd-accent);color:#fff;text-decoration:none;font-weight:900;transform:rotate(-2deg)}
+.bd-route:nth-child(even){background:var(--bd-paper);color:var(--bd-ink);border:2px dotted var(--bd-accent);transform:rotate(2deg)}
+.bd-people{display:flex;flex-direction:column;gap:16px}
+.bd-bubble{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 84px;gap:14px;align-items:center;max-width:540px;padding:16px 20px;background:#fff;border:3px dotted var(--bd-accent);border-radius:26px 26px 26px 4px;box-shadow:none}
+.bd-bubble:nth-child(even){align-self:flex-end;border-radius:26px 26px 4px 26px}
+.bd-bubble-face img,.bd-bubble-face .social-image{width:84px;height:84px;object-fit:cover;border-radius:16px}
+.bd-bubble .social-action{grid-column:1/3}
+.bd-thanks{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.bd-sponsor{display:grid;justify-items:center;gap:4px;padding:10px 16px;border:2px dotted var(--bd-accent);border-radius:14px;background:#fff;box-shadow:none}
+.bd-sponsor-tag small{font-size:11px;opacity:.7}
+.bd-sponsor img{max-height:36px;width:auto}
+.bd-stall,.bd-sticker,.bd-tip{padding:16px;border:2px dotted var(--bd-accent);border-radius:22px;background:#fff;box-shadow:none;display:grid;gap:8px;position:relative}
+.bd-stall-pic img,.bd-sticker-pic img{width:100%;height:auto}
+.bd-tip-pin{position:absolute;left:-10px;top:-10px;width:30px;height:30px;border-radius:50%;background:var(--bd-accent);color:#fff;display:grid;place-items:center;font-weight:900}
+.bd-page-link{display:flex;gap:10px;padding:10px 14px;border:2px dotted var(--bd-accent);border-radius:999px;color:var(--bd-ink);text-decoration:none}
+@media(max-width:560px){.bd-bubble{max-width:none}}
+`;
+export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle;
 export const previewBody=`<div class="bd-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#participation">应援内容</a><a href="#tickets">赠品</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">预约领取 ↗</a></div></header>
 <main id="top">
@@ -268,11 +307,11 @@ ${coreSection('participation',{ey:'SUPPORT',title:'应援内容'})}
 ${coreSection('tickets',{ey:'GIFTS',title:'赠品与领取'})}
 <section class="section oe-home-only" id="timetable"><div class="wrap">${head('SCHEDULE','当天安排')}<div class="timeline" data-oe-mirror="timetable"></div>${more('activities','查看完整安排')}</div></section>
 <section class="section oe-home-only" id="lineup"><div class="wrap">${head('THANKS','协力的人')}<div class="lineup-strip" data-oe-mirror="lineup"></div>${more('guests','全部介绍')}</div></section>
-${coreSection('map-home',{ey:'PLACE',title:'场地'})}
+${ownMapSection('bd',{ey:'PLACE',title:'场地',routeTitle:'去哪里'})}
 ${stepsSection}
 ${coreSection('guests',{ey:'MEMBERS',title:'协力的人'})}
 ${coreSection('guide',{ey:'NOTICE',title:'领取与参观须知'})}
-${coreSection('community',{ey:'CONTACT',title:'联系与交流'})}
+${ownCommunitySection('bd',{ey:'CONTACT',title:'联系与交流'})}
 </main>
 <nav class="mobile-dock"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
 <a class="bd-top" href="#top">PAGE TOP</a>

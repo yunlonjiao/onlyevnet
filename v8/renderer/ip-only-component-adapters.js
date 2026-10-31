@@ -5,7 +5,7 @@ const CM='03-creator-market',CC='04-creator-catalogue',TP='07-tea-party',BL='06-
 // These templates write their own markup for five components and use Template 01's for the rest.
 const OWN_MARKUP=new Set([TP,BL,BD]);
 const OWN_COMPONENTS=new Set(['ticketMarkup','guestMarkup','scheduleMarkup','updateMarkup','activityMarkup']);
-const usesBase=(id,fn)=>id==='01-ip-only'||(OWN_MARKUP.has(id)&&!OWN_COMPONENTS.has(fn));
+const usesBase=(id)=>id==='01-ip-only';
 const tid=s=>{const id=String(s?.templateId||'01-ip-only');return BASE_MARKUP_TEMPLATES.has(id)?'01-ip-only':id};
 const isVariant=s=>tid(s)!=='01-ip-only';
 const num=i=>String(i+1).padStart(2,'0');
@@ -84,6 +84,10 @@ export function sponsorMarkup({state,x,i,field,esc,logo,action}){
   const id=tid(state); if(usesBase(id,'sponsorMarkup'))return '';
   const name=field('sponsors.'+i+'.name',x.name||'','b'),level=field('sponsors.'+i+'.level',x.level||'','small');
   const common=' data-oe-item="sponsors" data-oe-index="'+i+'"';
+  if(id==='05-live-poster')return '<article class="sponsor-card ls-sponsor"'+common+'>'+logo+name+action+'</article>';
+  if(id===BL)return '<article class="sponsor-card bl-sponsor"'+common+'>'+name+level+logo+action+'</article>';
+  if(id===TP)return '<article class="sponsor-card tp-sponsor"'+common+'><span class="tp-sponsor-mark">♡</span>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
+  if(id===BD)return '<article class="sponsor-card bd-sponsor"'+common+'><div class="bd-sponsor-tag">'+level+'</div>'+logo+name+action+'</article>';
   if(id===CM)return '<article class="sponsor-card cm-sponsor"'+common+'>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
   if(id===CC)return '<article class="sponsor-card cc-sponsor"'+common+'><span class="cc-sponsor-ribbon">SPECIAL THANKS</span>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
   if(id==='04-museum-editorial')return '<article class="sponsor-card museum-sponsor"'+common+'><span>'+level+'</span>'+logo+'<div>'+name+action+'</div></article>';
@@ -99,6 +103,9 @@ export function boothMarkup({state,b,i,field,esc,logo,fav,search,productCount}){
   const buttons='<button class="booth-products-link" type="button" data-view-booth-products="'+esc(b.id)+'" data-booth-label="'+esc((b.no?b.no+' · ':'')+(b.name||'摊位'))+'">'+(productCount?productCount+' 件制品 ↗':'暂无制品')+'</button><button class="favorite-booth'+(fav?' active':'')+'" type="button" data-favorite-booth="'+esc(b.id)+'" aria-pressed="'+fav+'">'+(fav?'♥ 已收藏':'♡ 收藏社团')+'</button>';
   if(id===CM)return '<article class="cm-booth"'+common+'><div class="cm-booth-face">'+logo+'</div><div class="cm-booth-body"><div class="cm-booth-top">'+name+no+'</div>'+type+intro+'<footer>'+buttons+'</footer></div></article>';
   if(id===CC)return '<article class="cc-booth"'+common+'><span class="cc-booth-space">'+no+'</span><div class="cc-booth-cut">'+logo+'</div><div class="cc-booth-info">'+name+type+intro+'</div><footer>'+buttons+'</footer></article>';
+  if(id===BL)return '<article class="bl-stall"'+common+'><div class="bl-stall-no">'+no+'</div><div class="bl-stall-body">'+name+type+intro+'</div><div class="bl-stall-logo">'+logo+'</div><footer>'+buttons+'</footer></article>';
+  if(id===TP)return '<article class="tp-stall"'+common+'><div class="tp-stall-plate">'+logo+'</div><div class="tp-stall-body"><span class="tp-stall-no">'+no+'</span>'+name+type+intro+'</div><footer>'+buttons+'</footer></article>';
+  if(id===BD)return '<article class="bd-stall"'+common+'><span class="bd-stall-tag">'+no+'</span><div class="bd-stall-pic">'+logo+'</div>'+name+type+intro+'<footer>'+buttons+'</footer></article>';
   if(id==='02-scrapbook')return '<article class="scrap-booth"'+common+'><div class="scrap-booth-pin">'+no+'</div>'+logo+'<div>'+type+name+intro+'<footer>'+buttons+'</footer></div></article>';
   if(id==='03-school-festival')return '<article class="school-booth"'+common+'><div class="school-booth-no">'+no+'</div>'+logo+'<div><span>CIRCLE FILE</span>'+name+type+intro+'</div><footer>'+buttons+'</footer></article>';
   if(id==='04-museum-editorial')return '<article class="museum-booth"'+common+'><header>'+no+type+'</header><div>'+logo+'</div><section>'+name+intro+'</section><footer>'+buttons+'</footer></article>';
@@ -114,6 +121,9 @@ export function productMarkup({state,b,p,i,j,field,esc,img,wished,search}){
   const wish='<button class="wishlist-product'+(wished?' active':'')+'" type="button" data-wishlist-product="'+esc(p.id)+'" data-booth-id="'+esc(b.id)+'" aria-pressed="'+wished+'">'+(wished?'★ 已加入':'☆ 心愿')+'</button>';
   if(id===CM)return '<article class="cm-product"'+common+'><div class="cm-product-thumb">'+img+'<span class="cm-product-price">'+price+'</span></div><div class="cm-product-meta">'+name+'<small>'+esc(b.no||'')+' · '+esc(b.name||'')+'</small><footer>'+tag+wish+'</footer></div></article>';
   if(id===CC)return '<article class="cc-product"'+common+'><div class="cc-product-art">'+img+'<span class="cc-new">NEW!</span></div><div class="cc-product-info">'+name+'<small>'+esc(b.no||'')+' / '+esc(b.name||'')+'</small>'+tag+'</div><footer>'+price+wish+'</footer></article>';
+  if(id===BL)return '<article class="bl-item"'+common+'><div class="bl-item-main">'+name+'<small>'+esc(b.no||'')+' / '+esc(b.name||'')+'</small></div><div class="bl-item-tag">'+tag+'</div><div class="bl-item-price">'+price+'</div><footer>'+wish+'</footer><div class="bl-item-pic">'+img+'</div></article>';
+  if(id===TP)return '<article class="tp-dish"'+common+'><div class="tp-dish-plate">'+img+'</div><div class="tp-dish-body">'+name+'<small>'+esc(b.name||'')+'</small>'+tag+'</div><div class="tp-dish-price">'+price+'</div><footer>'+wish+'</footer></article>';
+  if(id===BD)return '<article class="bd-sticker"'+common+'><div class="bd-sticker-pic">'+img+'</div><div class="bd-sticker-body">'+tag+name+'<small>'+esc(b.no||'')+' · '+esc(b.name||'')+'</small>'+price+'</div><footer>'+wish+'</footer></article>';
   if(id==='02-scrapbook')return '<article class="scrap-product"'+common+'>'+img+'<div>'+tag+name+'<small>'+esc(b.no||'')+' / '+esc(b.name||'')+'</small><footer>'+price+wish+'</footer></div></article>';
   if(id==='03-school-festival')return '<article class="school-product"'+common+'><span class="school-product-label">GOODS</span>'+img+'<div>'+name+tag+'<small>'+esc(b.no||'')+' · '+esc(b.name||'')+'</small></div><footer>'+price+wish+'</footer></article>';
   if(id==='04-museum-editorial')return '<article class="museum-product"'+common+'>'+img+'<div><span>'+esc(b.no||'')+'</span>'+name+tag+'<small>'+esc(b.name||'')+'</small></div><footer>'+price+wish+'</footer></article>';
@@ -148,6 +158,9 @@ export function guideMarkup({state,x,i,field,esc,image,navigation,preset,kindLab
   const label=esc(x.label||kindLabel[preset]||'GUIDE');
   if(id===CM)return '<article class="cm-guide"'+common+'><div class="cm-guide-icon">'+num(i)+'</div><div class="cm-guide-body"><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id===CC)return '<article class="cc-guide"'+common+'><span class="cc-guide-no">注意事項 '+num(i)+'</span><div class="cc-guide-body"><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
+  if(id===BL)return '<article class="bl-note"'+common+'><div class="bl-note-no">'+num(i)+'</div><div class="bl-note-body"><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
+  if(id===TP)return '<article class="tp-rule"'+common+'><div class="tp-rule-card"><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
+  if(id===BD)return '<article class="bd-tip"'+common+'><span class="bd-tip-pin">'+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='02-scrapbook')return '<article class="scrap-guide"'+common+'><span>NOTE '+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='03-school-festival')return '<article class="school-guide"'+common+'><div class="school-guide-no">'+num(i)+'</div><div><span>'+label+'</span><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='04-museum-editorial')return '<article class="museum-guide"'+common+'><aside>'+num(i)+' / '+label+'</aside><div><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
@@ -162,6 +175,9 @@ export function communityMarkup({state,x,i,field,esc,img,action}){
   const label=field('socialLinks.'+i+'.label',x.label,'b'),note=field('socialLinks.'+i+'.note',x.note||'','p');
   if(id===CM)return '<article class="cm-social"'+common+'><div class="cm-social-avatar">'+img+'</div><div class="cm-social-text">'+label+note+'</div>'+action+'</article>';
   if(id===CC)return '<article class="cc-social"'+common+'><div class="cc-social-art">'+img+'</div><div class="cc-social-text">'+label+note+action+'</div></article>';
+  if(id===BL)return '<article class="bl-follow"'+common+'><span class="bl-follow-no">'+num(i)+'</span><div class="bl-follow-text">'+label+note+'</div><div class="bl-follow-qr">'+img+'</div>'+action+'</article>';
+  if(id===TP)return '<article class="tp-seat"'+common+'><div class="tp-seat-face">'+img+'</div>'+label+note+action+'</article>';
+  if(id===BD)return '<article class="bd-bubble"'+common+'><div class="bd-bubble-text">'+label+note+'</div><div class="bd-bubble-face">'+img+'</div>'+action+'</article>';
   if(id==='02-scrapbook')return '<article class="scrap-social"'+common+'><div class="scrap-social-face">'+img+'<span class="scrap-social-stamp">↗</span></div><div class="scrap-social-caption">'+label+note+action+'</div></article>';
   if(id==='03-school-festival')return '<article class="school-social"'+common+'><span>'+num(i)+'</span>'+img+'<div>'+label+note+action+'</div></article>';
   if(id==='04-museum-editorial')return '<article class="museum-social"'+common+'><span>COMMUNITY '+num(i)+'</span><div>'+label+note+action+'</div>'+img+'</article>';
@@ -175,6 +191,9 @@ export function quickMarkup({state,x,i,esc}){
   const id=tid(state);if(usesBase(id,'quickMarkup'))return '';
   const href='#'+x[1],mode=x[4],label=x[2],hint=x[3],n=num(i);
   const common=' href="'+href+'" data-target-mode="'+mode+'" data-page-link="'+esc(x[1])+'"';
+  if(id===BL)return '<a class="bl-index"'+common+'><span>'+n+'</span><b>'+esc(label)+'</b><i>'+esc(hint)+'</i></a>';
+  if(id===TP)return '<a class="tp-menu-link"'+common+'><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></a>';
+  if(id===BD)return '<a class="bd-page-link"'+common+'><span>'+n+'</span><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></a>';
   if(id==='02-scrapbook')return '<a class="scrap-index-card"'+common+'><span>'+n+'</span><div><small>MEMORY FILE</small><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></div><i>↗</i></a>';
   if(id==='03-school-festival')return '<a class="school-wayfinding-card"'+common+'><span>'+n+'</span><div><small>FESTIVAL GUIDE</small><b>'+esc(label)+'</b><em>'+esc(hint)+'</em></div><i>→</i></a>';
   if(id==='04-museum-editorial')return '<a class="museum-index-link"'+common+'><span>'+n+'</span><div><b>'+esc(label)+'</b><small>'+esc(hint)+'</small></div><i>VIEW</i></a>';
@@ -189,6 +208,10 @@ export function mapLinkMarkup({state,item,index,field,esc,target,kind,itemId}){
   const label=field('venueMap.links.'+index+'.label',item.label,'span');
   if(id===CM)return '<a class="cm-map-tag"'+common+'><b>#</b>'+label+'</a>';
   if(id===CC)return '<a class="cc-map-tag"'+common+'><b>✦</b>'+label+'<i>›</i></a>';
+  if(id===BL)return '<a class="bl-route"'+common+'><span>'+num(index)+'</span><b>'+label+'</b><i>GO</i></a>';
+  if(id===TP)return '<a class="tp-route"'+common+'><b>'+label+'</b><i></i><small>'+num(index)+'</small></a>';
+  if(id===BD)return '<a class="bd-route"'+common+'><b>'+label+'</b></a>';
+  if(id==='05-live-poster')return '<a class="ls-route-stop"'+common+'><span>'+num(index)+'</span><b>'+label+'</b></a>';
   if(id==='02-scrapbook')return '<a class="scrap-map-tag"'+common+'><b>'+num(index)+'</b>'+label+'<i>↗</i></a>';
   if(id==='03-school-festival')return '<a class="school-map-sign"'+common+'><span>'+num(index)+'</span><b>'+label+'</b><i>→</i></a>';
   if(id==='04-museum-editorial')return '<a class="museum-map-index"'+common+'><span>'+num(index)+'</span><b>'+label+'</b><small>VIEW</small></a>';

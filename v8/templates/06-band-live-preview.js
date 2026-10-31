@@ -2,7 +2,7 @@
    yellow, big band names and set times. The visual language follows Japanese band-anime live pages
    (BanG Dream!, Bocchi the Rock!) and hand-made live-house flyers. Hooks follow Template 01;
    everything visual is scoped to .bl-site. */
-import {coreStyle,coreSection,coreRibbon,head} from '/v8/templates/shared-sections.js?v=8.51.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.52.0';
 
 const style=`
 .bl-site{overflow-x:clip;--primary:#ffd500;--secondary:#ff3b3b;--bl-ink:#101010;--bl-paper:#f2efe6;--bl-yellow:#ffd500;--bl-red:#ff3b3b;--bl-gray:#6b6b66;--bl-line:#101010;
@@ -221,7 +221,48 @@ const referenceStyle=`
 .bl-site #tickets .ticket:before,.bl-site #tickets .ticket:after{display:none}
 .bl-site .community,.bl-site .sponsors{display:flex;flex-wrap:wrap;gap:10px 22px}
 `;
-export const previewStyle=coreStyle+style+heroStyle+referenceStyle;
+const ownStyle=`
+
+.bl-map-box{position:relative;min-height:220px;display:flex;align-items:center;justify-content:center}
+.bl-map-box .map-image-view{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;position:relative}
+.bl-map-box img{display:block;width:100%;height:auto}
+.bl-map-box .map-image-view span{position:absolute;right:10px;bottom:10px;font-size:12px;padding:4px 10px;background:#000a;color:#fff;border-radius:999px}
+.bl-map-box .map-static-placeholder{display:grid;gap:4px;text-align:center;padding:40px 16px;opacity:.7}
+.bl-routes[hidden]{display:none}
+.bl-routes h3{margin:0}
+.bl-people .social-image,.bl-thanks .sponsor-logo{border:0;background:none;padding:0;cursor:pointer}
+.bl-people img,.bl-thanks img{display:block;max-width:100%}
+.bl-people .social-image.empty,.bl-thanks .sponsor-logo.empty{font-size:12px;opacity:.6;padding:10px}
+.bl-people .social-action,.bl-thanks .sponsor-link{font-weight:800;font-size:13px;text-decoration:none;color:inherit}
+.bl-people .social-action.muted{opacity:.5}
+
+/* map: a printed plate with the stop list as a numbered index in the right column */
+.bl-map{display:grid;grid-template-columns:minmax(0,1fr) 290px;border:4px solid #111;background:#fffdf5}
+.bl-map-frame{margin:0;border-right:4px solid #111}
+.bl-routes{display:flex;flex-direction:column}
+.bl-routes h3{background:#111;color:#fff;font:400 20px Impact,"Arial Black",sans-serif;letter-spacing:.18em;padding:10px 14px;text-transform:uppercase}
+.bl-route{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:8px;padding:12px 14px;border-bottom:2px solid #111;color:#111;text-decoration:none}
+.bl-route span{font:400 28px Impact,"Arial Black",sans-serif;opacity:.3}
+.bl-route b{font-size:17px;color:#111;opacity:1}
+.bl-route i{font-style:normal;font-size:11px;font-weight:900;letter-spacing:.14em;border:2px solid #111;padding:1px 6px}
+.bl-people{display:block}
+.bl-follow{display:grid;grid-template-columns:48px minmax(0,1fr) 84px auto;align-items:center;gap:16px;padding:14px 0;border-bottom:2px solid #111}
+.bl-follow-no{font:400 30px Impact,"Arial Black",sans-serif;opacity:.3}
+.bl-follow-qr img,.bl-follow-qr .social-image{width:76px;height:76px;object-fit:cover}
+.bl-thanks{display:flex;flex-wrap:wrap;gap:0}
+.bl-sponsor{display:flex;align-items:center;gap:10px;padding:8px 18px;border:0;border-right:2px solid #111;border-radius:0;background:none;box-shadow:none}
+.bl-sponsor small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.6}
+.bl-sponsor img{max-height:34px;width:auto}
+.bl-stall,.bl-item,.bl-note{display:grid;gap:14px;align-items:center;padding:14px 0;border:0;border-bottom:2px solid #111;border-radius:0;background:none;box-shadow:none}
+.bl-stall{grid-template-columns:90px minmax(0,1fr) 64px auto}
+.bl-stall-no{font:400 30px Impact,"Arial Black",sans-serif}
+.bl-item{grid-template-columns:minmax(0,1fr) auto auto auto 64px}
+.bl-note{grid-template-columns:56px minmax(0,1fr)}
+.bl-note-no{font:400 34px Impact,"Arial Black",sans-serif;opacity:.3}
+.bl-index{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;padding:10px 0;border-bottom:2px solid #111;color:#111;text-decoration:none}
+@media(max-width:760px){.bl-map{grid-template-columns:1fr}.bl-map-frame{border-right:0;border-bottom:4px solid #111}.bl-follow{grid-template-columns:36px minmax(0,1fr) 60px}.bl-follow .social-action{grid-column:2/4}.bl-stall{grid-template-columns:56px minmax(0,1fr)}.bl-item{grid-template-columns:minmax(0,1fr) auto}}
+`;
+export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle;
 export const previewBody=`<div class="bl-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#guests" data-target-mode="page" data-page-link="guests">乐队</a><a href="#activities" data-target-mode="page" data-page-link="activities">出场顺序</a><a href="#tickets">门票</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">买票 ↗</a></div></header>
 <main id="top">
@@ -232,12 +273,12 @@ ${coreRibbon()}
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新消息'))}
 ${coreSection('participation',{ey:'MERCH & MORE',title:'物贩与交流'})}
 ${coreSection('tickets',{ey:'TICKET',title:'门票'})}
-${coreSection('map-home',{ey:'ACCESS',title:'场地'})}
+${ownMapSection('bl',{ey:'ACCESS',title:'场地',routeTitle:'INDEX'})}
 ${setSection}
 ${coreSection('guests',{ey:'BANDS',title:'出演乐队'})}
 ${coreSection('guide',{ey:'INFO',title:'入场须知'})}
-${coreSection('community',{ey:'COMMUNITY',title:'社群'})}
-${coreSection('sponsors',{ey:'THANKS',title:'合作支持'})}
+${ownCommunitySection('bl',{ey:'COMMUNITY',title:'社群'})}
+${ownSponsorsSection('bl',{ey:'THANKS',title:'合作支持'})}
 </main>
 <nav class="mobile-dock"><a href="#home" data-page-link="home">首页</a><a href="#guests" data-target-mode="page" data-page-link="guests">乐队</a><a href="#activities" data-target-mode="page" data-page-link="activities">顺序</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>

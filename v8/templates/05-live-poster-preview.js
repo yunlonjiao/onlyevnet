@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,coreRibbon,head} from '/v8/templates/shared-sections.js?v=8.51.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.52.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -275,7 +275,37 @@ const referenceStyle=`
 .ls-site .section .head{align-items:center}
 .ls-site .ticket:before{display:none}
 `;
-export const previewStyle=coreStyle+style+referenceStyle;
+const ownStyle=`
+
+.ls-map-box{position:relative;min-height:220px;display:flex;align-items:center;justify-content:center}
+.ls-map-box .map-image-view{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;position:relative}
+.ls-map-box img{display:block;width:100%;height:auto}
+.ls-map-box .map-image-view span{position:absolute;right:10px;bottom:10px;font-size:12px;padding:4px 10px;background:#000a;color:#fff;border-radius:999px}
+.ls-map-box .map-static-placeholder{display:grid;gap:4px;text-align:center;padding:40px 16px;opacity:.7}
+.ls-routes[hidden]{display:none}
+.ls-routes h3{margin:0}
+.ls-people .social-image,.ls-thanks .sponsor-logo{border:0;background:none;padding:0;cursor:pointer}
+.ls-people img,.ls-thanks img{display:block;max-width:100%}
+.ls-people .social-image.empty,.ls-thanks .sponsor-logo.empty{font-size:12px;opacity:.6;padding:10px}
+.ls-people .social-action,.ls-thanks .sponsor-link{font-weight:800;font-size:13px;text-decoration:none;color:inherit}
+.ls-people .social-action.muted{opacity:.5}
+
+/* map: one wide screen with a row of numbered stops under it */
+.ls-map{display:block}
+.ls-map-frame{margin:0;border:1px solid var(--ls-line);background:#ffffff0c}
+.ls-routes{margin-top:18px;text-align:center}
+.ls-routes h3{font-size:12px;letter-spacing:.4em;opacity:.8;margin-bottom:12px}
+.ls-route-list{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.ls-route-stop{display:inline-flex;align-items:center;gap:10px;padding:6px 18px 6px 6px;border-radius:999px;background:#ffffff14;color:#fff;text-decoration:none;font-weight:800}
+.ls-route-stop span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--ls-pink),var(--ls-violet));font-size:12px}
+.ls-people{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+.ls-people>*{width:min(300px,100%)}
+.ls-thanks{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px 34px}
+.ls-sponsor{display:flex;align-items:center;gap:10px;background:none;border:0;box-shadow:none;padding:0;color:#fff}
+.ls-sponsor b{font-size:15px;letter-spacing:.12em}
+.ls-sponsor img{max-height:40px;width:auto}
+`;
+export const previewStyle=coreStyle+style+referenceStyle+ownStyle;
 export const previewBody=`<div class="ls-site">${loader}
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
 <main id="top">
@@ -287,12 +317,12 @@ export const previewBody=`<div class="ls-site">${loader}
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新公告'))}
 ${coreSection('participation',{ey:'SPECIAL',title:'特别企划'})}
 ${coreSection('tickets',{ey:'TICKET',title:'票务'})}
-${coreSection('map-home',{ey:'ACCESS',title:'场地图'})}
+${ownMapSection('ls',{ey:'ACCESS',title:'场地图',routeTitle:'前往'})}
 ${timetableSection}
 ${coreSection('guests',{ey:'CAST',title:'出演嘉宾'})}
 ${coreSection('guide',{ey:'INFORMATION',title:'观演指南'})}
-${coreSection('community',{ey:'COMMUNITY',title:'社群'})}
-${coreSection('sponsors',{ey:'SUPPORT',title:'合作支持'})}
+${ownCommunitySection('ls',{ey:'COMMUNITY',title:'社群'})}
+${ownSponsorsSection('ls',{ey:'SUPPORT',title:'合作支持'})}
 </main>
 <nav class="mobile-dock"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">节目表</a><a href="#guests" data-target-mode="page" data-page-link="guests">嘉宾</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>

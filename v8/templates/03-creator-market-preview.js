@@ -65,7 +65,7 @@ const marketStyle=`
 .cm-site .spotlight-empty{grid-column:1/-1;color:var(--cm-soft);padding:30px 0}
 /* Shared components, 03 portal finish: flat white cards instead of sticker outlines */
 .cm-site .updates-strip{background:#fff;border:0;border-bottom:1px solid var(--cm-line);padding:14px 0}
-.cm-site .ticket,.cm-site .community article,.cm-site .map-static,.cm-site .map-link-rail,.cm-site .booth-directory-card,.cm-site .directory-product-card,.cm-site .guide-grid article,.cm-site .sponsors>*{border:1px solid var(--cm-line)!important;border-radius:12px;box-shadow:none!important;background:var(--cm-card)}
+.cm-site .ticket,.cm-site .community article,.cm-site .map-static,.cm-site .cm-hot,.cm-site .booth-directory-card,.cm-site .directory-product-card,.cm-site .guide-grid article,.cm-site .sponsors>*{border:1px solid var(--cm-line)!important;border-radius:12px;box-shadow:none!important;background:var(--cm-card)}
 .cm-site .cut-ticket:before,.cm-site .cut-ticket:after{display:none}
 .cm-site .ticket .price{color:var(--cm-accent-ink)}
 .cm-site .ticket-actions .btn,.cm-site .ticket-purchase-link{background:#55ace8;color:#fff;border-radius:9px;padding:15px 26px}
@@ -172,7 +172,7 @@ const marketStyle=`
 .cm-site .cm-sponsor{display:flex;flex-direction:column;align-items:center;gap:8px;background:#fff;border:1px solid var(--cm-line)!important;border-radius:12px;padding:16px;box-shadow:none!important;text-align:center}
 .cm-site .map-explorer{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:14px}
 .cm-site .map-static{min-height:380px}
-.cm-site .map-link-rail{padding:16px}
+.cm-site .cm-hot{padding:16px}
 .cm-site .map-link-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .cm-map-tag{display:inline-flex;gap:4px;align-items:center;background:#f1f2f3;border-radius:999px;padding:6px 12px;font-size:13px;color:var(--cm-ink)}
 .cm-map-tag b{color:var(--cm-accent)}
@@ -260,7 +260,7 @@ const referenceStyle=`
 .cm-rail .ticket-actions .btn,.cm-rail .ticket-purchase-link{width:100%;text-align:center;padding:11px 16px}
 .cm-rail .map-explorer{grid-template-columns:1fr}
 .cm-rail .map-static{min-height:190px}
-.cm-rail .map-link-rail{padding:12px}
+.cm-rail .cm-hot{padding:12px}
 .cm-feed .community{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 @media(max-width:1000px){.cm-cols{grid-template-columns:1fr;padding:0 13px}.cm-rail{position:static}}
 
@@ -279,7 +279,8 @@ const referenceStyle=`
 
 .cm-site .kv{box-shadow:0 3px 14px #0c1a2e40}
 `;
-export const previewStyle=coreStyle+marketStyle+referenceStyle;
+const hotStyle=`.cm-hot h3{margin:0 0 10px;font-size:15px}.cm-hot .map-link-list{display:flex;flex-wrap:wrap;gap:8px}.cm-hot[hidden]{display:none}`;
+export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle;
 
 const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
@@ -298,7 +299,7 @@ export const previewBody=`<div class="cm-site">${loader}
 </div><aside class="cm-rail" aria-label="公告与票务">
 <section class="updates-strip oe-home-only" id="updates"><div class="wrap">${head('NEWS','最新公告')}<div class="updates-list"></div></div></section>
 <section class="section" id="tickets"><div class="wrap">${head('ADMISSION','入场票')}<div class="ticket-grid"></div><div class="ticket-actions"></div></div></section>
-<section class="section" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="map-explorer"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><aside class="map-link-rail" data-oe-collection="explore"><span class="ey">EXPLORE</span><b>继续探索</b><div class="map-link-list"></div></aside></div></div></section>
+<section class="section" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="map-explorer"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><aside class="cm-hot" data-oe-mount="map-rail" data-oe-collection="explore"><h3>热门入口</h3><div class="map-link-list"></div></aside></div></div></section>
 </aside></div>
 <section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLES & WORKS','参展社团与制品')}<div class="booth-directory-rich"></div></div></section>
 <section class="section oe-page-view" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>

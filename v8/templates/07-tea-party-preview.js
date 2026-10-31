@@ -2,7 +2,7 @@
    anime cafe and tea-party event pages (Animate Cafe collaborations, "お茶会" invitations).
    The home page answers what happens, and when, before anything else. Hooks follow Template 01;
    everything visual is scoped to .tp-site. */
-import {coreStyle,coreSection,head} from '/v8/templates/shared-sections.js?v=8.51.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.52.0';
 
 const style=`
 .tp-site{overflow-x:clip;--primary:#f08fa8;--secondary:#8fd3bb;--tp-cream:#fff6ec;--tp-paper:#fffdf8;--tp-pink:#f08fa8;--tp-rose:#fadbe3;--tp-mint:#bfe6d6;--tp-lav:#dccffa;--tp-brown:#5a3d3a;--tp-soft:#8c6f6a;--tp-gold:#d9a441;--tp-line:#ecd5cc;
@@ -229,7 +229,49 @@ const referenceStyle=`
 .tp-site .lineup-strip{justify-content:center}
 @media(max-width:700px){.tp-site #tickets .ticket-grid{padding:6px 18px}.tp-site #tickets .tp-ticket-price{font-size:22px}.tp-site .timeline-row{grid-template-columns:70px minmax(0,1fr)}}
 `;
-export const previewStyle=coreStyle+style+heroStyle+referenceStyle;
+const ownStyle=`
+
+.tp-map-box{position:relative;min-height:220px;display:flex;align-items:center;justify-content:center}
+.tp-map-box .map-image-view{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;position:relative}
+.tp-map-box img{display:block;width:100%;height:auto}
+.tp-map-box .map-image-view span{position:absolute;right:10px;bottom:10px;font-size:12px;padding:4px 10px;background:#000a;color:#fff;border-radius:999px}
+.tp-map-box .map-static-placeholder{display:grid;gap:4px;text-align:center;padding:40px 16px;opacity:.7}
+.tp-routes[hidden]{display:none}
+.tp-routes h3{margin:0}
+.tp-people .social-image,.tp-thanks .sponsor-logo{border:0;background:none;padding:0;cursor:pointer}
+.tp-people img,.tp-thanks img{display:block;max-width:100%}
+.tp-people .social-image.empty,.tp-thanks .sponsor-logo.empty{font-size:12px;opacity:.6;padding:10px}
+.tp-people .social-action,.tp-thanks .sponsor-link{font-weight:800;font-size:13px;text-decoration:none;color:inherit}
+.tp-people .social-action.muted{opacity:.5}
+
+/* map: a menu card in the middle, stops listed underneath with dotted leaders */
+.tp-map{max-width:720px;margin:0 auto}
+.tp-map-frame{margin:0;padding:12px;background:var(--tp-paper);border:3px solid var(--tp-brown);border-radius:24px;box-shadow:8px 8px 0 #ffffff99}
+.tp-map-box{border-radius:14px;overflow:hidden}
+.tp-routes{margin-top:26px;padding:6px 26px 14px;background:var(--tp-paper);border:3px solid var(--tp-brown);border-radius:24px}
+.tp-routes h3{text-align:center;margin:12px 0;font-size:20px}
+.tp-route{display:flex;align-items:flex-end;gap:10px;padding:10px 0;color:var(--tp-brown);text-decoration:none;font-weight:800}
+.tp-route i{flex:1;border-bottom:3px dotted var(--tp-brown);opacity:.4;margin-bottom:6px}
+.tp-route small{order:3;font-size:13px}
+.tp-people{display:flex;flex-wrap:wrap;justify-content:center;gap:26px}
+.tp-seat{display:grid;justify-items:center;gap:6px;text-align:center;width:200px;background:none;border:0;box-shadow:none}
+.tp-seat-face{width:150px;height:150px;border-radius:50%;overflow:hidden;background:var(--tp-paper);border:4px solid var(--tp-brown);display:grid;place-items:center}
+.tp-seat-face img{width:100%;height:100%;object-fit:cover}
+.tp-thanks{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 26px}
+.tp-sponsor{display:flex;align-items:center;gap:10px;background:none;border:0;box-shadow:none;padding:0;color:var(--tp-brown)}
+.tp-sponsor-mark{color:var(--tp-pink);font-size:20px}
+.tp-sponsor img{max-height:38px;width:auto}
+.tp-stall{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;padding:16px 4px;border:0;border-bottom:3px dotted var(--tp-line);background:none;box-shadow:none;border-radius:0}
+.tp-stall-plate{grid-row:span 2;width:96px;height:96px;border-radius:50%;overflow:hidden;border:3px solid var(--tp-brown)}
+.tp-stall-plate img{width:100%;height:100%;object-fit:cover}
+.tp-dish{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 4px;border:0;border-bottom:3px dotted var(--tp-line);background:none;box-shadow:none;border-radius:0}
+.tp-dish-plate{width:84px;height:84px;border-radius:50%;overflow:hidden;border:3px solid var(--tp-brown)}
+.tp-dish-plate img{width:100%;height:100%;object-fit:cover}
+.tp-rule{padding:16px 22px;border:0;border-left:6px solid var(--tp-pink);background:var(--tp-paper);border-radius:0 18px 18px 0;margin-bottom:12px}
+.tp-menu-link{display:flex;justify-content:space-between;padding:10px 4px;border-bottom:3px dotted var(--tp-line);color:var(--tp-brown);text-decoration:none}
+@media(max-width:700px){.tp-routes{padding:4px 16px 10px}.tp-stall{grid-template-columns:72px minmax(0,1fr)}.tp-stall-plate{width:72px;height:72px}}
+`;
+export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle;
 export const previewBody=`<div class="tp-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席的人</a><a href="#tickets">报名</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">去报名 ↗</a></div></header>
 <main id="top">
@@ -239,11 +281,11 @@ ${coreSection('updates').replace('class="updates-strip"','class="updates-strip o
 <section class="section oe-home-only" id="timetable"><div class="wrap">${head('TIMETABLE','当天流程')}<div class="timeline" data-oe-mirror="timetable"></div>${more('activities','查看完整流程')}</div></section>
 <section class="section oe-home-only" id="lineup"><div class="wrap">${head("WHO'S THERE",'今天同席的人')}<div class="lineup-strip" data-oe-mirror="lineup"></div>${more('guests','全部介绍')}</div></section>
 ${coreSection('tickets',{ey:'ENTRY',title:'参加方式'})}
-${coreSection('map-home',{ey:'PLACE',title:'场地'})}
+${ownMapSection('tp',{ey:'PLACE',title:'场地',routeTitle:'今日的去处'})}
 ${agendaSection}
 ${coreSection('guests',{ey:'MEMBERS',title:'同席的人'})}
 ${coreSection('guide',{ey:'NOTICE',title:'参加须知'})}
-${coreSection('community',{ey:'CONTACT',title:'联系与交流'})}
+${ownCommunitySection('tp',{ey:'CONTACT',title:'联系与交流'})}
 </main>
 <a class="tp-reserve ticket-purchase-link" href="#tickets"><b>RESERVE</b><small>点这里报名</small></a>
 <nav class="mobile-dock"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
