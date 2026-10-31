@@ -20,7 +20,6 @@ export function ticketMarkup({state,x,i,field,esc,image}){
   const note=field('tickets.'+i+'.note',x.note||'','small','oe-ticket-note');
   const common=' data-oe-item="tickets" data-oe-index="'+i+'"';
   if(id===CM)return '<article class="ticket cm-ticket"'+common+'><span class="cm-ticket-badge">入场</span><div class="cm-ticket-body">'+name+gift+note+'</div><div class="cm-ticket-price">'+price+'</div>'+(image||'')+'</article>';
-  if(id===CC)return '<article class="ticket cc-ticket"'+common+'><div class="cc-ticket-main"><small>ADMISSION TICKET · 入場券</small>'+name+gift+note+'</div><div class="cc-ticket-stub"><span>No.'+num(i)+'</span>'+price+'<i>✦</i></div>'+(image||'')+'</article>';
   if(id===BL)return '<article class="ticket bl-ticket"'+common+'><div class="bl-ticket-tag">TICKET '+num(i)+'</div><div class="bl-ticket-main">'+name+gift+note+'</div><div class="bl-ticket-price">'+price+'</div>'+(image||'')+'</article>';
   if(id===BD)return '<article class="ticket bd-gift"'+common+'><div class="bd-gift-ribbon">GIFT '+num(i)+'</div><div class="bd-gift-main">'+name+gift+note+'</div><div class="bd-gift-price">'+price+'</div>'+(image||'')+'</article>';
   if(id===TP)return '<article class="ticket tp-ticket"'+common+'><div class="tp-ticket-main"><small>参加方式 '+num(i)+'</small>'+name+gift+note+'</div><div class="tp-ticket-price">'+price+'</div>'+(image||'')+'</article>';
@@ -69,7 +68,6 @@ export function updateMarkup({state,u,i,field,esc,target,mode}){
   const id=tid(state); if(usesBase(id,'updateMarkup'))return '';
   const common=' href="#'+esc(target)+'" data-target-mode="'+mode+'" data-page-link="'+esc(target)+'" data-oe-item="updates" data-oe-index="'+i+'"';
   if(id===CM)return '<a class="cm-update"'+common+'><span class="cm-update-tag">公告</span>'+field('updates.'+i+'.title',u.title||'','b')+'<time>'+esc(u.date||'')+'</time></a>';
-  if(id===CC)return '<a class="cc-update"'+common+'><span class="cc-update-star" aria-hidden="true">★</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<i aria-hidden="true">›</i></a>';
   if(id===BL)return '<a class="bl-update"'+common+'><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'<i aria-hidden="true">→</i></a>';
   if(id===BD)return '<a class="bd-update"'+common+'><span class="bd-update-star" aria-hidden="true">★</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'</a>';
   if(id===TP)return '<a class="tp-update"'+common+'><span class="tp-update-heart" aria-hidden="true">♡</span><time>'+esc(u.date||'')+'</time>'+field('updates.'+i+'.title',u.title||'','b')+'</a>';
@@ -90,7 +88,6 @@ export function sponsorMarkup({state,x,i,field,esc,logo,action}){
   if(id===TP)return '<article class="sponsor-card tp-sponsor"'+common+'><span class="tp-sponsor-mark">♡</span>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
   if(id===BD)return '<article class="sponsor-card bd-sponsor"'+common+'><div class="bd-sponsor-tag">'+level+'</div>'+logo+name+action+'</article>';
   if(id===CM)return '<article class="sponsor-card cm-sponsor"'+common+'>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
-  if(id===CC)return '<article class="sponsor-card cc-sponsor"'+common+'><span class="cc-sponsor-ribbon">SPECIAL THANKS</span>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
   if(id==='04-museum-editorial')return '<article class="sponsor-card museum-sponsor"'+common+'><span>'+level+'</span>'+logo+'<div>'+name+action+'</div></article>';
   if(id==='06-expo-catalogue')return '<article class="sponsor-card expo-sponsor"'+common+'><span>S-'+num(i)+'</span>'+logo+'<div>'+name+level+'</div>'+action+'</article>';
   if(id==='07-immersive-character')return '<article class="sponsor-card kimetsu-sponsor"'+common+'>'+logo+'<div>'+level+name+'</div>'+action+'</article>';
@@ -167,7 +164,6 @@ export function communityMarkup({state,x,i,field,esc,img,action}){
   const common=' data-oe-item="socialLinks" data-oe-index="'+i+'"';
   const label=field('socialLinks.'+i+'.label',x.label,'b'),note=field('socialLinks.'+i+'.note',x.note||'','p');
   if(id===CM)return '<article class="cm-social"'+common+'><div class="cm-social-avatar">'+img+'</div><div class="cm-social-text">'+label+note+'</div>'+action+'</article>';
-  if(id===CC)return '<article class="cc-social"'+common+'><div class="cc-social-art">'+img+'</div><div class="cc-social-text">'+label+note+action+'</div></article>';
   if(id===BL)return '<article class="bl-follow"'+common+'><span class="bl-follow-no">'+num(i)+'</span><div class="bl-follow-text">'+label+note+'</div><div class="bl-follow-qr">'+img+'</div>'+action+'</article>';
   if(id===TP)return '<article class="tp-seat"'+common+'><div class="tp-seat-face">'+img+'</div>'+label+note+action+'</article>';
   if(id===BD)return '<article class="bd-bubble"'+common+'><div class="bd-bubble-text">'+label+note+'</div><div class="bd-bubble-face">'+img+'</div>'+action+'</article>';
@@ -200,7 +196,6 @@ export function mapLinkMarkup({state,item,index,field,esc,target,kind,itemId}){
   const common=' href="#'+esc(target)+'" data-target-mode="page" data-page-link="'+esc(target)+'" data-explore-link data-explore-kind="'+esc(kind)+'" data-explore-id="'+esc(itemId)+'" data-oe-item="explore" data-oe-index="'+index+'"';
   const label=field('venueMap.links.'+index+'.label',item.label,'span');
   if(id===CM)return '<a class="cm-map-tag"'+common+'><b>#</b>'+label+'</a>';
-  if(id===CC)return '<a class="cc-map-tag"'+common+'><b>✦</b>'+label+'<i>›</i></a>';
   if(id===BL)return '<a class="bl-route"'+common+'><span>'+num(index)+'</span><b>'+label+'</b><i>GO</i></a>';
   if(id===TP)return '<a class="tp-route"'+common+'><b>'+label+'</b><i></i><small>'+num(index)+'</small></a>';
   if(id===BD)return '<a class="bd-route"'+common+'><b>'+label+'</b></a>';

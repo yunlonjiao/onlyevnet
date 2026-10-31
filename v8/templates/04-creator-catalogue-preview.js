@@ -89,10 +89,8 @@ const catalogueStyle=`
 .cc-site .cb-controls button{border:2px solid #fff;background:#ffffff14;color:#fff}
 .cc-site .cb-controls span{color:#e6dcff}
 /* Shared components on the night sky */
-.cc-site .updates-strip{background:#ffffff0d;border:0;border-block:1px solid var(--cc-line);padding:14px 0}
-.cc-site .ticket,.cc-site .community article,.cc-site .map-static,.cc-site .cc-routes,.cc-site .booth-directory-card,.cc-site .directory-product-card,.cc-site .guide-grid article,.cc-site .sponsors>*,.cc-site .booth-directory-rich>*:first-child{border:2px solid var(--cc-ink)!important;border-radius:16px;background:var(--cc-cream);color:var(--cc-ink);box-shadow:6px 6px 0 var(--cc-pink)!important}
+.cc-site .booth-directory-card,.cc-site .directory-product-card,.cc-site .guide-grid article,.cc-site .booth-directory-rich>*:first-child{border:2px solid var(--cc-ink)!important;border-radius:16px;background:var(--cc-cream);color:var(--cc-ink);box-shadow:6px 6px 0 var(--cc-pink)!important}
 .cc-site .cut-ticket:before,.cc-site .cut-ticket:after{display:none}
-.cc-site .ticket .price{color:#c04f8a}
 .cc-site .ticket-actions .btn,.cc-site .ticket-purchase-link{background:var(--cc-pink);color:#2b1036;border-radius:999px}
 .cc-site .footer{background:#120b2e;color:#cbbdf5;border-top:1px solid var(--cc-line);margin-top:60px}
 .cc-site .footer h2{color:#fff}
@@ -167,37 +165,6 @@ const catalogueStyle=`
 .cc-guide .guide-venue-nav{display:inline-block;margin-top:10px;background:var(--cc-pink);color:#2b1036;border:2px solid var(--cc-ink);border-radius:999px;box-shadow:none;font-size:12px;font-weight:900;padding:6px 14px}
 .cc-guide .guide-access-media-empty{display:none}
 /* 04 tickets, announcements, community, sponsors, map */
-.cc-site .ticket-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
-.cc-site .cc-ticket{display:grid;grid-template-columns:1fr 110px;background:var(--cc-cream)!important;color:var(--cc-ink);border:3px solid var(--cc-ink)!important;border-radius:14px;padding:0;overflow:hidden;box-shadow:6px 6px 0 var(--cc-cyan)!important;min-height:0}
-.cc-ticket-main{display:flex;flex-direction:column;gap:6px;padding:18px 20px}
-.cc-ticket-main small{font-size:10px;font-weight:1000;letter-spacing:.18em;color:#c04f8a}
-.cc-ticket-main h3{margin:0;font-size:20px;font-weight:1000}
-.cc-ticket-main .oe-ticket-gift{font-size:13px;white-space:pre-line;color:#4a3d66}
-.cc-ticket-main .oe-ticket-note{font-size:11px;color:#6a55c8}
-.cc-ticket-stub{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--cc-pink);border-left:3px dashed var(--cc-ink);color:#2b1036;font-weight:1000}
-.cc-ticket-stub span{font-size:11px;letter-spacing:.12em}.cc-ticket-stub i{font-style:normal;font-size:22px}
-.cc-ticket-stub .oe-ticket-price{font-size:20px}
-.cc-site .updates-list{display:flex;flex-direction:column;gap:10px}
-.cc-update{display:flex;align-items:center;gap:12px;background:#ffffff12;border:1px solid #ffffff2e;border-radius:999px;padding:10px 18px;color:#fff}
-.cc-update-star{color:#ffe45c}
-.cc-update time{font-size:12px;font-weight:900;color:var(--cc-cyan)}
-.cc-update b{flex:1;font-size:14px}.cc-update i{font-style:normal;color:var(--cc-pink);font-size:20px}
-.cc-site .community{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
-.cc-site .cc-social{display:flex;flex-direction:column;background:#fff!important;color:var(--cc-ink);border:3px solid var(--cc-ink)!important;border-radius:16px;overflow:hidden;box-shadow:6px 6px 0 var(--cc-lilac)!important;min-height:0;padding:0}
-.cc-social-art{aspect-ratio:16/9;background:linear-gradient(135deg,#b9a3ff,#ff8fc4);display:grid;place-items:center}
-.cc-social-art img,.cc-social-art>*{width:100%;height:100%;object-fit:cover;border:0!important;border-radius:0!important;margin:0!important;min-height:0!important}
-.cc-social-text{padding:12px 14px;display:flex;flex-direction:column;gap:4px}
-.cc-social-text b{font-size:15px;font-weight:1000}.cc-social-text p{margin:0;font-size:12px;color:#5b4f75}
-.cc-social .social-action{font-size:12px;font-weight:900;color:#c04f8a;border:0;background:none;padding:0}
-.cc-site .sponsors{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
-.cc-site .cc-sponsor{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;background:#fff!important;color:var(--cc-ink);border:3px solid var(--cc-ink)!important;border-radius:14px;padding:26px 14px 14px;box-shadow:5px 5px 0 var(--cc-pink)!important;text-align:center}
-.cc-sponsor-ribbon{position:absolute;top:-12px;background:var(--cc-ink);color:#ffe45c;font-size:10px;font-weight:1000;letter-spacing:.14em;padding:4px 10px;border-radius:4px}
-.cc-site .cc-map-wrap{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px}
-.cc-site .map-static{min-height:400px}
-.cc-site .cc-routes{padding:18px}
-.cc-site .map-link-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-.cc-map-tag{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--cc-ink);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:900;color:var(--cc-ink)}
-.cc-map-tag b{color:var(--cc-pink)}.cc-map-tag i{margin-left:auto;font-style:normal}
 /* 04 footer: starry sign-off */
 .cc-site .footer{padding:40px 0 34px;background:transparent!important;border-top:2px dashed #ffffff2e}
 .cc-site .footer-grid{display:grid!important;grid-template-columns:1.4fr repeat(3,1fr);gap:24px}
@@ -206,7 +173,7 @@ const catalogueStyle=`
 .cc-site .footer-brand p{margin:0;color:#cbbdf5;font-size:13px}
 .cc-site .footer-grid b{display:block;margin-bottom:8px;color:var(--cc-pink);font-size:12px;letter-spacing:.16em}
 .cc-site .footer-grid nav{display:flex;flex-direction:column;gap:6px}.cc-site .footer-grid nav a{color:#e6dcff;font-size:13px}
-@media(max-width:800px){.cc-site .guide-detail-content{grid-template-columns:1fr!important}.cc-site .cc-map-wrap{grid-template-columns:1fr}.cc-site .footer-grid{grid-template-columns:1fr 1fr}.cc-site .booth-directory-tools{flex-wrap:wrap;border-radius:18px}}
+@media(max-width:800px){.cc-site .guide-detail-content{grid-template-columns:1fr!important}.cc-site .footer-grid{grid-template-columns:1fr 1fr}.cc-site .booth-directory-tools{flex-wrap:wrap;border-radius:18px}}
 
 /* 04 overrides for shared runtime rules (gate filter, editorial guide styling) */
 .cc-site .loader .cc-entry-gate{filter:none!important;display:block!important;width:auto!important;height:auto!important;min-height:0!important;animation:none!important}
@@ -226,7 +193,7 @@ const shapeStyle=`
 .cc-site .head{position:relative;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px}
 .cc-site .head>div{width:100%}
 .cc-site .head .section-back{position:absolute;right:0;top:0}
-.cc-site .ticket,.cc-site .cc-ticket,.cc-site .cc-booth,.cc-site .cc-product,.cc-site .cc-guide,.cc-site .cc-social,.cc-site .cc-sponsor,.cc-site .community article,.cc-site .guide-grid article,.cc-site .map-static,.cc-site .cc-routes,.cc-site .booth-directory-card,.cc-site .directory-product-card{border-radius:22px!important}
+.cc-site .cc-booth,.cc-site .cc-product,.cc-site .cc-guide,.cc-site .guide-grid article,.cc-site .booth-directory-card,.cc-site .directory-product-card{border-radius:22px!important}
 @media(max-width:820px){.cc-site .head .section-back{position:static;margin-top:6px}}
 `;
 /* hero composition: what the first screen is built from differs from every other template */
@@ -266,26 +233,8 @@ const referenceStyle=`
 @media(max-width:820px){.cc-site .hero-art{aspect-ratio:16/9}.cc-site .hero-copy{grid-template-columns:1fr}.cc-site .hero-copy .cc-cta{grid-column:1;grid-row:auto;justify-self:start}}
 
 /* skeleton: a dashboard of titled panels in rows of three and two, like an event information board */
-.cc-site .cc-deck{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;width:min(1180px,calc(100% - 48px));margin:22px auto 0;align-items:start}
-.cc-site .cc-deck2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.cc-site .cc-deck>section{padding:0;margin:0;background:#ffffff0f;border:1px solid #ffffff2e;border-radius:10px;overflow:hidden;box-shadow:none}
-.cc-site .cc-deck>section .wrap{width:auto;max-width:none;padding:0;margin:0}
-.cc-site .cc-deck .head{margin:0;padding:11px 16px;background:#24194d;border-left:4px solid var(--cc-pink);border-bottom:1px solid #ffffff22;display:block;text-align:left}
-.cc-site .cc-deck .head>div{text-align:left;display:block}
-.cc-site .cc-deck .head h2{font-size:15px;letter-spacing:.06em;margin:0;text-align:left;transform:none;text-shadow:none;-webkit-text-stroke:0}
-.cc-site .cc-deck .head .ey{display:none}
-.cc-site .cc-deck .updates-list,.cc-site .cc-deck .ticket-grid,.cc-site .cc-deck .cc-map-wrap,.cc-site .cc-deck .community,.cc-site .cc-deck .sponsors,.cc-site .cc-deck .ticket-actions{padding:14px 16px}
-.cc-site .cc-deck .ticket-actions{padding-top:0}
-.cc-site .cc-deck .ticket-grid{grid-template-columns:1fr;gap:10px}
-.cc-site .cc-deck .cc-map-wrap{grid-template-columns:1fr}
-.cc-site .cc-deck .map-static{min-height:170px}
-.cc-site .cc-deck .community,.cc-site .cc-deck .sponsors{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
-@media(max-width:1000px){.cc-site .cc-deck,.cc-site .cc-deck2{grid-template-columns:1fr;width:calc(100% - 26px)}}
 
-@media(min-width:1001px){.cc-site .cc-deck{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.cc-site .cc-deck2{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}}
-.cc-site .cc-ticket:before,.cc-site .cc-ticket:after{display:none!important}
 `;
-const routesStyle=`.cc-routes h3{margin:0 0 12px;text-align:center;font-size:16px;letter-spacing:.08em}.cc-routes .map-link-list{display:grid;gap:10px}.cc-routes[hidden]{display:none}`;
 const listStyle=`
 /* circle list: each circle is one wide catalogue row with its space number on a block at the left */
 .cc-site [data-directory-grid="booths"]{grid-template-columns:1fr;gap:22px;max-width:1000px;margin:26px auto 0}
@@ -323,7 +272,7 @@ const bookPagesStyle=`
 .cc-site .cb-sponsor{background:#fff;color:var(--cc-ink);border:2px solid var(--cc-ink);border-radius:999px}
 .cc-site .cb-page{color:var(--cc-ink)}
 `;
-export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle+routesStyle+listStyle+bookPagesStyle;
+export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle+listStyle+bookPagesStyle;
 
 const loader=`<div class="loader cc-entry" id="loader"><div class="gate cc-entry-gate" role="button" tabindex="0" aria-label="点击翻开电子场刊"><div class="cc-entry-book"><div class="cc-entry-page"><span class="cc-entry-kicker">WELCOME!</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cc-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><span class="cc-entry-hint">ようこそ · 欢迎光临 ✦</span></div><div class="cc-entry-cover"><div class="entry-photo cc-entry-photo" aria-label="活动KV"></div><span class="cc-entry-cover-title">WEB CATALOGUE</span><span class="cc-entry-tap">TAP TO OPEN ✦</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
