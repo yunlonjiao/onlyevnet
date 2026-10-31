@@ -52,3 +52,15 @@ test('sections below the first screen are laid out differently in every template
   }
   expect(close,JSON.stringify(s)).toEqual([]);
 });
+
+test('templates 03-08 do not use Template 01 markup for the map rail, community cards or sponsor cards',async({page})=>{
+  test.setTimeout(120000);
+  for(const id of ids.slice(2)){
+    await page.goto('/v8/?template='+id+'&embed=preview');
+    await page.frameLocator('#liveFrame').locator('.hero').first().waitFor({state:'attached'});
+    await page.waitForTimeout(700);
+    const frame=page.frames().find(f=>f.url().includes('render.html'));
+    const left=await frame.evaluate(()=>['.map-link-rail','.map-explorer','.community>article:not([class])','.sponsors>.sponsor-card:not([class*="-sponsor"])','.map-jump-tag'].filter(s=>document.querySelector(s)));
+    expect(left,id).toEqual([]);
+  }
+});

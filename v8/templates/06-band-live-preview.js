@@ -242,10 +242,11 @@ const ownStyle=`
 .bl-routes{display:flex;flex-direction:column}
 .bl-routes h3{background:#111;color:#fff;font:400 20px Impact,"Arial Black",sans-serif;letter-spacing:.18em;padding:10px 14px;text-transform:uppercase}
 .bl-route{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:8px;padding:12px 14px;border-bottom:2px solid #111;color:#111;text-decoration:none}
-.bl-route span{font:400 28px Impact,"Arial Black",sans-serif;opacity:.3}
+.bl-route>span{font:400 28px Impact,"Arial Black",sans-serif;opacity:.3}
 .bl-route b{font-size:17px;color:#111;opacity:1}
 .bl-route i{font-style:normal;font-size:11px;font-weight:900;letter-spacing:.14em;border:2px solid #111;padding:1px 6px}
 .bl-people{display:block}
+.bl-site #updates .updates-list{max-width:none;width:100%}
 .bl-follow{display:grid;grid-template-columns:48px minmax(0,1fr) 84px auto;align-items:center;gap:16px;padding:14px 0;border-bottom:2px solid #111}
 .bl-follow-no{font:400 30px Impact,"Arial Black",sans-serif;opacity:.3}
 .bl-follow-qr img,.bl-follow-qr .social-image{width:76px;height:76px;object-fit:cover}
@@ -270,7 +271,7 @@ export const previewBody=`<div class="bl-site">
 ${coreRibbon()}
 <section class="section oe-home-only" id="lineup"><div class="wrap">${head('LINE UP','出演乐队')}<div class="lineup-strip" data-oe-mirror="lineup"></div>${more('guests','乐队介绍')}</div></section>
 <section class="section oe-home-only" id="timetable"><div class="wrap">${head('SET TIMES','出场顺序')}<div class="timeline" data-oe-mirror="timetable"></div>${more('activities','完整出场顺序')}</div></section>
-${coreSection('updates').replace('class="updates-strip"','class="updates-strip oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新消息'))}
+${coreSection('updates').replace('class="updates-strip"','class="updates-strip section oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新消息'))}
 ${coreSection('participation',{ey:'MERCH & MORE',title:'物贩与交流'})}
 ${coreSection('tickets',{ey:'TICKET',title:'门票'})}
 ${ownMapSection('bl',{ey:'ACCESS',title:'场地',routeTitle:'INDEX'})}

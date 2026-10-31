@@ -192,7 +192,7 @@ const catalogueStyle=`
 .cc-site .sponsors{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
 .cc-site .cc-sponsor{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;background:#fff!important;color:var(--cc-ink);border:3px solid var(--cc-ink)!important;border-radius:14px;padding:26px 14px 14px;box-shadow:5px 5px 0 var(--cc-pink)!important;text-align:center}
 .cc-sponsor-ribbon{position:absolute;top:-12px;background:var(--cc-ink);color:#ffe45c;font-size:10px;font-weight:1000;letter-spacing:.14em;padding:4px 10px;border-radius:4px}
-.cc-site .map-explorer{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px}
+.cc-site .cc-map-wrap{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px}
 .cc-site .map-static{min-height:400px}
 .cc-site .cc-routes{padding:18px}
 .cc-site .map-link-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
@@ -206,7 +206,7 @@ const catalogueStyle=`
 .cc-site .footer-brand p{margin:0;color:#cbbdf5;font-size:13px}
 .cc-site .footer-grid b{display:block;margin-bottom:8px;color:var(--cc-pink);font-size:12px;letter-spacing:.16em}
 .cc-site .footer-grid nav{display:flex;flex-direction:column;gap:6px}.cc-site .footer-grid nav a{color:#e6dcff;font-size:13px}
-@media(max-width:800px){.cc-site .guide-detail-content{grid-template-columns:1fr!important}.cc-site .map-explorer{grid-template-columns:1fr}.cc-site .footer-grid{grid-template-columns:1fr 1fr}.cc-site .booth-directory-tools{flex-wrap:wrap;border-radius:18px}}
+@media(max-width:800px){.cc-site .guide-detail-content{grid-template-columns:1fr!important}.cc-site .cc-map-wrap{grid-template-columns:1fr}.cc-site .footer-grid{grid-template-columns:1fr 1fr}.cc-site .booth-directory-tools{flex-wrap:wrap;border-radius:18px}}
 
 /* 04 overrides for shared runtime rules (gate filter, editorial guide styling) */
 .cc-site .loader .cc-entry-gate{filter:none!important;display:block!important;width:auto!important;height:auto!important;min-height:0!important;animation:none!important}
@@ -274,10 +274,10 @@ const referenceStyle=`
 .cc-site .cc-deck .head>div{text-align:left;display:block}
 .cc-site .cc-deck .head h2{font-size:15px;letter-spacing:.06em;margin:0;text-align:left;transform:none;text-shadow:none;-webkit-text-stroke:0}
 .cc-site .cc-deck .head .ey{display:none}
-.cc-site .cc-deck .updates-list,.cc-site .cc-deck .ticket-grid,.cc-site .cc-deck .map-explorer,.cc-site .cc-deck .community,.cc-site .cc-deck .sponsors,.cc-site .cc-deck .ticket-actions{padding:14px 16px}
+.cc-site .cc-deck .updates-list,.cc-site .cc-deck .ticket-grid,.cc-site .cc-deck .cc-map-wrap,.cc-site .cc-deck .community,.cc-site .cc-deck .sponsors,.cc-site .cc-deck .ticket-actions{padding:14px 16px}
 .cc-site .cc-deck .ticket-actions{padding-top:0}
 .cc-site .cc-deck .ticket-grid{grid-template-columns:1fr;gap:10px}
-.cc-site .cc-deck .map-explorer{grid-template-columns:1fr}
+.cc-site .cc-deck .cc-map-wrap{grid-template-columns:1fr}
 .cc-site .cc-deck .map-static{min-height:170px}
 .cc-site .cc-deck .community,.cc-site .cc-deck .sponsors{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
 @media(max-width:1000px){.cc-site .cc-deck,.cc-site .cc-deck2{grid-template-columns:1fr;width:calc(100% - 26px)}}
@@ -286,7 +286,23 @@ const referenceStyle=`
 .cc-site .cc-ticket:before,.cc-site .cc-ticket:after{display:none!important}
 `;
 const routesStyle=`.cc-routes h3{margin:0 0 12px;text-align:center;font-size:16px;letter-spacing:.08em}.cc-routes .map-link-list{display:grid;gap:10px}.cc-routes[hidden]{display:none}`;
-export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle+routesStyle;
+const listStyle=`
+/* circle list: each circle is one wide catalogue row with its space number on a block at the left */
+.cc-site [data-directory-grid="booths"]{grid-template-columns:1fr;gap:22px;max-width:1000px;margin:26px auto 0}
+.cc-site [data-directory-grid="products"]{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:26px 22px;margin-top:26px}
+.cc-booth{display:grid;grid-template-columns:128px 112px minmax(0,1fr) auto;align-items:center;gap:24px;padding:0 26px 0 0;overflow:hidden}
+.cc-booth-space{position:static;align-self:stretch;display:grid;place-items:center;background:var(--cc-ink);border-radius:0}
+.cc-booth .booth-no{background:none;font-size:30px;padding:0;letter-spacing:.06em;border-radius:0}
+.cc-booth-cut{margin:16px 0;width:112px}
+.cc-booth-info{margin:0;padding:16px 0}
+.cc-booth-info h3{font-size:22px}
+.cc-booth-info p{font-size:14px;margin-top:6px}
+.cc-booth footer{margin:0;flex-direction:column;align-items:stretch;gap:8px}
+.cc-booth footer button{text-align:center;white-space:nowrap}
+.cc-site .oe-page-view>.wrap{padding-bottom:80px}
+@media(max-width:760px){.cc-booth{grid-template-columns:84px minmax(0,1fr);gap:14px;padding:0 14px 0 0}.cc-booth-space{grid-row:span 3;min-height:84px}.cc-booth .booth-no{font-size:20px}.cc-booth-cut{display:none}.cc-booth-info{padding:12px 0 0}.cc-booth footer{flex-direction:row;flex-wrap:wrap;padding-bottom:12px}}
+`;
+export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle+routesStyle+listStyle;
 
 const loader=`<div class="loader cc-entry" id="loader"><div class="gate cc-entry-gate" role="button" tabindex="0" aria-label="点击翻开电子场刊"><div class="cc-entry-book"><div class="cc-entry-page"><span class="cc-entry-kicker">WELCOME!</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cc-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><span class="cc-entry-hint">ようこそ · 欢迎光临 ✦</span></div><div class="cc-entry-cover"><div class="entry-photo cc-entry-photo" aria-label="活动KV"></div><span class="cc-entry-cover-title">WEB CATALOGUE</span><span class="cc-entry-tap">TAP TO OPEN ✦</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
@@ -302,7 +318,7 @@ export const previewBody=`<div class="cc-site">${loader}
 <div class="cc-deck oe-home-only">
 <section class="updates-strip oe-home-only" id="updates"><div class="wrap">${head('NEWS','最新公告')}<div class="updates-list"></div></div></section>
 <section class="section" id="tickets"><div class="wrap">${head('ADMISSION','入场票')}<div class="ticket-grid"></div><div class="ticket-actions"></div></div></section>
-<section class="section" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="map-explorer"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><aside class="cc-routes" data-oe-mount="map-rail" data-oe-collection="explore"><h3>✦ 逛展导览 ✦</h3><div class="map-link-list"></div></aside></div></div></section>
+<section class="section" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="cc-map-wrap"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><aside class="cc-routes" data-oe-mount="map-rail" data-oe-collection="explore"><h3>✦ 逛展导览 ✦</h3><div class="map-link-list"></div></aside></div></div></section>
 </div>
 <div class="cc-deck cc-deck2 oe-home-only">
 <section class="section" id="community"><div class="wrap">${head('COMMUNITY','社群')}<div class="community"></div></div></section>

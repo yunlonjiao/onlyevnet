@@ -283,6 +283,7 @@ const ownStyle=`
 .bd-route{padding:7px 18px;border-radius:999px;background:var(--bd-accent);color:#fff;text-decoration:none;font-weight:900;transform:rotate(-2deg)}
 .bd-route:nth-child(even){background:var(--bd-paper);color:var(--bd-ink);border:2px dotted var(--bd-accent);transform:rotate(2deg)}
 .bd-people{display:flex;flex-direction:column;gap:16px}
+.bd-site #updates .updates-list{max-width:none;width:100%}
 .bd-bubble{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 84px;gap:14px;align-items:center;max-width:540px;padding:16px 20px;background:#fff;border:3px dotted var(--bd-accent);border-radius:26px 26px 26px 4px;box-shadow:none}
 .bd-bubble:nth-child(even){align-self:flex-end;border-radius:26px 26px 4px 26px}
 .bd-bubble-face img,.bd-bubble-face .social-image{width:84px;height:84px;object-fit:cover;border-radius:16px}
@@ -302,7 +303,7 @@ export const previewBody=`<div class="bd-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#participation">应援内容</a><a href="#tickets">赠品</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">预约领取 ↗</a></div></header>
 <main id="top">
 <section class="hero"><div class="wrap hero-grid"><div class="hero-copy bd-title"><span class="hero-kicker">HAPPY BIRTHDAY</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="hero-art"><div class="kv"><strong class="bd-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy bd-detail"><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bd-cta"><a class="bd-btn accent ticket-purchase-link" href="#tickets">预约领取</a><a class="bd-btn" href="#participation">看应援内容</a></div></div></div></section>
-${coreSection('updates').replace('class="updates-strip"','class="updates-strip oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新消息'))}
+${coreSection('updates').replace('class="updates-strip"','class="updates-strip section oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新消息'))}
 ${coreSection('participation',{ey:'SUPPORT',title:'应援内容'})}
 ${coreSection('tickets',{ey:'GIFTS',title:'赠品与领取'})}
 <section class="section oe-home-only" id="timetable"><div class="wrap">${head('SCHEDULE','当天安排')}<div class="timeline" data-oe-mirror="timetable"></div>${more('activities','查看完整安排')}</div></section>

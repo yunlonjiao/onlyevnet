@@ -297,9 +297,12 @@ const ownStyle=`
 .ls-routes h3{font-size:12px;letter-spacing:.4em;opacity:.8;margin-bottom:12px}
 .ls-route-list{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 .ls-route-stop{display:inline-flex;align-items:center;gap:10px;padding:6px 18px 6px 6px;border-radius:999px;background:#ffffff14;color:#fff;text-decoration:none;font-weight:800}
-.ls-route-stop span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--ls-pink),var(--ls-violet));font-size:12px}
+.ls-route-stop>span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--ls-pink),var(--ls-violet));font-size:12px}
 .ls-people{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
 .ls-people>*{width:min(300px,100%)}
+.ls-site .lineup-strip,.ls-site .lineup{justify-content:center}
+.ls-route-stop b{white-space:nowrap}
+.ls-site #updates .updates-list{width:min(1080px,calc(100% - 44px));margin:0 auto;max-width:none}
 .ls-thanks{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px 34px}
 .ls-sponsor{display:flex;align-items:center;gap:10px;background:none;border:0;box-shadow:none;padding:0;color:#fff}
 .ls-sponsor b{font-size:15px;letter-spacing:.12em}
@@ -314,7 +317,7 @@ export const previewBody=`<div class="ls-site">${loader}
 <nav class="ls-pills" data-oe-mount="nav-links" aria-label="站内导航"><a href="#home" data-page-link="home">特设首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">节目表</a><a href="#guests" data-target-mode="page" data-page-link="guests">出演嘉宾</a><a href="#tickets">票务信息</a><a href="#map-home">场地</a><a href="#guide" data-target-mode="page" data-page-link="guide">注意事项</a></nav>
 <section class="section oe-home-only" id="timetable"><div class="wrap">${head('SCHEDULE','公演日程')}<div class="timeline" data-oe-mirror="timetable"></div>${more('#activities','activities','完整节目表')}</div></section>
 <section class="section oe-home-only" id="lineup"><div class="wrap">${head('LINE UP','出演嘉宾')}<div class="lineup-strip" data-oe-mirror="lineup"></div>${more('#guests','guests','全部嘉宾')}</div></section>
-${coreSection('updates').replace('class="updates-strip"','class="updates-strip oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新公告'))}
+${coreSection('updates').replace('class="updates-strip"','class="updates-strip section oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新公告'))}
 ${coreSection('participation',{ey:'SPECIAL',title:'特别企划'})}
 ${coreSection('tickets',{ey:'TICKET',title:'票务'})}
 ${ownMapSection('ls',{ey:'ACCESS',title:'场地图',routeTitle:'前往'})}
