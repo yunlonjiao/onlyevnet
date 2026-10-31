@@ -1,4 +1,4 @@
-# OnlyEvent 一键发布：设代理 -> 推送 -> 检查线上 -> 备份 -> 部署（部署前要求输入 yes）
+﻿# OnlyEvent 一键发布：设代理 -> 推送 -> 检查线上 -> 备份 -> 部署（部署前要求输入 yes）
 # 用法（在任意位置，PowerShell）：
 #   .\cloud\scripts\ship.ps1              # 推送 + Verify + Deploy（Deploy 内含备份、测试、部署、验证）
 #   .\cloud\scripts\ship.ps1 -NoPush      # 不推送，只检查 + 部署
