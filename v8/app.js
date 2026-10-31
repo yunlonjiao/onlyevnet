@@ -223,8 +223,21 @@ function savePublishRecord(next){
  publishRecord={...publishRecord,...next};localStorage.setItem(PUBLISH_STORAGE,JSON.stringify(publishRecord));syncPublishButton();
 }
 let renamingSite=false;
+// Sharing starts from defaults (event name, intro, key visual); the organizer only decides whether to change them.
+function renderPublishShare(){
+ const seo=state.seo||{},custom=!!(seo.ogTitle||seo.ogDescription||seo.ogImage);
+ const title=seo.ogTitle||seo.pageTitle||state.eventName||'活动网站',desc=seo.ogDescription||seo.metaDescription||state.tagline||'',img=seo.ogImage||state.heroImage||'';
+ $('#publishShareTitle').textContent=title;$('#publishShareDesc').textContent=desc;
+ const box=$('#publishShareImg');box.innerHTML='';if(img){const el=document.createElement('img');el.alt='';el.src=img;box.appendChild(el)}
+ $('#publishShareMode').textContent=custom?'已自定义转发时的标题、描述或封面。':'使用默认：活动名称、活动简介和主视觉。直接发布即可，也可以改。';
+ $('#publishShareReset').hidden=!custom;
+}
+$('#publishShareEdit').onclick=()=>openShareDialog();
+$('#publishShareReset').onclick=()=>{checkpoint();state.seo??={};state.seo.ogTitle='';state.seo.ogDescription='';state.seo.ogImage='';save();send({type:'OE_REPLACE_STATE',state});renderPublishShare()};
+$('#shareDialog').addEventListener('close',renderPublishShare);
+$('#publishRecap').onclick=()=>{publishDialog.close();openRecapDialog()};
 function renderPublishDialog(){
- renderStageRows();
+ renderStageRows();renderPublishShare();
  const hasSite=hasLiveSite(publishRecord),slug=cleanSlug(publishRecord?.slug||suggestSlug(state.eventName,state.date));
  if(!hasSite)renamingSite=false;
  publishSlug.value=slug;publishSlug.readOnly=hasSite&&!renamingSite;
@@ -558,8 +571,6 @@ const PAGE_CONTENT_CONFIG={
    {tool:'basic',label:'基本信息'},
    {tool:'lifecycle',label:'活动状态'},
    {tool:'hero',label:'主视觉'},
-   {tool:'seo',label:'SEO / 分享'},
-   {tool:'recap',label:'实况与回顾'},
    {collection:'ribbonItems',label:'滚动公告'},
    {collection:'tickets',label:'票务'},
    {tool:'map',label:'场地图'},

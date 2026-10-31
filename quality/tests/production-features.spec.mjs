@@ -142,7 +142,7 @@ test('new production feature inspectors are present and editable',async({page})=
   await expect(page.locator('#inspector [data-hero-image="mobileHeroImage"]')).toBeVisible();
   await expect(page.locator('#inspector [data-sync-path="heroFocalMobile"]')).toBeVisible();
 
-  await page.locator('[data-page-tool="seo"]').click();
+  await page.locator('#shareBtn').click();
   // SEO and sharing live in their own dialog, not in the inspector
   await expect(page.locator('#shareDialog')).toBeVisible();
   await expect(page.locator('#shareDialog [data-seo-field="ogTitle"]')).toBeVisible();

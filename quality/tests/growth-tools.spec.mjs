@@ -198,7 +198,14 @@ test('live updates and recap: the editor builds the section and it ships in the 
   const frame=page.frameLocator('#liveFrame');
   await expect(frame.locator('.hero')).toBeAttached();
   await expect(frame.locator('#recap')).toHaveCount(0);
-  await page.locator('[data-page-tool="recap"]').click();
+  // the recap belongs after publishing: it is not in the editor's content list, only in the publish dialog once the site is live
+  await expect(page.locator('[data-page-tool="recap"]')).toHaveCount(0);
+  await page.locator('#publishBtn').click();
+  await expect(page.locator('#publishRecap')).toBeHidden();
+  await page.locator('#publishSlug').fill('recap-site');
+  await page.locator('#publishPrimary').click();
+  await expect(page.locator('#publishStatus')).toHaveText('网站已上线',{timeout:20000});
+  await page.locator('#publishRecap').click();
   await expect(page.locator('#recapDialog')).toBeVisible();
   await page.locator('[data-recap="mode"]').selectOption('recap');
   await page.locator('[data-recap="summary"]').fill('两天一共来了三千多位同好。');
@@ -217,7 +224,6 @@ test('live updates and recap: the editor builds the section and it ships in the 
   await expect(frame.locator('#recap .oe-recap-links a')).toHaveCount(1);
   await page.locator('#recapClose').click();
   await page.locator('#publishBtn').click();
-  await page.locator('#publishSlug').fill('recap-site');
   await page.locator('#publishPrimary').click();
   await expect(page.locator('#publishStatus')).toHaveText('网站已上线',{timeout:20000});
   const html=(await visitSite(cloud,'recap-site')).html;
@@ -227,7 +233,8 @@ test('live updates and recap: the editor builds the section and it ships in the 
   expect(html).not.toContain('href="javascript:');
   // switched off: the section is gone again
   await page.locator('#publishClose').click();
-  await page.locator('[data-page-tool="recap"]').click();
+  await page.locator('#publishBtn').click();
+  await page.locator('#publishRecap').click();
   await page.locator('[data-recap="mode"]').selectOption('off');
   await expect(frame.locator('#recap')).toHaveCount(0);
 });
@@ -275,4 +282,22 @@ test('help opens inside the page, not in a new tab',async({page,context})=>{
   expect(context.pages().length).toBe(before);
   await page.locator('#helpClose').click();
   await expect(page.locator('#helpDialog')).toBeHidden();
+});
+
+test('publishing starts from default share settings and the organizer can change or reset them',async({page})=>{
+  const cloud=await useCloudPublisher(page);
+  await signInCloud(page,cloud,'share-default');
+  await page.goto('/v8/?template=01-ip-only&project=growth-share-default');
+  await expect(page.frameLocator('#liveFrame').locator('.hero')).toBeAttached();
+  await page.locator('#publishBtn').click();
+  await expect(page.locator('#publishShareMode')).toContainText('使用默认');
+  await expect(page.locator('#publishShareReset')).toBeHidden();
+  await page.locator('#publishShareEdit').click();
+  await page.locator('#shareDialog [data-seo-field="ogTitle"]').fill('转发标题');
+  await page.locator('#shareClose').click();
+  await expect(page.locator('#publishShareMode')).toContainText('已自定义');
+  await expect(page.locator('#publishShareTitle')).toHaveText('转发标题');
+  await page.locator('#publishShareReset').click();
+  await expect(page.locator('#publishShareMode')).toContainText('使用默认');
+  await expect(page.locator('#publishShareTitle')).not.toHaveText('转发标题');
 });
