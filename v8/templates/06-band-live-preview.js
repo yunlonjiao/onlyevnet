@@ -112,9 +112,6 @@ const style=`
 .bl-site .bl-ticket-price{font-size:40px;line-height:1;color:var(--bl-ink);background:var(--bl-yellow);padding:6px 12px;transform:rotate(-2deg)}
 .bl-site .ticket-actions{margin-top:20px}.bl-site .ticket-actions .btn{background:var(--bl-ink);color:var(--bl-yellow);border:0;border-radius:0;padding:13px 28px;font-weight:900;box-shadow:none}
 /* map / guests page / guide / community / footer */
-.bl-site .map-explorer{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px}
-.bl-site .map-static,.bl-site .map-link-rail{background:#fffdf5;border:2px solid var(--bl-ink);border-radius:0;box-shadow:none;color:var(--bl-ink)}
-.bl-site .map-link-list a{display:flex;gap:10px;padding:10px 12px;margin-top:8px;border:2px solid var(--bl-ink);background:#fff;text-decoration:none;color:var(--bl-ink);font-weight:800}
 .bl-site .guest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
 .bl-site .bl-band{position:relative;display:grid;grid-template-columns:130px minmax(0,1fr);gap:16px;padding:16px;background:#fffdf5;border:2px solid var(--bl-ink);box-shadow:none}
 .bl-site .bl-band-no{position:absolute;right:12px;top:6px;font-family:Impact,sans-serif;font-size:40px;color:#10101022}
@@ -124,9 +121,7 @@ const style=`
 .bl-site .bl-band-copy,.bl-site .bl-band-copy p,.bl-site .bl-band-copy .oe-secondary-copy{color:#4a4a46;font-size:14px;line-height:1.7}
 .bl-site #guests .bl-band-copy b.guest-poster-name{color:var(--bl-ink)!important}
 .bl-site .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
-.bl-site .guide-grid article,.bl-site .community article{background:#fffdf5;border:2px solid var(--bl-ink);border-radius:0;box-shadow:none;color:var(--bl-ink);padding:18px}
-.bl-site .community{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
-.bl-site .sponsors{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.bl-site .sponsors>*{background:#fffdf5;border:2px solid var(--bl-ink);border-radius:0;min-height:70px;display:grid;place-items:center}
+.bl-site .guide-grid article{background:#fffdf5;border:2px solid var(--bl-ink);border-radius:0;box-shadow:none;color:var(--bl-ink);padding:18px}
 .bl-site .footer{margin-top:60px;padding:42px 0 96px;background:var(--bl-ink);color:#d9d6cc;border-top:14px solid var(--bl-yellow)}
 .bl-site .footer h2,.bl-site .footer b{color:#fff}.bl-site .footer a{color:var(--bl-yellow)}
 .bl-site .mobile-dock{background:var(--bl-ink);border-top:3px solid var(--bl-yellow)}.bl-site .mobile-dock a{color:#fff;font-weight:900}
@@ -156,7 +151,7 @@ const style=`
  .bl-site .lineup-card{grid-template-columns:64px minmax(0,1fr);gap:14px}.bl-site .lineup-img{width:64px;height:64px}.bl-site .lineup-card small{display:none}
  .bl-site .timeline-row{grid-template-columns:104px minmax(0,1fr)}.bl-site .timeline-row time{font-size:20px}.bl-site .timeline-row b{font-size:16px}
  .bl-site .bl-set{grid-template-columns:1fr}.bl-site .bl-set-time{flex-direction:row;align-items:baseline;gap:10px}
- .bl-site .bl-activity-body{grid-template-columns:1fr}.bl-site .map-explorer{grid-template-columns:1fr}
+ .bl-site .bl-activity-body{grid-template-columns:1fr}
  .bl-site .bl-band{grid-template-columns:100px minmax(0,1fr)}.bl-site .bl-update{grid-template-columns:64px minmax(0,1fr)}.bl-site .bl-update i{display:none}
 }`;
 
@@ -219,7 +214,6 @@ const referenceStyle=`
 .bl-site #tickets .ticket-grid{display:block}
 .bl-site #tickets .ticket{margin:0;border-radius:0;border:0;border-bottom:2px solid #111;background:none;box-shadow:none;transform:none}
 .bl-site #tickets .ticket:before,.bl-site #tickets .ticket:after{display:none}
-.bl-site .community,.bl-site .sponsors{display:flex;flex-wrap:wrap;gap:10px 22px}
 `;
 const ownStyle=`
 
@@ -254,16 +248,25 @@ const ownStyle=`
 .bl-sponsor{display:flex;align-items:center;gap:10px;padding:8px 18px;border:0;border-right:2px solid #111;border-radius:0;background:none;box-shadow:none}
 .bl-sponsor small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.6}
 .bl-sponsor img{max-height:34px;width:auto}
-.bl-stall,.bl-item,.bl-note{display:grid;gap:14px;align-items:center;padding:14px 0;border:0;border-bottom:2px solid #111;border-radius:0;background:none;box-shadow:none}
-.bl-stall{grid-template-columns:90px minmax(0,1fr) 64px auto}
-.bl-stall-no{font:400 30px Impact,"Arial Black",sans-serif}
-.bl-item{grid-template-columns:minmax(0,1fr) auto auto auto 64px}
-.bl-note{grid-template-columns:56px minmax(0,1fr)}
+.bl-note{display:grid;gap:14px;align-items:center;padding:14px 0;border:0;border-bottom:2px solid #111;border-radius:0;background:none;box-shadow:none;grid-template-columns:56px minmax(0,1fr)}
 .bl-note-no{font:400 34px Impact,"Arial Black",sans-serif;opacity:.3}
 .bl-index{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;padding:10px 0;border-bottom:2px solid #111;color:#111;text-decoration:none}
-@media(max-width:760px){.bl-map{grid-template-columns:1fr}.bl-map-frame{border-right:0;border-bottom:4px solid #111}.bl-follow{grid-template-columns:36px minmax(0,1fr) 60px}.bl-follow .social-action{grid-column:2/4}.bl-stall{grid-template-columns:56px minmax(0,1fr)}.bl-item{grid-template-columns:minmax(0,1fr) auto}}
+@media(max-width:760px){.bl-map{grid-template-columns:1fr}.bl-map-frame{border-right:0;border-bottom:4px solid #111}.bl-follow{grid-template-columns:36px minmax(0,1fr) 60px}.bl-follow .social-action{grid-column:2/4}}
 `;
-export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle;
+const featuredFix=`
+/* featured plans: image on top, text below, same height; an empty cover is a thin strip, not a placeholder laid over the text */
+.bl-site .featured-activity-card{display:flex;flex-direction:column;align-items:stretch;height:100%}
+.bl-site .featured-activity-media{position:relative;flex:none;width:100%;aspect-ratio:16/9}
+.bl-site #participation .featured-activity-media.is-empty{aspect-ratio:auto!important;height:46px!important;min-height:0!important}
+.bl-site .featured-activity-media.is-empty span{position:static;font-size:11px;letter-spacing:.22em}
+.bl-site .featured-activity-copy{position:static;display:flex;flex-direction:column;gap:6px;padding:16px 18px 18px;text-align:left;align-self:stretch!important;width:100%!important;margin:0!important;grid-column:auto!important}
+.bl-site .featured-all-link{display:flex!important;width:max-content!important;margin:24px auto 0!important;align-self:center!important;justify-self:center!important}
+.bl-site .featured-activity-grid{align-items:stretch}
+`;
+const phoneFix=`
+@media(max-width:820px){.bl-site .hero-grid{grid-template-columns:minmax(0,1fr)}.bl-rail{flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:4px 14px;border-right:0;border-bottom:2px solid #111;padding:0 0 10px}.bl-rail-label,.bl-rail b,.bl-rail small{writing-mode:horizontal-tb;margin:0}.bl-rail b{font-size:26px}}
+`;
+export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+phoneFix;
 export const previewBody=`<div class="bl-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#guests" data-target-mode="page" data-page-link="guests">乐队</a><a href="#activities" data-target-mode="page" data-page-link="activities">出场顺序</a><a href="#tickets">门票</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">买票 ↗</a></div></header>
 <main id="top">

@@ -298,7 +298,11 @@ const spaceStyle=`
 .cm-site .oe-page-view>.wrap{padding-top:10px;padding-bottom:70px}
 @media(max-width:700px){.cm-site .spotlight-feature{min-height:260px}.cm-site [data-directory-grid="booths"]{grid-template-columns:1fr}}
 `;
-export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle;
+const phoneFix=`
+.cm-site .spotlight-feature-art .spotlight-placeholder{padding:24px;margin-bottom:110px}
+@media(max-width:700px){.cm-site .spotlight-feature-art .spotlight-placeholder{font-size:30px}}
+`;
+export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix;
 
 const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 

@@ -123,9 +123,6 @@ const style=`
 .tp-site .ticket-actions{text-align:center;margin-top:22px}
 .tp-site .ticket-actions .btn{background:var(--tp-pink);color:#fff;border:0;border-radius:999px;padding:12px 28px;font-weight:800;box-shadow:0 4px 0 #d9728d}
 /* map / guests / guide / community / footer */
-.tp-site .map-explorer{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px}
-.tp-site .map-static,.tp-site .map-link-rail{background:var(--tp-paper);border:2px solid var(--tp-line);border-radius:22px;box-shadow:none;color:var(--tp-brown)}
-.tp-site .map-link-list a{display:flex;gap:10px;padding:10px 14px;margin-top:8px;border-radius:999px;background:#fff;border:2px solid var(--tp-line);text-decoration:none;color:var(--tp-brown)}
 .tp-site .guest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
 .tp-site .tp-guest{display:grid;grid-template-columns:110px minmax(0,1fr);gap:18px;padding:20px;background:var(--tp-paper);border:2px solid var(--tp-line);border-radius:24px;box-shadow:0 10px 22px #5a3d3a12;align-items:start}
 .tp-site .tp-guest-photo .guest-image,.tp-site .tp-guest-photo img{display:block;width:100%;aspect-ratio:1/1;border-radius:50%;object-fit:cover;border:0;padding:0;background:linear-gradient(150deg,#f9d3dc,#dccffa);box-shadow:0 0 0 3px var(--tp-paper),0 0 0 5px var(--tp-pink)}
@@ -133,8 +130,7 @@ const style=`
 .tp-site .tp-guest-copy b.guest-poster-name{display:block;font-family:"Noto Serif SC",serif;font-size:21px;font-weight:900;margin:2px 0 6px;color:var(--tp-brown)}
 .tp-site .tp-guest-copy,.tp-site .tp-guest-copy p,.tp-site .tp-guest-copy .oe-secondary-copy{color:var(--tp-soft);font-size:14px;line-height:1.75}
 .tp-site .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-.tp-site .guide-grid article,.tp-site .community article{background:var(--tp-paper);border:2px solid var(--tp-line);border-radius:22px;box-shadow:0 10px 22px #5a3d3a12;color:var(--tp-brown);padding:20px}
-.tp-site .community{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.tp-site .guide-grid article{background:var(--tp-paper);border:2px solid var(--tp-line);border-radius:22px;box-shadow:0 10px 22px #5a3d3a12;color:var(--tp-brown);padding:20px}
 .tp-site .footer{margin-top:60px;padding:42px 0 96px;background:#fbe4e9;color:var(--tp-brown);border-top:2px dotted #e3b9c4}
 .tp-site .footer h2,.tp-site .footer b{color:var(--tp-brown)}.tp-site .footer a{color:#b0405e}
 .tp-site .mobile-dock{background:#fff6ecf2;border-top:2px dotted var(--tp-line);backdrop-filter:blur(8px)}.tp-site .mobile-dock a{color:var(--tp-brown);font-weight:800}
@@ -155,7 +151,7 @@ const style=`
  .tp-site .hero-grid{grid-template-columns:minmax(0,1fr);gap:30px}.tp-site .hero-art{order:-1;max-width:260px}
  .tp-site .hero-copy{padding:30px 22px 26px}
  .tp-site .nav .links{display:none}.tp-site .nav .wrap>.btn{margin-left:auto;padding:9px 16px}
- .tp-site .tp-activity{grid-template-columns:1fr}.tp-site .map-explorer{grid-template-columns:1fr}
+ .tp-site .tp-activity{grid-template-columns:1fr}
  .tp-site .tp-agenda{grid-template-columns:78px minmax(0,1fr);gap:10px}.tp-site .tp-agenda:before{left:84px}.tp-site .tp-agenda time strong{font-size:15px}
  .tp-site .timeline-row{grid-template-columns:70px minmax(0,1fr);gap:4px 12px}.tp-site .timeline-row:before{left:76px}.tp-site .timeline-row time{font-size:14px;padding:5px 9px}
  .tp-site .tp-guest{grid-template-columns:88px minmax(0,1fr)}
@@ -261,17 +257,21 @@ const ownStyle=`
 .tp-sponsor{display:flex;align-items:center;gap:10px;background:none;border:0;box-shadow:none;padding:0;color:var(--tp-brown)}
 .tp-sponsor-mark{color:var(--tp-pink);font-size:20px}
 .tp-sponsor img{max-height:38px;width:auto}
-.tp-stall{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;padding:16px 4px;border:0;border-bottom:3px dotted var(--tp-line);background:none;box-shadow:none;border-radius:0}
-.tp-stall-plate{grid-row:span 2;width:96px;height:96px;border-radius:50%;overflow:hidden;border:3px solid var(--tp-brown)}
-.tp-stall-plate img{width:100%;height:100%;object-fit:cover}
-.tp-dish{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 4px;border:0;border-bottom:3px dotted var(--tp-line);background:none;box-shadow:none;border-radius:0}
-.tp-dish-plate{width:84px;height:84px;border-radius:50%;overflow:hidden;border:3px solid var(--tp-brown)}
-.tp-dish-plate img{width:100%;height:100%;object-fit:cover}
 .tp-rule{padding:16px 22px;border:0;border-left:6px solid var(--tp-pink);background:var(--tp-paper);border-radius:0 18px 18px 0;margin-bottom:12px}
 .tp-menu-link{display:flex;justify-content:space-between;padding:10px 4px;border-bottom:3px dotted var(--tp-line);color:var(--tp-brown);text-decoration:none}
-@media(max-width:700px){.tp-routes{padding:4px 16px 10px}.tp-stall{grid-template-columns:72px minmax(0,1fr)}.tp-stall-plate{width:72px;height:72px}}
+@media(max-width:700px){.tp-routes{padding:4px 16px 10px}}
 `;
-export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle;
+const featuredFix=`
+/* featured plans: image on top, text below, same height; an empty cover is a thin strip, not a placeholder laid over the text */
+.tp-site .featured-activity-card{display:flex;flex-direction:column;align-items:stretch;height:100%}
+.tp-site .featured-activity-media{position:relative;flex:none;width:100%;aspect-ratio:16/9}
+.tp-site .featured-activity-media.is-empty{aspect-ratio:auto;height:46px}
+.tp-site .featured-activity-media.is-empty span{position:static;font-size:11px;letter-spacing:.22em}
+.tp-site .featured-activity-copy{position:static;display:flex;flex-direction:column;gap:6px;padding:16px 18px 18px;text-align:left;align-self:stretch!important;width:100%!important;margin:0!important;grid-column:auto!important}
+.tp-site .featured-all-link{display:flex!important;width:max-content!important;margin:24px auto 0!important;align-self:center!important;justify-self:center!important}
+.tp-site .featured-activity-grid{align-items:stretch}
+`;
+export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix;
 export const previewBody=`<div class="tp-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席的人</a><a href="#tickets">报名</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">去报名 ↗</a></div></header>
 <main id="top">

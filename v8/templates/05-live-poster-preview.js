@@ -91,10 +91,6 @@ const style=`
 .ls-site .live-pass-price{padding:0 20px;font-size:30px;font-weight:1000;font-style:italic;color:var(--ls-yellow)}
 .ls-site .ticket-actions .btn{background:var(--ls-yellow);color:#171230;border:0;border-radius:0;font-weight:1000;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);padding:13px 30px;box-shadow:none}
 /* map */
-.ls-site .map-explorer{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px}
-.ls-site .map-static,.ls-site .map-link-rail{background:#ffffff0c;border:1px solid var(--ls-line);border-radius:0;box-shadow:none;color:#fff}
-.ls-site .map-link-rail .ey{color:var(--ls-cyan)}.ls-site .map-link-rail b{color:#fff}
-.ls-site .live-venue-link,.ls-site .map-link-list a{color:#fff;border:1px solid var(--ls-line);background:#ffffff0a;border-radius:0;padding:10px 12px;text-decoration:none;display:flex;gap:10px}
 /* activities page (TIME TABLE detail) */
 .ls-site .activity-switch-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:22px}
 .ls-site .activity-view-tabs,.ls-site .activity-day-tabs{display:flex;gap:8px;flex-wrap:wrap}
@@ -123,11 +119,9 @@ const style=`
 .ls-site .live-performer a{color:var(--ls-cyan)}
 /* guide / community / sponsors / footer */
 .ls-site .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.ls-site .live-guide,.ls-site .guide-grid article,.ls-site .community article,.ls-site .live-social{background:#ffffff0a;border:1px solid var(--ls-line);border-radius:0;color:#fff;box-shadow:none;padding:18px}
-.ls-site .live-guide h3,.ls-site .community b{color:#fff}.ls-site .live-guide p,.ls-site .community p,.ls-site .guide-grid p{color:var(--ls-soft)}
+.ls-site .live-guide,.ls-site .guide-grid article,.ls-site .live-social{background:#ffffff0a;border:1px solid var(--ls-line);border-radius:0;color:#fff;box-shadow:none;padding:18px}
+.ls-site .live-guide h3{color:#fff}.ls-site .live-guide p,.ls-site .guide-grid p{color:var(--ls-soft)}
 .ls-site .live-guide>span{color:var(--ls-yellow);font-weight:1000;font-style:italic}
-.ls-site .community{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.ls-site .sponsors{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.ls-site .sponsors>*{background:#ffffff12;border:1px solid var(--ls-line);border-radius:0;min-height:70px;display:grid;place-items:center;color:#fff}
 .ls-site .footer{margin-top:64px;padding:44px 0 90px;background:#07061a;color:var(--ls-soft);border-top:1px solid var(--ls-line)}
 .ls-site .footer h2,.ls-site .footer b{color:#fff}.ls-site .footer a{color:var(--ls-cyan)}
 .ls-site .mobile-dock{background:#0b0a1cf2;border-top:1px solid var(--ls-line);backdrop-filter:blur(10px)}.ls-site .mobile-dock a{color:#e8e4ff;font-weight:800}
@@ -196,7 +190,7 @@ const style=`
 .ls-site .hero-art:after{right:auto;left:-14px}
 .ls-site .hero h1{font-size:clamp(34px,4.6vw,76px);overflow-wrap:normal;word-break:keep-all}
 .ls-site .ticket:before,.ls-site .ticket:after,.ls-site .ticket *:before,.ls-site .ticket *:after{pointer-events:none}
-.ls-site .live-pass,.ls-site .guide-grid article,.ls-site .community article,.ls-site .live-performer,.ls-site .live-guide{border-radius:8px}
+.ls-site .live-pass,.ls-site .guide-grid article,.ls-site .live-performer,.ls-site .live-guide{border-radius:8px}
 .ls-site .kv{border-radius:10px}
 /* entry gate: a plain centred stack (the shared gate is a grid) */
 .ls-entry .ls-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;grid-template-columns:none;min-height:0;height:auto;aspect-ratio:auto;box-sizing:border-box}
@@ -214,7 +208,7 @@ const style=`
  .ls-site .timeline-row{grid-template-columns:96px minmax(0,1fr);gap:4px 14px}.ls-site .timeline-row time{font-size:24px;grid-row:span 2}.ls-site .timeline-row b{font-size:16px}
  .ls-site .live-running-order{grid-template-columns:44px minmax(0,1fr)}.ls-site .live-running-order>aside{grid-column:2}.ls-site .live-running-order time{grid-column:2}
  .ls-site .live-activity{grid-template-columns:1fr}.ls-site .featured-activity-grid{grid-template-columns:1fr}
- .ls-site .map-explorer{grid-template-columns:1fr}.ls-site .live-update{grid-template-columns:34px minmax(0,1fr);}.ls-site .live-update time{display:none}.ls-site .live-update i{display:none}
+ .ls-site .live-update{grid-template-columns:34px minmax(0,1fr);}.ls-site .live-update time{display:none}.ls-site .live-update i{display:none}
  .ls-site .live-performer{grid-template-columns:104px minmax(0,1fr)}
  .ls-site .lineup-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
 }`;
@@ -308,7 +302,21 @@ const ownStyle=`
 .ls-sponsor b{font-size:15px;letter-spacing:.12em}
 .ls-sponsor img{max-height:40px;width:auto}
 `;
-export const previewStyle=coreStyle+style+referenceStyle+ownStyle;
+const featuredFix=`
+/* featured plans: image on top, text below, same height; an empty cover is a thin strip, not a placeholder laid over the text */
+.ls-site .featured-activity-card{display:flex;flex-direction:column;align-items:stretch;height:100%}
+.ls-site .featured-activity-media{position:relative;flex:none;width:100%;aspect-ratio:16/9}
+.ls-site .featured-activity-media.is-empty{aspect-ratio:auto;height:46px}
+.ls-site .featured-activity-media.is-empty span{position:static;font-size:11px;letter-spacing:.22em}
+.ls-site .featured-activity-copy{position:static;display:flex;flex-direction:column;gap:6px;padding:16px 18px 18px;text-align:left;align-self:stretch!important;width:100%!important;margin:0!important;grid-column:auto!important}
+.ls-site .featured-all-link{display:flex!important;width:max-content!important;margin:24px auto 0!important;align-self:center!important;justify-self:center!important}
+.ls-site .featured-activity-grid{align-items:stretch}
+`;
+const phoneFix=`
+@media(max-width:620px){.ls-site .timeline-row{grid-template-columns:78px minmax(0,1fr);gap:2px 12px;padding:10px 0}.ls-site .timeline-row time{grid-row:span 2}.ls-site .timeline-row b{font-size:15px}}
+@media(max-width:820px){.ls-site .hero-grid{grid-template-columns:minmax(0,1fr);gap:22px;padding:14px 0}.ls-site .hero-art{order:-1;aspect-ratio:16/11;max-height:340px}.ls-site .hero-copy{min-width:0}}
+`;
+export const previewStyle=coreStyle+style+referenceStyle+ownStyle+featuredFix+phoneFix;
 export const previewBody=`<div class="ls-site">${loader}
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
 <main id="top">
