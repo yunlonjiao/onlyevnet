@@ -127,10 +127,10 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
 }
 
 export const catalogueBookStyle=`
-.cb-stage{position:relative;perspective:2200px;max-width:1100px;margin:0 auto}
-.cb-book{position:relative;display:grid;grid-template-columns:1fr 1fr;aspect-ratio:1.42;min-height:420px;touch-action:pan-y;user-select:none}
+.cb-stage{container-type:inline-size;position:relative;perspective:2200px;max-width:1100px;margin:0 auto}
+.cb-book{position:relative;display:grid;grid-template-columns:1fr 1fr;min-height:max(420px,calc(100cqw / 1.42));touch-action:pan-y;user-select:none}
 .cb-book.is-single{grid-template-columns:1fr;aspect-ratio:auto;min-height:560px;max-width:520px;margin:0 auto}
-.cb-page{position:relative;overflow:hidden;padding:clamp(16px,3vw,34px) clamp(16px,3vw,34px) clamp(40px,5vw,54px);display:flex;flex-direction:column;gap:14px;min-width:0}
+.cb-page{position:relative;overflow:visible;padding:clamp(16px,3vw,34px) clamp(16px,3vw,34px) clamp(40px,5vw,54px);display:flex;flex-direction:column;gap:14px;min-width:0}
 .cb-page.left{border-radius:14px 0 0 14px}.cb-page.right{border-radius:0 14px 14px 0}.cb-page.solo{border-radius:14px}
 .cb-blank{background:transparent!important;box-shadow:none!important}
 .cb-folio{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:900;letter-spacing:.1em}

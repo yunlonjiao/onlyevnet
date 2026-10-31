@@ -29,7 +29,7 @@ import {validateRendererContext} from '/v8/renderer/context.js?v=8.38.3';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {mapCarouselStyle} from '/v8/renderer/map-carousel.js?v=8.42.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {catalogueBookStyle} from '/v8/renderer/catalogue-book.js?v=8.54.1';
+import {catalogueBookStyle} from '/v8/renderer/catalogue-book.js?v=8.54.3';
 
 const ORIGIN=location.origin;
 let state={},mode='edit',entryPreviewTimer=0;
