@@ -195,8 +195,6 @@ const referenceStyle=`
 .tp-row b{background:var(--tp-rose);padding:10px 14px;font-size:13px}
 .tp-row .pill{border:0;background:none;border-radius:0;padding:10px 14px;font-weight:700}
 .tp-site .tp-cta{justify-content:center}
-.tp-site #participation{background:var(--tp-rose);border-radius:90px 90px 0 0 / 40px 40px 0 0;margin-top:46px;padding:46px 0 60px}
-.tp-site #participation .head:before{content:"今日";display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:#ffe27a;color:#6b4a00;font-weight:900;font-size:20px;margin:0 auto 12px}
 .tp-reserve{position:fixed;right:18px;bottom:84px;z-index:60;width:104px;height:104px;border-radius:50%;background:var(--tp-brown);color:#fff;display:grid;place-content:center;text-align:center;text-decoration:none;box-shadow:0 0 0 4px var(--tp-brown),0 0 0 6px #fff inset,0 10px 22px #0003}
 .tp-reserve:before{content:"";position:absolute;inset:6px;border-radius:50%;border:2px dotted #ffffffaa}
 .tp-reserve b{font-size:13px;letter-spacing:.08em;color:#ffe27a;position:relative}.tp-reserve small{font-size:11px;position:relative}
@@ -206,10 +204,6 @@ const referenceStyle=`
 @media(max-width:820px){.tp-site .nav .links{overflow:auto;justify-content:flex-start}.tp-site .nav .links a{padding:10px 14px}.tp-reserve{width:84px;height:84px;right:10px;bottom:76px}.tp-reserve b{font-size:11px}}
 
 /* skeleton: a cafe menu. Narrow centred sheets, tickets as a priced menu with dotted leaders, the schedule as a dotted timeline, bands that alternate with rounded tops */
-.tp-site .section>.wrap{max-width:900px;width:calc(100% - 44px);margin:0 auto}
-.tp-site #tickets,.tp-site #timetable{background:var(--tp-rose);border-radius:90px 90px 0 0 / 40px 40px 0 0;margin-top:30px;padding:56px 0 64px}
-.tp-site #lineup,.tp-site #map-home{background:var(--tp-mint);border-radius:90px 90px 0 0 / 40px 40px 0 0;margin-top:30px;padding:56px 0 64px}
-.tp-site #community{background:var(--tp-lav);border-radius:90px 90px 0 0 / 40px 40px 0 0;margin-top:30px;padding:56px 0 64px}
 .tp-site #tickets .ticket-grid{display:block;background:var(--tp-paper);border:3px solid var(--tp-brown);border-radius:26px;padding:8px 30px;box-shadow:8px 8px 0 #ffffff99}
 .tp-site #tickets .tp-ticket{display:flex;align-items:flex-end;gap:12px;padding:20px 0;margin:0;border:0;border-bottom:3px dotted var(--tp-line);border-radius:0;background:none;box-shadow:none}
 .tp-site #tickets .tp-ticket:last-child{border-bottom:0}
@@ -224,6 +218,28 @@ const referenceStyle=`
 .tp-site .timeline-row:before{content:"";position:absolute;left:-12px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;background:var(--tp-pink);border:4px solid var(--tp-rose)}
 .tp-site .lineup-strip{justify-content:center}
 @media(max-width:700px){.tp-site #tickets .ticket-grid{padding:6px 18px}.tp-site #tickets .tp-ticket-price{font-size:22px}.tp-site .timeline-row{grid-template-columns:70px minmax(0,1fr)}}
+`;
+const menuStyle=`
+/* skeleton: one paper menu lying on the table. The courses (sections) are numbered and separated by dotted rules, never by full-width bands */
+.tp-site main{display:block;padding:0 0 10px}
+.tp-menu{counter-reset:course;position:relative;width:min(780px,calc(100% - 28px));margin:30px auto 0;background:var(--tp-paper);border:3px solid var(--tp-brown);border-radius:30px;box-shadow:0 0 0 7px #fff,0 0 0 10px var(--tp-pink),0 30px 60px #5a3d3a26;overflow:hidden}
+.tp-menu:before{content:"";position:absolute;inset:12px;border:2px dashed #f0bfcb;border-radius:20px;pointer-events:none;z-index:0}
+.tp-menu>*{position:relative;z-index:1}
+.tp-menu .hero{padding:44px 44px 30px}
+.tp-menu .hero-grid{max-width:none;width:100%;padding:0}
+.tp-menu .hero-art{width:100%;max-width:520px}
+.tp-menu .section,.tp-menu .updates-strip{margin:0;padding:40px 44px 10px;background:none;border:0;border-radius:0;border-top:3px dotted var(--tp-line)}
+.tp-menu .section>.wrap,.tp-menu .updates-strip>.wrap{width:auto;max-width:none;margin:0;padding:0}
+.tp-menu .section:not(.oe-page-view) .head .ey:before{counter-increment:course;content:"No." counter(course,decimal-leading-zero) "  ·  "}
+.tp-menu .oe-page-view{border-top:0}
+.tp-menu #tickets .ticket-grid{max-width:none;padding:6px 26px}
+.tp-menu .timeline,.tp-menu .tp-map{max-width:none}
+.tp-menu .featured-activity-grid{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.tp-menu #participation .featured-activity-copy{padding:14px 16px 18px}
+.tp-menu #participation .featured-activity-copy h3,.tp-menu #participation .featured-activity-copy b{font-size:17px}
+.tp-menu .tp-agenda-body,.tp-menu .tp-activity,.tp-menu .tp-guest{box-shadow:none}
+.tp-site .footer{margin-top:40px}
+@media(max-width:820px){.tp-menu{width:calc(100% - 16px);margin-top:14px;border-radius:22px}.tp-menu:before{inset:8px;border-radius:15px}.tp-menu .hero{padding:30px 20px 20px}.tp-menu .section,.tp-menu .updates-strip{padding:30px 20px 6px}.tp-menu #tickets .ticket-grid{padding:4px 14px}}
 `;
 const ownStyle=`
 
@@ -271,10 +287,10 @@ const featuredFix=`
 .tp-site .featured-all-link{display:flex!important;width:max-content!important;margin:24px auto 0!important;align-self:center!important;justify-self:center!important}
 .tp-site .featured-activity-grid{align-items:stretch}
 `;
-export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix;
+export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+menuStyle;
 export const previewBody=`<div class="tp-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席的人</a><a href="#tickets">报名</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">去报名 ↗</a></div></header>
-<main id="top">
+<main id="top"><div class="tp-menu">
 <section class="hero"><div class="wrap hero-grid"><div class="hero-copy tp-title"><span class="hero-kicker">TEA PARTY · 茶会邀请</span><h1 data-oe-field="eventName">STARDUST ONLY</h1></div><div class="hero-art"><div class="kv"><strong class="tp-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy tp-detail"><p data-oe-field="tagline"></p><div class="meta tp-rows"><div class="tp-row"><b>日期</b><span class="pill" data-oe-field="date"></span></div><div class="tp-row"><b>地点</b><span class="pill" data-oe-field="location"></span></div><div class="tp-row"><b>详情</b><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div><div class="tp-cta"><a class="tp-btn pink ticket-purchase-link" href="#tickets">去报名</a><a class="tp-btn" href="#today">看今天玩什么</a></div></div></div></section>
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NOTICE','茶会通知'))}
 <div id="today">${coreSection('participation',{ey:"TODAY'S MENU",title:'今天玩什么'})}</div>
@@ -286,7 +302,7 @@ ${agendaSection}
 ${coreSection('guests',{ey:'MEMBERS',title:'同席的人'})}
 ${coreSection('guide',{ey:'NOTICE',title:'参加须知'})}
 ${ownCommunitySection('tp',{ey:'CONTACT',title:'联系与交流'})}
-</main>
+</div></main>
 <a class="tp-reserve ticket-purchase-link" href="#tickets"><b>RESERVE</b><small>点这里报名</small></a>
 <nav class="mobile-dock"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>

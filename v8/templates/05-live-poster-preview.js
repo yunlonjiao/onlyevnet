@@ -251,22 +251,23 @@ const referenceStyle=`
 .ls-site .timeline-stage{font-size:12px}
 @media(max-width:820px){.ls-site .nav .wrap>.btn{position:static;transform:none;margin-left:10px}.ls-site .nav .wrap{flex-wrap:wrap;gap:10px}.ls-site .hero-grid{grid-template-columns:1fr}.ls-site .hero-art{max-height:380px;aspect-ratio:4/3}.ls-site .timeline-row{grid-template-columns:90px minmax(0,1fr)}.ls-site .timeline-row time{grid-row:auto}}
 
-/* skeleton: every section opens with a full-width title bar; the content sits on a narrower sheet beneath it */
-.ls-site .section{padding:0 0 54px;background:transparent;border:0}
-.ls-site .section>.wrap{width:100%;max-width:none;padding:0;margin:0}
-.ls-site .section .head{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:68px;line-height:1.4;overflow:visible;margin:0 0 28px;padding:12px 22px;text-align:center;border:0;background:linear-gradient(90deg,var(--ls-pink),var(--ls-violet))}
-.ls-site .section .head>div{display:block;text-align:center}
-.ls-site .section .head .ey{display:block;font-size:10px;letter-spacing:.34em;opacity:.85;color:#fff;transform:none;background:none;padding:0;border:0}
-.ls-site .section .head h2{font-size:22px;letter-spacing:.22em;margin:2px 0 0;text-shadow:none;transform:none;color:#fff;-webkit-text-stroke:0}
-.ls-site .section .head h2:before{content:"◆ ";opacity:.8}.ls-site .section .head h2:after{content:" ◆";opacity:.8}
-.ls-site .section .head .section-back{position:absolute;left:22px;top:50%;transform:translateY(-50%);font-size:12px;color:#fff}
-.ls-site .section>.wrap>:not(.head){width:min(1080px,calc(100% - 44px));margin-left:auto;margin-right:auto}
+/* skeleton: every section is a numbered scene. The title column stays pinned on the left while the content scrolls on the right, with a thin rule between scenes */
+.ls-site main{counter-reset:scene}
+.ls-site .section,.ls-site .updates-strip{margin:0;padding:56px 0;background:transparent;border:0;border-top:1px solid #ffffff24}
+.ls-site .section>.wrap{width:min(1240px,calc(100% - 48px));max-width:none;margin:0 auto;padding:0;display:grid;grid-template-columns:230px minmax(0,1fr);column-gap:48px;align-items:start}
+.ls-site .section .head{grid-column:1;grid-row:1 / span 8;position:sticky;top:84px;display:block;margin:0;padding:0;min-height:0;text-align:left;background:none;border:0}
+.ls-site .section .head>div{display:block;text-align:left}
+.ls-site .section:not(.oe-page-view) .head:before{counter-increment:scene;content:counter(scene,decimal-leading-zero);display:block;margin-bottom:8px;font:italic 1000 84px/1 "Noto Sans SC",system-ui,sans-serif;color:transparent;-webkit-text-stroke:2px var(--ls-pink)}
+.ls-site .section .head .ey{display:block;font-size:11px;letter-spacing:.3em;color:var(--ls-cyan)!important;opacity:1}
+.ls-site .section .head h2{font-size:30px;letter-spacing:0;margin:6px 0 0;text-shadow:3px 3px 0 #ff3d8b66;transform:none;-webkit-text-stroke:0}
+.ls-site .section .head h2:before,.ls-site .section .head h2:after{content:none}
+.ls-site .section .head .section-back{position:static;display:inline-block;margin-top:16px;transform:none;font-size:12px}
+.ls-site .section>.wrap>:not(.head){grid-column:2;width:auto;margin:0}
 .ls-site .section-orbit,.ls-site .section-no{display:none}
+@media(max-width:900px){.ls-site .section,.ls-site .updates-strip{padding:36px 0}.ls-site .section>.wrap{display:block;width:calc(100% - 32px)}.ls-site .section .head{position:static;margin-bottom:20px}.ls-site .section:not(.oe-page-view) .head:before{font-size:52px}.ls-site .section .head h2{font-size:26px}}
 .ls-site #tickets .ticket-grid{grid-template-columns:1fr;gap:12px}
 .ls-site .guest-grid,.ls-site .lineup{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
-.ls-site .section .head{align-items:center}
 .ls-site .ticket:before{display:none}
-.ls-site .section .head{align-items:center}
 .ls-site .ticket:before{display:none}
 `;
 const ownStyle=`

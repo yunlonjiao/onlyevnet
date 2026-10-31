@@ -35,7 +35,17 @@ async function skeleton(page,id){
     const panel=scs&&parseFloat(scs.borderTopWidth)>=2&&parseFloat(scs.borderTopLeftRadius)>=16?'panel':'plain';
     let headStyle='plain';
     if(ey&&getComputedStyle(ey).position==='absolute')headStyle='tab';else if(hcs&&(hcs.backgroundImage!=='none'||(hcs.backgroundColor!=='rgba(0, 0, 0, 0)'&&hcs.backgroundColor!=='transparent')))headStyle='bar';else if(hcs&&parseFloat(hcs.borderBottomWidth)>=2)headStyle='rule';
-    return {headAlign,panel,headStyle,headPlace,contentWidth:gr?bucket(gr.width):null,ticketCols:Math.min(cols,3),ticketRows:rowish?'rows':'cards',bodyColumns,colouredBands:bands};
+    // how the whole page is put together, and how one section is divided from the next
+    const wrapper=document.querySelector('main>div:not([class*="stash"])');
+    const wr=wrapper?.getBoundingClientRect(),wcs=wrapper?getComputedStyle(wrapper):null;
+    const shell=document.querySelector('.cb-book')?'book'
+      :[...document.querySelectorAll('aside,div,section')].some(e=>vis(e)&&getComputedStyle(e).position==='sticky'&&e.offsetHeight>innerHeight*0.6&&e.offsetWidth<innerWidth*0.45)?'split'
+      :[...document.querySelectorAll('main div,main section')].some(e=>vis(e)&&getComputedStyle(e).columnCount!=='auto')?'board'
+      :(wcs&&wr.width<900&&parseFloat(wcs.borderTopWidth)>=2&&parseFloat(wcs.borderTopLeftRadius)>=16)?'card':'flow';
+    const bw=scs?parseFloat(scs.borderTopWidth):0;
+    const divider=scs?scs.borderTopStyle+'-'+(bw>=6?'thick':bw>=2?'mid':bw>0?'thin':'none'):null;
+    const headSticky=head?getComputedStyle(head).position==='sticky':false;
+    return {headAlign,panel,headStyle,headPlace,contentWidth:gr?bucket(gr.width):null,ticketCols:Math.min(cols,3),ticketRows:rowish?'rows':'cards',bodyColumns,colouredBands:bands,shell,divider,headSticky};
   });
 }
 
@@ -44,7 +54,7 @@ test('sections below the first screen are laid out differently in every template
   const s={};
   for(const id of ids)s[id]=await skeleton(page,id);
   if(process.env.SHOW_SKELETON)console.log('SKELETON '+JSON.stringify(s));
-  const keys=['headAlign','panel','headStyle','headPlace','contentWidth','ticketCols','ticketRows','bodyColumns','colouredBands'];
+  const keys=['headAlign','panel','headStyle','headPlace','contentWidth','ticketCols','ticketRows','bodyColumns','colouredBands','shell','divider','headSticky'];
   const close=[];
   for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++){
     const diff=keys.filter(k=>s[ids[i]][k]!==s[ids[j]][k]);

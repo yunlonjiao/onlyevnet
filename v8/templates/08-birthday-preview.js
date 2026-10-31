@@ -237,7 +237,6 @@ const referenceStyle=`
 @media(max-width:820px){.bd-site .hero:before{height:380px;border-radius:0 0 50% 50% / 0 0 90px 90px}.bd-site .nav .wrap>.btn{position:static}.bd-site .hero-art{width:210px;max-width:210px}}
 
 /* skeleton: one narrow column like a phone page. Every section is its own sticker panel with a tab label, stacked with wide gaps */
-.bd-site main>.section,.bd-site main>.updates-strip,.bd-site main>div>.section{width:min(760px,calc(100% - 28px));margin-left:auto;margin-right:auto;box-sizing:border-box}
 .bd-site .section{margin:34px 0 0;padding:34px 22px 26px;background:var(--bd-paper);border:3px dotted var(--bd-accent);border-radius:34px;position:relative}
 .bd-site .section>.wrap{width:auto;max-width:none;padding:0;margin:0}
 .bd-site .section .head{display:block;margin:0 0 20px;padding:0;border:0!important;text-align:center}
@@ -253,6 +252,19 @@ const referenceStyle=`
 .bd-site .timeline-row:before{content:"♥";position:absolute;left:-11px;top:10px;color:var(--bd-accent);font-size:18px;background:var(--bd-paper);line-height:1}
 @media(max-width:560px){.bd-site .section{padding:30px 14px 22px;border-radius:26px}}
 .bd-site .section .head .ey{display:inline-block!important;font-size:11px!important;line-height:1.3!important;color:#fff!important;text-indent:0!important;width:auto!important;height:auto!important}
+`;
+const boardStyle=`
+/* skeleton: a pinboard. Home sections are stickers taped to a two-column board and tilted a little; full pages span the whole board */
+.bd-board{columns:2 440px;column-gap:36px;width:min(1120px,calc(100% - 40px));margin:26px auto 0}
+.bd-board>.section,.bd-board>.updates-strip{display:block;break-inside:avoid;width:auto!important;margin:0 0 40px!important;box-sizing:border-box}
+.bd-board>.oe-page-view{column-span:all;margin:34px 0!important;transform:none!important}
+.bd-board>.section:nth-of-type(3n+1){transform:rotate(-.7deg)}
+.bd-board>.section:nth-of-type(3n+2){transform:rotate(.6deg)}
+.bd-board>.section:nth-of-type(3n){transform:rotate(-.3deg)}
+.bd-board>.section:not(.oe-page-view):after{content:"";position:absolute;top:-13px;left:50%;width:92px;height:24px;margin-left:-46px;background:var(--bd-accent);opacity:.32;transform:rotate(-3deg);pointer-events:none}
+.bd-board .featured-activity-grid,.bd-board .ticket-grid{grid-template-columns:1fr}
+.bd-board .lineup-strip{justify-content:center}
+@media(max-width:820px){.bd-board{columns:1;width:calc(100% - 22px)}.bd-board>.section{transform:none!important}}
 `;
 const ownStyle=`
 
@@ -303,11 +315,12 @@ const featuredFix=`
 .bd-site .featured-all-link{display:flex!important;width:max-content!important;margin:24px auto 0!important;align-self:center!important;justify-self:center!important}
 .bd-site .featured-activity-grid{align-items:stretch}
 `;
-export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix;
+export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+boardStyle;
 export const previewBody=`<div class="bd-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#participation">应援内容</a><a href="#tickets">赠品</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">预约领取 ↗</a></div></header>
 <main id="top">
 <section class="hero"><div class="wrap hero-grid"><div class="hero-copy bd-title"><span class="hero-kicker">HAPPY BIRTHDAY</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="hero-art"><div class="kv"><strong class="bd-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy bd-detail"><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bd-cta"><a class="bd-btn accent ticket-purchase-link" href="#tickets">预约领取</a><a class="bd-btn" href="#participation">看应援内容</a></div></div></div></section>
+<div class="bd-board">
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip section oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新消息'))}
 ${coreSection('participation',{ey:'SUPPORT',title:'应援内容'})}
 ${coreSection('tickets',{ey:'GIFTS',title:'赠品与领取'})}
@@ -318,7 +331,7 @@ ${stepsSection}
 ${coreSection('guests',{ey:'MEMBERS',title:'协力的人'})}
 ${coreSection('guide',{ey:'NOTICE',title:'领取与参观须知'})}
 ${ownCommunitySection('bd',{ey:'CONTACT',title:'联系与交流'})}
-</main>
+</div></main>
 <nav class="mobile-dock"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
 <a class="bd-top" href="#top">PAGE TOP</a>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
