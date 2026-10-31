@@ -6,13 +6,7 @@ import {test,expect} from '@playwright/test';
 const ids=['03-creator-market','04-creator-catalogue','05-live-poster','06-band-live','07-tea-party','08-birthday'];
 const sizes=[{name:'desktop',width:1280,height:900},{name:'phone',width:390,height:844}];
 
-async function review(page,id){
-  await page.goto('/v8/?template='+id+'&embed=preview');
-  await page.frameLocator('#liveFrame').locator('.hero').first().waitFor({state:'attached'});
-  await page.evaluate(()=>document.querySelector('#liveFrame').contentDocument.querySelector('#loader')?.remove());
-  await page.waitForTimeout(900);
-  const frame=page.frames().find(f=>f.url().includes('render.html'));
-  return frame.evaluate(()=>{
+const reviewInPage=()=>{
     const vw=document.documentElement.clientWidth,problems=[];
     const visible=el=>{const r=el.getBoundingClientRect(),cs=getComputedStyle(el);return r.width>0&&r.height>0&&cs.visibility!=='hidden'&&cs.display!=='none'&&Number(cs.opacity)>0.05};
     const scrolls=el=>{for(let p=el.parentElement;p&&p!==document.body;p=p.parentElement){const o=getComputedStyle(p).overflowX;if(o==='auto'||o==='scroll')return true}return false};
@@ -54,7 +48,15 @@ async function review(page,id){
       if(!getComputedStyle(el).writingMode.startsWith('vertical')&&r.width<110&&el.textContent.trim().length>6&&r.height/lh>=3)problems.push('squeezed text: '+name(el)+' '+Math.round(r.width)+'px wide, '+Math.round(r.height/lh)+' lines');
     }
     return problems;
-  });
+};
+
+async function review(page,id){
+  await page.goto('/v8/?template='+id+'&embed=preview');
+  await page.frameLocator('#liveFrame').locator('.hero').first().waitFor({state:'attached'});
+  await page.evaluate(()=>document.querySelector('#liveFrame').contentDocument.querySelector('#loader')?.remove());
+  await page.waitForTimeout(900);
+  const frame=page.frames().find(f=>f.url().includes('render.html'));
+  return frame.evaluate(reviewInPage);
 }
 
 for(const size of sizes){
@@ -77,4 +79,26 @@ test('stage and small-event templates (05-08) have no circle or booth pages',asy
     const found=await frame.evaluate(()=>['#booths','[data-page-link="booths"]','.booth-directory-rich'].filter(s=>document.querySelector(s)));
     expect(found,id).toEqual([]);
   }
+});
+
+test('04 catalogue book: every page spread passes the same review, on desktop and phone',async({page})=>{
+  test.setTimeout(240000);
+  const report={};
+  await page.addInitScript(()=>{try{sessionStorage.clear()}catch{}});
+  for(const size of sizes){
+    await page.setViewportSize({width:size.width,height:size.height});
+    await page.goto('/v8/?template=04-creator-catalogue&embed=preview');
+    await page.frameLocator('#liveFrame').locator('.cb-book').waitFor({state:'attached'});
+    await page.evaluate(()=>document.querySelector('#liveFrame').contentDocument.querySelector('#loader')?.remove());
+    const frame=page.frames().find(f=>f.url().includes('render.html'));
+    for(let i=0;i<14;i++){
+      await page.waitForTimeout(750);
+      const found=await frame.evaluate(reviewInPage);
+      if(found.length)(report[size.name+' spread '+i]=found);
+      const last=await frame.evaluate(()=>{const t=document.querySelector('[data-catalogue-count]').textContent;const m=t.match(/(\d+) \/ (\d+)$/);return t.includes('封底')||(!!m&&m[1]===m[2])});
+      if(last)break;
+      await frame.evaluate(()=>document.querySelector('[data-catalogue-step="1"]').click());
+    }
+  }
+  expect(report,JSON.stringify(report,null,1)).toEqual({});
 });

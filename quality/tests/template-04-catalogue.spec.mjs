@@ -40,6 +40,7 @@ test('04 catalogue turns pages, jumps from the contents and has circle cuts',asy
   await frame.locator('.cb-contents button').filter({hasText:'参展社团'}).click();
   await expect(frame.locator('.cb-cut')).toHaveCount(3);
   await expect(frame.locator('.cb-cut .cb-space').first()).toHaveText('A01');
+  await expect(frame.locator('.cb-leaf')).toHaveCount(0);
   await frame.locator('[data-catalogue-step="-1"]').click();
   await expect(frame.locator('.cb-cut')).toHaveCount(0);
 });
@@ -57,12 +58,18 @@ test('04 circle cuts and works open their editors',async({page})=>{
 test('old 04 projects migrate and keep every map in the catalogue and the map section',async({page})=>{
   const {frame,errors}=await openStudio(page,'cat-legacy',legacyProject);
   await expect(frame.locator('.hero-copy h1')).toHaveText('星海同人祭');
-  await expect(frame.locator('#venueMap .map-slide')).toHaveCount(2);
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('onlyevent-studio-v8:04-creator-catalogue:cat-legacy:iframe')));
   expect(saved.booths.map(b=>b.products.map(p=>p.name))).toEqual([['星空画集'],['春日明信片']]);
   await frame.locator('[data-catalogue-step="1"]').click();
-  await frame.locator('.cb-contents button').filter({hasText:'会场配置图'}).click();
-  await expect(frame.locator('.cb-kind-map')).toHaveCount(2);
+  await frame.locator('.cb-contents button').filter({hasText:'场地图'}).click();
+  // the two map pages may sit on neighbouring spreads, so collect the map pictures while turning pages
+  const seen=new Set();
+  for(let i=0;i<3;i++){
+    for(const src of await frame.locator('.cb-kind-map img').evaluateAll(list=>list.map(x=>x.getAttribute('src'))))seen.add(src);
+    await frame.locator('[data-catalogue-step="1"]').click();
+    await expect(frame.locator('.cb-leaf')).toHaveCount(0);
+  }
+  expect(seen.size).toBe(2);
   expect(errors).toEqual([]);
 });
 

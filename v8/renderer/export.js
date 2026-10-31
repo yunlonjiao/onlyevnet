@@ -1,6 +1,6 @@
 import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
 import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.42.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.43.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.53.0';
 export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyle='',escapeHtml:esc}){
   return function buildStandaloneHtml(){
     const state=getState(),clone=document.body.cloneNode(true);

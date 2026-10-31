@@ -1,6 +1,6 @@
 import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
 import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.42.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.43.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.53.0';
 import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.52.0';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
@@ -532,7 +532,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
   function renderCatalogueBook(){
     const state=getState(),box=mount('catalogue-book');if(!box)return;
     if(state.presentationProfile?.catalogueBook===false){box.innerHTML='';return}
-    mountCatalogueBook(box,catalogueBookData(state),{storageKey:'oe-catalogue:'+String(state.projectId||state.eventName||'event')});
+    mountCatalogueBook(box,{...catalogueBookData(state),editable:getMode()==='edit'},{storageKey:'oe-catalogue:'+String(state.projectId||state.eventName||'event')});
     if(box.dataset.oeCatalogueEdit==='1')return;
     box.dataset.oeCatalogueEdit='1';
     // In the editor, circle cuts and works open their booth / product, like the booth directory.

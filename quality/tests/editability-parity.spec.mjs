@@ -39,6 +39,8 @@ for(const id of ids){
 
     // 1. visible copy is editable in place
     await typeInto(page,frame.locator('[data-oe-field="eventName"]').first(),'奇偶测试');
+    // 04 keeps tickets and announcements inside its catalogue book: turn to that page first
+    if(id==='04-creator-catalogue'){await frame.locator('[data-catalogue-open="tickets"]').first().evaluate(el=>el.click());await expect(frame.locator('.cb-ticket').first()).toBeVisible()}
     await typeInto(page,frame.locator('[data-oe-field="tickets.0.name"]').first(),'票名已改');
     await typeInto(page,frame.locator('[data-oe-field="updates.0.title"]').first(),'公告已改');
     await expect.poll(async()=>{const s=await saved(page,id);return [s.eventName,s.tickets?.[0]?.name,s.updates?.[0]?.title].join('|')}).toBe('奇偶测试|票名已改|公告已改');

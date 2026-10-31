@@ -11,7 +11,9 @@ for(const id of ['03-creator-market','04-creator-catalogue']){
  test(id+' keeps the shared creator-fair pages on the IP ONLY core',async({page})=>{
   await page.goto('/v8/?template='+id+'&project=parity-current-'+id);
   const frame=page.frameLocator('#liveFrame');
-  for(const section of ['booths','guide','map-home','tickets','updates','community','sponsors'])await expect(frame.locator('#'+section)).toHaveCount(1);
+  // 04 keeps the rest of its home page inside the catalogue book, so only the pages and the ticket hook are sections
+  const sections=id==='04-creator-catalogue'?['booths','guide','tickets']:['booths','guide','map-home','tickets','updates','community','sponsors'];
+  for(const section of sections)await expect(frame.locator('#'+section)).toHaveCount(1);
   for(const row of ['booths','guide'])await expect(page.locator('[data-page-row="'+row+'"]')).toBeVisible();
   await expect(page.locator('#createCustomPageBtn')).toBeHidden();
  });
