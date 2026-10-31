@@ -283,6 +283,7 @@ const hotStyle=`.cm-hot h3{margin:0 0 10px;font-size:15px}.cm-hot .map-link-list
 const spaceStyle=`
 /* spotlight: tiles no longer stretch to the height of the carousel */
 .cm-site .spotlight-feature{min-height:330px}
+.cm-site .cm-cols{padding-top:26px}
 .cm-site .spotlight-six{align-content:start;gap:16px 14px}
 /* creator space: every circle is a profile card with a cover strip and an avatar that overlaps it */
 .cm-site [data-directory-grid="booths"]{grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px;margin-top:24px}
