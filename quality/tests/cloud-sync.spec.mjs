@@ -24,7 +24,7 @@ test('a signed-in organizer\'s project follows them to a second device',async({p
   await expect(phone.locator('#projectGrid .project-card')).toContainText('跨设备同步测试');
   await phone.locator('.edit-project').click();
   await expect(phone).toHaveURL(/template=04-creator-catalogue/);
-  await expect(phone.frameLocator('#liveFrame').locator('.hero-copy h1')).toHaveText('跨设备同步测试');
+  await expect(phone.frameLocator('#liveFrame').locator('.hero-copy h1,.cb-cover h3')).toHaveText('跨设备同步测试');
   await second.close();
 });
 

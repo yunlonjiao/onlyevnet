@@ -272,7 +272,53 @@ const bookPagesStyle=`
 .cc-site .cb-sponsor{background:#fff;color:var(--cc-ink);border:2px solid var(--cc-ink);border-radius:999px}
 .cc-site .cb-page{color:var(--cc-ink)}
 `;
-export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle+listStyle+bookPagesStyle;
+/* paper programme: a printed booklet lying on a desk. Warm paper, ink and one vermilion; no neon, no outlined type */
+const paperStyle=`
+.cc-site{--primary:#c8432b;--secondary:#2f5d62;--cc-night:#cfc2a9;--cc-night-2:#bfb095;--cc-pink:#c8432b;--cc-lilac:#d8c9a8;--cc-cyan:#2f5d62;--cc-cream:#fbf6ea;--cc-ink:#2a2622;--cc-line:#2a262226;color:var(--cc-ink);font-family:"Noto Serif SC","Songti SC","Source Han Serif SC",serif;
+ background:repeating-linear-gradient(90deg,#ffffff08 0 2px,transparent 2px 7px),radial-gradient(circle at 50% 0,#e4d9c3,transparent 70%),var(--cc-night)}
+.cc-site .nav{background:#2a2622;border-bottom:3px solid var(--cc-pink);height:48px}
+.cc-site .brand:before{content:"■ ";color:var(--cc-pink)}
+.cc-site .nav .wrap>.btn{background:var(--cc-pink);color:#fff;box-shadow:none;border-radius:3px}
+.cc-site .cc-catalogue{padding:30px 0 10px}
+.cc-site .cb-page{background-color:var(--cc-cream);background-image:linear-gradient(#2a262210 1px,transparent 1px);background-size:100% 26px;box-shadow:0 14px 34px #3a2c1a55}
+.cc-site .cb-page.left{box-shadow:inset -22px 0 26px -20px #2a262255,0 14px 34px #3a2c1a55}
+.cc-site .cb-page.right{box-shadow:inset 22px 0 26px -20px #2a262255,0 14px 34px #3a2c1a55}
+.cc-site .cb-page-head small,.cc-site .cb-contents span{color:var(--cc-pink)}
+.cc-site .cb-contents i{color:var(--cc-cyan)}
+.cc-site .cb-page-head{border-bottom:2px solid var(--cc-ink)}
+.cc-site .cb-cover{background-color:#7d2a1e;background-image:linear-gradient(160deg,#9a3a28,#6e2418);color:#fbf6ea}
+.cc-site .cb-cover.has-art:after{background:linear-gradient(transparent 55%,#2a2622d9)}
+.cc-site .cb-cover h3{-webkit-text-stroke:0;text-shadow:none;font-family:inherit;letter-spacing:.02em}
+.cc-site .cb-cover-badge{background:#fbf6ea;color:var(--cc-ink);border-radius:2px;box-shadow:none;border:1px solid var(--cc-ink)}
+.cc-site .cb-cover-star{color:#fbf6ea;text-shadow:none}
+.cc-site .cb-ribbon{background:var(--cc-pink)}
+.cc-site .cb-bubble p,.cc-site .cb-cut,.cc-site .cb-news-item,.cc-site .cb-ticket,.cc-site .cb-route,.cc-site .cb-social,.cc-site .cb-sponsor{box-shadow:none;border-color:var(--cc-ink);border-radius:3px}
+.cc-site .cb-avatar,.cc-site .cb-news-no,.cc-site .cb-ticket-stub{background:var(--cc-pink);color:#fff;border-color:var(--cc-ink)}
+.cc-site .cb-buy{background:var(--cc-ink);box-shadow:none;border-radius:3px}
+.cc-site .cb-space{background:var(--cc-ink);color:#fbf6ea}
+.cc-site .cb-controls button{background:var(--cc-cream);color:var(--cc-ink);border:2px solid var(--cc-ink)}
+.cc-site .cb-controls span{color:var(--cc-ink)}
+.cc-site .head .ey,.cc-site .section-back{color:var(--cc-pink)!important}
+.cc-site .section-back{border-color:var(--cc-ink);color:var(--cc-ink)!important}
+.cc-site .oe-page-view{color:var(--cc-ink)}
+.cc-site .footer{background:#2a2622;color:#d8ccb4}
+.cc-site .footer-brand h2{-webkit-text-stroke:0;text-shadow:none;color:#fbf6ea}
+.cc-site .footer-grid b{color:#e8a08f}
+/* closed booklet: the cover stands alone and centred, then the book slides open */
+.cc-site .cb-book{transition:transform .6s cubic-bezier(.3,.7,.2,1)}
+.cc-site .cb-book.is-closed{transform:translateX(-25%)}
+.cc-site .cb-book.is-closed .cb-page.left{visibility:hidden}
+/* entry */
+.cc-site .loader.cc-entry{background:radial-gradient(circle at 50% 40%,#e4d9c3,#bfb095 75%)!important}
+.cc-entry-page{background-color:var(--cc-cream);background-image:linear-gradient(#2a262210 1px,transparent 1px);background-size:100% 24px;box-shadow:0 24px 50px #3a2c1a66}
+.cc-entry-kicker,.cc-entry-hint{color:var(--cc-pink)}.cc-entry-page .entry-ticket-subtitle{color:var(--cc-cyan)}
+.cc-entry-cover{border:0;background:#7d2a1e;box-shadow:0 24px 50px #3a2c1a66,inset 10px 0 18px -10px #0006}
+.cc-site .cc-entry-photo{background-color:#7d2a1e;background-image:linear-gradient(160deg,#9a3a28,#6e2418)}
+.cc-entry-cover-title{-webkit-text-stroke:0;text-shadow:none}
+.cc-site .loader .skip{background:#fbf6ea;color:var(--cc-ink);border-color:var(--cc-ink);border-radius:3px}
+@media(max-width:760px){.cc-site .cb-book.is-closed{transform:none}}
+`;
+export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle+listStyle+bookPagesStyle+paperStyle;
 
 const loader=`<div class="loader cc-entry" id="loader"><div class="gate cc-entry-gate" role="button" tabindex="0" aria-label="点击翻开电子场刊"><div class="cc-entry-book"><div class="cc-entry-page"><span class="cc-entry-kicker">WELCOME!</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cc-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><span class="cc-entry-hint">ようこそ · 欢迎光临 ✦</span></div><div class="cc-entry-cover"><div class="entry-photo cc-entry-photo" aria-label="活动KV"></div><span class="cc-entry-cover-title">WEB CATALOGUE</span><span class="cc-entry-tap">TAP TO OPEN ✦</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
@@ -280,11 +326,9 @@ const head=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2
 const pageHead=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></div>';
 
 export const previewBody=`<div class="cc-site">${loader}
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团</a><a href="#catalogue">场刊</a><a href="#map-home" data-catalogue-open="venue">场地图</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团</a><a href="#catalogue">场刊</a><a href="#map-home" data-catalogue-open="venue">场地图</a><a href="#tickets" data-catalogue-open="tickets">票务</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
 <main id="top">
-<section class="hero"><div class="wrap hero-grid"><div class="hero-art"><span class="cc-sticker one">WEB CATALOGUE</span><div class="kv"><strong class="cc-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div><span class="cc-sticker two">電子場刊 公開中!</span></div><div class="hero-copy"><span class="hero-kicker">电子场刊</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-catalogue-open="venue" data-oe-field="edition"></a></div><a class="cc-cta ticket-purchase-link" href="#tickets" data-catalogue-open="tickets">购票 / 预约</a></div></div></section>
-<div class="cc-tabbar oe-home-only"><div class="wrap"><nav class="cc-crumb" aria-label="位置"><a href="#home" data-page-link="home">综合同人展</a><i>›</i><b data-oe-field="eventName">STARDUST ONLY</b></nav><div class="cc-tabs"><a class="active" href="#catalogue">电子场刊</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团 / 作品</a><a href="#map-home" data-catalogue-open="venue">场地图</a><a href="#tickets" data-catalogue-open="tickets">票务</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></div></div></div>
-<section class="cc-catalogue oe-home-only" id="catalogue" aria-label="电子场刊"><div class="wrap">${head('WEB CATALOGUE · 電子場刊','翻阅电子场刊')}<div data-oe-mount="catalogue-book"></div></div></section>
+<section class="cc-catalogue oe-home-only" id="catalogue" aria-label="电子场刊"><div class="wrap"><div data-oe-mount="catalogue-book"></div></div></section>
 <section class="cc-stash" id="tickets" hidden aria-hidden="true"><div class="ticket-grid"></div><div class="ticket-actions"></div></section>
 <section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLE LIST','参展社团与制品')}<div class="booth-directory-rich"></div></div></section>
 <section class="section oe-page-view" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>

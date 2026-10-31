@@ -52,7 +52,7 @@ const reviewInPage=()=>{
 
 async function review(page,id){
   await page.goto('/v8/?template='+id+'&embed=preview');
-  await page.frameLocator('#liveFrame').locator('.hero').first().waitFor({state:'attached'});
+  await page.frameLocator('#liveFrame').locator('.hero,.cc-catalogue').first().waitFor({state:'attached'});
   await page.evaluate(()=>document.querySelector('#liveFrame').contentDocument.querySelector('#loader')?.remove());
   await page.waitForTimeout(900);
   const frame=page.frames().find(f=>f.url().includes('render.html'));
@@ -73,7 +73,7 @@ test('stage and small-event templates (05-08) have no circle or booth pages',asy
   test.setTimeout(120000);
   for(const id of ids.slice(2)){
     await page.goto('/v8/?template='+id+'&embed=preview');
-    await page.frameLocator('#liveFrame').locator('.hero').first().waitFor({state:'attached'});
+    await page.frameLocator('#liveFrame').locator('.hero,.cc-catalogue').first().waitFor({state:'attached'});
     await page.waitForTimeout(500);
     const frame=page.frames().find(f=>f.url().includes('render.html'));
     const found=await frame.evaluate(()=>['#booths','[data-page-link="booths"]','.booth-directory-rich'].filter(s=>document.querySelector(s)));

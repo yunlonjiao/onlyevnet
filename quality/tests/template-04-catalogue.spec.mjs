@@ -57,7 +57,7 @@ test('04 circle cuts and works open their editors',async({page})=>{
 
 test('old 04 projects migrate and keep every map in the catalogue and the map section',async({page})=>{
   const {frame,errors}=await openStudio(page,'cat-legacy',legacyProject);
-  await expect(frame.locator('.hero-copy h1')).toHaveText('星海同人祭');
+  await expect(frame.locator('.hero-copy h1,.cb-cover h3')).toHaveText('星海同人祭');
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('onlyevent-studio-v8:04-creator-catalogue:cat-legacy:iframe')));
   expect(saved.booths.map(b=>b.products.map(p=>p.name))).toEqual([['星空画集'],['春日明信片']]);
   await frame.locator('[data-catalogue-step="1"]').click();

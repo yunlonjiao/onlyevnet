@@ -9,7 +9,7 @@ const ids=['01-ip-only','02-scrapbook','03-creator-market','04-creator-catalogue
 
 async function skeleton(page,id){
   await page.goto('/v8/?template='+id+'&embed=preview');
-  await page.frameLocator('#liveFrame').locator('.hero').first().waitFor({state:'attached'});
+  await page.frameLocator('#liveFrame').locator('.hero,.cc-catalogue').first().waitFor({state:'attached'});
   await page.evaluate(()=>document.querySelector('#liveFrame').contentDocument.querySelector('#loader')?.remove());
   await page.waitForTimeout(900);
   const frame=page.frames().find(f=>f.url().includes('render.html'));
@@ -67,7 +67,7 @@ test('templates 03-08 do not use Template 01 markup for the map rail, community 
   test.setTimeout(120000);
   for(const id of ids.slice(2)){
     await page.goto('/v8/?template='+id+'&embed=preview');
-    await page.frameLocator('#liveFrame').locator('.hero').first().waitFor({state:'attached'});
+    await page.frameLocator('#liveFrame').locator('.hero,.cc-catalogue').first().waitFor({state:'attached'});
     await page.waitForTimeout(700);
     const frame=page.frames().find(f=>f.url().includes('render.html'));
     const left=await frame.evaluate(()=>['.map-link-rail','.map-explorer','.community>article:not([class])','.sponsors>.sponsor-card:not([class*="-sponsor"])','.map-jump-tag'].filter(s=>document.querySelector(s)));

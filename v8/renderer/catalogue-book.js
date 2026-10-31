@@ -32,7 +32,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const chunk=(list,n)=>{const out=[];for(let i=0;i<list.length;i+=n)out.push(list.slice(i,i+n));return out};
   const head=(jp,zh)=>'<header class="cb-page-head"><small>'+jp+'</small><b>'+zh+'</b></header>';
   const pages=[];
-  pages.push({kind:'cover',html:'<div class="cb-cover'+(data.cover?' has-art':'')+'"'+(data.cover?' style="background-image:url(&quot;'+esc(data.cover)+'&quot;)"':'')+'><span class="cb-cover-badge">WEB CATALOGUE</span><span class="cb-cover-vol">電子場刊 VOL.01</span><h3>'+esc(data.eventName||'STARDUST ONLY')+'</h3><p>'+esc([data.date,data.location].filter(Boolean).join(' · '))+'</p><i class="cb-cover-star">✦</i></div>'});
+  pages.push({kind:'cover',html:'<div class="cb-cover'+(data.cover?' has-art':'')+'"'+(data.editable?' data-oe-image="heroImage"':'')+(data.cover?' style="background-image:url(&quot;'+esc(data.cover)+'&quot;)"':'')+'><span class="cb-cover-badge">WEB CATALOGUE</span><span class="cb-cover-vol">電子場刊 VOL.01</span><h3>'+esc(data.eventName||'STARDUST ONLY')+'</h3><p>'+esc([data.date,data.location].filter(Boolean).join(' · '))+'</p><i class="cb-cover-star">✦</i></div>'});
   const sections=[['greeting','ごあいさつ','主办致辞'],...(data.news.length?[['news','お知らせ','最新公告']]:[]),...(data.tickets.length?[['tickets','入場券','入场票']]:[]),['venue','会場マップ','场地图'],...(data.circles.length?[['circles','サークル一覧','参展社团']]:[]),...(data.works.length?[['works','新刊・グッズ','新刊与制品']]:[]),...(data.social.length?[['community','コミュニティ','社群']]:[]),...(data.sponsors.length?[['sponsors','協賛','合作伙伴']]:[]),['rally','スタンプラリー','打卡页']];
   const contentsAt=pages.length;pages.push({kind:'contents',html:''});
   const starts={};
@@ -84,7 +84,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const spreadOf=i=>single()?i:(i%2?i+1:i);
   const render=()=>{
     at=spreadOf(at);
-    book.classList.toggle('is-single',single());
+    book.classList.toggle('is-single',single());book.classList.toggle('is-closed',!single()&&at===0);
     book.innerHTML=single()?page(at,'solo'):page(at-1,'left')+page(at,'right');
     count.textContent=single()?(at+1)+' / '+total:(at===0?'封面':at>=total?'封底':at+'-'+(at+1))+' / '+total;
     try{sessionStorage.setItem(storageKey,String(at))}catch{}
@@ -95,7 +95,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
     if(busy||next===at||next<0||next>=total+1)return;
     const forward=next>at,reduce=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(reduce){at=next;render();return}
-    busy=true;
+    busy=true;if(!single())book.classList.remove('is-closed');
     const leaf=document.createElement('div');
     leaf.className='cb-leaf '+(single()?'solo':forward?'right':'left')+(forward?' forward':' back');
     const frontIndex=single()?at:(forward?at:at-1),backIndex=single()?next:(forward?at+1:at-2);
