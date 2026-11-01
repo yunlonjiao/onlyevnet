@@ -169,6 +169,9 @@ const marketStyle=`
 .cm-social-text{flex:1;min-width:0}.cm-social-text b{font-size:14px}.cm-social-text p{margin:2px 0 0;font-size:12px;color:var(--cm-soft)}
 .cm-social .social-action{font-size:12px;color:var(--cm-accent-ink);white-space:nowrap;border:0;background:none;padding:0}
 .cm-site .sponsors:empty{display:none}
+.cm-site #sponsors:has(.sponsors:empty){display:none}
+.cm-site .oe-page-view{padding-top:24px}
+.cm-site .guide-detail-content{align-items:start!important}
 .cm-site .sponsors{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
 .cm-site .cm-sponsor{display:flex;flex-direction:column;align-items:center;gap:8px;background:#fff;border:1px solid var(--cm-line)!important;border-radius:12px;padding:16px;box-shadow:none!important;text-align:center}
 .cm-site .cm-map-wrap{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:14px}
@@ -248,6 +251,7 @@ const referenceStyle=`
 .cm-feed{min-width:0}
 .cm-rail{position:sticky;top:78px;display:grid;gap:16px;min-width:0}
 .cm-rail .section,.cm-rail .updates-strip{background:#fff;border:1px solid var(--cm-line);border-radius:12px;padding:16px;margin:0}
+@media(max-width:1000px){.cm-cols{gap:0}}
 .cm-cols .head{margin-bottom:12px}
 .cm-cols .head h2{font-size:17px;letter-spacing:0;display:flex;align-items:center;gap:8px}
 .cm-cols .head h2:before{content:"";width:4px;height:16px;border-radius:2px;background:var(--cm-accent)}

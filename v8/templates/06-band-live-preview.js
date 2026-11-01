@@ -265,6 +265,7 @@ const ownStyle=`
 .bl-follow-no{font:400 30px Impact,"Arial Black",sans-serif;opacity:.3}
 .bl-follow-qr img,.bl-follow-qr .social-image{width:76px;height:76px;object-fit:cover}
 .bl-thanks{display:flex;flex-wrap:wrap;gap:0}
+.bl-site #sponsors:has(.bl-thanks:empty){display:none}
 .bl-sponsor{display:flex;align-items:center;gap:10px;padding:8px 18px;border:0;border-right:2px solid #111;border-radius:0;background:none;box-shadow:none}
 .bl-sponsor small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.6}
 .bl-sponsor img{max-height:34px;width:auto}

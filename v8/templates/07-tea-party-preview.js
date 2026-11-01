@@ -201,7 +201,7 @@ const referenceStyle=`
 .tp-site .tp-title{order:-1}
 .tp-site .featured-activity-grid{grid-template-rows:none!important;grid-auto-rows:auto!important;align-items:start}
 .tp-site #participation .featured-activity-card,.tp-site #participation .featured-activity-card:first-child{grid-row:auto!important;grid-column:auto!important;height:auto!important;min-height:0!important}
-@media(max-width:820px){.tp-site .nav .links{overflow:auto;justify-content:flex-start}.tp-site .nav .links a{padding:10px 14px}.tp-reserve{width:84px;height:84px;right:10px;bottom:76px}.tp-reserve b{font-size:11px}}
+@media(max-width:820px){.tp-site .nav .links{overflow:auto;justify-content:flex-start}.tp-site .nav .links a{padding:10px 14px}.tp-reserve{width:68px;height:68px;right:8px;bottom:80px}.tp-reserve:before{inset:4px}.tp-reserve b{font-size:9px}.tp-reserve small{display:none}.tp-reserve b{font-size:11px}}
 
 /* skeleton: a cafe menu. Narrow centred sheets, tickets as a priced menu with dotted leaders, the schedule as a dotted timeline, bands that alternate with rounded tops */
 .tp-site #tickets .ticket-grid{display:block;background:var(--tp-paper);border:3px solid var(--tp-brown);border-radius:26px;padding:8px 30px;box-shadow:8px 8px 0 #ffffff99}
