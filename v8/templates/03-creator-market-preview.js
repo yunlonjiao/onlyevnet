@@ -196,6 +196,13 @@ const marketStyle=`
 
 .cm-site #guide .cm-guide{display:flex!important;flex-direction:row!important;align-items:flex-start!important}
 .cm-site #guide .cm-guide-icon{flex:0 0 40px!important;width:40px!important;height:40px!important;margin:0!important}
+/* route image sits under the text across the whole card; the empty upload slot is a slim dashed strip */
+.cm-site #guide .cm-guide{flex-wrap:wrap!important}
+.cm-site #guide .cm-guide>.guide-access-media{flex:0 0 100%!important;width:100%!important;min-height:0!important;margin-top:6px!important;border:0!important;padding:0!important;background:none!important;display:block!important}
+.cm-site #guide .cm-guide>.guide-access-media:before{display:none!important}
+.cm-site #guide .cm-guide>.guide-access-media img{width:100%!important;height:auto!important;min-height:0!important;max-height:340px!important;object-fit:contain;border-radius:10px;border:1px solid var(--cm-line)}
+.cm-site #guide .cm-guide>.guide-access-media-empty{height:64px;border:1px dashed var(--cm-line)!important;border-radius:10px!important;display:grid!important;place-content:center;text-align:center;color:var(--cm-soft)}
+.cm-site #guide .cm-guide>.guide-access-media-empty span{font-size:10px;letter-spacing:.14em;font-weight:800}.cm-site #guide .cm-guide>.guide-access-media-empty small{font-size:11px}
 .cm-site #guide .guide-venue-nav{background:var(--cm-accent)!important;color:#fff!important;border:0!important;border-radius:6px!important;box-shadow:none!important;font-size:12px!important;padding:7px 14px!important}
 
 `;
