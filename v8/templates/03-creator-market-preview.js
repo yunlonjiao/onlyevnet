@@ -345,7 +345,18 @@ const splashStyle=`
 @media(prefers-reduced-motion:reduce){
  .cm-site .loader .entry-photo,.cm-site .loader .entry-ticket-title,.cm-site .loader .entry-ticket-subtitle,.cm-site .loader .cm-entry-meta,.cm-site .loader .cm-entry-hint,.cm-site .loader .cm-splash-bars i{animation:none!important}
 }
-/* --- 频道条：手机端可横滑 + 右缘渐隐 + pill 等宽 --- */
+
+/* --- 单一导航：手机端 header 变两行（品牌+购票 / 可横滑的导航），不再有第二条频道条 --- */
+@media(max-width:800px){
+ .cm-site .nav{height:auto}
+ .cm-site .nav .wrap{flex-wrap:wrap;height:auto;padding:10px 0 0;gap:8px}
+ .cm-site .nav .brand{flex:1 1 auto}
+ .cm-site .nav .links{display:flex!important;order:3;flex:1 0 100%;margin:0;gap:4px;padding:6px 0 8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;mask-image:linear-gradient(90deg,#000 0 90%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,#000 0 90%,transparent 100%)}
+ .cm-site .nav .links::-webkit-scrollbar{display:none}
+ .cm-site .nav .links a{flex:0 0 auto;min-height:40px;display:inline-flex;align-items:center;padding:0 10px;font-size:13px;font-weight:700;white-space:nowrap}
+ .cm-site .nav .links a[href="#top"]{display:none}
+}
+/* --- 频道条（已移除）：保留空注释占位 --- */
 .cm-channels a{min-width:76px;justify-content:center}
 @media(max-width:720px){
  .cm-channels .wrap{scrollbar-width:none;-webkit-overflow-scrolling:touch;mask-image:linear-gradient(90deg,#000 0 88%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,#000 0 88%,transparent 100%)}
@@ -360,10 +371,10 @@ const head=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2
 const pageHead=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div><a class="section-back" href="#top" data-page-link="home">← 返回首页</a></div>';
 
 export const previewBody=`<div class="cm-site">${loader}
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#spotlight">推荐</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团作品</a><a href="#updates">公告</a><a href="#tickets">票务</a><a href="#map-home">场地图</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
 <main id="top">
 <section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="cm-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy"><div class="cm-title"><span class="hero-kicker">同人创作展</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></div></section>
-<nav class="cm-channels oe-home-only" aria-label="频道"><div class="wrap"><a href="#spotlight">推荐</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团作品</a><a href="#updates">公告</a><a href="#tickets">票务</a><a href="#map-home">场地图</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></div></nav>
+
 <div class="cm-cols oe-home-only"><div class="cm-feed">
 <section class="cm-spotlight oe-home-only" id="spotlight" aria-label="随机推荐制品"><div class="wrap"><div class="cm-feed-head"><h2>推荐制品</h2><span>每次打开顺序都不一样</span><button type="button" class="cm-shuffle" data-spotlight-shuffle>换一换 ↻</button></div><div data-oe-mount="product-spotlight"></div></div></section>
 <section class="section" id="community"><div class="wrap">${head('COMMUNITY','社群')}<div class="community"></div></div></section>
