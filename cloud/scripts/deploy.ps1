@@ -18,6 +18,9 @@ $backups = Join-Path $HOME 'Documents\OnlyEvent-backups'
 $stateFile = Join-Path $backups 'last-deploy.json'
 $domain  = 'onlyevent.cn'
 
+# PATH 里的 node 若是垫片（Electron 等），wrangler 会把参数解析错位；这里先切到真 Node。
+. (Join-Path $PSScriptRoot 'node-env.ps1')
+
 function Ok($m)   { Write-Host "  [OK]   $m" -ForegroundColor Green }
 function Bad($m)  { Write-Host "  [失败] $m" -ForegroundColor Red; $script:failed++ }
 function Info($m) { Write-Host $m -ForegroundColor Cyan }
