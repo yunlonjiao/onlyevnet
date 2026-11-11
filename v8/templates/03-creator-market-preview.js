@@ -433,6 +433,19 @@ const orderStyle=`
 .cm-site .cm-headline .cm-title{align-items:flex-start;text-align:left}
 .cm-site .cm-headline .hero-kicker{display:block}
 .cm-site .cm-status{font-weight:800;border-color:var(--cm-line);background:#f2f5f7;color:var(--cm-muted)}
+/* 社团作品：街道筛选条 */
+.cm-street-filter{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.cm-street-pick{border:1px solid var(--cm-line);background:#fff;color:var(--cm-ink);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer}
+.cm-street-pick b{margin-left:6px;font-weight:800;color:var(--cm-soft);font-size:12px}
+.cm-street-pick.active{border-color:var(--cm-accent);color:var(--cm-accent);background:#eaf7fd}
+.cm-street-pick.active b{color:var(--cm-accent)}
+.cm-jump-hit{outline:2px solid var(--cm-accent);outline-offset:4px;border-radius:10px}
+/* 观展指南：与 01/02 区分——左竖线 + 两列编号卡 */
+.cm-site #guide .guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.cm-site #guide .guide-grid article{position:relative;background:#fff;border:1px solid var(--cm-line);border-radius:10px;padding:16px 16px 16px 20px}
+.cm-site #guide .guide-grid article::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:var(--cm-accent)}
+.cm-site #guide .guide-grid article h3{font-size:16px;margin:0 0 8px}
+@media(max-width:720px){.cm-site #guide .guide-grid{grid-template-columns:1fr}}
 /* 开屏：bilibili 式纯图，无任何文字；跳过固定在右上 */
 .cm-site .loader .cm-entry-info{display:none!important}
 .cm-site .loader .skip{top:14px;right:14px;bottom:auto;left:auto;padding:8px 14px;font-size:12px;border:0;background:#00000059;color:#fff;backdrop-filter:blur(6px)}
@@ -475,7 +488,7 @@ export const previewBody=`<div class="cm-site">${loader}
 <section class="section" id="community"><div class="wrap">${head('COMMUNITY','社群')}<div class="community"></div></div></section>
 
 </aside></div>
-<section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLES & WORKS','参展社团与制品')}<div class="booth-directory-rich"></div></div></section>
+<section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLES & WORKS','参展社团与制品')}<div class="cm-street-filter" data-oe-mount="street-filter" aria-label="按街道筛选"></div><div class="booth-directory-rich"></div></div></section>
 <section class="section oe-page-view" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>
 </main>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>

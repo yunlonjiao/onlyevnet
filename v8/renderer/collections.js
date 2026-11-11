@@ -1,5 +1,5 @@
 import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
-import {mountStreetCard,mountStreetLegend,mountProductTiles} from '/v8/renderer/street-spotlight.js?v=8.60.0';
+import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles} from '/v8/renderer/street-spotlight.js?v=8.61.0';
 import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.42.0';
 import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.54.11';
 import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.52.0';
@@ -203,7 +203,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       const productCount=(b.products||[]).length;
       const adapted=boothMarkup({state,b,i,field,esc,logo,fav,search,productCount});
       if(adapted)return adapted;
-      return '<article class="booth-directory-card" id="booth-'+esc(b.id)+'" data-directory-card data-kind="booth" data-booth-id="'+esc(b.id)+'" data-search="'+esc(search)+'" data-oe-item="booths" data-oe-index="'+i+'"><div class="booth-card-head">'+logo+'<div>'+field('booths.'+i+'.no',b.no||'','span','booth-no')+field('booths.'+i+'.name',b.name||'','h3')+field('booths.'+i+'.type',b.type||'','small')+'</div></div>'+field('booths.'+i+'.intro',b.intro||'','p')+'<div class="booth-card-foot"><button class="booth-products-link" type="button" data-view-booth-products="'+esc(b.id)+'" data-booth-label="'+esc((b.no?b.no+' · ':'')+(b.name||'摊位'))+'">'+(productCount?productCount+' 件制品 ↗':'暂无制品')+'</button><button class="favorite-booth'+(fav?' active':'')+'" type="button" data-favorite-booth="'+esc(b.id)+'" aria-pressed="'+fav+'">'+(fav?'♥ 已收藏':'♡ 收藏社团')+'</button></div></article>';
+      return '<article class="booth-directory-card" id="booth-'+esc(b.id)+'" data-directory-card data-kind="booth" data-booth-id="'+esc(b.id)+'" data-street="'+esc(String(b.street||''))+'" data-search="'+esc(search)+'" data-oe-item="booths" data-oe-index="'+i+'"><div class="booth-card-head">'+logo+'<div>'+field('booths.'+i+'.no',b.no||'','span','booth-no')+field('booths.'+i+'.name',b.name||'','h3')+field('booths.'+i+'.type',b.type||'','small')+'</div></div>'+field('booths.'+i+'.intro',b.intro||'','p')+'<div class="booth-card-foot"><button class="booth-products-link" type="button" data-view-booth-products="'+esc(b.id)+'" data-booth-label="'+esc((b.no?b.no+' · ':'')+(b.name||'摊位'))+'">'+(productCount?productCount+' 件制品 ↗':'暂无制品')+'</button><button class="favorite-booth'+(fav?' active':'')+'" type="button" data-favorite-booth="'+esc(b.id)+'" aria-pressed="'+fav+'">'+(fav?'♥ 已收藏':'♡ 收藏社团')+'</button></div></article>';
     }).join('');
     const productCards=(state.booths||[]).flatMap((b,i)=>(b.products||[]).map((p,j)=>{
       const wished=savedProducts.has(p.id),search=normalizeDirectorySearch([p.name,p.tag].filter(Boolean).join(' '));
@@ -214,6 +214,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
     })).join('');
     box.dataset.directoryView=previousView;box.dataset.directoryPage=previousPage;box.dataset.directorySaved=previousSaved;box.dataset.directoryBoothFilter=previousBoothFilter;box.dataset.directoryBoothLabel=previousBoothLabel;box.dataset.boothQuery=previousBoothQuery;box.dataset.productQuery=previousProductQuery;
     box.innerHTML='<div class="booth-directory-tools"><div class="directory-tabs" role="tablist" aria-label="摊位与制品"><button type="button" role="tab" aria-selected="'+(previousView==='booths'?'true':'false')+'" class="'+(previousView==='booths'?'active':'')+'" data-directory-view-btn="booths">摊位</button><button type="button" role="tab" aria-selected="'+(previousView==='products'?'true':'false')+'" class="'+(previousView==='products'?'active':'')+'" data-directory-view-btn="products">制品</button></div><div class="booth-search"><span>⌕</span><input type="search" data-directory-search value="'+esc(previousQuery)+'" placeholder="搜索社团，或制品名称 / Tag" aria-label="搜索摊位与制品"><button type="button" class="directory-search-clear" data-directory-search-clear aria-label="清除搜索" title="清除搜索"'+(previousQuery?'':' hidden')+'>×</button></div><button type="button" data-directory-saved class="'+(previousSaved==='1'?'active':'')+'">收藏社团 <b data-wishlist-count>'+saved.booths.length+'</b></button></div><div class="directory-context" data-directory-context hidden><span></span><button type="button" data-clear-booth-filter>查看全部制品 ×</button></div><div class="booth-directory-grid" role="tabpanel" data-directory-grid="booths">'+boothCards+'</div><div class="product-directory-grid" role="tabpanel" data-directory-grid="products" hidden>'+productCards+'</div><div class="booth-no-result" hidden><b>没有找到匹配内容</b><span>当前搜索或筛选条件下没有结果。</span><button type="button" data-directory-reset>清除搜索与筛选</button></div><nav class="directory-pagination" aria-label="分页"></nav>';
+    bindStreetFilter();
     const apply=()=>{
       const searchInput=box.querySelector('[data-directory-search]');
       const view=box.dataset.directoryView==='products'?'products':'booths';
@@ -587,6 +588,56 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
   function renderCollections(){
     renderProductSpotlight();renderCatalogueBook();renderRibbon();renderTickets();renderSchedule();renderGuide();renderMap();renderBooths();renderGuests();renderHomeMirrors();renderUpdates();renderCommunity();renderSponsors();renderCustomPages();renderOptionalPages();renderFooter();
     enhanceImages();
+  }
+  const escStreet=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function streetNameOf(state,cards){return null}
+  function applyStreetFilter(name){
+    const state=getState(),picked=String(name||'');
+    const boothStreet=new Map((state.booths||[]).map(b=>[String(b.id),String(b.street||'')]));
+    qa('[data-directory-card]').forEach(card=>{
+      const street=String(card.dataset.street||'')||String(boothStreet.get(String(card.dataset.boothId))||'');
+      card.hidden=!!picked&&street!==picked;
+    });
+    const bar=mount('street-filter');
+    if(bar){bar.dataset.street=picked;bar.querySelectorAll('[data-street-pick]').forEach(b=>b.classList.toggle('active',(b.dataset.streetPick||'')===picked));}
+    const box=mount('booths','#booths .booth-directory-rich');
+    if(box){const shown=qa('[data-directory-card][data-kind="booth"]').filter(c=>!c.hidden).length;box.dataset.streetShown=String(shown);}
+  }
+  function bindStreetFilter(){
+    const state=getState(),bar=mount('street-filter');
+    if(!bar)return;
+    const groups=streetGroups(state),picked=String(bar.dataset.street||'');
+    bar.innerHTML='<button type="button" class="cm-street-pick'+(picked?'':' active')+'" data-street-pick="">全部<b>'+(state.booths||[]).length+'</b></button>'+
+      groups.map(g=>'<button type="button" class="cm-street-pick'+(picked===g.name?' active':'')+'" data-street-pick="'+escStreet(g.name)+'">'+escStreet(g.name)+'<b>'+g.count+'</b></button>').join('');
+    qa('[data-directory-card][data-kind="booth"]').forEach(card=>{
+      if(card.querySelector('.cm-booth-street'))return;
+      const street=String(card.dataset.street||'')||String(new Map((state.booths||[]).map(b=>[String(b.id),String(b.street||'')])).get(String(card.dataset.boothId))||'');
+      if(!street)return;
+      const tag=document.createElement('span');tag.className='cm-booth-street';tag.textContent=street;
+      (card.querySelector('.booth-card-head')||card).appendChild(tag);
+    });
+    if(window.__oeStreetBound!=='1'){
+      window.__oeStreetBound='1';
+      document.addEventListener('click',e=>{
+        const pick=e.target.closest?.('[data-street-pick]');
+        if(pick){e.preventDefault();applyStreetFilter(pick.dataset.streetPick||'');return}
+        const jump=e.target.closest?.('[data-street-jump]');
+        if(jump){e.preventDefault();goBooths(jump.dataset.streetJump||'');return}
+        const tile=e.target.closest?.('[data-spotlight-booth]');
+        if(tile&&!e.target.closest?.('[data-spotlight-step]')){e.preventDefault();goBooths('',tile.dataset.spotlightBooth||'');}
+      });
+    }
+  }
+  function goBooths(street,boothId){
+    applyStreetFilter(street||'');
+    const link=document.querySelector('a[data-page-link="booths"]');
+    if(link)link.click(); else if(window.__oeRouter)window.__oeRouter.showPage('booths');
+    requestAnimationFrame(()=>{
+      const target=boothId?document.getElementById('booth-'+boothId):document.querySelector('#booths .booth-directory-rich');
+      if(!target)return;
+      target.scrollIntoView({block:'start',behavior:'smooth'});
+      target.classList.add('cm-jump-hit');setTimeout(()=>target.classList.remove('cm-jump-hit'),1600);
+    });
   }
   return {openGiftLightbox,renderRibbon,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderHomeMirrors,renderUpdates,renderCommunity,renderSponsors,renderCustomPages,renderOptionalPages,renderFooter,renderCollections,enhanceImages};
 }

@@ -15,8 +15,8 @@ d.tagline='以创作者和同人作品为主角的交流活动。';
 d.entryAnimation={...d.entryAnimation,style:'bilibili-splash',subtitle:'同人创作展 / DOUJIN ONLY',duration:1900};
 d.modules={...d.modules,activities:false,guests:false,ribbon:false,sponsors:true};
 d.tickets=[
- {id:'t1',name:'一日票',price:'¥40',gift:'当天入场资格',note:'票务及入场规则以主办方指定平台为准',image:''},
- {id:'t2',name:'两日通票',price:'¥70',gift:'两天入场资格',note:'仅限两日举办的活动',image:''}
+ {id:'t1',name:'一日票',price:'¥40',gift:'当天入场资格\n入场手环一枚',note:'购买与退票规则以主办方指定售票平台为准',image:''},
+ {id:'t2',name:'两日通票',price:'¥70',gift:'两天入场资格\n限定社团特典一份',note:'仅限两日举办的活动\n入场时出示订单截图',image:''}
 ];
 /* 街道顺序（可选）：不填就按摊位号首个字符排。 */
 d.streetOrder=['A 街道 · 星屑区','B 街道 · 月见区','C 街道 · 白昼区'];

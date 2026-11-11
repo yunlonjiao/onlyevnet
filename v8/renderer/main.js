@@ -101,6 +101,7 @@ const rendererContext=validateRendererContext({
 const collections=createCollections({...rendererContext,send});
 const participation=createParticipation({...rendererContext,send});
 const router=createRouter({...rendererContext,renderParticipation:participation.renderParticipation,onPageNavigate:page=>send({type:'OE_PAGE_NAVIGATED',page})});
+  try{window.__oeRouter=router}catch{}
 const fields=createFields({...rendererContext,setModeState:next=>{mode=next},setDeep,renderTickets:collections.renderTickets});
 const runtime=createRuntime(rendererContext);
 const buildStandaloneHtml=()=>createStandaloneExporter({getState:()=>state,previewStyle:currentPreview.style,runtimeExtraStyle:runtimeExtraStyle+activityLayoutFixStyle+mapCarouselStyle+catalogueBookStyle,escapeHtml:esc})();
