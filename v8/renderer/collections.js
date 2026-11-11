@@ -1,4 +1,5 @@
 import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
+import {mountStreetCard,mountStreetLegend,mountProductTiles} from '/v8/renderer/street-spotlight.js?v=8.60.0';
 import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.42.0';
 import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.54.11';
 import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.52.0';
@@ -516,9 +517,23 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
     }
   }
   function renderProductSpotlight(){
-    const state=getState(),box=mount('product-spotlight');if(!box)return;
+    const state=getState();
+    const key=String(state.projectId||state.eventName||'event');
+    const streetCard=mount('street-card');
+    if(streetCard)mountStreetCard(streetCard,state,{esc,storageKey:'oe-street:'+key});
+    const productTiles=mount('product-tiles');
+    if(productTiles)mountProductTiles(productTiles,spotlightItems(state),{esc,count:6,storageKey:'oe-tiles:'+key});
+    const streetLegend=mount('street-legend');
+    if(streetLegend)mountStreetLegend(streetLegend,state,{esc});
+    // 换一换：街道卡与制品格一起重新随机
+    const again=document.querySelector('[data-spotlight-shuffle]');
+    if(again&&again.dataset.oeShuffleBound!=='1'){
+      again.dataset.oeShuffleBound='1';
+      again.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();renderProductSpotlight();});
+    }
+    const box=mount('product-spotlight');if(!box)return;
     if(state.presentationProfile?.productSpotlight===false){box.innerHTML='';return}
-    mountProductSpotlight(box,spotlightItems(state),{autoplay:getMode()!=='edit',storageKey:'oe-spotlight:'+String(state.projectId||state.eventName||'event')});
+    mountProductSpotlight(box,spotlightItems(state),{autoplay:getMode()!=='edit',storageKey:'oe-spotlight:'+key});
     if(box.dataset.oeSpotlightEdit==='1')return;
     box.dataset.oeSpotlightEdit='1';
     // In the editor a spotlight product opens that product, like booth-directory product cards.

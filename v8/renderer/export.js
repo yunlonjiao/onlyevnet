@@ -1,4 +1,5 @@
 import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
+import {mountStreetCard,mountStreetLegend,mountProductTiles} from '/v8/renderer/street-spotlight.js?v=8.60.0';
 import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.42.0';
 import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.54.11';
 export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyle='',escapeHtml:esc}){
@@ -49,7 +50,16 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       const catalogue=$('[data-oe-mount="catalogue-book"]');
       if(catalogue&&S.presentationProfile?.catalogueBook!==false)(${mountCatalogueBook.toString()})(catalogue,(${catalogueBookData.toString()})(S),{storageKey:'oe-catalogue:'+String(S.projectId||S.eventName||'event')});
       const spotlight=$('[data-oe-mount="product-spotlight"]');
-      if(spotlight&&S.presentationProfile?.productSpotlight!==false)(${mountProductSpotlight.toString()})(spotlight,(${spotlightItems.toString()})(S),{autoplay:true,storageKey:'oe-spotlight:'+String(S.projectId||S.eventName||'event')});
+      if(spotlight&&S.presentationProfile?.productSpotlight!==false)(${mountProductSpotlight.toString()})(spotlight,(${spotlightItems.toString()})(S),{autoplay:true,storageKey:'oe-spotlight:'+String(S.projectId||S.eventName||'event')});      const escV=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      const stCard=$('[data-oe-mount="street-card"]');
+      if(stCard)(${mountStreetCard.toString()})(stCard,S,{esc:escV,storageKey:'oe-street:'+String(S.projectId||S.eventName||'event')});
+      const stLegend=$('[data-oe-mount="street-legend"]');
+      if(stLegend)(${mountStreetLegend.toString()})(stLegend,S,{esc:escV});
+      const stTiles=$('[data-oe-mount="product-tiles"]');
+      const mountTiles=()=>{if(stTiles)(${mountProductTiles.toString()})(stTiles,(${spotlightItems.toString()})(S),{esc:escV,count:6,storageKey:'oe-tiles:'+String(S.projectId||S.eventName||'event')});};
+      mountTiles();
+      const stAgain=$('[data-spotlight-shuffle]');
+      if(stAgain)stAgain.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();(${mountStreetCard.toString()})(stCard||document.createElement('div'),S,{esc:escV,storageKey:'oe-street:'+String(S.projectId||S.eventName||'event')});mountTiles();});
       if(heroSrc){const probe=new Image(),kv=$(".kv");probe.onload=()=>kv?.classList.remove("image-failed");probe.onerror=()=>kv?.classList.add("image-failed");probe.src=heroSrc;}
       const homeSections=[["tickets","tickets"],["map-home","map"],["participation","activities"],["schedule-home","activities"],["community","community"],["sponsors","sponsors"]];
       const hasContent=k=>k==="booths"?(S.booths||[]).length>0:k==="activities"?(S.participation||[]).length>0||(S.schedule||[]).length>0:k==="guests"?(S.guests||[]).length>0:k==="guide"?(S.guide?.items||[]).length>0:k==="community"?(S.socialLinks||[]).some(x=>String(x?.label||"").trim()||String(x?.note||"").trim()||String(x?.url||"").trim()||String(x?.image||"").trim()):k==="ribbon"?(S.ribbonItems||[]).some(x=>String(x?.text||"").trim()):k==="sponsors"?(S.sponsors||[]).some(x=>String(x?.name||"").trim()||String(x?.logo||"").trim()||String(x?.url||"").trim()):true;
