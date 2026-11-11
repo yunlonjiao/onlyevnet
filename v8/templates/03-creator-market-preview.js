@@ -328,7 +328,7 @@ const splashStyle=`
 .cm-site .loader .entry-ticket-subtitle{font-size:clamp(13px,1.6vw,16px);color:#ffffffd6;animation:cmFadeUp .8s .18s ease both}
 .cm-site .loader .cm-entry-meta{flex-direction:row!important;flex-wrap:wrap;gap:14px;font-size:13px;color:#ffffffcc;animation:cmFadeUp .8s .3s ease both}
 .cm-site .loader .cm-entry-progress{display:none!important}
-.cm-site .loader .cm-entry-hint{position:absolute;right:clamp(16px,4vw,48px);bottom:clamp(16px,4vh,32px);font-size:12px;letter-spacing:.16em;color:#ffffffb0;z-index:2;animation:cmFadeUp .6s .5s ease both}
+.cm-site .loader .cm-entry-hint{display:none;position:absolute;right:clamp(16px,4vw,48px);bottom:clamp(16px,4vh,32px);font-size:12px;letter-spacing:.16em;color:#ffffffb0;z-index:2;animation:cmFadeUp .6s .5s ease both}
 .cm-site .loader .cm-splash-bars{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
 .cm-site .loader .cm-splash-bars i{position:absolute;left:-45%;top:-15%;width:190%;height:32%;transform:rotate(-11deg);background:linear-gradient(90deg,transparent,#00aeec 22%,#ff6699 55%,#ffd500 84%,transparent);opacity:.26;animation:cmBarsSweep 1.5s cubic-bezier(.3,.65,.25,1) both}
 .cm-site .loader .cm-splash-bars i:nth-child(2){top:34%;opacity:.16;animation-delay:.12s;height:24%}

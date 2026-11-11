@@ -754,29 +754,30 @@ function openEntryAnimationInspector(){
    '<label class="toggle-field"><span>'+label+'</span><input type="checkbox" data-entry-field="'+showKey+'" '+(shown?'checked':'')+'></label>'+
    '<input data-entry-field="'+key+'" value="'+esc(value||'')+'" placeholder="'+esc(placeholder||'')+'">'+
    '</div>';
- setInspector('入场动画','纪念票设置',
+ const splashMode=state.templateId==='03-creator-market';
+ setInspector('入场动画',splashMode?'开屏设置':'纪念票设置',
    '<div class="entry-animation-inspector">'+
    '<div class="item-fields">'+
    '<label class="toggle-field"><span>启用入场动画</span><input type="checkbox" data-entry-field="enabled" '+(a.enabled!==false?'checked':'')+'></label>'+
    '<label><span>左侧 KV</span><select data-entry-field="imageMode"><option value="linked" '+(a.imageMode!=='custom'?'selected':'')+'>联动首页 KV</option><option value="custom" '+(a.imageMode==='custom'?'selected':'')+'>单独上传</option></select></label>'+
    '</div>'+
-   '<div class="item-media"><span>票根 KV</span><div class="item-media-row">'+
+   '<div class="item-media"><span>'+(splashMode?'开屏主视觉':'票根 KV')+'</span><div class="item-media-row">'+
    (imageSrc?'<img src="'+esc(imageSrc)+'" alt="">':'<div class="item-media-empty">＋</div>')+
    '<div><button type="button" data-entry-image>选择 / 裁剪</button>'+
    (customImage?'<button type="button" class="ghost" data-entry-image-remove>移除单独 KV</button>':'')+
    '</div></div></div>'+
    '<div class="item-fields">'+
-   row('labelText','顶部标签',a.labelText||'MEMORIAL TICKET','MEMORIAL TICKET','showLabel',a.showLabel!==false)+
+   (splashMode?'':row('labelText','顶部标签',a.labelText||'MEMORIAL TICKET','MEMORIAL TICKET','showLabel',a.showLabel!==false))+
    row('titleText','活动名',a.titleText||'','留空则联动：'+(state.eventName||'活动名称'),'showTitle',a.showTitle!==false)+
    row('subtitleText','副标题',a.subtitleText||'','可选副标题','showSubtitle',a.showSubtitle===true)+
    row('dateText','日期',a.dateText||'','留空则联动：'+(state.date||'活动日期'),'showDate',a.showDate!==false)+
    row('timeText','时间',a.timeText||'','例如 10:30 - 17:00','showTime',a.showTime===true)+
    row('locationText','地点',a.locationText||'','留空则联动：'+(state.location||'活动地点'),'showLocation',a.showLocation!==false)+
-   '<label class="toggle-field"><span>显示条形码</span><input type="checkbox" data-entry-field="showBarcode" '+(a.showBarcode!==false?'checked':'')+'></label>'+
-   '<div class="entry-field-row"><label class="toggle-field"><span>显示随机票号</span><input type="checkbox" data-entry-field="showTicketNumber" '+(a.showTicketNumber!==false?'checked':'')+'></label><input data-entry-field="ticketPrefix" value="'+esc(a.ticketPrefix||'NO.')+'" placeholder="NO."></div>'+
+   (splashMode?'':'<label class="toggle-field"><span>显示条形码</span><input type="checkbox" data-entry-field="showBarcode" '+(a.showBarcode!==false?'checked':'')+'></label>')+
+   (splashMode?'':'<div class="entry-field-row"><label class="toggle-field"><span>显示随机票号</span><input type="checkbox" data-entry-field="showTicketNumber" '+(a.showTicketNumber!==false?'checked':'')+'></label><input data-entry-field="ticketPrefix" value="'+esc(a.ticketPrefix||'NO.')+'" placeholder="NO."></div>')+
    '</div>'+
    '<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button><button type="button" id="resetEntryAnimation">恢复模板默认</button></div>'+
-   '<p class="inspector-note">所有右侧信息都可单独显示/隐藏。活动名、日期、地点留空时自动联动网站基础信息；票号由系统为每位游客自动生成。</p>'+
+   (splashMode?'<p class="inspector-note">主视觉留空时联动首页 KV；活动名、日期、地点留空时自动联动网站基础信息。</p>':'<p class="inspector-note">所有右侧信息都可单独显示/隐藏。活动名、日期、地点留空时自动联动网站基础信息；票号由系统为每位游客自动生成。</p>')+
    '</div>');
  inspector.querySelectorAll('[data-entry-field]').forEach(input=>{
    const key=input.dataset.entryField;
