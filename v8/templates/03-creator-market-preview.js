@@ -315,15 +315,52 @@ const phoneFix=`
 .cm-site .spotlight-feature-art .spotlight-placeholder{padding:24px;margin-bottom:110px}
 @media(max-width:700px){.cm-site .spotlight-feature-art .spotlight-placeholder{font-size:30px}}
 `;
-export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix;
+const splashStyle=`
+/* --- B 站式开屏：主办方主视觉全屏 + 主标弹出 + 三色带扫过（选择器带 .cm-site .loader 以压过核心的 !important） --- */
+.cm-site .loader.cm-entry{background:#0d1117!important;place-items:stretch}
+.cm-site .loader .cm-entry-gate{cursor:pointer;width:100vw;height:100vh;max-width:none;margin:0;background:none;border:0;padding:0;transform:none;box-shadow:none;position:relative;overflow:hidden;display:block}
+.cm-site .loader .cm-entry-card{display:block;position:absolute;inset:0;background:none;border:0;border-radius:0;box-shadow:none;overflow:hidden;grid-template-columns:none}
+.cm-site .loader .entry-photo{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;aspect-ratio:auto!important;background-size:cover;background-position:center;background-color:#1b2130;transform:scale(1.06);animation:cmKvSettle 2.6s ease-out both}
+.cm-site .loader .entry-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,12,20,.12),rgba(8,12,20,.74))}
+.cm-site .loader .cm-entry-info{position:absolute;left:clamp(20px,6vw,96px);bottom:clamp(52px,11vh,132px);z-index:2;display:flex;flex-direction:column;gap:10px;justify-content:flex-end;text-align:left;padding:0;color:#fff}
+.cm-site .loader .cm-entry-kicker{color:#3ec7ff;font-weight:900;letter-spacing:.2em;font-size:12px}
+.cm-site .loader .entry-ticket-title{font-size:clamp(34px,6vw,72px);line-height:1.02;color:#fff;font-weight:900;letter-spacing:-.02em;animation:cmTitlePop .9s cubic-bezier(.2,.9,.3,1.25) both}
+.cm-site .loader .entry-ticket-subtitle{font-size:clamp(13px,1.6vw,16px);color:#ffffffd6;animation:cmFadeUp .8s .18s ease both}
+.cm-site .loader .cm-entry-meta{flex-direction:row!important;flex-wrap:wrap;gap:14px;font-size:13px;color:#ffffffcc;animation:cmFadeUp .8s .3s ease both}
+.cm-site .loader .cm-entry-progress{display:none!important}
+.cm-site .loader .cm-entry-hint{position:absolute;right:clamp(16px,4vw,48px);bottom:clamp(16px,4vh,32px);font-size:12px;letter-spacing:.16em;color:#ffffffb0;z-index:2;animation:cmFadeUp .6s .5s ease both}
+.cm-site .loader .cm-splash-bars{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.cm-site .loader .cm-splash-bars i{position:absolute;left:-45%;top:-15%;width:190%;height:32%;transform:rotate(-11deg);background:linear-gradient(90deg,transparent,#00aeec 22%,#ff6699 55%,#ffd500 84%,transparent);opacity:.26;animation:cmBarsSweep 1.5s cubic-bezier(.3,.65,.25,1) both}
+.cm-site .loader .cm-splash-bars i:nth-child(2){top:34%;opacity:.16;animation-delay:.12s;height:24%}
+.cm-site .loader .cm-splash-bars i:nth-child(3){top:70%;opacity:.1;animation-delay:.24s;height:20%}
+@keyframes cmTitlePop{0%{opacity:0;transform:translateY(18px) scale(.86)}62%{opacity:1;transform:translateY(-4px) scale(1.04)}100%{opacity:1;transform:none}}
+@keyframes cmFadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes cmBarsSweep{from{transform:translateX(-60%) rotate(-11deg)}to{transform:translateX(60%) rotate(-11deg)}}
+@keyframes cmKvSettle{from{transform:scale(1.14)}to{transform:scale(1.06)}}
+@media(max-width:720px){
+ .cm-site .loader .cm-entry-info{left:20px;right:20px;bottom:clamp(40px,9vh,88px)}
+ .cm-site .loader .cm-entry-meta{font-size:12px;gap:10px}
+ .cm-site .loader .cm-entry-hint{left:20px;right:20px;text-align:center;bottom:18px}
+}
+@media(prefers-reduced-motion:reduce){
+ .cm-site .loader .entry-photo,.cm-site .loader .entry-ticket-title,.cm-site .loader .entry-ticket-subtitle,.cm-site .loader .cm-entry-meta,.cm-site .loader .cm-entry-hint,.cm-site .loader .cm-splash-bars i{animation:none!important}
+}
+/* --- 频道条：手机端可横滑 + 右缘渐隐 + pill 等宽 --- */
+.cm-channels a{min-width:76px;justify-content:center}
+@media(max-width:720px){
+ .cm-channels .wrap{scrollbar-width:none;-webkit-overflow-scrolling:touch;mask-image:linear-gradient(90deg,#000 0 88%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,#000 0 88%,transparent 100%)}
+ .cm-channels .wrap::-webkit-scrollbar{display:none}
+}
+`;
+export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle;
 
-const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
+const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="cm-splash-bars" aria-hidden="true"><i></i><i></i><i></i></div><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
 const head=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div></div>';
 const pageHead=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div><a class="section-back" href="#top" data-page-link="home">← 返回首页</a></div>';
 
 export const previewBody=`<div class="cm-site">${loader}
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团</a><a href="#map-home">场地图</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
 <main id="top">
 <section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="cm-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy"><div class="cm-title"><span class="hero-kicker">同人创作展</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></div></section>
 <nav class="cm-channels oe-home-only" aria-label="频道"><div class="wrap"><a href="#spotlight">推荐</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团作品</a><a href="#updates">公告</a><a href="#tickets">票务</a><a href="#map-home">场地图</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></div></nav>
