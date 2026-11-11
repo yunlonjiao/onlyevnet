@@ -4,10 +4,12 @@
 #   .\cloud\scripts\ship.ps1 -NoPush      # 不推送，只检查 + 部署
 #   .\cloud\scripts\ship.ps1 -PushOnly    # 只推送
 #   .\cloud\scripts\ship.ps1 -Rollback    # 回滚到部署前记录的版本
+#   .\cloud\scripts\ship.ps1 -Force       # 跳过部署前的 yes 确认（脚本/自动化用）
 param(
   [switch]$NoPush,
   [switch]$PushOnly,
   [switch]$Rollback,
+  [switch]$Force,
   [string]$Proxy = 'http://127.0.0.1:12334',
   [string]$RemoteBranch = 'preview/guide-sakura-access'
 )
@@ -18,7 +20,7 @@ $env:HTTPS_PROXY = $Proxy
 $env:HTTP_PROXY  = $Proxy
 Set-Location $repo
 
-if ($Rollback) { & $deploy -Step Rollback; exit $LASTEXITCODE }
+if ($Rollback) { & $deploy -Step Rollback -Force:$Force; exit $LASTEXITCODE }
 
 if (-not $NoPush) {
   Write-Host "== 推送到 origin/$RemoteBranch ==" -ForegroundColor Cyan
@@ -29,4 +31,4 @@ if (-not $NoPush) {
 if ($PushOnly) { exit 0 }
 
 & $deploy -Step Verify
-& $deploy -Step Deploy
+& $deploy -Step Deploy -Force:$Force
