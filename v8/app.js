@@ -748,23 +748,23 @@ function openEntryAnimationInspector(){
  const a=state.entryAnimation||{};
  const linkedImage=String(state.heroImage||'').trim();
  const customImage=String(a.image||'').trim();
- const imageSrc=(a.imageMode==='custom'&&customImage)?customImage:linkedImage||customImage;
+ const splashMode=state.templateId==='03-creator-market';
+ const imageSrc=splashMode?(linkedImage||customImage):((a.imageMode==='custom'&&customImage)?customImage:linkedImage||customImage);
  const row=(key,label,value,placeholder,showKey,shown=true)=>
    '<div class="entry-field-row">'+
    '<label class="toggle-field"><span>'+label+'</span><input type="checkbox" data-entry-field="'+showKey+'" '+(shown?'checked':'')+'></label>'+
    '<input data-entry-field="'+key+'" value="'+esc(value||'')+'" placeholder="'+esc(placeholder||'')+'">'+
    '</div>';
- const splashMode=state.templateId==='03-creator-market';
  setInspector('入场动画',splashMode?'开屏设置':'纪念票设置',
    '<div class="entry-animation-inspector">'+
    '<div class="item-fields">'+
    '<label class="toggle-field"><span>启用入场动画</span><input type="checkbox" data-entry-field="enabled" '+(a.enabled!==false?'checked':'')+'></label>'+
-   '<label><span>左侧 KV</span><select data-entry-field="imageMode"><option value="linked" '+(a.imageMode!=='custom'?'selected':'')+'>联动首页 KV</option><option value="custom" '+(a.imageMode==='custom'?'selected':'')+'>单独上传</option></select></label>'+
+   (splashMode?'':'<label><span>左侧 KV</span><select data-entry-field="imageMode"><option value="linked" '+(a.imageMode!=='custom'?'selected':'')+'>联动首页 KV</option><option value="custom" '+(a.imageMode==='custom'?'selected':'')+'>单独上传</option></select></label>')+
    '</div>'+
    '<div class="item-media"><span>'+(splashMode?'开屏主视觉':'票根 KV')+'</span><div class="item-media-row">'+
    (imageSrc?'<img src="'+esc(imageSrc)+'" alt="">':'<div class="item-media-empty">＋</div>')+
    '<div><button type="button" data-entry-image>选择 / 裁剪</button>'+
-   (customImage?'<button type="button" class="ghost" data-entry-image-remove>移除单独 KV</button>':'')+
+   (!splashMode&&customImage?'<button type="button" class="ghost" data-entry-image-remove>移除单独 KV</button>':'')+
    '</div></div></div>'+
    '<div class="item-fields">'+
    (splashMode?'':row('labelText','顶部标签',a.labelText||'MEMORIAL TICKET','MEMORIAL TICKET','showLabel',a.showLabel!==false))+
@@ -796,8 +796,10 @@ function openEntryAnimationInspector(){
    });
  });
  inspector.querySelector('[data-entry-image]')?.addEventListener('click',()=>{
+  const input=$('#imageInput');
+  if(splashMode){input.dataset.path='heroImage';input.click();return}
    state.entryAnimation.imageMode='custom';save();
-   const input=$('#imageInput');input.dataset.path='entryAnimation.image';input.click();
+  input.dataset.path='entryAnimation.image';input.click();
  });
  inspector.querySelector('[data-entry-image-remove]')?.addEventListener('click',()=>{
    checkpoint();state.entryAnimation.image='';state.entryAnimation.imageMode='linked';save();
@@ -839,7 +841,8 @@ function renderPageContentNav(page,{openDefault=true}={}){
  const items=page==='home'&&state.templateId==='02-scrapbook'?
    PAGE_CONTENT_CONFIG.home.filter(x=>x.collection!=='ribbonItems'&&x.collection!=='explore').flatMap(x=>x.tool==='hero'?[x,{tool:'intro',label:'活动简介'}]:x.tool==='map'?[x,{collection:'guests',label:'嘉宾阵容'}]:[x]):
    (PAGE_CONTENT_CONFIG[page]||[]).filter(x=>!(activeTemplate.studioPages?.hiddenContent||[]).includes(x.collection||x.tool));
- nav.innerHTML=items.map(x=>x.collection
+ const visibleItems=state.templateId==='03-creator-market'?items.filter(x=>x.tool!=='hero'&&x.collection!=='explore'):items;
+ nav.innerHTML=visibleItems.map(x=>x.collection
    ?'<button type="button" data-page-content-manager="'+x.collection+'"><span>'+esc(x.label)+'</span><b data-content-count="'+x.collection+'">0</b></button>'
    :'<button type="button" data-page-tool="'+x.tool+'"><span>'+esc(x.label)+'</span></button>'
  ).join('');
@@ -847,9 +850,9 @@ function renderPageContentNav(page,{openDefault=true}={}){
  nav.querySelectorAll('[data-page-content-manager]').forEach(btn=>btn.addEventListener('click',()=>openCollectionManager(btn.dataset.pageContentManager)));
  nav.querySelectorAll('[data-page-tool]').forEach(btn=>btn.addEventListener('click',()=>openPageTool(btn.dataset.pageTool)));
  if(panel)panel.innerHTML='<div class="sidebar-content-empty">选择上方内容进行管理。</div>';
- if(openDefault&&items[0]){
-   if(items[0].collection)openCollectionManager(items[0].collection);
-   else openPageTool(items[0].tool);
+ if(openDefault&&visibleItems[0]){
+   if(visibleItems[0].collection)openCollectionManager(items[0].collection);
+   else openPageTool(visibleItems[0].tool);
  }
 }
 function addPresetItem(collection,key){

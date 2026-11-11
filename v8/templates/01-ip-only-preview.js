@@ -76,7 +76,7 @@ export const previewBody = `<div class="loader" id="loader"><div class="gate" ro
 优先入场
 限定礼包
 舞台优先区</div><small>赠品内容由主办方填写</small></article></div><div class="ticket-actions"><a class="btn" href="https://www.bilibili.com/" target="_blank" rel="noopener">前往官方售票平台 ↗</a></div></div></section>
-<section class="section alt" id="map-home"><div class="wrap"><div class="head"><div><span class="ey">VENUE MAP</span><h2>场地图</h2></div><span class="section-no">SECTION 02</span></div><div class="map-explorer"><div class="map-static-shell"><div class="map-static reveal" id="venueMap" data-oe-image="venueMap.image"></div></div><aside class="map-link-rail" data-oe-collection="explore"><span class="ey">EXPLORE</span><b>继续探索</b><div class="map-link-list"></div></aside></div></div></section>
+<section class="section alt" id="map-home"><div class="wrap"><div class="head"><div><span class="ey">VENUE MAP</span><h2>场地图</h2></div><span class="section-no">SECTION 02</span></div><div class="map-explorer"><div class="map-static-shell"><div class="map-static reveal" id="venueMap" data-oe-image="venueMap.image"></div></div></div></div></section>
 <section class="section" id="participation" style="position:relative"><div class="section-orbit o-a"></div><div class="section-orbit o-b"></div><div class="wrap"><div class="head featured-home-head"><div><span class="ey">FEATURED ACTIVITIES</span><h2>活动精选</h2></div><span class="section-no">SECTION 03</span></div><div class="featured-activity-grid"></div><a class="featured-all-link btn" href="#activities" data-target-mode="page" data-page-link="activities">查看全部活动 <span>→</span></a></div></section>
 
 

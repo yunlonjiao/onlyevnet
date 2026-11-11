@@ -369,7 +369,7 @@ const layoutStyle=`
 .cm-site .hero .wrap{max-width:none!important;padding:0!important}
 .cm-site .hero .hero-art{width:100%!important;max-width:none!important;aspect-ratio:21/8;min-height:240px;border-radius:0!important;overflow:hidden;position:relative;background:linear-gradient(120deg,#a4d9f4,#ded4f4 45%,#fbc6df)}
 .cm-site .hero .kv{position:absolute;inset:0;background-size:cover;background-position:center;border:0!important}
-.cm-site .hero .cm-kv-fallback{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(22px,3vw,40px);font-weight:900;letter-spacing:.02em;color:#ffffffcc;text-align:center;padding:0 18px}
+.cm-site .hero .cm-kv-fallback{display:none;position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(22px,3vw,40px);font-weight:900;letter-spacing:.02em;color:#ffffffcc;text-align:center;padding:0 18px}
 .cm-site .cm-headline{background:#fff;border-bottom:1px solid var(--cm-line)}
 .cm-site .cm-headline .wrap{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding-top:18px;padding-bottom:16px}
 .cm-site .cm-headline .cm-title{display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -416,10 +416,10 @@ const layoutStyle=`
 }
 @media(max-width:720px){
  /* 开屏：横图在竖屏里用 contain 保完整构图，跳过移到右上角 */
- .cm-site .loader .entry-photo{background-size:contain!important;background-repeat:no-repeat!important;background-color:#0b0f16!important}
+ .cm-site .loader .entry-photo{background-size:cover!important;background-repeat:no-repeat!important;background-color:#0b0f16!important}
  .cm-site .loader .entry-photo::after{background:linear-gradient(180deg,rgba(8,12,20,.02),rgba(8,12,20,.85))}
- .cm-site .loader .entry-ticket-title{font-size:clamp(26px,8.6vw,42px)}
- .cm-site .loader .skip{top:14px;right:14px;bottom:auto;left:auto;padding:8px 14px;font-size:12px}
+ .cm-site .loader .cm-entry-info{display:none!important}
+ .cm-site .loader .skip{top:14px;right:14px;bottom:auto;left:auto;padding:8px 14px;font-size:12px;border:0;background:#00000059;color:#fff;backdrop-filter:blur(6px)}
  .cm-site .nav .links{justify-content:flex-start;margin-left:0}
  .cm-site .hero .hero-art{aspect-ratio:16/9;min-height:180px}
  .cm-site .cm-headline .wrap{flex-direction:column;align-items:flex-start;gap:10px}
@@ -428,7 +428,31 @@ const layoutStyle=`
  .cm-street-card{padding:18px}
 }
 `;
-export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle;
+const orderStyle=`
+/* ===== 标题带对齐 / 状态胶囊 / 手机端顺序 ===== */
+.cm-site .cm-headline .cm-title{align-items:flex-start;text-align:left}
+.cm-site .cm-headline .hero-kicker{display:block}
+.cm-site .cm-status{font-weight:800;border-color:var(--cm-line);background:#f2f5f7;color:var(--cm-muted)}
+/* 开屏：bilibili 式纯图，无任何文字；跳过固定在右上 */
+.cm-site .loader .cm-entry-info{display:none!important}
+.cm-site .loader .skip{top:14px;right:14px;bottom:auto;left:auto;padding:8px 14px;font-size:12px;border:0;background:#00000059;color:#fff;backdrop-filter:blur(6px)}
+.event-status-live .cm-site .cm-status{background:#e7f7ee;border-color:#b7e6c9;color:#0f7a44}
+.event-status-ended .cm-site .cm-status{background:#f2f3f5;border-color:#e3e5e7;color:#7a828a}
+
+@media(max-width:900px){
+ /* 手机端把「公告 / 票务 / 社群」插到推荐与场地图之间 */
+ .cm-site .cm-cols{display:flex;flex-direction:column;gap:0}
+ .cm-site .cm-feed,.cm-site .cm-rail{display:contents}
+ .cm-site #spotlight{order:1}
+ .cm-site #updates{order:2}
+ .cm-site #tickets{order:3}
+ .cm-site #community{order:4}
+ .cm-site #map-home{order:5}
+ .cm-site #sponsors{order:6}
+ .cm-site #spotlight,.cm-site #updates,.cm-site #tickets,.cm-site #community,.cm-site #map-home,.cm-site #sponsors{width:100%}
+}
+`;
+export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle;
 
 const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="cm-splash-bars" aria-hidden="true"><i></i><i></i><i></i></div><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
@@ -439,16 +463,16 @@ export const previewBody=`<div class="cm-site">${loader}
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团作品</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
 <main id="top">
 <section class="hero"><div class="wrap"><div class="hero-art"><div class="kv"><strong class="cm-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section>
-<section class="cm-headline oe-home-only"><div class="wrap"><div class="cm-title"><span class="hero-kicker">同人创作展</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></section>
+<section class="cm-headline oe-home-only"><div class="wrap"><div class="cm-title"><span class="hero-kicker">同人创作展</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="meta"><span class="pill cm-status" data-oe-status="event">活动状态</span><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></section>
 
 <div class="cm-cols oe-home-only"><div class="cm-feed">
-<section class="cm-spotlight oe-home-only" id="spotlight" aria-label="随机推荐制品"><div class="wrap"><div class="cm-feed-head"><h2>推荐制品</h2><span>每次打开顺序都不一样</span><button type="button" class="cm-shuffle" data-spotlight-shuffle>换一换 ↻</button></div><div class="cm-market-grid"><div class="cm-market-left" data-oe-mount="street-card"></div><div class="cm-market-right" data-oe-mount="product-tiles"></div></div></div></section>
+<section class="cm-spotlight oe-home-only" id="spotlight" aria-label="随机推荐制品"><div class="wrap"><div class="cm-feed-head"><h2>推荐制品</h2><button type="button" class="cm-shuffle" data-spotlight-shuffle>换一换 ↻</button></div><div class="cm-market-grid"><div class="cm-market-left" data-oe-mount="street-card"></div><div class="cm-market-right" data-oe-mount="product-tiles"></div></div></div></section>
 <section class="section oe-home-only" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="cm-map-wrap"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><div class="cm-streets" data-oe-mount="street-legend"></div></div></div></section>
-<section class="section" id="community"><div class="wrap">${head('COMMUNITY','社群')}<div class="community"></div></div></section>
 <section class="section" id="sponsors"><div class="wrap">${head('SPONSORS','合作伙伴')}<div class="sponsors"></div></div></section>
 </div><aside class="cm-rail" aria-label="公告与票务">
 <section class="updates-strip oe-home-only" id="updates"><div class="wrap">${head('NEWS','最新公告')}<div class="updates-list"></div></div></section>
 <section class="section" id="tickets"><div class="wrap">${head('ADMISSION','入场票')}<div class="ticket-grid"></div><div class="ticket-actions"></div></div></section>
+<section class="section" id="community"><div class="wrap">${head('COMMUNITY','社群')}<div class="community"></div></div></section>
 
 </aside></div>
 <section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLES & WORKS','参展社团与制品')}<div class="booth-directory-rich"></div></div></section>
