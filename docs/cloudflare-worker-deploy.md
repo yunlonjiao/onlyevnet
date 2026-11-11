@@ -68,12 +68,13 @@ under `uploads/`; deployment never deletes R2 data.
   new D1 database and point the binding at it; do not import over the live one.
 
 ## Things deployment does not change
-- `https://onlyevent.cn/admin/` keeps serving the v7 admin from `cloud/web/` (the Worker
-  serves `/admin/` first). The v8 editor lives on Cloudflare Pages
-  (`onlyevent-preview.pages.dev`) and talks to the Worker over CORS with a Bearer token.
-  Moving the v8 editor onto `onlyevent.cn` itself is a separate decision.
-- CORS allows `onlyevent.cn`, `www.onlyevent.cn`, localhost and the origins in
-  `ALLOWED_ORIGINS` (Pages production and branch previews). A new Pages domain must be added there.
+- `/admin/`, `/v8/`, `/collect/` and `/signup/` are served by the Worker itself from
+  `cloud/web/`, which `scripts/sync-web.mjs` rebuilds from the repository root on every
+  `check` / `test` / `deploy`. The editor therefore runs same-origin (`publisher.js` takes
+  its `cn|localhost` branch), so one deploy ships front end and API together.
+- CORS also allows the origins in `ALLOWED_ORIGINS` (the Pages preview origins
+  `onlyevent-preview.pages.dev` and its branch previews), plus `onlyevent.cn`,
+  `www.onlyevent.cn` and localhost. A new preview domain must be added there.
 
 ## Known gaps after deploying
 - Images uploaded while signed in are links to `convention-publisher.onlyevents.workers.dev/media/...`,
@@ -98,6 +99,41 @@ under `uploads/`; deployment never deletes R2 data.
 - Not yet checked by a human in a browser: sign-in and cloud sync from the v8 editor on
   `onlyevent-preview.pages.dev` against the live Worker.
 
+## Deployment log — 2026-11-11
+- Shipped the two commits that existed only in the local clone (`2ddcfbb` 03 guide image
+  placement, `f01a4aa` empty sponsor blocks in 03/06 + smaller 07 reserve stamp), then the
+  script fixes `4a1f5d3` (node shim guard) and `0314d1b` (`-Force` passthrough). First run of
+  the one-command flow: `cloud\scripts\ship.ps1 -Force`.
+- Versions: `4725cb1b-53f3-4c51-946b-5b89c9cfb8d5` → `5999e8e9-089b-4a10-ac0e-7cac9b3d1ba8`
+  (7.27.0, current). Backups: `Documents\OnlyEvent-backups\2026-11-11\d1-2026-11-11_165104.sql`
+  and `…_165609.sql`, 74 data rows each; the rollback point is in `last-deploy.json`.
+- Verified after each deploy: `/health` 7.27.0, new `/admin/` UI, same-origin editor,
+  `x-frame-options: SAMEORIGIN`, `x-content-type-options: nosniff`, `robots.txt` closing
+  `/admin/` and `/api/`, unpublished slug → 404, visitor `robots.txt` allows indexing.
+  All green both before and after the deploy.
+
+## One command (recommended)
+`cloud/scripts/ship.ps1` is the release entry point: it sets the proxy, pushes to
+`origin/preview/guide-sakura-access`, runs `-Step Verify`, then `-Step Deploy`
+(clean-tree check, live version recorded for rollback, D1 backup, `npm run deploy`,
+post-deploy verification).
+
+```powershell
+.\cloud\scripts\ship.ps1              # push + verify + deploy (deploy asks for yes)
+.\cloud\scripts\ship.ps1 -Force       # same, no prompt (scripts / unattended)
+.\cloud\scripts\ship.ps1 -NoPush      # skip the push
+.\cloud\scripts\ship.ps1 -PushOnly    # push only
+.\cloud\scripts\ship.ps1 -Rollback    # back to the version recorded before the last deploy
+```
+
+### If wrangler says `Unknown arguments: …, cli.js, d1, export …`
+The `node` on PATH is a wrapper rather than Node itself (Electron-as-node shims, e.g. DSH
+Desktop's `.desktop-bin\node.cmd`). Wrangler 4.15x mis-parses argv under them, so the D1
+export and `deployments list` fail and the deploy stops at the backup step, while `node -v`
+still looks normal. `deploy.ps1` now dot-sources `cloud/scripts/node-env.ps1`, which puts
+`%ProgramFiles%\nodejs` first when it detects a shim; set `$env:OE_NODE_DIR` to choose
+another install. Check `(Get-Command node).Source` when a similar error shows up elsewhere.
+
 ## Scripted deploy (Windows PowerShell)
 `cloud/scripts/deploy.ps1` wraps the steps above and keeps screen output short
 (full logs go to `%TEMP%\oe-*.log`):
@@ -105,6 +141,8 @@ under `uploads/`; deployment never deletes R2 data.
 - `-Step Backup`: exports production D1 to `Documents\OnlyEvent-backups\<date>\`.
 - `-Step Deploy`: needs a clean git tree, records the live version, asks for `yes`, backs up D1,
   runs `npm run deploy` (front-end build + checks + tests + wrangler deploy), then verifies.
-- `-Step Rollback`: returns to the version recorded before the last deploy (asks for `yes`).
+  `-Force` skips the prompt and the clean-tree stop.
+- `-Step Rollback`: returns to the version recorded before the last deploy (asks for `yes`;
+  `-Force` skips it, `-RollbackTo <version-id>` targets a specific one).
 
 Note: `/health` shows the Worker (API) version, e.g. 7.27.x; the editor has its own v8.x number.
