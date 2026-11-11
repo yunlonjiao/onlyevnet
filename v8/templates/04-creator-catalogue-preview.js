@@ -1,4 +1,4 @@
-/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
+﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
 import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.41.4';
@@ -325,12 +325,12 @@ export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenc
 const loader=`<div class="loader cc-entry" id="loader"><div class="gate cc-entry-gate" role="button" tabindex="0" aria-label="点击翻开电子场刊"><div class="cc-entry-book"><div class="cc-entry-page"><span class="cc-entry-kicker">WELCOME!</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cc-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><span class="cc-entry-hint">ようこそ · 欢迎光临 ✦</span></div><div class="cc-entry-cover"><div class="entry-photo cc-entry-photo" aria-label="活动KV"></div><span class="cc-entry-cover-title">WEB CATALOGUE</span><span class="cc-entry-tap">TAP TO OPEN ✦</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
 const head=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div></div>';
-const pageHead=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></div>';
+const pageHead=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div><a class="section-back" href="#top" data-page-link="home">← 返回首页</a></div>';
 
 export const previewBody=`<div class="cc-site">${loader}
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团</a><a href="#catalogue">场刊</a><a href="#map-home" data-catalogue-open="venue">场地图</a><a href="#tickets" data-catalogue-open="tickets">票务</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团</a><a href="#catalogue">场刊</a><a href="#catalogue" data-catalogue-open="venue">场地图</a><a href="#tickets" data-catalogue-open="tickets">票务</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
 <main id="top">
-<section class="cc-catalogue oe-home-only" id="catalogue" aria-label="电子场刊"><div class="wrap"><div data-oe-mount="catalogue-book"></div></div></section>
+<section class="cc-catalogue oe-home-only" id="catalogue" aria-label="电子场刊"><span id="map-home" aria-hidden="true"></span><div class="wrap"><div data-oe-mount="catalogue-book"></div></div></section>
 <section class="cc-stash" id="tickets" hidden aria-hidden="true"><div class="ticket-grid"></div><div class="ticket-actions"></div></section>
 <section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLE LIST','参展社团与制品')}<div class="booth-directory-rich"></div></div></section>
 <section class="section oe-page-view" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>

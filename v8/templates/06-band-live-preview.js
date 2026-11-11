@@ -302,7 +302,7 @@ const featuredShape=`
 `;
 export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+phoneFix+splitStyle+featuredShape;
 export const previewBody=`<div class="bl-site">
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#guests" data-target-mode="page" data-page-link="guests">乐队</a><a href="#activities" data-target-mode="page" data-page-link="activities">出场顺序</a><a href="#tickets">门票</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">买票 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#guests" data-target-mode="page" data-page-link="guests">乐队</a><a href="#activities" data-target-mode="page" data-page-link="activities">出场顺序</a><a href="#tickets">门票</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">买票 ↗</a></div></header>
 <main id="top"><div class="bl-split"><aside class="bl-bill">
 <section class="hero"><div class="wrap hero-grid"><aside class="bl-rail"><span class="bl-rail-label">TODAY'S EVENT</span><b data-oe-field="date"></b><small>LIVE HOUSE</small></aside><div class="hero-copy"><span class="hero-kicker">LIVE HOUSE</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bl-cta"><a class="bl-btn yellow ticket-purchase-link" href="#tickets">买票</a><a class="bl-btn" href="#timetable">出场顺序</a></div></div><div class="hero-art"><div class="kv"><strong class="bl-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section></aside><div class="bl-sheet">
 ${coreRibbon()}
@@ -318,6 +318,6 @@ ${coreSection('guide',{ey:'INFO',title:'入场须知'})}
 ${ownCommunitySection('bl',{ey:'COMMUNITY',title:'社群'})}
 ${ownSponsorsSection('bl',{ey:'THANKS',title:'合作支持'})}
 </div></div></main>
-<nav class="mobile-dock"><a href="#home" data-page-link="home">首页</a><a href="#guests" data-target-mode="page" data-page-link="guests">乐队</a><a href="#activities" data-target-mode="page" data-page-link="activities">顺序</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
+<nav class="mobile-dock"><a href="#top" data-page-link="home">首页</a><a href="#guests" data-target-mode="page" data-page-link="guests">乐队</a><a href="#activities" data-target-mode="page" data-page-link="activities">顺序</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
 </div>`;

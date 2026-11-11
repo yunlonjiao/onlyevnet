@@ -1,4 +1,4 @@
-/* Template 02 — Travel / cassette / tourism website shell.
+﻿/* Template 02 — Travel / cassette / tourism website shell.
    Built reference-first. Shared Core mounts are intentionally embedded into
    this independent shell instead of inheriting Template 01 page composition. */
 
@@ -32,7 +32,7 @@ export const previewBody=`
 </div>
 <div class="trip-site">
   <header class="trip-header">
-    <a class="trip-logo" href="#home" data-page-link="home">
+    <a class="trip-logo" href="#top" data-page-link="home">
       <small>活动导航 / EVENT SITE</small>
       <b data-oe-field="eventName">ONLY EVENT</b>
     </a>
@@ -42,7 +42,7 @@ export const previewBody=`
   </header>
 
   <nav class="trip-mobile-nav" data-oe-mount="mobile-nav">
-    <a href="#home" data-page-link="home"><small>00</small><strong>首页</strong><em>HOME</em></a>
+    <a href="#top" data-page-link="home"><small>00</small><strong>首页</strong><em>HOME</em></a>
     <a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small><strong>摊位</strong><em>BOOTH</em></a>
     <a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small><strong>活动</strong><em>EVENT</em></a>
     <a href="#guide" data-target-mode="page" data-page-link="guide"><small>04</small><strong>指南</strong><em>GUIDE</em></a>
@@ -116,17 +116,17 @@ export const previewBody=`
       <div class="trip-map-paper"><div data-oe-mount="map" id="venueMap" class="map-static"></div></div>
     </section>
 
-    <section class="trip-home-guests oe-home-only oe-editorial-section" id="home-guests">
+    <section class="trip-home-guests oe-home-only oe-editorial-section" id="home-guests"><span id="guests" aria-hidden="true"></span>
       <header class="oe-editorial-rail"><span>嘉宾阵容 / GUESTS</span><h2>嘉宾<small>GUEST / CHARACTER</small></h2></header>
       <div class="trip-guest-carousel"><div class="guest-grid" data-oe-mount="guests" tabindex="0" aria-label="嘉宾列表，左右滑动浏览"></div></div>
     </section>
     <section class="trip-page oe-page-view" id="booths">
-      <header class="trip-page-head"><span>ROUTE 01 / BOOTH</span><h2>摊位与制品</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
+      <header class="trip-page-head"><span>ROUTE 01 / BOOTH</span><h2>摊位与制品</h2><a class="section-back" href="#top" data-page-link="home">← 返回首页</a></header>
       <div class="booth-directory-rich" data-oe-mount="booths"></div>
     </section>
 
     <section class="trip-page oe-page-view" id="activities">
-      <header class="trip-page-head"><span>ROUTE 02 / EVENT</span><h2>活动与日程</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
+      <header class="trip-page-head"><span>ROUTE 02 / EVENT</span><h2>活动与日程</h2><a class="section-back" href="#top" data-page-link="home">← 返回首页</a></header>
       <div class="trip-activity-switch">
         <div class="activity-view-tabs"><button type="button" class="active" data-activity-view="timeline">当天日程</button><button type="button" data-activity-view="programs">活动详情</button></div>
         <div data-oe-mount="activity-days" class="activity-day-tabs"></div>
@@ -138,7 +138,7 @@ export const previewBody=`
 
 
     <section class="trip-page oe-page-view" id="guide">
-      <header class="trip-page-head"><span>ROUTE 04 / GUIDE</span><h2>观展指南</h2><a class="section-back" href="#home" data-page-link="home">← 返回首页</a></header>
+      <header class="trip-page-head"><span>ROUTE 04 / GUIDE</span><h2>观展指南</h2><a class="section-back" href="#top" data-page-link="home">← 返回首页</a></header>
       <div class="guide-detail-grid" data-oe-mount="guide-detail"></div>
     </section>
 
@@ -2750,4 +2750,15 @@ body[data-oe-template="02-scrapbook"] .trip-ticket-list [hidden],
 body[data-oe-template="02-scrapbook"] .trip-ticket-section [hidden]{
  display:none!important;
 }
-`;
+
+/* P0 usability: mobile tap targets ≥44px (WCAG 2.5.5). Scoped to navigation and CTAs only. */
+@media(max-width:720px){
+ nav a,nav button,[role="tab"],.tabs a,.tabs button,.cm-tabs a,.cm-tabs button,a.btn,a.pill,.ticket-purchase-link,.skip,.section-back{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center;padding-top:10px;padding-bottom:10px}
+
+@media(max-width:720px){
+ .brand,.ls-more,.bl-more,.tp-more,.bd-more,.tp-update,.bd-update,.update-item,.map-jump-tag{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding-top:10px;padding-bottom:10px}
+
+@media(max-width:720px){
+ .trip-logo,.venue-nav,.scrap-map-tag,.cm-shuffle,.cm-map-tag{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding-top:8px;padding-bottom:8px}
+ button{min-width:44px;min-height:44px}
+}}}`;

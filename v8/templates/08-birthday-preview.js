@@ -326,7 +326,7 @@ const featuredShape=`
 `;
 export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+boardStyle+featuredShape;
 export const previewBody=`<div class="bd-site">
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#home" data-page-link="home">首页</a><a href="#participation">应援内容</a><a href="#tickets">赠品</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">预约领取 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#participation">应援内容</a><a href="#tickets">赠品</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">预约领取 ↗</a></div></header>
 <main id="top">
 <section class="hero"><div class="wrap hero-grid"><div class="hero-copy bd-title"><span class="hero-kicker">HAPPY BIRTHDAY</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="hero-art"><div class="kv"><strong class="bd-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy bd-detail"><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bd-cta"><a class="bd-btn accent ticket-purchase-link" href="#tickets">预约领取</a><a class="bd-btn" href="#participation">看应援内容</a></div></div></div></section>
 <div class="bd-board">
@@ -341,7 +341,7 @@ ${coreSection('guests',{ey:'MEMBERS',title:'协力的人'})}
 ${coreSection('guide',{ey:'NOTICE',title:'领取与参观须知'})}
 ${ownCommunitySection('bd',{ey:'CONTACT',title:'联系与交流'})}
 </div></main>
-<nav class="mobile-dock"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
+<nav class="mobile-dock"><a href="#top" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
 <a class="bd-top" href="#top">PAGE TOP</a>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
 </div>`;

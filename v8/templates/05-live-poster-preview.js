@@ -330,11 +330,11 @@ const featuredShape=`
 `;
 export const previewStyle=coreStyle+style+referenceStyle+ownStyle+featuredFix+phoneFix+featuredShape;
 export const previewBody=`<div class="ls-site">${loader}
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><a class="btn ticket-purchase-link" href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
 <main id="top">
 <div class="ls-titlebar"><div class="wrap"><span>LIVE</span></div></div>
 <section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="ls-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy"><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta ls-info"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="ls-cta"><a class="ls-btn pink ticket-purchase-link" href="#tickets">购票</a><a class="ls-btn" href="#timetable">看节目表</a></div></div></div></section>
-<nav class="ls-pills" data-oe-mount="nav-links" aria-label="站内导航"><a href="#home" data-page-link="home">特设首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">节目表</a><a href="#guests" data-target-mode="page" data-page-link="guests">出演嘉宾</a><a href="#tickets">票务信息</a><a href="#map-home">场地</a><a href="#guide" data-target-mode="page" data-page-link="guide">注意事项</a></nav>
+<nav class="ls-pills" data-oe-mount="nav-links" aria-label="站内导航"><a href="#top" data-page-link="home">特设首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">节目表</a><a href="#guests" data-target-mode="page" data-page-link="guests">出演嘉宾</a><a href="#tickets">票务信息</a><a href="#map-home">场地</a><a href="#guide" data-target-mode="page" data-page-link="guide">注意事项</a></nav>
 <section class="section oe-home-only" id="timetable"><div class="wrap">${head('SCHEDULE','公演日程')}<div class="timeline" data-oe-mirror="timetable"></div>${more('#activities','activities','完整节目表')}</div></section>
 <section class="section oe-home-only" id="lineup"><div class="wrap">${head('LINE UP','出演嘉宾')}<div class="lineup-strip" data-oe-mirror="lineup"></div>${more('#guests','guests','全部嘉宾')}</div></section>
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip section oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新公告'))}
@@ -347,6 +347,6 @@ ${coreSection('guide',{ey:'INFORMATION',title:'观演指南'})}
 ${ownCommunitySection('ls',{ey:'COMMUNITY',title:'社群'})}
 ${ownSponsorsSection('ls',{ey:'SUPPORT',title:'合作支持'})}
 </main>
-<nav class="mobile-dock"><a href="#home" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">节目表</a><a href="#guests" data-target-mode="page" data-page-link="guests">嘉宾</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav>
+<nav class="mobile-dock"><a href="#top" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">节目表</a><a href="#guests" data-target-mode="page" data-page-link="guests">嘉宾</a><a href="#guide" data-target-mode="page" data-page-link="guide">指南</a></nav>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
 </div>`;
