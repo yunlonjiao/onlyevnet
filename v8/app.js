@@ -749,7 +749,7 @@ function openEntryAnimationInspector(){
  const a=state.entryAnimation||{};
  const linkedImage=String(state.heroImage||'').trim();
  const customImage=String(a.image||'').trim();
- const splashMode=state.templateId==='03-creator-market';
+ const splashMode=true;
  const imageSrc=splashMode?(linkedImage||customImage):((a.imageMode==='custom'&&customImage)?customImage:linkedImage||customImage);
  const row=(key,label,value,placeholder,showKey,shown=true)=>
    '<div class="entry-field-row">'+

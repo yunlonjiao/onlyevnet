@@ -31,6 +31,15 @@ import {mapCarouselStyle} from '/v8/renderer/map-carousel.js?v=8.42.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
 import {catalogueBookStyle} from '/v8/renderer/catalogue-book.js?v=8.54.11';
 
+const OE_MOBILE_CSS="@media(max-width:720px){#booths .booth-directory-grid,#booths .booth-grid,#booths .lineup-grid,#booths .product-directory-grid,.booth-directory-grid,.product-directory-grid,.lineup-grid,.guest-grid,.sponsor-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}";
+function ensureMobileRules(){
+  let el=document.getElementById("oe-mobile-grid-rules");
+  if(!el){el=document.createElement("style");el.id="oe-mobile-grid-rules";}
+  el.textContent=OE_MOBILE_CSS;
+  (document.body||document.head).appendChild(el);
+}
+
+
 const ORIGIN=location.origin;
 let state={},mode='edit',entryPreviewTimer=0;
 const send=m=>parent.postMessage(m,ORIGIN);
@@ -252,7 +261,7 @@ window.addEventListener('message',e=>{
 async function handleMessage(m){
   if(m.type==='OE_INIT_STATE'||m.type==='OE_REPLACE_STATE')await loadTemplatePreview(m.state?.templateId||DEFAULT_TEMPLATE_ID);
   if(m.type==='OE_INIT_STATE'){
-    mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);
+    mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);ensureMobileRules();
     router.setCurrentPage(m.page||'home');
     applyState(m.state||{});
     fields.setMode(m.mode||'edit');
@@ -262,7 +271,7 @@ async function handleMessage(m){
     requestAnimationFrame(setupHomeMotion);
   }
   if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value);if(m.path!=='heroImage'&&m.path!=='mobileHeroImage')applyEntryState();if(['eventStatus','eventStatusMode','eventStartDateTime','eventEndDateTime'].includes(m.path))applyLifecycleState()}
-  if(m.type==='OE_REPLACE_STATE'){mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);state=m.state||{};applyState(state);runtime.initRuntime();requestAnimationFrame(setupHomeMotion)}
+  if(m.type==='OE_REPLACE_STATE'){mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);ensureMobileRules();state=m.state||{};applyState(state);runtime.initRuntime();requestAnimationFrame(setupHomeMotion)}
   if(m.type==='OE_SET_MODE'){
     fields.setMode(m.mode);
     if(m.mode==='preview'&&state.entryAnimation?.enabled!==false)previewEntry({play:false});

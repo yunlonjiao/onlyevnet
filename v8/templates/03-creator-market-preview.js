@@ -610,7 +610,19 @@ const final5Style=`
  .cm-site .cm-market-grid.no-street{grid-template-columns:1fr!important}
 }
 `;
+const final7Style=`
+@media(max-width:720px){
+.cm-site .cm-street-banners{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.cm-site .cm-market-right{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.cm-site .cm-market-right .cm-tile:nth-child(n+4){display:flex!important}
+}
+`;
 const final6Style=`
+/* 手机端：街道 2 张并排、制品 2 个一行 */
+@media(max-width:720px){
+ .cm-site .cm-street-banners{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .cm-site .cm-market-right{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
 .cm-site{overflow-x:hidden}
 .cm-site .cm-market-left{display:grid!important;gap:12px!important;align-content:start}
 .cm-site .cm-market-left .cm-street-card.secondary{display:none!important}
@@ -669,7 +681,7 @@ const final4Style=`
  .cm-site #sponsors{order:8!important}
 }
 `;
-export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+finalFixStyle+lastFixStyle+final2Style+final3Style+final4Style+final5Style+final6Style;
+export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+finalFixStyle+lastFixStyle+final2Style+final3Style+final4Style+final5Style+final6Style+final7Style;
 
 const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="cm-splash-bars" aria-hidden="true"><i></i><i></i><i></i></div><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
