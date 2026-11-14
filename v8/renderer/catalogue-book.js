@@ -129,6 +129,13 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   root.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();go(at+(single()?1:2))}if(e.key==='ArrowLeft'){e.preventDefault();go(at-(single()?1:2))}});
   if(typeof ResizeObserver==='function'){let wasSingle=single();new ResizeObserver(()=>{if(single()!==wasSingle&&!busy){wasSingle=single();render()}}).observe(root)}
   render();
+  try{
+    window.__oeCatalogueReplay=()=>{
+      busy=false;at=0;render();
+      try{root.scrollIntoView({block:'start'})}catch{}
+      setTimeout(()=>{if(!busy)go(2)},260);
+    };
+  }catch{}
 }
 
 export const catalogueBookStyle=`

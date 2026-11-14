@@ -1,6 +1,6 @@
-import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.79.0';
-import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.79.0';
-import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.79.0';
+import {previewStyle,previewBody} from '/v8/templates/01-ip-only-preview.js?v=8.80.0';
+import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.80.0';
+import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.80.0';
 const ORIGIN=location.origin;let state={},mode='edit',revealObs=null,stampObs=null,progressObs=null;
 window.__oeRenderLoadId=(window.__oeRenderLoadId||0)+1;
 const runtimeStyle=document.createElement('style');
