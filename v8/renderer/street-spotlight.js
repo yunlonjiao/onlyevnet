@@ -38,8 +38,9 @@ export function mountStreetCard(root,state,{esc=v=>String(v??''),storageKey='oe-
     }catch{}
   }
   const range=[pick.from,pick.to].filter(Boolean).join('–');
+  const streetImg=(Array.isArray(state.streets)?state.streets:[]).find(s=>String(s.name||'')===pick.name)?.image||'';
   const chips=pick.booths.slice(0,3).map(b=>'<span class="cm-street-chip">'+esc(b.name||b.no||'社团')+'</span>').join('');
-  root.innerHTML='<a class="cm-street-card" href="#booths" data-street-jump="'+esc(pick.name)+'">'
+  root.innerHTML='<a class="cm-street-card'+(streetImg?' has-image':'')+'" href="#booths" data-street-jump="'+esc(pick.name)+'"'+(streetImg?' style="background-image:linear-gradient(180deg,#00000010,#00000080),url(&quot;'+esc(streetImg)+'&quot;)"':'')+'>'
     +'<span class="cm-street-ey">随便逛逛 · 随机街道</span>'
     +'<b class="cm-street-name">'+esc(pick.name)+'</b>'
     +'<span class="cm-street-meta">'+esc(range?range+' · ':'')+pick.count+' 个社团</span>'
@@ -79,4 +80,18 @@ export function mountProductTiles(root,items,{count=6,esc=v=>String(v??''),stora
     +'<span class="cm-tile-art">'+art(p)+'</span>'
     +'<b>'+esc(p.name||'')+'</b>'
     +'<small>'+esc([p.boothNo,p.boothName,p.price].filter(Boolean).join(' · '))+'</small></a>').join('');
+}
+
+export function mountStreetBanners(root,state,{esc=v=>String(v??'')}={}){
+  if(!root)return;
+  const groups=streetGroups(state);
+  if(!groups.length){root.innerHTML='';root.hidden=true;return}
+  root.hidden=false;
+  const imgs=new Map((Array.isArray(state.streets)?state.streets:[]).map(s=>[String(s.name||''),String(s.image||'')]));
+  root.innerHTML=groups.map(g=>{
+    const img=imgs.get(g.name)||'',range=[g.from,g.to].filter(Boolean).join('–');
+    return '<a class="cm-street-banner" href="#booths" data-street-jump="'+esc(g.name)+'">'
+      +'<span class="cm-street-banner-art'+(img?'':' empty')+'"'+(img?' style="background-image:url(&quot;'+esc(img)+'&quot;)"':'')+'></span>'
+      +'<b>'+esc(g.name)+'</b><small>'+esc(range)+' · '+g.count+' 个社团</small></a>';
+  }).join('');
 }

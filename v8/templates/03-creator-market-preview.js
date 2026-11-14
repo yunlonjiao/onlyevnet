@@ -511,6 +511,20 @@ const finalFixStyle=`
 .cm-site .cm-booth-street{display:block;font-size:12px;font-weight:800;color:var(--cm-accent);margin:0 0 2px}
 `;
 const lastFixStyle=`
+/* 街道宣传图（社团作品页） */
+.cm-site .cm-street-banners{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 16px}
+.cm-site .cm-street-banner{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:var(--cm-ink)}
+.cm-site .cm-street-banner-art{display:block;aspect-ratio:16/9;border-radius:12px;background:linear-gradient(140deg,#bfe7ff,#e7dcf7);background-size:cover;background-position:center;border:1px solid var(--cm-line)}
+.cm-site .cm-street-banner-art.empty{background-image:linear-gradient(140deg,#e8f4fb,#eee7fa)}
+.cm-site .cm-street-banner b{font-size:15px;font-weight:800}
+.cm-site .cm-street-banner small{font-size:12px;color:var(--cm-soft)}
+.cm-site .cm-street-card.has-image{background-size:cover;background-position:center}
+/* 合作伙伴：正方形 logo 墙（参考 B 站会员购的漫展宣传图） */
+.cm-site #sponsors .sponsors{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:14px}
+.cm-site #sponsors .sponsor-logo{display:block;width:100%;aspect-ratio:1/1;border:1px solid var(--cm-line);border-radius:12px;overflow:hidden;background:#fff;padding:0}
+.cm-site #sponsors .sponsor-logo img{width:100%;height:100%;object-fit:cover}
+@media(max-width:900px){.cm-site .cm-street-banners{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.cm-site .cm-street-banners{grid-template-columns:1fr}}
 .cm-site .cm-market-grid{align-items:stretch}
 .cm-site .cm-street-card{aspect-ratio:auto!important;height:clamp(240px,21vw,340px)!important;box-sizing:border-box!important;width:100%!important}
 .cm-site .cm-market-right{aspect-ratio:auto!important;height:clamp(240px,21vw,340px)!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;grid-auto-rows:minmax(0,1fr)!important}
@@ -541,7 +555,7 @@ export const previewBody=`<div class="cm-site">${loader}
 <section class="section" id="community"><div class="wrap">${head('COMMUNITY','社群')}<div class="community"></div></div></section>
 
 </aside></div>
-<section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLES & WORKS','参展社团与制品')}<div class="cm-street-filter" data-oe-mount="street-filter" aria-label="按街道筛选"></div><div class="booth-directory-rich"></div></div></section>
+<section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLES & WORKS','参展社团与制品')}<div class="cm-street-banners" data-oe-mount="street-banners" aria-label="街道宣传图"></div><div class="cm-street-filter" data-oe-mount="street-filter" aria-label="按街道筛选"></div><div class="booth-directory-rich"></div></div></section>
 <section class="section oe-page-view" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>
 </main>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>

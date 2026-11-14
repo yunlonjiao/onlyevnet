@@ -1,5 +1,5 @@
 import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
-import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles} from '/v8/renderer/street-spotlight.js?v=8.61.0';
+import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.62.0';
 import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.42.0';
 import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.54.11';
 import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.52.0';
@@ -524,6 +524,8 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
     if(streetCard)mountStreetCard(streetCard,state,{esc,storageKey:'oe-street:'+key});
     const productTiles=mount('product-tiles');
     if(productTiles)mountProductTiles(productTiles,spotlightItems(state),{esc,count:6,storageKey:'oe-tiles:'+key});
+    const streetBanners=mount('street-banners');
+    if(streetBanners)mountStreetBanners(streetBanners,state,{esc});
     const streetLegend=mount('street-legend');
     if(streetLegend)mountStreetLegend(streetLegend,state,{esc});
     // 换一换：街道卡与制品格一起重新随机

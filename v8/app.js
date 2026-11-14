@@ -6,6 +6,7 @@ import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studi
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.62.0';
 import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.41.5';
 import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.52.0';
 import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.42.0';
@@ -580,7 +581,7 @@ const PAGE_CONTENT_CONFIG={
    {collection:'socialLinks',label:'社群'},
    {collection:'sponsors',label:'赞助'}
  ],
- booths:[{collection:'booths',label:'摊位与制品'}],
+ booths:[{collection:'booths',label:'摊位与制品'},{tool:'streets',label:'街道'}],
  activities:[{collection:'schedule',label:'日程'},{collection:'participation',label:'活动详情'}],
  guests:[{collection:'guests',label:'嘉宾'}],
  guide:[{collection:'guide',label:'指南内容'}]
@@ -819,6 +820,54 @@ function openEntryAnimationInspector(){
    save();send({type:'OE_REPLACE_STATE',state});send({type:'OE_PREVIEW_ENTRY',state,play:false});openEntryAnimationInspector();
  });
 }
+function openStreetManager(){
+  const groups=streetGroups(state);
+  const images=new Map((state.streets||[]).map((s,i)=>[String(s.name||''),String(s.image||'')]));
+  const rows=groups.map(g=>{
+    const img=images.get(g.name)||'';
+    const range=[g.from,g.to].filter(Boolean).join('–');
+    return '<div class="item-fields"><label><span>'+esc(range||'未分配号段')+' · '+g.count+' 个社团</span><input data-street-rename="'+esc(g.name)+'" value="'+esc(g.name)+'"></label>'+
+      '<div class="item-media-row"><button type="button" data-street-image="'+esc(g.name)+'">'+(img?'更换宣传图':'上传街道宣传图')+'</button>'+
+      (img?'<img src="'+esc(img)+'" alt="" style="width:64px;height:36px;object-fit:cover;border-radius:6px">':'')+
+      '<button type="button" class="ghost" data-street-delete="'+esc(g.name)+'">删除街道</button></div></div>';
+  }).join('');
+  setInspector('摊位','街道',
+    '<div class="entry-animation-inspector">'+
+    (rows||'<div class="sidebar-content-empty">还没有街道，先在摊位的「街道」字段里填写。</div>')+
+    '<div class="item-fields"><label><span>新增街道</span><input id="newStreetName" placeholder="例如 D 街道 · 新刊区"></label></div>'+
+    '<div class="entry-animation-actions"><button type="button" id="addStreetBtn">新增街道</button></div>'+
+    '<p class="inspector-note">街道来自每个摊位的「街道」字段；改名会同步更新该街道下的所有摊位，宣传图用于社团作品页的街道横幅和首页街道卡。</p></div>');
+  inspector.querySelectorAll('[data-street-rename]').forEach(input=>input.addEventListener('change',()=>{
+    const from=input.dataset.streetRename,to=String(input.value||'').trim();
+    if(!to||to===from)return;
+    checkpoint();
+    state.booths=(state.booths||[]).map(b=>String(b.street||'')===from?{...b,street:to}:b);
+    state.streets=(state.streets||[]).map(s=>String(s.name||'')===from?{...s,name:to}:s);
+    save();send({type:'OE_REPLACE_STATE',state});openStreetManager();
+  }));
+  inspector.querySelectorAll('[data-street-delete]').forEach(btn=>btn.addEventListener('click',()=>{
+    const name=btn.dataset.streetDelete;
+    checkpoint();
+    state.booths=(state.booths||[]).map(b=>String(b.street||'')===name?{...b,street:''}:b);
+    state.streets=(state.streets||[]).filter(s=>String(s.name||'')!==name);
+    save();send({type:'OE_REPLACE_STATE',state});openStreetManager();
+  }));
+  inspector.querySelectorAll('[data-street-image]').forEach(btn=>btn.addEventListener('click',()=>{
+    const name=btn.dataset.streetImage;
+    state.streets=Array.isArray(state.streets)?state.streets:[];
+    let idx=state.streets.findIndex(s=>String(s.name||'')===name);
+    if(idx<0){state.streets.push({name,image:''});idx=state.streets.length-1;save();send({type:'OE_REPLACE_STATE',state});}
+    const input=$('#imageInput');input.dataset.path='streets.'+idx+'.image';input.click();
+  }));
+  $('#addStreetBtn')?.addEventListener('click',()=>{
+    const name=String($('#newStreetName')?.value||'').trim();
+    if(!name)return;
+    checkpoint();
+    state.streets=Array.isArray(state.streets)?state.streets:[];
+    if(!state.streets.some(s=>String(s.name||'')===name))state.streets.push({name,image:''});
+    save();send({type:'OE_REPLACE_STATE',state});openStreetManager();
+  });
+}
 function openPageTool(tool){
  setPageContentActive({tool});
  const panel=$('#contentListPanel');if(panel)panel.innerHTML='';
@@ -830,6 +879,7 @@ function openPageTool(tool){
  if(tool==='seo'){openSeoInspector();return}
  if(tool==='recap'){openRecapDialog();return}
  if(tool==='map'){openImageInspector('venueMap.image');return}
+ if(tool==='streets'){openStreetManager();return}
  if(tool==='freewalk'||tool==='itasha'){openOptionalPageInspector(tool);return}
  showInspectorEmpty();
 }

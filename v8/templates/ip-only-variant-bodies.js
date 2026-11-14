@@ -1,6 +1,6 @@
 function entryLoader(kind){
   const photo='<div class="entry-photo" aria-label="活动KV"></div>';
-  const info='<div class="entry-ticket-label">MEMORIAL TICKET</div><div class="entry-ticket-title">STARDUST ONLY 2026</div><div class="entry-ticket-subtitle"></div><div class="entry-ticket-meta"><div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date">2026.11.08</b></div><div class="entry-ticket-time-wrap"><span>TIME</span><b class="entry-ticket-time"></b></div><div class="entry-ticket-location-wrap"><span>PLACE</span><b class="entry-ticket-location">杭州</b></div></div><div class="stub-barcode" aria-hidden="true"></div><div class="stub-code"><span class="entry-serial stub-number">NO. 048271</span></div>';
+  const info='<div class="entry-ticket-label">MEMORIAL TICKET</div><div class="entry-ticket-title">STARDUST ONLY 2026</div><div class="entry-ticket-subtitle"></div><div class="entry-ticket-meta"><div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date">2030.01.01</b></div><div class="entry-ticket-time-wrap"><span>TIME</span><b class="entry-ticket-time"></b></div><div class="entry-ticket-location-wrap"><span>PLACE</span><b class="entry-ticket-location">杭州</b></div></div><div class="stub-barcode" aria-hidden="true"></div><div class="stub-code"><span class="entry-serial stub-number">NO. 048271</span></div>';
   let inner='';
   if(kind==='scrap')inner='<div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击纪念票进入活动网站"><div class="scrap-entry-tape"><i></i><i></i><b>MEMORY TAPE</b></div><section class="ticket-half left">'+photo+'</section><aside class="ticket-half right">'+info+'</aside></div>';
   else if(kind==='school')inner='<div class="gate school-entry-gate" role="button" tabindex="0" aria-label="点击入场证进入活动网站"><div class="school-entry-number">04</div><section class="ticket-half left">'+photo+'</section><aside class="ticket-half right"><span class="school-entry-kicker">CAMPUS FESTIVAL PASS</span>'+info+'</aside></div>';
@@ -14,7 +14,7 @@ function entryLoader(kind){
 function scrapDesktopNav(){
  return '<header class="scrap-flight-header">'+
   '<a class="scrap-flight-brand" href="#top" data-page-link="home"><small>ONLY EVENT / SPECIAL JOURNEY</small><b>STARDUST ONLY</b></a>'+
-  '<div class="scrap-flight-status"><span>BOARDING</span><i></i><span>2026.11.08</span><i></i><span>HANGZHOU</span></div>'+
+  '<div class="scrap-flight-status"><span>BOARDING</span><i></i><span>2030.01.01</span><i></i><span>HANGZHOU</span></div>'+
   '<nav class="scrap-flight-links" data-oe-mount="nav-links">'+
    '<a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small>BOOTH</a>'+
    '<a href="#activities" data-target-mode="page" data-page-link="activities"><small>02</small>PLAN</a>'+
@@ -206,7 +206,7 @@ ${detailPages('school')}${commonUtility('school')}
 <section class="oe-home-only museum-titleband"><span>ENSEMBLE ARCHIVE</span><span>10TH ANNIVERSARY EXHIBITION</span><span>2026</span></section>
 <section class="hero museum-hero"><div class="oe-home-only museum-hero-index"><span>EXHIBITION 01</span><b>BRIGHT<br>ME UP!!</b></div>${heroKV('museum-kv')}${heroFields('museum-copy')}</section>
 <section class="oe-home-only museum-introduction"><aside>INTRODUCTION</aside><div><h2>記憶の中にある輝きを、展示空間としてもう一度。</h2><p>イラスト、音楽、映像、出会い。活動当天的内容以展览章节的方式安静展开。</p></div></section>
-<section class="oe-home-only museum-about"><aside>ABOUT</aside><div class="oe-home-only museum-about-grid"><div><small>DATE</small><b>2026.11.08</b></div><div><small>PLACE</small><b>杭州</b></div><div><small>VENUE</small><b>杭州国际博览中心</b></div></div></section>
+<section class="oe-home-only museum-about"><aside>ABOUT</aside><div class="oe-home-only museum-about-grid"><div><small>DATE</small><b>2030.01.01</b></div><div><small>PLACE</small><b>杭州</b></div><div><small>VENUE</small><b>杭州国际博览中心</b></div></div></section>
 <section class="oe-home-only museum-news" id="updates"><aside>NEWS</aside><div data-oe-mount="updates" class="updates-list"></div></section>
 <section class="oe-home-only museum-ticket" id="tickets"><aside>TICKET</aside><div><div data-oe-mount="tickets" class="ticket-grid"></div><div data-oe-mount="ticket-actions" class="ticket-actions"></div></div></section>
 <section class="oe-home-only museum-event" id="participation"><aside>EVENT</aside><div><div data-oe-mount="featured-activities" class="featured-activity-grid"></div></div></section>
@@ -234,7 +234,7 @@ ${detailPages('live')}${commonUtility('live')}
 `<div class="expo-site">`+standardNav('expo-nav')+
 `<main id="top">
 <div class="expo-area-tabs"><span>LIVE SHOWCASE AREA</span><span>EXPO AREA</span><span>OUTDOOR AREA</span></div>
-<section class="hero expo-hero"><div class="oe-home-only expo-hero-title">${heroFields('expo-copy')}<div class="expo-date">2026.11.08 SUN</div></div>${heroKV('expo-kv')}<aside class="expo-contents-index"><b>CONTENTS</b><ol><li>NEWS</li><li>AREA</li><li>TICKET</li><li>BOOTH</li><li>STAGE</li><li>GUIDE</li></ol></aside></section>
+<section class="hero expo-hero"><div class="oe-home-only expo-hero-title">${heroFields('expo-copy')}<div class="expo-date">2030.01.01 SUN</div></div>${heroKV('expo-kv')}<aside class="expo-contents-index"><b>CONTENTS</b><ol><li>NEWS</li><li>AREA</li><li>TICKET</li><li>BOOTH</li><li>STAGE</li><li>GUIDE</li></ol></aside></section>
 <section class="oe-home-only expo-news" id="updates"><div class="expo-code">01 / NEWS</div><div data-oe-mount="updates" class="updates-list"></div></section>
 <section class="oe-home-only expo-area-board"><div class="cyan"><span>LIVE SHOWCASE</span><b>舞台与节目</b></div><div class="magenta"><span>EXPO AREA</span><b>摊位与企划</b></div><div class="yellow"><span>OUTDOOR</span><b>交通与场外</b></div></section>
 <section class="oe-home-only expo-index-menu"><div class="expo-code">02 / INDEX</div><div data-oe-mount="quick" class="quick-grid"></div></section>

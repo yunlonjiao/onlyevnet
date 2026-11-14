@@ -1,5 +1,5 @@
 import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.42.0';
-import {mountStreetCard,mountStreetLegend,mountProductTiles} from '/v8/renderer/street-spotlight.js?v=8.60.0';
+import {mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.62.0';
 import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.42.0';
 import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.54.11';
 export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyle='',escapeHtml:esc}){
@@ -53,6 +53,8 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       if(spotlight&&S.presentationProfile?.productSpotlight!==false)(${mountProductSpotlight.toString()})(spotlight,(${spotlightItems.toString()})(S),{autoplay:true,storageKey:'oe-spotlight:'+String(S.projectId||S.eventName||'event')});      const escV=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       const stCard=$('[data-oe-mount="street-card"]');
       if(stCard)(${mountStreetCard.toString()})(stCard,S,{esc:escV,storageKey:'oe-street:'+String(S.projectId||S.eventName||'event')});
+      const stBanners=$('[data-oe-mount="street-banners"]');
+      if(stBanners)(${mountStreetBanners.toString()})(stBanners,S,{esc:escV});
       const stLegend=$('[data-oe-mount="street-legend"]');
       if(stLegend)(${mountStreetLegend.toString()})(stLegend,S,{esc:escV});
       const stTiles=$('[data-oe-mount="product-tiles"]');

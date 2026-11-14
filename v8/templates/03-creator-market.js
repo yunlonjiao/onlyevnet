@@ -20,6 +20,7 @@ d.tickets=[
 ];
 /* 街道顺序（可选）：不填就按摊位号首个字符排。 */
 d.streetOrder=['A 街道 · 星屑区','B 街道 · 月见区','C 街道 · 白昼区'];
+d.streets=[{name:'A 街道 · 星屑区',image:''},{name:'B 街道 · 月见区',image:''},{name:'C 街道 · 白昼区',image:''}];
 d.booths=[
  {id:'c1',no:'A01',street:'A 街道 · 星屑区',name:'浮光工房',logo:'',type:'原创 · 画集',intro:'原创插画与画集',products:[
   {id:'p1',name:'星空画集',tag:'画集',price:'¥45',note:'',image:''},
