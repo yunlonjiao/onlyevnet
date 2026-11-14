@@ -611,6 +611,20 @@ const final5Style=`
  .cm-site .cm-market-grid.no-street{grid-template-columns:1fr!important}
 }
 `;
+const final6Style=`
+.cm-site{overflow-x:hidden}
+.cm-site .cm-market-left{display:grid!important;gap:12px!important;align-content:start}
+.cm-site .cm-market-left .cm-street-card.secondary{display:none!important}
+@media(max-width:900px){
+ .cm-site .cm-market-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+ .cm-site .cm-market-left{grid-column:1/-1!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .cm-site .cm-market-left .cm-street-card.secondary{display:block!important}
+ .cm-site .cm-market-right{grid-column:1/-1!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .cm-site .cm-market-right .cm-tile:nth-child(n+4){display:none!important}
+ .cm-site .cm-tile-art{aspect-ratio:1.1/1!important;flex:0 0 auto!important}
+ .cm-site .cm-headline .meta .pill{font-size:11px!important;padding:5px 8px!important}
+}
+`;
 const final4Style=`
 /* 手机端制品名最多两行，别截成一个字 */
 @media(max-width:720px){
@@ -657,7 +671,7 @@ const final4Style=`
  .cm-site #sponsors{order:8!important}
 }
 `;
-export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+finalFixStyle+lastFixStyle+final2Style+final3Style+final4Style+final5Style;
+export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+finalFixStyle+lastFixStyle+final2Style+final3Style+final4Style+final5Style+final6Style;
 
 const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="cm-splash-bars" aria-hidden="true"><i></i><i></i><i></i></div><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 

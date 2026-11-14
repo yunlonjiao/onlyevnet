@@ -43,7 +43,14 @@ export function mountStreetCard(root,state,{esc=v=>String(v??''),storageKey='oe-
   const range=[pick.from,pick.to].filter(Boolean).join('–');
   const streetImg=(Array.isArray(state.streets)?state.streets:[]).find(s=>String(s.name||'')===pick.name)?.image||'';
   const chips=pick.booths.slice(0,3).map(b=>'<span class="cm-street-chip">'+esc(b.name||b.no||'社团')+'</span>').join('');
-  root.innerHTML='<a class="cm-street-card'+(streetImg?' has-image':'')+'" href="#booths" data-street-jump="'+esc(pick.name)+'" aria-label="'+esc(pick.name)+' · '+pick.count+' 个社团"'+(streetImg?' style="background-image:linear-gradient(180deg,#00000000,#00000033),url(&quot;'+esc(streetImg)+'&quot;)"':'')+'>'
+  const pickTwo=[pick,...groups.filter(g=>g.name!==pick.name).slice(0,1)];
+  const cardHTML=g=>{
+    const img=(Array.isArray(state.streets)?state.streets:[]).find(s=>String(s.name||'')===g.name)?.image||'';
+    return '<a class="cm-street-card'+(img?' has-image':'')+'" href="#booths" data-street-jump="'+esc(g.name)+'" aria-label="'+esc(g.name)+' · '+g.count+' 个社团"'+(img?' style="background-image:linear-gradient(180deg,#00000000,#00000033),url(&quot;'+esc(img)+'&quot;)"':'')+'>'
+      +(img?'':'<span class="cm-street-name">'+esc(g.name)+'</span>')
+      +'</a>';
+  };
+  root.innerHTML=pickTwo.map((g,i)=>cardHTML(g).replace('class="cm-street-card','class="cm-street-card'+(i?' secondary':''))).join('');
     +(streetImg?'':'<span class="cm-street-name">'+esc(pick.name)+'</span>')
     +'</a>';
     +'<span class="cm-street-ey">随便逛逛 · 随机街道</span>'
