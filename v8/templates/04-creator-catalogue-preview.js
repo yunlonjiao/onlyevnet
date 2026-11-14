@@ -1,7 +1,7 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.78.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.79.0';
 
 const catalogueStyle=`
 .cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:#c8432b;--cc-lilac:#c9b99a;--cc-cyan:#7fe3ff;--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
@@ -329,10 +329,16 @@ const fullBookStyle=`
 .cc-site .cb-book.is-single{width:var(--cc-page-w)!important;max-width:none!important;aspect-ratio:.72;height:auto!important}
 .cc-site .cb-page{padding:clamp(18px,2vw,32px) clamp(18px,2vw,32px) clamp(42px,4vw,52px)!important}
 .cc-site .cb-controls{position:fixed!important;left:50%!important;bottom:14px!important;transform:translateX(-50%)!important;z-index:30;margin:0!important;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.82);backdrop-filter:blur(6px)}
+.cc-site .cb-page{box-shadow:0 12px 28px #2b1f4726!important}
+.cc-site .cb-page.cb-blank{box-shadow:none!important;background:transparent!important}
+.cc-site .cb-page.left{box-shadow:inset -22px 0 24px -20px #2b1f4733,0 12px 28px #2b1f4726!important}
+.cc-site .cb-page.right{box-shadow:inset 22px 0 24px -20px #2b1f4733,0 12px 28px #2b1f4726!important}
+.cc-site .cb-cover{box-shadow:none!important}
+.cc-site .cb-leaf-face{box-shadow:none!important}
 .cc-site .cb-book.is-closed{cursor:pointer}
 .cc-site .oe-book-closed .cb-controls{display:none!important}
 .cc-site .cb-book.is-closed .cb-cover::after{content:'点击翻开 · CLICK TO OPEN';position:absolute;top:58px;left:32px;font-size:11px;font-weight:800;letter-spacing:.22em;opacity:.72;white-space:nowrap}
-.cc-site .loader.cc-entry{background-image:var(--cc-desk-grain),radial-gradient(120% 90% at 50% 6%,#f5ead6 0%,#dfcaa9 44%,#b99f80 100%)!important}
+.cc-site .loader.cc-entry{display:none!important}
 `;
 export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle+listStyle+bookPagesStyle+paperStyle+fullBookStyle;
 
