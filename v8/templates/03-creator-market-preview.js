@@ -594,6 +594,9 @@ const final3Style=`
 .cm-site .cm-tile small{display:none!important}
 `;
 const final4Style=`
+/* 旧的交通图片位（guide 卡片自带）去掉，交通路线图统一用「交通到达」里的上传 */
+.cm-site .cm-guide .guide-access-media{display:none!important}
+.cm-site #traffic .cm-guide .guide-access-media{display:none!important}
 /* 入场与规则合并成一张卡：共用外框，内部用分隔线 */
 .cm-site .cm-rules .guide-detail-content{display:block!important;background:#fff!important;border:1px solid var(--cm-line)!important;border-radius:12px!important;overflow:hidden!important}
 .cm-site .cm-rules .cm-guide{border:0!important;border-radius:0!important;border-top:1px solid var(--cm-line)!important;padding:18px!important}
