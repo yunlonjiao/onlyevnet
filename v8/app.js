@@ -755,7 +755,11 @@ function openEntryAnimationInspector(){
    '<label class="toggle-field"><span>'+label+'</span><input type="checkbox" data-entry-field="'+showKey+'" '+(shown?'checked':'')+'></label>'+
    '<input data-entry-field="'+key+'" value="'+esc(value||'')+'" placeholder="'+esc(placeholder||'')+'">'+
    '</div>';
+ const heroMedia=(key,label)=>'<div class="item-media"><span>'+label+'</span><div class="item-media-row">'+(String(state[key]||'').trim()?'<img src="'+esc(state[key])+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-hero-image="'+key+'">选择 / 裁剪</button></div></div></div>';
  setInspector('入场动画',splashMode?'开屏设置':'纪念票设置',
+  splashMode
+   ? '<div class="entry-animation-inspector">'+heroMedia('heroImage','桌面 KV')+heroMedia('mobileHeroImage','手机 KV（可选，留空用桌面 KV）')+'<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button></div><p class="inspector-note">这张图同时用于首页横幅和开屏动画；手机 KV 留空时沿用桌面 KV。</p></div>'
+   : (
    '<div class="entry-animation-inspector">'+
    '<div class="item-fields">'+
    '<label class="toggle-field"><span>启用入场动画</span><input type="checkbox" data-entry-field="enabled" '+(a.enabled!==false?'checked':'')+'></label>'+
@@ -778,7 +782,7 @@ function openEntryAnimationInspector(){
    '</div>'+
    '<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button><button type="button" id="resetEntryAnimation">恢复模板默认</button></div>'+
    (splashMode?'<p class="inspector-note">主视觉留空时联动首页 KV；活动名、日期、地点留空时自动联动网站基础信息。</p>':'<p class="inspector-note">所有右侧信息都可单独显示/隐藏。活动名、日期、地点留空时自动联动网站基础信息；票号由系统为每位游客自动生成。</p>')+
-   '</div>');
+   '</div>'));
  inspector.querySelectorAll('[data-entry-field]').forEach(input=>{
    const key=input.dataset.entryField;
    input.addEventListener('change',e=>{
@@ -795,6 +799,9 @@ function openEntryAnimationInspector(){
      send({type:'OE_PREVIEW_ENTRY',state,play:false});
    });
  });
+ inspector.querySelectorAll('[data-hero-image]').forEach(btn=>btn.addEventListener('click',()=>{
+   const input=$('#imageInput');input.dataset.path=btn.dataset.heroImage;input.click();
+ }));
  inspector.querySelector('[data-entry-image]')?.addEventListener('click',()=>{
   const input=$('#imageInput');
   if(splashMode){input.dataset.path='heroImage';input.click();return}
@@ -1201,7 +1208,7 @@ const collectionMeta={
  schedule:{title:'活动日程',fields:[['day','日期 / DAY'],['time','开始时间'],['endTime','结束时间'],['title','活动名称'],['stage','地点区域'],['detail','活动简介'],['registrationUrl','报名 / 外部链接']]},
  guide:{title:'指南内容',fields:[['title','标题'],['label','英文小标题'],['text','说明']]},
  guests:{title:'嘉宾',fields:[['name','姓名 / 团体名称'],['role','身份 / 类型标签'],['members','成员（可选）'],['attendanceNote','出席说明（可选）'],['works','代表作 / 主要内容'],['intro','介绍']]},
- booths:{title:'摊位',fields:[['no','摊位号'],['name','社团名'],['type','分类'],['intro','简介']]},
+ booths:{title:'摊位',fields:[['no','摊位号'],['street','街道'],['name','社团名'],['type','分类'],['intro','简介']]},
  updates:{title:'重要更新',fields:[['date','日期'],['title','更新内容']]},socialLinks:{title:'社群入口',fields:[['label','名称'],['note','说明'],['url','链接']]},sponsors:{title:'赞助支持',fields:[['name','名称'],['level','级别'],['url','链接']]}
 };
 function uid(prefix){return prefix+Math.random().toString(36).slice(2,8)}

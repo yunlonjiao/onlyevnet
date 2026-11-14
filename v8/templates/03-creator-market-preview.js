@@ -419,6 +419,30 @@ const layoutStyle=`
  .cm-site .loader .entry-photo{background-size:cover!important;background-repeat:no-repeat!important;background-color:#0b0f16!important}
  .cm-site .loader .entry-photo::after{background:linear-gradient(180deg,rgba(8,12,20,.02),rgba(8,12,20,.85))}
  .cm-site .loader .cm-entry-info{display:none!important}
+/* 开屏：真正的全屏铺满（去掉核心的 24px 内边距与卡片宽度限制） */
+.cm-site .loader.cm-entry{padding:0!important}
+.cm-site .loader .cm-entry-gate{width:100%!important;height:100%!important;max-width:none!important;position:fixed!important;inset:0!important}
+.cm-site .loader .entry-photo{aspect-ratio:auto!important;border:0!important;border-radius:0!important;background-size:cover!important;background-position:center!important}
+/* banner 上不要出现活动名 */
+.cm-site .hero .cm-kv-fallback{display:none!important}
+/* 购票按钮：只有拿到真实链接才显示 */
+.cm-site .nav .wrap>.btn{display:inline-flex}
+.cm-site .nav .wrap>.btn[href="#"],.cm-site .nav .wrap>.btn:not([href]){display:none}
+/* 入场票：礼品图收小、多行文案保留换行 */
+.cm-site #tickets .ticket-gift-image img{max-width:72px;max-height:72px;border-radius:10px}
+.cm-site #tickets .gift,.cm-site #tickets .gift span,.cm-site #tickets small{white-space:pre-line}
+/* 推荐制品：卡片结构统一，图片区固定比例，文字不抖 */
+.cm-site .cm-tile{height:100%}
+.cm-site .cm-tile-art{aspect-ratio:auto;min-height:0;flex:1 1 auto}
+.cm-site .cm-tile-ph{width:100%;height:100%;display:grid;place-items:center;font-size:12px;letter-spacing:.08em;border-radius:0}
+.cm-site .cm-tile b{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.cm-site .cm-tile small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 街道卡：按常规街道宣传图比例固定 */
+.cm-site .cm-street-card{height:auto;aspect-ratio:4/3;max-width:none}
+.cm-site .cm-market-grid{align-items:start}
+.cm-site .cm-market-right{aspect-ratio:2/1!important;height:auto!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;grid-auto-rows:minmax(0,1fr)!important}
+/* 摊位卡上的街道名：小号、靠上 */
+.cm-site .cm-booth-street{display:block;font-size:12px;font-weight:800;color:var(--cm-accent);letter-spacing:.02em;margin:0 0 2px}
  .cm-site .loader .skip{top:14px;right:14px;bottom:auto;left:auto;padding:8px 14px;font-size:12px;border:0;background:#00000059;color:#fff;backdrop-filter:blur(6px)}
  .cm-site .nav .links{justify-content:flex-start;margin-left:0}
  .cm-site .hero .hero-art{aspect-ratio:16/9;min-height:180px}
@@ -465,7 +489,36 @@ const orderStyle=`
  .cm-site #spotlight,.cm-site #updates,.cm-site #tickets,.cm-site #community,.cm-site #map-home,.cm-site #sponsors{width:100%}
 }
 `;
-export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle;
+const finalFixStyle=`
+.cm-site .cm-market-grid{align-items:stretch}
+.cm-site .cm-market-left,.cm-site .cm-market-right{height:clamp(240px,21vw,340px)!important}
+.cm-site .cm-market-right{aspect-ratio:auto!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;grid-auto-rows:minmax(0,1fr)!important}
+.cm-site .cm-street-card{aspect-ratio:auto!important;height:clamp(240px,21vw,340px)!important;box-sizing:border-box!important}
+@media(max-width:900px){.cm-site .cm-market-left,.cm-site .cm-market-right{height:auto!important}}
+/* 最终覆盖：开屏铺满、banner 无字、购票按钮、票内礼品图、制品格、街道卡比例 */
+.cm-site .loader.cm-entry{padding:0!important}
+.cm-site .loader .cm-entry-gate{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;max-width:none!important;margin:0!important}
+.cm-site .loader .entry-photo{aspect-ratio:auto!important;border:0!important;border-radius:0!important;background-size:cover!important;background-position:center!important;width:100%!important;height:100%!important;inset:0!important}
+.cm-site .hero .cm-kv-fallback{display:none!important}
+.cm-site .nav .wrap>.btn{display:inline-flex!important}
+.cm-site .nav .wrap>.btn[href="#"]{display:none!important}
+.cm-site #tickets .ticket-gift-image img{max-width:72px!important;max-height:72px!important;border-radius:10px}
+.cm-site #tickets .gift,.cm-site #tickets .gift span{white-space:pre-line}
+.cm-site .cm-tile-art{aspect-ratio:1/1;min-height:0;flex:0 0 auto}
+.cm-site .cm-tile b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.cm-site .cm-street-card{aspect-ratio:4/3!important;height:auto!important;max-height:none!important}
+.cm-site .cm-market-right{height:100%}
+.cm-site .cm-booth-street{display:block;font-size:12px;font-weight:800;color:var(--cm-accent);margin:0 0 2px}
+`;
+const lastFixStyle=`
+.cm-site .cm-market-grid{align-items:stretch}
+.cm-site .cm-street-card{aspect-ratio:auto!important;height:clamp(240px,21vw,340px)!important;box-sizing:border-box!important;width:100%!important}
+.cm-site .cm-market-right{aspect-ratio:auto!important;height:clamp(240px,21vw,340px)!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;grid-auto-rows:minmax(0,1fr)!important}
+.cm-site .cm-tile{min-height:0}
+.cm-site .cm-tile-art{flex:1 1 auto;min-height:0;aspect-ratio:auto}
+@media(max-width:900px){.cm-site .cm-street-card,.cm-site .cm-market-right{height:auto!important}}
+`;
+export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+finalFixStyle+lastFixStyle;
 
 const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="cm-splash-bars" aria-hidden="true"><i></i><i></i><i></i></div><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 

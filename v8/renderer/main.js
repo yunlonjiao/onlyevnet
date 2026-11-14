@@ -167,7 +167,9 @@ function applyEntryState(){
     const custom=String(a.image||'').trim();
     const linked=String(state.heroImage||'').trim();
     const src=(a.imageMode==='custom'&&custom)?custom:linked||custom;
-    photo.style.backgroundImage=src?'url("'+src.replace(/"/g,'%22')+'")':'';
+    const mobileSrc=String(state.mobileHeroImage||'').trim();
+    const splashSrc=(mobileSrc&&typeof matchMedia==='function'&&matchMedia('(max-width:560px)').matches)?mobileSrc:src;
+    photo.style.backgroundImage=splashSrc?'url("'+splashSrc.replace(/"/g,'%22')+'")':'';
     photo.classList.toggle('empty',!src);
   }
   set('.entry-ticket-label',state.templateId==='02-scrapbook'?'A NEW JOURNEY BEGINS':String(a.labelText||'MEMORIAL TICKET'));

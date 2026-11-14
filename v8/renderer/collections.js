@@ -614,7 +614,9 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       const street=String(card.dataset.street||'')||String(new Map((state.booths||[]).map(b=>[String(b.id),String(b.street||'')])).get(String(card.dataset.boothId))||'');
       if(!street)return;
       const tag=document.createElement('span');tag.className='cm-booth-street';tag.textContent=street;
-      (card.querySelector('.booth-card-head')||card).appendChild(tag);
+      const no=card.querySelector('[data-oe-field$=".no"]');
+      if(no&&no.parentElement){no.parentElement.insertBefore(tag,no);}
+      else{(card.querySelector('.booth-card-head')||card).prepend(tag);}
     });
     if(window.__oeStreetBound!=='1'){
       window.__oeStreetBound='1';
