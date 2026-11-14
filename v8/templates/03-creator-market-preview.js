@@ -673,6 +673,16 @@ const overrideStyle=`
 .cm-site .cm-market-right{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 .cm-site .cm-market-right .cm-tile:nth-child(n+4){display:flex!important}
 }
+
+/* 手机端标题带：四颗胶囊同高同圆角，横向可滑 */
+@media(max-width:720px){
+ .cm-site .cm-headline .meta{align-items:center!important;gap:5px!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden;padding:2px 2px 4px!important;scrollbar-width:none}
+ .cm-site .cm-headline .meta::-webkit-scrollbar{display:none}
+ .cm-site .cm-headline .meta .pill,.cm-site .cm-headline .meta .cm-status{box-sizing:border-box!important;height:40px!important;min-height:40px!important;max-height:40px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:0 10px!important;font-size:11px!important;line-height:1!important;border-radius:999px!important;white-space:nowrap!important;flex:0 0 auto!important}
+ .cm-site .cm-headline .meta .cm-status{padding:0 10px!important}
+ .cm-site .cm-headline .meta .venue-nav{height:40px!important;min-height:40px!important;max-height:40px!important;padding:0 11px!important;max-width:44vw!important;overflow:hidden!important}
+ .cm-site .cm-headline .meta .venue-nav svg{width:14px!important;height:14px!important}
+}
 `;
 export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+overrideStyle;
 
