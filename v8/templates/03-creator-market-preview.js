@@ -1,7 +1,7 @@
 /* Template 03 · CREATOR MARKET visitor art on the shared IP ONLY core.
    Layout hooks (ids, data-oe-field, collection containers) follow Template 01 so the shared
    renderer, editor and exporter work unchanged; everything visual is scoped to .cm-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.41.4';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.74.0';
 
 const marketStyle=`
 .cm-site{--primary:#00aeec;--secondary:#a4d9f4;--cm-accent:#00aeec;--cm-accent-ink:#008ac0;--cm-ink:#18191c;--cm-muted:#61666d;--cm-soft:#9499a0;--cm-line:#e3e5e7;--cm-bg:#f7f8fa;--cm-card:#fff;background:var(--cm-bg);color:var(--cm-ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
@@ -489,7 +489,7 @@ const orderStyle=`
  .cm-site #spotlight,.cm-site #updates,.cm-site #tickets,.cm-site #community,.cm-site #map-home,.cm-site #sponsors{width:100%}
 }
 `;
-const finalFixStyle=`
+const overrideStyle=`
 .cm-site .cm-market-grid{align-items:stretch}
 .cm-site .cm-market-left,.cm-site .cm-market-right{height:clamp(240px,21vw,340px)!important}
 .cm-site .cm-market-right{aspect-ratio:auto!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;grid-auto-rows:minmax(0,1fr)!important}
@@ -509,8 +509,7 @@ const finalFixStyle=`
 .cm-site .cm-street-card{aspect-ratio:4/3!important;height:auto!important;max-height:none!important}
 .cm-site .cm-market-right{height:100%}
 .cm-site .cm-booth-street{display:block;font-size:12px;font-weight:800;color:var(--cm-accent);margin:0 0 2px}
-`;
-const lastFixStyle=`
+
 /* 首页街道卡：与街道海报同比例（竖版），右边的制品格跟着同一高度 */
 .cm-site .cm-street-card{aspect-ratio:1/1.414!important;height:auto!important}
 .cm-site .cm-market-left,.cm-site .cm-market-right{height:auto!important}
@@ -553,8 +552,7 @@ const lastFixStyle=`
 .cm-site .cm-tile{min-height:0}
 .cm-site .cm-tile-art{flex:1 1 auto;min-height:0;aspect-ratio:auto}
 @media(max-width:900px){.cm-site .cm-street-card,.cm-site .cm-market-right{height:auto!important}}
-`;
-const final2Style=`
+
 .cm-site .cm-transit{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;align-items:start}
 .cm-site .cm-transit-map{aspect-ratio:16/10;border:1px solid var(--cm-line);border-radius:12px;background:#f2f4f6 center/cover no-repeat}
 .cm-site .cm-transit-text .guide-detail-content{display:grid;gap:12px}
@@ -583,8 +581,7 @@ const final2Style=`
 .cm-site .cm-street-card{aspect-ratio:1/1.414!important;height:auto!important;width:100%!important}
 .cm-site .cm-market-left{height:auto!important}
 .cm-site .cm-market-right{height:auto!important;aspect-ratio:auto!important;grid-template-rows:repeat(2,minmax(0,1fr))!important}
-`;
-const final3Style=`
+
 /* 街道卡：图片就是全部内容；无图时只显示街道名与社团数 */
 .cm-site .cm-street-card{position:relative!important;display:block!important;overflow:hidden!important}
 .cm-site .cm-street-card .cm-street-name{position:absolute!important;left:16px!important;bottom:14px!important;right:16px!important;color:#fff!important;font-size:20px!important;line-height:1.25!important;font-weight:900!important;text-shadow:0 2px 10px #0007;margin:0!important}
@@ -592,50 +589,7 @@ const final3Style=`
 /* 制品卡：只留名字，文字不被压扁 */
 .cm-site .cm-tile b{height:auto!important;max-height:none!important;line-height:1.4!important;padding:9px 10px 11px!important;display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
 .cm-site .cm-tile small{display:none!important}
-`;
-const final5Style=`
-/* 交通到达：文字在左、图片在右；卡片里重复的标题去掉 */
-@media(min-width:901px){.cm-site .cm-transit{grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr)!important;gap:20px!important}}
-.cm-site .cm-transit-text{order:1!important}
-.cm-site .cm-transit-map{order:2!important}
-.cm-site .cm-transit-text .cm-guide-body h3{display:none!important}
-/* 手机端：板块之间留白、标题带不横向溢出 */
-@media(max-width:900px){
- .cm-site .cm-cols{display:flex!important;flex-direction:column!important;gap:16px!important}
- .cm-site .cm-headline .meta{max-width:100%!important;overflow-x:auto!important;padding:0 2px}
-}
-@media(max-width:720px){
- .cm-site .cm-headline p{display:block!important;font-size:13px!important;line-height:1.5!important}
- .cm-site .cm-headline .wrap{gap:6px!important}
- .cm-site .cm-market-grid.no-street{grid-template-columns:1fr!important}
-}
-`;
-const final7Style=`
-@media(max-width:720px){
-.cm-site .cm-street-banners{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-.cm-site .cm-market-right{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-.cm-site .cm-market-right .cm-tile:nth-child(n+4){display:flex!important}
-}
-`;
-const final6Style=`
-/* 手机端：街道 2 张并排、制品 2 个一行 */
-@media(max-width:720px){
- .cm-site .cm-street-banners{grid-template-columns:repeat(2,minmax(0,1fr))!important}
- .cm-site .cm-market-right{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-}
-.cm-site{overflow-x:hidden}
-.cm-site .cm-market-left{display:grid!important;gap:12px!important;align-content:start}
-.cm-site .cm-market-left .cm-street-card.secondary{display:none!important}
-@media(max-width:900px){
- .cm-site .cm-market-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
- .cm-site .cm-market-left{grid-column:1/-1!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
- .cm-site .cm-market-left .cm-street-card.secondary{display:block!important}
- .cm-site .cm-market-right{grid-column:1/-1!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
- .cm-site .cm-tile-art{aspect-ratio:1.1/1!important;flex:0 0 auto!important}
- .cm-site .cm-headline .meta .pill{font-size:11px!important;padding:5px 8px!important}
-}
-`;
-const final4Style=`
+
 /* 手机端制品名最多两行，别截成一个字 */
 @media(max-width:720px){
  .cm-site .cm-tile b{white-space:normal!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;overflow:hidden!important;height:auto!important;min-height:2.6em}
@@ -680,8 +634,47 @@ const final4Style=`
  .cm-site #community{order:7!important}
  .cm-site #sponsors{order:8!important}
 }
+
+/* 交通到达：文字在左、图片在右；卡片里重复的标题去掉 */
+@media(min-width:901px){.cm-site .cm-transit{grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr)!important;gap:20px!important}}
+.cm-site .cm-transit-text{order:1!important}
+.cm-site .cm-transit-map{order:2!important}
+.cm-site .cm-transit-text .cm-guide-body h3{display:none!important}
+/* 手机端：板块之间留白、标题带不横向溢出 */
+@media(max-width:900px){
+ .cm-site .cm-cols{display:flex!important;flex-direction:column!important;gap:16px!important}
+ .cm-site .cm-headline .meta{max-width:100%!important;overflow-x:auto!important;padding:0 2px}
+}
+@media(max-width:720px){
+ .cm-site .cm-headline p{display:block!important;font-size:13px!important;line-height:1.5!important}
+ .cm-site .cm-headline .wrap{gap:6px!important}
+ .cm-site .cm-market-grid.no-street{grid-template-columns:1fr!important}
+}
+
+/* 手机端：街道 2 张并排、制品 2 个一行 */
+@media(max-width:720px){
+ .cm-site .cm-street-banners{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .cm-site .cm-market-right{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+.cm-site{overflow-x:hidden}
+.cm-site .cm-market-left{display:grid!important;gap:12px!important;align-content:start}
+.cm-site .cm-market-left .cm-street-card.secondary{display:none!important}
+@media(max-width:900px){
+ .cm-site .cm-market-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+ .cm-site .cm-market-left{grid-column:1/-1!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .cm-site .cm-market-left .cm-street-card.secondary{display:block!important}
+ .cm-site .cm-market-right{grid-column:1/-1!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .cm-site .cm-tile-art{aspect-ratio:1.1/1!important;flex:0 0 auto!important}
+ .cm-site .cm-headline .meta .pill{font-size:11px!important;padding:5px 8px!important}
+}
+
+@media(max-width:720px){
+.cm-site .cm-street-banners{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.cm-site .cm-market-right{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.cm-site .cm-market-right .cm-tile:nth-child(n+4){display:flex!important}
+}
 `;
-export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+finalFixStyle+lastFixStyle+final2Style+final3Style+final4Style+final5Style+final6Style+final7Style;
+export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+overrideStyle;
 
 const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="cm-splash-bars" aria-hidden="true"><i></i><i></i><i></i></div><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 

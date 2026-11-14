@@ -1,14 +1,14 @@
-export {listEventTypes,getEventType,getEventTypeForTemplate} from '/v8/templates/event-type-contract.js?v=8.40.94';
-import {validateIpOnlyTemplateDefinition} from '/v8/templates/ip-only-core-contract.js?v=8.38.3';
-import {template01} from '/v8/templates/01-ip-only.js?v=8.41.5';
-import {template02} from '/v8/templates/02-scrapbook.js?v=8.41.4';
+export {listEventTypes,getEventType,getEventTypeForTemplate} from '/v8/templates/event-type-contract.js?v=8.74.0';
+import {validateIpOnlyTemplateDefinition} from '/v8/templates/ip-only-core-contract.js?v=8.74.0';
+import {template01} from '/v8/templates/01-ip-only.js?v=8.74.0';
+import {template02} from '/v8/templates/02-scrapbook.js?v=8.74.0';
 
-import {template03} from '/v8/templates/03-creator-market.js?v=8.73.0';
-import {template04} from '/v8/templates/04-creator-catalogue.js?v=8.43.0';
-import {template05} from '/v8/templates/05-live-poster.js?v=8.51.0';
-import {template06} from '/v8/templates/06-band-live.js?v=8.51.0';
-import {template07} from '/v8/templates/07-tea-party.js?v=8.51.0';
-import {template08} from '/v8/templates/08-birthday.js?v=8.51.0';
+import {template03} from '/v8/templates/03-creator-market.js?v=8.74.0';
+import {template04} from '/v8/templates/04-creator-catalogue.js?v=8.74.0';
+import {template05} from '/v8/templates/05-live-poster.js?v=8.74.0';
+import {template06} from '/v8/templates/06-band-live.js?v=8.74.0';
+import {template07} from '/v8/templates/07-tea-party.js?v=8.74.0';
+import {template08} from '/v8/templates/08-birthday.js?v=8.74.0';
 
 export const DEFAULT_TEMPLATE_ID='01-ip-only';
 

@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.37.2';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.74.0';
 /* Template 06 runs on the shared IP ONLY core; the invitation-card art and the activity-first home differ. */
 export const template07=makeIpOnlyTemplate({
  id:'07-tea-party',name:'07 · 茶会小聚',label:'茶会小聚',studioName:'茶会小聚',

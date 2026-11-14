@@ -1,7 +1,7 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.41.4';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.74.0';
 
 const catalogueStyle=`
 .cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:#c8432b;--cc-lilac:#c9b99a;--cc-cyan:#7fe3ff;--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
