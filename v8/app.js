@@ -746,79 +746,15 @@ function syncCanvasSelection(path){
  if(hit){syncStudioPageUI(hit[1],{openContent:false});setPageContentActive({collection:hit[2]})}
 }
 function openEntryAnimationInspector(){
- const a=state.entryAnimation||{};
- const linkedImage=String(state.heroImage||'').trim();
- const customImage=String(a.image||'').trim();
- const splashMode=true;
- const imageSrc=splashMode?(linkedImage||customImage):((a.imageMode==='custom'&&customImage)?customImage:linkedImage||customImage);
- const row=(key,label,value,placeholder,showKey,shown=true)=>
-   '<div class="entry-field-row">'+
-   '<label class="toggle-field"><span>'+label+'</span><input type="checkbox" data-entry-field="'+showKey+'" '+(shown?'checked':'')+'></label>'+
-   '<input data-entry-field="'+key+'" value="'+esc(value||'')+'" placeholder="'+esc(placeholder||'')+'">'+
-   '</div>';
- const heroMedia=(key,label)=>{const v=String(((state.entryAnimation||{})[key])||'').trim();return '<div class="item-media"><span>'+label+'</span><div class="item-media-row">'+(v?'<img src="'+esc(v)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-kv-image="'+key+'">选择 / 裁剪</button></div></div></div>';};
- setInspector('入场动画',splashMode?'开屏设置':'纪念票设置',
-  splashMode
-   ? '<div class="entry-animation-inspector">'+heroMedia('kvDesktop','桌面 KV')+heroMedia('kvMobile','手机 KV（可选，留空用桌面 KV）')+'<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button></div><p class="inspector-note">开屏动画单独使用这两张图，与首页横幅互不影响；手机 KV 留空时沿用桌面 KV。</p></div>'
-   : (
-   '<div class="entry-animation-inspector">'+
-   '<div class="item-fields">'+
-   '<label class="toggle-field"><span>启用入场动画</span><input type="checkbox" data-entry-field="enabled" '+(a.enabled!==false?'checked':'')+'></label>'+
-   (splashMode?'':'<label><span>左侧 KV</span><select data-entry-field="imageMode"><option value="linked" '+(a.imageMode!=='custom'?'selected':'')+'>联动首页 KV</option><option value="custom" '+(a.imageMode==='custom'?'selected':'')+'>单独上传</option></select></label>')+
-   '</div>'+
-   '<div class="item-media"><span>'+(splashMode?'开屏主视觉':'票根 KV')+'</span><div class="item-media-row">'+
-   (imageSrc?'<img src="'+esc(imageSrc)+'" alt="">':'<div class="item-media-empty">＋</div>')+
-   '<div><button type="button" data-entry-image>选择 / 裁剪</button>'+
-   (!splashMode&&customImage?'<button type="button" class="ghost" data-entry-image-remove>移除单独 KV</button>':'')+
-   '</div></div></div>'+
-   '<div class="item-fields">'+
-   (splashMode?'':row('labelText','顶部标签',a.labelText||'MEMORIAL TICKET','MEMORIAL TICKET','showLabel',a.showLabel!==false))+
-   row('titleText','活动名',a.titleText||'','留空则联动：'+(state.eventName||'活动名称'),'showTitle',a.showTitle!==false)+
-   row('subtitleText','副标题',a.subtitleText||'','可选副标题','showSubtitle',a.showSubtitle===true)+
-   row('dateText','日期',a.dateText||'','留空则联动：'+(state.date||'活动日期'),'showDate',a.showDate!==false)+
-   row('timeText','时间',a.timeText||'','例如 10:30 - 17:00','showTime',a.showTime===true)+
-   row('locationText','地点',a.locationText||'','留空则联动：'+(state.location||'活动地点'),'showLocation',a.showLocation!==false)+
-   (splashMode?'':'<label class="toggle-field"><span>显示条形码</span><input type="checkbox" data-entry-field="showBarcode" '+(a.showBarcode!==false?'checked':'')+'></label>')+
-   (splashMode?'':'<div class="entry-field-row"><label class="toggle-field"><span>显示随机票号</span><input type="checkbox" data-entry-field="showTicketNumber" '+(a.showTicketNumber!==false?'checked':'')+'></label><input data-entry-field="ticketPrefix" value="'+esc(a.ticketPrefix||'NO.')+'" placeholder="NO."></div>')+
-   '</div>'+
-   '<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button><button type="button" id="resetEntryAnimation">恢复模板默认</button></div>'+
-   (splashMode?'<p class="inspector-note">主视觉留空时联动首页 KV；活动名、日期、地点留空时自动联动网站基础信息。</p>':'<p class="inspector-note">所有右侧信息都可单独显示/隐藏。活动名、日期、地点留空时自动联动网站基础信息；票号由系统为每位游客自动生成。</p>')+
-   '</div>'));
- inspector.querySelectorAll('[data-kv-image]').forEach(btn=>btn.addEventListener('click',()=>{
-   const input=$('#imageInput');input.dataset.path='entryAnimation.'+btn.dataset.kvImage;input.click();
- }));
- inspector.querySelectorAll('[data-entry-field]').forEach(input=>{
-   const key=input.dataset.entryField;
-   input.addEventListener('change',e=>{
-     checkpoint();
-     const value=e.target.type==='checkbox'?e.target.checked:e.target.value;
-     state.entryAnimation??={};state.entryAnimation[key]=value;save();
-     send({type:'OE_REPLACE_STATE',state});
-     send({type:'OE_PREVIEW_ENTRY',state,play:false});
-     if(key==='imageMode')openEntryAnimationInspector();
-   });
-   if(input.type!=='checkbox'&&input.tagName!=='SELECT'&&input.type!=='color')input.addEventListener('input',e=>{
-     state.entryAnimation??={};state.entryAnimation[key]=e.target.value;save();
-     send({type:'OE_REPLACE_STATE',state});
-     send({type:'OE_PREVIEW_ENTRY',state,play:false});
-   });
- });
- inspector.querySelector('[data-entry-image]')?.addEventListener('click',()=>{
-  const input=$('#imageInput');
-  if(splashMode){input.dataset.path='heroImage';input.click();return}
-   state.entryAnimation.imageMode='custom';save();
-  input.dataset.path='entryAnimation.image';input.click();
- });
- inspector.querySelector('[data-entry-image-remove]')?.addEventListener('click',()=>{
-   checkpoint();state.entryAnimation.image='';state.entryAnimation.imageMode='linked';save();
-   send({type:'OE_REPLACE_STATE',state});send({type:'OE_PREVIEW_ENTRY',state,play:false});openEntryAnimationInspector();
- });
- $('#previewEntryAnimation')?.addEventListener('click',()=>send({type:'OE_PREVIEW_ENTRY',state,play:true}));
- $('#resetEntryAnimation')?.addEventListener('click',()=>{
-   checkpoint();
-   state.entryAnimation={enabled:true,imageMode:'linked',image:'',showLabel:true,labelText:'MEMORIAL TICKET',showTitle:true,titleText:'',showSubtitle:false,subtitleText:'',showDate:true,dateText:'',showTime:false,timeText:'',showLocation:true,locationText:'',showBarcode:true,showTicketNumber:true,ticketPrefix:'NO.',showSkip:true,duration:1800};
-   save();send({type:'OE_REPLACE_STATE',state});send({type:'OE_PREVIEW_ENTRY',state,play:false});openEntryAnimationInspector();
- });
+  const heroMedia=(key,label)=>{const v=String(((state.entryAnimation||{})[key])||'').trim();return '<div class="item-media"><span>'+label+'</span><div class="item-media-row">'+(v?'<img src="'+esc(v)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-kv-image="'+key+'">选择 / 裁剪</button></div></div></div>';};
+  setInspector('入场动画','开屏设置',
+    '<div class="entry-animation-inspector">'+heroMedia('kvDesktop','桌面 KV')+heroMedia('kvMobile','手机 KV（可选，留空用桌面 KV）')+
+    '<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button></div>'+
+    '<p class="inspector-note">开屏动画单独使用这两张图，与首页横幅互不影响；手机 KV 留空时沿用桌面 KV。</p></div>');
+  inspector.querySelectorAll('[data-kv-image]').forEach(btn=>btn.addEventListener('click',()=>{
+    const input=$('#imageInput');input.dataset.path='entryAnimation.'+btn.dataset.kvImage;input.click();
+  }));
+  $('#previewEntryAnimation')?.addEventListener('click',()=>send({type:'OE_PREVIEW_ENTRY',state,play:true}));
 }
 function openTrafficInspector(){
   const img=String(state.venueMap?.transitImage||'');
@@ -975,23 +911,6 @@ function openCollectionManager(collection,selectedIndex=-1){
  panel.querySelector('[data-sidebar-content-search]')?.addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();panel.querySelectorAll('[data-open-item]').forEach(row=>row.hidden=!!q&&!String(row.dataset.search||'').includes(q))});
 }
 
-function openGuideInspector(){
- const items=state.guide?.items||[];
- const max=Math.min(items.length,4);
- const count=Math.max(0,Math.min(max,Number(state.guide?.homeCount??2)));
- setInspector('页面设置','观展指南','<div class="inspector-section-head"><div><h3>首页摘要</h3><small>控制首页显示数量</small></div><b id="guideCountReadout">'+count+' 项</b></div>'+
-   '<div class="segmented-count" id="guideCountSegments">'+
-   Array.from({length:max+1},(_,i)=>'<button type="button" data-count="'+i+'" class="'+(i===count?'active':'')+'" aria-pressed="'+(i===count)+'">'+i+'</button>').join('')+
-   '</div><p class="inspector-note">完整内容保留在「观展指南」页面。</p>');
- $('#guideCountSegments').addEventListener('click',e=>{
-   const b=e.target.closest('[data-count]');if(!b)return;
-   const next=Number(b.dataset.count);if(next===Number(state.guide.homeCount??2))return;
-   checkpoint();state.guide.homeCount=next;save();
-   document.querySelectorAll('#guideCountSegments [data-count]').forEach(x=>{const on=Number(x.dataset.count)===next;x.classList.toggle('active',on);x.setAttribute('aria-pressed',String(on))});
-   $('#guideCountReadout').textContent=next+' 项';
-   send({type:'OE_REPLACE_STATE',state});
- });
-}
 function syncModuleControls(){
  const guestPageRow=document.querySelector('[data-page-row="guests"]');
  if(guestPageRow)guestPageRow.style.display=state.templateId==='02-scrapbook'?'none':'';
@@ -1306,23 +1225,6 @@ function collectionPath(collection,index,key){
  if(collection==='guide')return 'guide.items.'+index+'.'+key;
  if(collection==='explore')return 'venueMap.links.'+index+'.'+key;
  return collection+'.'+index+'.'+key;
-}
-function optionsHtml(items,value,labelFn=x=>x.label||x.name||x.id){
- return '<option value="">未关联</option>'+items.map(x=>'<option value="'+esc(x.id)+'" '+(x.id===value?'selected':'')+'>'+esc(labelFn(x))+'</option>').join('');
-}
-function exploreDetailOptions(page,itemType='page',itemId=''){
- const selected=(type,id)=>type===itemType&&String(id||'')===String(itemId||'')?' selected':'';
- let out='<option value="page:"'+selected('page','')+'>页面顶部</option>';
- if(page==='booths')out+=(state.booths||[]).map(x=>'<option value="booth:'+esc(x.id)+'"'+selected('booth',x.id)+'>'+esc((x.no?x.no+' · ':'')+(x.name||'摊位'))+'</option>').join('');
- if(page==='activities'){
-   out+=(state.participation||[]).map(x=>'<option value="participation:'+esc(x.id)+'"'+selected('participation',x.id)+'>企划 · '+esc(x.title||'活动')+'</option>').join('');
-   out+=(state.schedule||[]).map(x=>'<option value="schedule:'+esc(x.id)+'"'+selected('schedule',x.id)+'>日程 · '+esc((x.time?x.time+' ':'')+(x.title||'活动'))+'</option>').join('');
- }
- if(page==='guests')out+=(state.guests||[]).map(x=>'<option value="guest:'+esc(x.id)+'"'+selected('guest',x.id)+'>'+esc(x.name||'嘉宾')+'</option>').join('');
- if(page==='guide')out+=(state.guide?.items||[]).map(x=>'<option value="guide:'+esc(x.id)+'"'+selected('guide',x.id)+'>'+esc(x.title||'指南')+'</option>').join('');
- const custom=customPageByKey(page);
- if(custom)out+=(custom.items||[]).map(x=>'<option value="customitem:'+esc(x.id)+'"'+selected('customitem',x.id)+'>'+esc(x.title||'展示内容')+'</option>').join('');
- return out;
 }
 function extraInspector(collection,index,item){
  if(collection==='featuredActivities'){
