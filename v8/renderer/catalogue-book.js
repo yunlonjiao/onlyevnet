@@ -1,5 +1,5 @@
 /* Shared "web catalogue" (電子場刊): a page-flip pamphlet built from the shared core data —
-   cover, contents, greeting & rules, venue maps, circle cuts, works and a stamp-rally back cover.
+   cover, contents, rules, venue maps, circle cuts, works and a stamp-rally back cover.
    Enabled per template with presentationProfile.catalogueBook. mountCatalogueBook is
    self-contained because the exporter inlines it via toString(). */
 export function catalogueBookData(state){
@@ -36,14 +36,13 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const head=(jp,zh)=>'<header class="cb-page-head"><small>'+jp+'</small><b>'+zh+'</b></header>';
   const pages=[];
   pages.push({kind:'cover',html:'<div class="cb-cover'+(data.cover?' has-art':'')+'"'+(data.editable?' data-oe-image="heroImage"':'')+(data.cover?' style="background-image:url(&quot;'+esc(data.cover)+'&quot;)"':'')+'><span class="cb-cover-badge">WEB CATALOGUE</span><span class="cb-cover-vol">电子场刊 VOL.01</span><h3>'+esc(data.eventName||'STARDUST ONLY')+'</h3><p>'+esc([data.date,data.location].filter(Boolean).join(' · '))+'</p><i class="cb-cover-star">✦</i></div>'});
-  const sections=[['greeting','GREETING','主办致辞'],...(data.news.length?[['news','NEWS','最新公告']]:[]),...(data.tickets.length?[['tickets','ADMISSION','入场票']]:[]),['venue','VENUE MAP','场地图'],...(data.circles.length?[['circles','CIRCLE LIST','参展社团']]:[]),...(data.works.length?[['works','NEW WORKS','新刊与制品']]:[]),...(data.traffic?[['traffic','ACCESS','交通到达']]:[]),...(data.rules.length?[['rules','RULES','入场与须知']]:[]),...(data.social.length?[['community','COMMUNITY','社群']]:[]),...(data.sponsors.length?[['sponsors','SPONSORS','合作伙伴']]:[]),['rally','STAMP RALLY','打卡页']];
-  const sectionCount=sections.filter(([k])=>k==='greeting'||k==='venue'||k==='rally'||(k==='news'&&data.news.length)||(k==='tickets'&&data.tickets.length)||(k==='circles'&&data.circles.length)||(k==='works'&&data.works.length)||(k==='traffic'&&data.traffic)||(k==='rules'&&data.rules.length)||(k==='community'&&data.social.length)||(k==='sponsors'&&data.sponsors.length)).length;
+  const sections=[...(data.news.length?[['news','NEWS','最新公告']]:[]),...(data.tickets.length?[['tickets','ADMISSION','入场票']]:[]),['venue','VENUE MAP','场地图'],...(data.circles.length?[['circles','CIRCLE LIST','参展社团']]:[]),...(data.works.length?[['works','NEW WORKS','新刊与制品']]:[]),...(data.traffic?[['traffic','ACCESS','交通到达']]:[]),...(data.rules.length?[['rules','RULES','入场与须知']]:[]),...(data.social.length?[['community','COMMUNITY','社群']]:[]),...(data.sponsors.length?[['sponsors','SPONSORS','合作伙伴']]:[]),['rally','STAMP RALLY','打卡页']];
+  const sectionCount=sections.filter(([k])=>k==='venue'||k==='rally'||(k==='news'&&data.news.length)||(k==='tickets'&&data.tickets.length)||(k==='circles'&&data.circles.length)||(k==='works'&&data.works.length)||(k==='traffic'&&data.traffic)||(k==='rules'&&data.rules.length)||(k==='community'&&data.social.length)||(k==='sponsors'&&data.sponsors.length)).length;
   const contentsPages=Math.max(1,Math.ceil(sectionCount/6));
   const contentsAt=pages.length;
   for(let i=0;i<contentsPages;i++)pages.push({kind:'contents',html:''});
   const starts={};
-  starts.greeting=pages.length;
-  pages.push({kind:'greeting',html:head('GREETING','主办致辞')+'<div class="cb-bubble"><span class="cb-avatar">✿</span><p>'+esc(data.tagline||'欢迎来到本次活动！请在场刊里找到想去的社团。')+'</p></div>'+'<div class="cb-greet-note">翻开目录，按页找到你想去的社团与制品。</div>'});
+
   const attr=(kind,i)=>' data-oe-item="'+kind+'" data-oe-index="'+i+'"';
   const pageTargets=t=>t==='booths'||t==='guide'||t.startsWith('custom-');
   if(data.news.length){starts.news=pages.length;chunk(data.news,5).forEach((group,gi)=>pages.push({kind:'news',html:head('NEWS','最新公告')+'<ol class="cb-news">'+group.map((u,k)=>{
@@ -77,7 +76,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
     else{pg.h=h;packed.push(pg)}
   });
   pages.length=0;packed.forEach(pg=>pages.push(pg));
-  const secOf={greeting:'greeting',news:'news',tickets:'tickets',map:'venue',circles:'circles',works:'works',traffic:'traffic',rules:'rules',community:'community',sponsors:'sponsors',rally:'rally'};
+  const secOf={news:'news',tickets:'tickets',map:'venue',circles:'circles',works:'works',traffic:'traffic',rules:'rules',community:'community',sponsors:'sponsors',rally:'rally'};
   Object.keys(starts).forEach(k=>delete starts[k]);
   pages.forEach((pg,i)=>pg.kinds.forEach(k=>{if(secOf[k]&&starts[secOf[k]]===undefined)starts[secOf[k]]=i}));
   if(pages.length%2)pages.splice(pages.length-1,0,{kind:'memo',html:head('MEMO','我的备忘')+'<div class="cb-memo">'+fld('bookMemo',data.memo||'','div')+'</div>'});
@@ -176,11 +175,11 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
     return out;
   }
   function rebuildContents(list){
-    const kindMap={greeting:"greeting",news:"news",tickets:"tickets",map:"venue",circles:"circles",works:"works",traffic:"traffic",rules:"rules",community:"community",sponsors:"sponsors",rally:"rally"};
+    const kindMap={news:"news",tickets:"tickets",map:"venue",circles:"circles",works:"works",traffic:"traffic",rules:"rules",community:"community",sponsors:"sponsors",rally:"rally"};
     const starts={};
     list.forEach((pg,i)=>(pg.kinds||[pg.kind]).forEach(k=>{const s=kindMap[k];if(s&&starts[s]===undefined)starts[s]=i}));
-    const labels={greeting:["GREETING","主办致辞"],news:["NEWS","最新公告"],tickets:["ADMISSION","入场票"],venue:["VENUE MAP","场地图"],circles:["CIRCLE LIST","参展社团"],works:["NEW WORKS","新刊与制品"],traffic:["ACCESS","交通到达"],rules:["RULES","入场与须知"],community:["COMMUNITY","社群"],sponsors:["SPONSORS","合作伙伴"],rally:["STAMP RALLY","打卡页"]};
-    const order=["greeting","news","tickets","venue","circles","works","traffic","rules","community","sponsors","rally"];
+    const labels={news:["NEWS","最新公告"],tickets:["ADMISSION","入场票"],venue:["VENUE MAP","场地图"],circles:["CIRCLE LIST","参展社团"],works:["NEW WORKS","新刊与制品"],traffic:["ACCESS","交通到达"],rules:["RULES","入场与须知"],community:["COMMUNITY","社群"],sponsors:["SPONSORS","合作伙伴"],rally:["STAMP RALLY","打卡页"]};
+    const order=["news","tickets","venue","circles","works","traffic","rules","community","sponsors","rally"];
     const items=order.filter(k=>starts[k]!==undefined).map(k=>'<li><button type="button" data-catalogue-goto="'+starts[k]+'"><span>'+labels[k][0]+'</span><b>'+labels[k][1]+'</b><i>P.'+String(starts[k]+1).padStart(2,"0")+'</i></button></li>');
     const count=Math.max(1,Math.ceil(items.length/6));
     const newPages=[];
