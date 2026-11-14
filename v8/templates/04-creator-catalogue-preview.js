@@ -1,7 +1,7 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.83.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.84.0';
 
 const catalogueStyle=`
 .cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:#c8432b;--cc-lilac:#c9b99a;--cc-cyan:#7fe3ff;--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
@@ -321,6 +321,9 @@ const paperStyle=`
 @media(max-width:760px){.cc-site .cb-book.is-closed{transform:none}.cc-site .cb-book.is-end .cb-page.left{transform:none}.cc-site .cb-ribbon{display:none}.cc-site .brand{font-size:14px}}
 `;
 const fullBookStyle=`
+/* 书本在页面里居中：把路由锚点从栅格里拿出去，否则它会占掉一半行高 */
+.cc-site #catalogue{position:relative}
+.cc-site #map-home{position:absolute!important;top:0;left:0;width:1px;height:1px;overflow:hidden;display:block!important}
 /* 04 是整屏书画：去掉 01 核心样式留在手机端的底部 dock 内边距，避免页面多出上下条 */
 body{padding-bottom:0!important;background:#e3d4b8!important}
 html{background:#e3d4b8}
