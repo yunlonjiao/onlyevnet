@@ -555,6 +555,12 @@ const lastFixStyle=`
 @media(max-width:900px){.cm-site .cm-street-card,.cm-site .cm-market-right{height:auto!important}}
 `;
 const final2Style=`
+.cm-site .cm-transit{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;align-items:start}
+.cm-site .cm-transit-map{aspect-ratio:16/10;border:1px solid var(--cm-line);border-radius:12px;background:#f2f4f6 center/cover no-repeat}
+.cm-site .cm-transit-text .guide-detail-content{display:grid;gap:12px}
+.cm-site .cm-rules .guide-detail-content{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.cm-site .cm-street-card .cm-street-name{position:absolute;left:16px;bottom:14px;color:#fff;font-weight:800;text-shadow:0 2px 8px #0009}
+@media(max-width:900px){.cm-site .cm-transit{grid-template-columns:1fr}.cm-site .cm-rules .guide-detail-content{grid-template-columns:1fr}}
 @media(max-width:720px){
  .cm-site .cm-headline .wrap{padding-top:12px!important;padding-bottom:12px!important;gap:8px!important}
  .cm-site .cm-headline h1{font-size:22px!important}
@@ -578,7 +584,16 @@ const final2Style=`
 .cm-site .cm-market-left{height:auto!important}
 .cm-site .cm-market-right{height:auto!important;aspect-ratio:auto!important;grid-template-rows:repeat(2,minmax(0,1fr))!important}
 `;
-export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+finalFixStyle+lastFixStyle+final2Style;
+const final3Style=`
+/* 街道卡：图片就是全部内容；无图时只显示街道名与社团数 */
+.cm-site .cm-street-card{position:relative!important;display:block!important;overflow:hidden!important}
+.cm-site .cm-street-card .cm-street-name{position:absolute!important;left:16px!important;bottom:14px!important;right:16px!important;color:#fff!important;font-size:20px!important;line-height:1.25!important;font-weight:900!important;text-shadow:0 2px 10px #0007;margin:0!important}
+.cm-site .cm-street-card:not(.has-image){background:linear-gradient(150deg,#00aeec,#63c2f0 55%,#bfe7ff)!important}
+/* 制品卡：只留名字，文字不被压扁 */
+.cm-site .cm-tile b{height:auto!important;max-height:none!important;line-height:1.4!important;padding:9px 10px 11px!important;display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.cm-site .cm-tile small{display:none!important}
+`;
+export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+finalFixStyle+lastFixStyle+final2Style+final3Style;
 
 const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="cm-splash-bars" aria-hidden="true"><i></i><i></i><i></i></div><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
@@ -594,7 +609,8 @@ export const previewBody=`<div class="cm-site">${loader}
 <div class="cm-cols oe-home-only"><div class="cm-feed">
 <section class="cm-spotlight oe-home-only" id="spotlight" aria-label="随机推荐制品"><div class="wrap"><div class="cm-feed-head"><h2>推荐制品</h2><button type="button" class="cm-shuffle" data-spotlight-shuffle>换一换 ↻</button></div><div class="cm-market-grid"><div class="cm-market-left" data-oe-mount="street-card"></div><div class="cm-market-right" data-oe-mount="product-tiles"></div></div></div></section>
 <section class="section oe-home-only" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="cm-map-wrap"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><div class="cm-streets" data-oe-mount="street-legend"></div></div></div></section>
-<section class="section oe-home-only" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>
+<section class="section oe-home-only" id="traffic"><div class="wrap">${head('ACCESS','交通到达')}<div class="cm-transit"><div class="cm-transit-map" id="transitMap" data-oe-image="venueMap.transitImage"></div><div class="cm-transit-text" data-oe-mount="guide-traffic"></div></div></div></section><section class="section oe-home-only" id="rules"><div class="wrap">${head('RULES','入场与规则')}<div class="cm-rules" data-oe-mount="guide-rules"></div></div></section>
+
 <section class="section" id="sponsors"><div class="wrap">${head('SPONSORS','合作伙伴')}<div class="sponsors"></div></div></section>
 </div><aside class="cm-rail" aria-label="公告与票务">
 <section class="updates-strip oe-home-only" id="updates"><div class="wrap">${head('NEWS','最新公告')}<div class="updates-list"></div></div></section>

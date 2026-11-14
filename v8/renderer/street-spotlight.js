@@ -40,7 +40,9 @@ export function mountStreetCard(root,state,{esc=v=>String(v??''),storageKey='oe-
   const range=[pick.from,pick.to].filter(Boolean).join('–');
   const streetImg=(Array.isArray(state.streets)?state.streets:[]).find(s=>String(s.name||'')===pick.name)?.image||'';
   const chips=pick.booths.slice(0,3).map(b=>'<span class="cm-street-chip">'+esc(b.name||b.no||'社团')+'</span>').join('');
-  root.innerHTML='<a class="cm-street-card'+(streetImg?' has-image':'')+'" href="#booths" data-street-jump="'+esc(pick.name)+'"'+(streetImg?' style="background-image:linear-gradient(180deg,#00000010,#00000080),url(&quot;'+esc(streetImg)+'&quot;)"':'')+'>'
+  root.innerHTML='<a class="cm-street-card'+(streetImg?' has-image':'')+'" href="#booths" data-street-jump="'+esc(pick.name)+'" aria-label="'+esc(pick.name)+' · '+pick.count+' 个社团"'+(streetImg?' style="background-image:linear-gradient(180deg,#00000000,#00000033),url(&quot;'+esc(streetImg)+'&quot;)"':'')+'>'
+    +(streetImg?'':'<span class="cm-street-name">'+esc(pick.name)+'</span>')
+    +'</a>';
     +'<span class="cm-street-ey">随便逛逛 · 随机街道</span>'
     +'<b class="cm-street-name">'+esc(pick.name)+'</b>'
     +'<span class="cm-street-meta">'+esc(range?range+' · ':'')+pick.count+' 个社团</span>'
@@ -78,8 +80,7 @@ export function mountProductTiles(root,items,{count=6,esc=v=>String(v??''),stora
   const art=p=>p.image?'<img src="'+esc(p.image)+'" alt="'+esc(p.name)+'" loading="lazy" decoding="async">':'<span class="cm-tile-ph" aria-hidden="true">'+(p.tag?esc(p.tag):'')+'</span>';
   root.innerHTML=order.slice(0,count).map(p=>'<a class="cm-tile" href="#booths" data-spotlight-booth="'+esc(p.boothId)+'">'
     +'<span class="cm-tile-art">'+art(p)+'</span>'
-    +'<b>'+esc(p.name||'')+'</b>'
-    +'<small>'+esc([p.boothNo,p.boothName,p.price].filter(Boolean).join(' · '))+'</small></a>').join('');
+    +'<b>'+esc(p.name||'')+'</b></a>').join('');
 }
 
 export function mountStreetBanners(root,state,{esc=v=>String(v??'')}={}){

@@ -820,6 +820,18 @@ function openEntryAnimationInspector(){
    save();send({type:'OE_REPLACE_STATE',state});send({type:'OE_PREVIEW_ENTRY',state,play:false});openEntryAnimationInspector();
  });
 }
+function openTrafficInspector(){
+  const img=String(state.venueMap?.transitImage||'');
+  setInspector('交通到达','交通路线图与导航',
+    '<div class="entry-animation-inspector"><div class="item-media"><span>交通路线图</span><div class="item-media-row">'+
+    (img?'<img src="'+esc(img)+'" alt="">':'<div class="item-media-empty">＋</div>')+
+    '<div><button type="button" data-traffic-image>选择 / 裁剪</button></div></div></div>'+
+    '<div class="item-fields"><label><span>地图导航链接</span><input id="trafficNavInput" value="'+esc(state.navigationUrl||'')+'" placeholder="https://uri.amap.com/..."></label></div>'+
+    '<div class="entry-animation-actions"><button type="button" id="saveTrafficNav">保存导航链接</button></div>'+
+    '<p class="inspector-note">交通文字内容在「规则与须知」里维护（交通到达那一条）。</p></div>');
+  inspector.querySelector('[data-traffic-image]')?.addEventListener('click',()=>{const input=$('#imageInput');input.dataset.path='venueMap.transitImage';input.click();});
+  $('#saveTrafficNav')?.addEventListener('click',()=>{checkpoint();state.navigationUrl=String($('#trafficNavInput')?.value||'').trim();save();send({type:'OE_REPLACE_STATE',state});});
+}
 function openStreetManager(){
   const groups=streetGroups(state);
   const images=new Map((state.streets||[]).map((s,i)=>[String(s.name||''),String(s.image||'')]));
@@ -876,6 +888,7 @@ function openPageTool(tool){
  if(tool==='lifecycle'){openLifecycleInspector();return}
  if(tool==='hero'){openHeroTitleInspector();return}
  if(tool==='banner'){openImageInspector('heroImage');return}
+ if(tool==='traffic'){openTrafficInspector();return}
  if(tool==='intro'){openFieldInspector('tagline');return}
  if(tool==='seo'){openSeoInspector();return}
  if(tool==='recap'){openRecapDialog();return}
@@ -899,7 +912,7 @@ function renderPageContentNav(page,{openDefault=true}={}){
  const items=page==='home'&&state.templateId==='02-scrapbook'?
    PAGE_CONTENT_CONFIG.home.filter(x=>x.collection!=='ribbonItems'&&x.collection!=='explore').flatMap(x=>x.tool==='hero'?[x,{tool:'intro',label:'活动简介'}]:x.tool==='map'?[x,{collection:'guests',label:'嘉宾阵容'}]:[x]):
    (PAGE_CONTENT_CONFIG[page]||[]).filter(x=>!(activeTemplate.studioPages?.hiddenContent||[]).includes(x.collection||x.tool));
- const visibleItems=state.templateId==='03-creator-market'?[{tool:'basic',label:'基本信息'},{tool:'banner',label:'横幅'},{tool:'lifecycle',label:'活动状态'},...items.filter(x=>x.tool!=='hero'&&x.collection!=='explore'&&x.tool!=='basic'&&x.tool!=='lifecycle')]:items;
+ const visibleItems=state.templateId==='03-creator-market'?[{tool:'basic',label:'基本信息'},{tool:'banner',label:'横幅'},{tool:'lifecycle',label:'活动状态'},{tool:'traffic',label:'交通到达'},{collection:'guide',label:'规则与须知'},...items.filter(x=>x.tool!=='hero'&&x.collection!=='explore'&&x.tool!=='basic'&&x.tool!=='lifecycle'&&x.collection!=='guide')]:items;
  nav.innerHTML=visibleItems.map(x=>x.collection
    ?'<button type="button" data-page-content-manager="'+x.collection+'"><span>'+esc(x.label)+'</span><b data-content-count="'+x.collection+'">0</b></button>'
    :'<button type="button" data-page-tool="'+x.tool+'"><span>'+esc(x.label)+'</span></button>'

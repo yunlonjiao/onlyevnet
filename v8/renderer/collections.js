@@ -140,6 +140,13 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       return '<article class="guide-chapter guide-kind-'+esc(preset)+'" id="guide-'+esc(x.id||String(i))+'" data-oe-item="guide" data-oe-index="'+i+'"><span class="guide-chapter-no">'+String(i+1).padStart(2,'0')+'</span><div class="guide-chapter-main"><div class="guide-chapter-head"><b>'+field('guide.items.'+i+'.title',x.title||'','span')+'</b><small>'+esc(x.label||kindLabel[preset]||'GUIDE')+'</small></div><div class="guide-body">'+field('guide.items.'+i+'.text',x.text||'','p')+'</div></div></article>';
     };
     const home=$('#guide-home .guide-home-grid');if(home)home.innerHTML=items.slice(0,homeCount).map((x,i)=>card(x,i,'home')).join('');
+    const trafficBox=mount('guide-traffic'),rulesBox=mount('guide-rules');
+    if(trafficBox||rulesBox){
+      const traffic=items.filter(x=>x.preset==='traffic'),rules=items.filter(x=>x.preset!=='traffic');
+      if(trafficBox)trafficBox.innerHTML='<div class="guide-detail-content">'+traffic.map((x,i)=>card(x,i,'detail')).join('')+'</div>';
+      if(rulesBox)rulesBox.innerHTML='<div class="guide-detail-content">'+rules.map((x,i)=>card(x,i,'detail')).join('')+'</div>';
+      return;
+    }
     const detail=mount('guide-detail','#guide .guide-detail-grid');if(detail)detail.innerHTML='<div class="guide-detail-content">'+items.map((x,i)=>card(x,i,'detail')).join('')+'</div>';
   }
 
