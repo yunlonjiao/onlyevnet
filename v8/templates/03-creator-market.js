@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.81.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.82.0';
 /* Template 03 runs on the shared IP ONLY core; only its art and the product spotlight differ.
    纯摊位同人创作展：只有摊位与制品，没有舞台/COS/自由行；街道由摊位的 street 字段聚合。 */
 export const template03=makeIpOnlyTemplate({

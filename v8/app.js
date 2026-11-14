@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.81.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.81.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.82.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.82.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.81.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.81.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.81.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.81.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.82.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.82.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.82.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.82.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -745,6 +745,13 @@ function syncCanvasSelection(path){
  const hit=map.find(([re])=>re.test(path));
  if(hit){syncStudioPageUI(hit[1],{openContent:false});setPageContentActive({collection:hit[2]})}
 }
+function openMemoInspector(){
+  setInspector('场刊备注','我的备忘',
+    '<div class="entry-animation-inspector"><div class="item-fields"><label><span>备忘内容</span><textarea id="bookMemoInput" rows="6" style="width:100%;resize:vertical">'+esc(state.bookMemo||'')+'</textarea></label></div>'+
+    '<div class="entry-animation-actions"><button type="button" id="saveBookMemo">保存备注</button></div>'+
+    '<p class="inspector-note">只出现在场刊的备忘页（页数为奇数时会自动补这一页）。</p></div>');
+  $('#saveBookMemo')?.addEventListener('click',()=>{checkpoint();state.bookMemo=String($('#bookMemoInput')?.value||'');save();send({type:'OE_REPLACE_STATE',state});});
+}
 function openEntryAnimationInspector(){
   if(state.templateId==='04-creator-catalogue'){
     const v=String(state.heroImage||'').trim();
@@ -847,6 +854,7 @@ function openPageTool(tool){
  if(tool==='hero'){openHeroTitleInspector();return}
  if(tool==='banner'){openBannerInspector();return}
  if(tool==='cover'){openImageInspector('heroImage');return}
+ if(tool==='memo'){openMemoInspector();return}
  if(tool==='traffic'){openTrafficInspector();return}
  if(tool==='intro'){openFieldInspector('tagline');return}
  if(tool==='seo'){openSeoInspector();return}
@@ -872,7 +880,7 @@ function renderPageContentNav(page,{openDefault=true}={}){
    PAGE_CONTENT_CONFIG.home.filter(x=>x.collection!=='ribbonItems'&&x.collection!=='explore').flatMap(x=>x.tool==='hero'?[x,{tool:'intro',label:'活动简介'}]:x.tool==='map'?[x,{collection:'guests',label:'嘉宾阵容'}]:[x]):
    (PAGE_CONTENT_CONFIG[page]||[]).filter(x=>!(activeTemplate.studioPages?.hiddenContent||[]).includes(x.collection||x.tool));
  const list03=[{tool:'basic',label:'基本信息'},{tool:'banner',label:'横幅'},{tool:'lifecycle',label:'活动状态'},{tool:'traffic',label:'交通到达'},{collection:'guide',label:'规则与须知'},...items.filter(x=>x.tool!=='hero'&&x.collection!=='explore'&&x.tool!=='basic'&&x.tool!=='lifecycle'&&x.collection!=='guide')];
- const list04=[{tool:'basic',label:'基本信息'},{tool:'cover',label:'封面 KV'},{tool:'lifecycle',label:'活动状态'},{collection:'guide',label:'规则与须知'},{collection:'tickets',label:'票务'},{tool:'map',label:'场地图'},{collection:'updates',label:'重要更新'},{collection:'socialLinks',label:'社群'},{collection:'sponsors',label:'赞助'}];
+ const list04=[{tool:'basic',label:'基本信息'},{tool:'cover',label:'封面 KV'},{tool:'lifecycle',label:'活动状态'},{collection:'guide',label:'规则与须知'},{collection:'tickets',label:'票务'},{tool:'map',label:'场地图'},{collection:'updates',label:'重要更新'},{collection:'socialLinks',label:'社群'},{collection:'sponsors',label:'赞助'},{tool:'memo',label:'场刊备注'}];
  const visibleItems=page!=='home'?items:state.templateId==='03-creator-market'?list03:state.templateId==='04-creator-catalogue'?list04:items;
  nav.innerHTML=visibleItems.map(x=>x.collection
    ?'<button type="button" data-page-content-manager="'+x.collection+'"><span>'+esc(x.label)+'</span><b data-content-count="'+x.collection+'">0</b></button>'
@@ -941,6 +949,7 @@ function syncModuleControls(){
  if(guestPageRow)guestPageRow.style.display=state.templateId==='02-scrapbook'?'none':'';
  // Templates without some first-level pages (03 has no 活动 / 嘉宾) or without custom pages.
  (activeTemplate.studioPages?.hidden||[]).forEach(page=>{const row=document.querySelector('[data-page-row="'+page+'"]');if(row)row.style.display='none'});
+ const animRow=document.querySelector('.entry-animation-row');if(animRow)animRow.style.display=(activeTemplate.studioPages?.hidden||[]).includes('animation')?'none':'';
  const customPageButton=document.querySelector('#createCustomPageBtn');
  if(customPageButton)customPageButton.hidden=activeTemplate.studioPages?.customPages===false;
  document.querySelectorAll('[data-module]').forEach(input=>{input.checked=state.modules?.[input.dataset.module]!==false});
@@ -972,7 +981,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.81.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.82.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1150,7 +1159,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.81.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.82.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}

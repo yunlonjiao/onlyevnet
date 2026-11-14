@@ -2,7 +2,7 @@
    yellow, big band names and set times. The visual language follows Japanese band-anime live pages
    (BanG Dream!, Bocchi the Rock!) and hand-made live-house flyers. Hooks follow Template 01;
    everything visual is scoped to .bl-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.81.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.82.0';
 
 const style=`
 .bl-site{overflow-x:clip;--primary:#ffd500;--secondary:#ff3b3b;--bl-ink:#101010;--bl-paper:#f2efe6;--bl-yellow:#ffd500;--bl-red:#ff3b3b;--bl-gray:#6b6b66;--bl-line:#101010;
