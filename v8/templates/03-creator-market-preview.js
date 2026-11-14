@@ -511,6 +511,17 @@ const finalFixStyle=`
 .cm-site .cm-booth-street{display:block;font-size:12px;font-weight:800;color:var(--cm-accent);margin:0 0 2px}
 `;
 const lastFixStyle=`
+/* 街道宣传图按竖版海报（A4 比例）展示 */
+.cm-site .cm-street-banners{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))!important}
+.cm-site .cm-street-banner-art{aspect-ratio:1/1.414!important}
+/* 制品格：图区吃剩余空间，文字区固定两行高度，避免高低不齐 */
+.cm-site .cm-tile{display:grid!important;grid-template-rows:minmax(0,1fr) auto!important;height:100%!important}
+.cm-site .cm-tile-art{min-height:0!important}
+.cm-site .cm-tile b{max-height:1.4em;overflow:hidden}
+.cm-site .cm-tile small{max-height:1.3em;overflow:hidden}
+/* 摊位列表：筛选后卡片保持原大小，不被拉宽 */
+.cm-site #booths .booth-directory-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))!important;align-items:start!important}
+.cm-site #booths .booth-directory-card{width:100%;height:auto!important}
 /* 页脚去掉（导航已经覆盖全部入口） */
 .cm-site footer,.cm-site .footer{display:none!important}
 /* 街道宣传图（社团作品页） */

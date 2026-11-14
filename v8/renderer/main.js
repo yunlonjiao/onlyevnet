@@ -166,8 +166,10 @@ function applyEntryState(){
   if(photo){
     const custom=String(a.image||'').trim();
     const linked=String(state.heroImage||'').trim();
-    const src=(a.imageMode==='custom'&&custom)?custom:linked||custom;
-    const mobileSrc=String(state.mobileHeroImage||'').trim();
+    const kvDesktop=String(a.kvDesktop||'').trim();
+    const kvMobile=String(a.kvMobile||'').trim();
+    const src=kvDesktop||((a.imageMode==='custom'&&custom)?custom:(a.imageMode==='linked'?linked:custom));
+    const mobileSrc=kvMobile;
     const splashSrc=(mobileSrc&&typeof matchMedia==='function'&&matchMedia('(max-width:560px)').matches)?mobileSrc:src;
     photo.style.backgroundImage=splashSrc?'url("'+splashSrc.replace(/"/g,'%22')+'")':'';
     photo.classList.toggle('empty',!src);
