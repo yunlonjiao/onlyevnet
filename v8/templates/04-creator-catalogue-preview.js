@@ -1,7 +1,7 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.82.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.83.0';
 
 const catalogueStyle=`
 .cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:#c8432b;--cc-lilac:#c9b99a;--cc-cyan:#7fe3ff;--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
@@ -321,6 +321,10 @@ const paperStyle=`
 @media(max-width:760px){.cc-site .cb-book.is-closed{transform:none}.cc-site .cb-book.is-end .cb-page.left{transform:none}.cc-site .cb-ribbon{display:none}.cc-site .brand{font-size:14px}}
 `;
 const fullBookStyle=`
+/* 04 是整屏书画：去掉 01 核心样式留在手机端的底部 dock 内边距，避免页面多出上下条 */
+body{padding-bottom:0!important;background:#e3d4b8!important}
+html{background:#e3d4b8}
+@media(max-width:560px){body{padding-bottom:0!important}}
 .cc-site{--cc-page-w:min(520px,84vw);--cc-desk-grain:repeating-linear-gradient(92deg,#00000008 0 2px,transparent 2px 9px);background-image:var(--cc-desk-grain),radial-gradient(120% 90% at 50% 6%,#f5ead6 0%,#dfcaa9 44%,#b99f80 100%);background-attachment:fixed}
 .cc-site .cc-catalogue{padding:0!important;min-height:100dvh;display:grid;place-items:center}
 .cc-site .cc-catalogue>.wrap{max-width:none!important;width:100%!important;padding:0!important;margin:0!important}
@@ -337,7 +341,7 @@ const fullBookStyle=`
 .cc-site .cb-leaf-face{box-shadow:none!important}
 .cc-site .cb-book.is-closed{cursor:pointer}
 .cc-site .oe-book-closed .cb-controls{display:none!important}
-.cc-site .cb-book.is-closed .cb-cover::after{content:'点击翻开 · CLICK TO OPEN';position:absolute;top:58px;left:32px;font-size:11px;font-weight:800;letter-spacing:.22em;opacity:.72;white-space:nowrap}
+.cc-site .cb-kind-cover .cb-cover::after{content:'点击翻开 · CLICK TO OPEN';position:absolute;top:58px;left:32px;font-size:11px;font-weight:800;letter-spacing:.22em;opacity:.72;white-space:nowrap}
 .cc-site .loader.cc-entry{display:none!important}
 `;
 export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle+listStyle+bookPagesStyle+paperStyle+fullBookStyle;

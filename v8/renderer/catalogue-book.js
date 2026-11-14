@@ -127,6 +127,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   root.addEventListener('click',e=>{const g=e.target.closest('[data-catalogue-goto]');if(g){e.preventDefault();e.stopPropagation();go(Number(g.dataset.catalogueGoto))}});
   let startX=null;
   const openOnClick=()=>{
+    if(single()&&at===0){go(1);return true}
     if(book.classList.contains('is-closed')&&!single()){go(at+2);return true}
     return false;
   };
