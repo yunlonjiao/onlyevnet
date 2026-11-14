@@ -84,7 +84,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const spreadOf=i=>single()?i:(i%2?i+1:i);
   const render=()=>{
     at=spreadOf(at);
-    book.classList.toggle('is-single',single());book.classList.toggle('is-closed',!single()&&at===0);book.classList.toggle('is-end',!single()&&at>=total);
+    book.classList.toggle('is-single',single());book.classList.toggle('is-closed',!single()&&at===0);book.classList.toggle('is-end',!single()&&at>=total);root.classList.toggle('oe-book-closed',!single()&&at===0);
     book.innerHTML=single()?page(at,'solo'):page(at-1,'left')+page(at,'right');
     count.textContent=single()?(at+1)+' / '+total:(at===0?'封面':at>=total?'封底':at+'-'+(at+1))+' / '+total;
     try{sessionStorage.setItem(storageKey,String(at))}catch{}
@@ -117,6 +117,11 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   document.addEventListener('click',document.__oeBookOpen,true);
   root.addEventListener('click',e=>{const g=e.target.closest('[data-catalogue-goto]');if(g){e.preventDefault();e.stopPropagation();go(Number(g.dataset.catalogueGoto))}});
   let startX=null;
+  const openOnClick=()=>{
+    if(book.classList.contains('is-closed')&&!single()){go(at+2);return true}
+    return false;
+  };
+  book.addEventListener('click',e=>{if(openOnClick()){e.preventDefault();e.stopPropagation()}});
   book.addEventListener('pointerdown',e=>{startX=e.clientX});
   book.addEventListener('pointerup',e=>{if(startX===null)return;const dx=e.clientX-startX;startX=null;if(Math.abs(dx)>50){book._oeSwiped=true;go(at+(dx<0?1:-1)*(single()?1:2))}});
   book.addEventListener('click',e=>{if(book._oeSwiped){e.preventDefault();e.stopPropagation();book._oeSwiped=false}},true);
