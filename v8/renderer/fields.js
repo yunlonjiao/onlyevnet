@@ -26,6 +26,7 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     const state=getState?.()||{};
     const desktop=String(state.heroImage||'').trim();
     const mobile=String(state.mobileHeroImage||'').trim()||desktop;
+    hero.style.setProperty('--oe-hero-focal-mobile',String(state.mobileHeroFocal||state.heroFocalMobile||'50% 50%'));
     const safeUrl=src=>src?'url("'+src.replace(/"/g,'%22')+'")':'none';
     hero.style.setProperty('--oe-hero-image-desktop',safeUrl(desktop));
     hero.style.setProperty('--oe-hero-image-mobile',safeUrl(mobile));

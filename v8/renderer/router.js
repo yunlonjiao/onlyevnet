@@ -1,4 +1,4 @@
-import {quickMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.74.0';
+import {quickMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.76.0';
 export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,onPageNavigate=()=>{}}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
   const lifecycleStatus=()=>{

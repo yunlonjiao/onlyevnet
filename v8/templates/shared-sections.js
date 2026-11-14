@@ -1,7 +1,7 @@
 /* Building blocks for templates that keep Template 01's hooks (so the shared renderer, editor and
    exporter work unchanged) but compose their own page. Sections are taken from 01's markup and given
    a new heading, so a hook that 01 adds later reaches every template that uses them. */
-import {previewStyle as coreStyle,previewBody as coreBody} from '/v8/templates/01-ip-only-preview.js?v=8.74.0';
+import {previewStyle as coreStyle,previewBody as coreBody} from '/v8/templates/01-ip-only-preview.js?v=8.76.0';
 
 export {coreStyle};
 
