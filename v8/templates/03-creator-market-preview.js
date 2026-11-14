@@ -594,6 +594,19 @@ const final3Style=`
 .cm-site .cm-tile small{display:none!important}
 `;
 const final4Style=`
+/* 入场与规则合并成一张卡：共用外框，内部用分隔线 */
+.cm-site .cm-rules .guide-detail-content{display:block!important;background:#fff!important;border:1px solid var(--cm-line)!important;border-radius:12px!important;overflow:hidden!important}
+.cm-site .cm-rules .cm-guide{border:0!important;border-radius:0!important;border-top:1px solid var(--cm-line)!important;padding:18px!important}
+.cm-site .cm-rules .cm-guide:first-child{border-top:0!important}
+/* 去掉卡片上的编号与英文标签 */
+.cm-site .cm-guide-icon{display:none!important}
+.cm-site .cm-guide-body small{display:none!important}
+/* 推荐制品右上角：社团作品按钮 + 换一换 */
+.cm-site .cm-feed-head{display:flex;align-items:center;gap:10px}
+.cm-site .cm-feed-link{display:inline-flex!important;align-items:center;gap:6px;height:36px;padding:0 14px;border:1px solid var(--cm-line);border-radius:999px;background:#fff;color:var(--cm-accent)!important;font-size:13px;font-weight:800;text-decoration:none;margin-left:auto}
+.cm-site .cm-feed-link:hover{border-color:var(--cm-accent)}
+.cm-site .cm-shuffle{margin-left:0!important}
+@media(max-width:720px){.cm-site .cm-feed-link{height:32px;padding:0 10px;font-size:12px}}
 /* 交通到达：左图右文，右侧卡片撑满列宽 */
 .cm-site .cm-transit-text .guide-detail-content{display:grid!important;grid-template-columns:minmax(0,1fr)!important;justify-items:stretch!important;gap:12px!important}
 .cm-site .cm-transit-text .cm-guide{width:auto!important;max-width:none!important;min-width:0!important;height:auto!important}
@@ -618,13 +631,13 @@ const head=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2
 const pageHead=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div><a class="section-back" href="#top" data-page-link="home">← 返回首页</a></div>';
 
 export const previewBody=`<div class="cm-site">${loader}
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
+
 <main id="top">
 <section class="hero"><div class="wrap"><div class="hero-art"><div class="kv"><strong class="cm-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section>
 <section class="cm-headline oe-home-only"><div class="wrap"><div class="cm-title"><span class="hero-kicker">同人创作展</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="meta"><span class="pill cm-status" data-oe-status="event">活动状态</span><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></section>
 
 <div class="cm-cols oe-home-only"><div class="cm-feed">
-<section class="cm-spotlight oe-home-only" id="spotlight" aria-label="随机推荐制品"><div class="wrap"><div class="cm-feed-head"><h2>推荐制品</h2><div class="cm-feed-actions"><a class="cm-feed-link" href="#booths" data-target-mode="page" data-page-link="booths">社团作品 →</a><button type="button" class="cm-shuffle" data-spotlight-shuffle>换一换 ↻</button></div></div><div class="cm-market-grid"><div class="cm-market-left" data-oe-mount="street-card"></div><div class="cm-market-right" data-oe-mount="product-tiles"></div></div></div></section>
+<section class="cm-spotlight oe-home-only" id="spotlight" aria-label="随机推荐制品"><div class="wrap"><div class="cm-feed-head"><h2>推荐制品</h2><a class="cm-feed-link" href="#booths" data-target-mode="page" data-page-link="booths">社团作品 →</a><button type="button" class="cm-shuffle" data-spotlight-shuffle>换一换 ↻</button></div><div class="cm-market-grid"><div class="cm-market-left" data-oe-mount="street-card"></div><div class="cm-market-right" data-oe-mount="product-tiles"></div></div></div></section>
 <section class="section oe-home-only" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="cm-map-wrap"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><div class="cm-streets" data-oe-mount="street-legend"></div></div></div></section>
 <section class="section oe-home-only" id="traffic"><div class="wrap">${head('ACCESS','交通到达')}<div class="cm-transit"><div class="cm-transit-map" id="transitMap" data-oe-image="venueMap.transitImage"></div><div class="cm-transit-text" data-oe-mount="guide-traffic"></div></div></div></section><section class="section oe-home-only" id="rules"><div class="wrap">${head('RULES','入场与规则')}<div class="cm-rules" data-oe-mount="guide-rules"></div></div></section>
 

@@ -756,7 +756,7 @@ function openEntryAnimationInspector(){
    '<label class="toggle-field"><span>'+label+'</span><input type="checkbox" data-entry-field="'+showKey+'" '+(shown?'checked':'')+'></label>'+
    '<input data-entry-field="'+key+'" value="'+esc(value||'')+'" placeholder="'+esc(placeholder||'')+'">'+
    '</div>';
- const heroMedia=(key,label)=>'<div class="item-media"><span>'+label+'</span><div class="item-media-row">'+(String(state[key]||'').trim()?'<img src="'+esc(state[key])+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-hero-image="'+key+'">选择 / 裁剪</button></div></div></div>';
+ const heroMedia=(key,label)=>{const v=String(((state.entryAnimation||{})[key])||'').trim();return '<div class="item-media"><span>'+label+'</span><div class="item-media-row">'+(v?'<img src="'+esc(v)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-kv-image="'+key+'">选择 / 裁剪</button></div></div></div>';};
  setInspector('入场动画',splashMode?'开屏设置':'纪念票设置',
   splashMode
    ? '<div class="entry-animation-inspector">'+heroMedia('kvDesktop','桌面 KV')+heroMedia('kvMobile','手机 KV（可选，留空用桌面 KV）')+'<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button></div><p class="inspector-note">开屏动画单独使用这两张图，与首页横幅互不影响；手机 KV 留空时沿用桌面 KV。</p></div>'
@@ -784,6 +784,9 @@ function openEntryAnimationInspector(){
    '<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button><button type="button" id="resetEntryAnimation">恢复模板默认</button></div>'+
    (splashMode?'<p class="inspector-note">主视觉留空时联动首页 KV；活动名、日期、地点留空时自动联动网站基础信息。</p>':'<p class="inspector-note">所有右侧信息都可单独显示/隐藏。活动名、日期、地点留空时自动联动网站基础信息；票号由系统为每位游客自动生成。</p>')+
    '</div>'));
+ inspector.querySelectorAll('[data-kv-image]').forEach(btn=>btn.addEventListener('click',()=>{
+   const input=$('#imageInput');input.dataset.path='entryAnimation.'+btn.dataset.kvImage;input.click();
+ }));
  inspector.querySelectorAll('[data-entry-field]').forEach(input=>{
    const key=input.dataset.entryField;
    input.addEventListener('change',e=>{
