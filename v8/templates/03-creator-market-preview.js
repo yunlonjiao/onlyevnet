@@ -594,6 +594,19 @@ const final3Style=`
 .cm-site .cm-tile small{display:none!important}
 `;
 const final4Style=`
+/* 手机端制品名最多两行，别截成一个字 */
+@media(max-width:720px){
+ .cm-site .cm-tile b{white-space:normal!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;overflow:hidden!important;height:auto!important;min-height:2.6em}
+}
+/* 手机端标题带：胶囊不换行、字号收小 */
+@media(max-width:720px){
+ .cm-site .cm-headline .meta{gap:6px!important}
+ .cm-site .cm-headline .meta .pill{padding:6px 10px!important;font-size:12px!important;line-height:1.2!important;white-space:nowrap!important;min-width:0!important}
+ .cm-site .cm-headline .meta .cm-status{padding:5px 9px!important}
+}
+/* 交通到达：文字列更宽，读起来是横排 */
+.cm-site .cm-transit{grid-template-columns:minmax(0,0.9fr) minmax(0,1.1fr)!important;gap:20px!important}
+@media(max-width:900px){.cm-site .cm-transit{grid-template-columns:1fr!important}}
 /* 旧的交通图片位（guide 卡片自带）去掉，交通路线图统一用「交通到达」里的上传 */
 .cm-site .cm-guide .guide-access-media{display:none!important}
 .cm-site #traffic .cm-guide .guide-access-media{display:none!important}

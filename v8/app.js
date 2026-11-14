@@ -1617,6 +1617,10 @@ function imageSlotConfig(path){
  if(path==='heroImage')return {label:'桌面主视觉 KV',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1400,height:1400,fixed:true};
  if(path==='mobileHeroImage'&&state.templateId==='02-scrapbook')return {label:'手机主视觉（可选）',ratio:3/4,ratioLabel:'标准海报 · 比例 3:4',width:1080,height:1440,fixed:true};
  if(path==='mobileHeroImage')return {label:'手机主视觉 KV',ratio:4/5,ratioLabel:'手机端独立主视觉 · 比例 4:5',width:1080,height:1350,fixed:true};
+ if(path==='entryAnimation.kvDesktop')return {label:'开屏桌面 KV',ratio:16/9,ratioLabel:'桌面开屏 · 比例 16:9',width:1920,height:1080,fixed:true};
+ if(path==='entryAnimation.kvMobile')return {label:'开屏手机 KV',ratio:9/16,ratioLabel:'手机开屏 · 比例 9:16',width:1080,height:1920,fixed:true};
+ if(path==='venueMap.transitImage')return {label:'交通路线图',ratio:4/3,ratioLabel:'交通路线图 · 比例 4:3',width:1440,height:1080,fixed:true};
+ if(/^streets\.\d+\.image$/.test(path))return {label:'街道宣传图',ratio:1/1.414,ratioLabel:'街道海报 · A4 竖版（1:1.414）',width:1080,height:1527,fixed:true};
  if(path==='seo.ogImage')return {label:'分享封面',ratio:1.91,ratioLabel:'社交分享推荐比例 1.91:1',width:1200,height:628,fixed:true};
  if(/^recap\.photos\.\d+\.image$/.test(path))return {label:'现场照片',ratio:4/3,ratioLabel:'裁剪框可移动 · 比例 4:3',width:1200,height:900,fixed:true};
  if(/^tickets\.\d+\.image$/.test(path))return {label:'票务赠品图',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:900,height:900,fixed:true};
@@ -1776,13 +1780,14 @@ async function openImageCropper(src,path,returnCollection='',returnIndex='',owne
  stage.classList.add('loading');
  try{
    if(activeCropper?.destroy)activeCropper.destroy();
+   await new Promise(res=>{if(img.complete&&img.naturalWidth)return res();img.addEventListener('load',res,{once:true});img.addEventListener('error',res,{once:true});});
    activeCropper=await createStudioCropper({image:img,stage,ratio:cfg.ratio,coverage:.72});
    const selection=activeCropper.getCropperSelection?.();
    if(selection){
      if(cfg.fixed&&Number.isFinite(cfg.ratio)){selection.aspectRatio=cfg.ratio;selection.initialAspectRatio=cfg.ratio}
      selection.addEventListener('change',e=>{keepCropSelectionInsideImage(e);if(!e.defaultPrevented)scheduleCropPreview()});
    }
-   requestAnimationFrame(()=>{fitCropSelectionToImage();scheduleCropPreview()});
+   requestAnimationFrame(()=>{activeCropper?.reset?.();fitCropSelectionToImage();scheduleCropPreview();setTimeout(()=>{fitCropSelectionToImage();scheduleCropPreview()},120)});
  }catch(err){
    console.error('[OnlyEvent cropper]',err);toast('裁剪器加载失败，可稍后重试');closeImageCropper();
  }finally{stage.classList.remove('loading')}
