@@ -10,7 +10,9 @@ export function streetGroups(state){
   const map=new Map();
   for(const b of booths){
     if(!b)continue;
-    const name=String(b.street||'').trim()||'未分街道';
+    const rawStreet=String(b.street||'').trim();
+    const letter=(String(b.no||'').trim().match(/^[A-Za-z]/)||[])[0];
+    const name=rawStreet||(letter?letter.toUpperCase()+' 区':'未分街道');
     if(!map.has(name))map.set(name,{name,booths:[]});
     map.get(name).booths.push(b);
   }
@@ -27,7 +29,8 @@ export function streetGroups(state){
 export function mountStreetCard(root,state,{esc=v=>String(v??''),storageKey='oe-street-last'}={}){
   if(!root)return;
   const groups=streetGroups(state);
-  if(!groups.length){root.innerHTML='';root.hidden=true;return}
+  if(!groups.length){root.innerHTML='';root.hidden=true;root.closest('.cm-market-grid')?.classList.add('no-street');return}
+  root.closest('.cm-market-grid')?.classList.remove('no-street');
   root.hidden=false;
   let pick=groups[Math.floor(Math.random()*groups.length)];
   if(groups.length>1){
@@ -53,7 +56,8 @@ export function mountStreetCard(root,state,{esc=v=>String(v??''),storageKey='oe-
 export function mountStreetLegend(root,state,{esc=v=>String(v??'')}={}){
   if(!root)return;
   const groups=streetGroups(state);
-  if(!groups.length){root.innerHTML='';root.hidden=true;return}
+  if(!groups.length){root.innerHTML='';root.hidden=true;root.closest('.cm-market-grid')?.classList.add('no-street');return}
+  root.closest('.cm-market-grid')?.classList.remove('no-street');
   root.hidden=false;
   root.innerHTML=groups.map(g=>{
     const range=[g.from,g.to].filter(Boolean).join('–');
@@ -86,7 +90,8 @@ export function mountProductTiles(root,items,{count=6,esc=v=>String(v??''),stora
 export function mountStreetBanners(root,state,{esc=v=>String(v??'')}={}){
   if(!root)return;
   const groups=streetGroups(state);
-  if(!groups.length){root.innerHTML='';root.hidden=true;return}
+  if(!groups.length){root.innerHTML='';root.hidden=true;root.closest('.cm-market-grid')?.classList.add('no-street');return}
+  root.closest('.cm-market-grid')?.classList.remove('no-street');
   root.hidden=false;
   const imgs=new Map((Array.isArray(state.streets)?state.streets:[]).map(s=>[String(s.name||''),String(s.image||'')]));
   root.innerHTML=groups.map(g=>{

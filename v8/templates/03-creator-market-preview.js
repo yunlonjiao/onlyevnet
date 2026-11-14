@@ -593,6 +593,24 @@ const final3Style=`
 .cm-site .cm-tile b{height:auto!important;max-height:none!important;line-height:1.4!important;padding:9px 10px 11px!important;display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
 .cm-site .cm-tile small{display:none!important}
 `;
+const final5Style=`
+/* 交通到达：文字在左、图片在右；卡片里重复的标题去掉 */
+@media(min-width:901px){.cm-site .cm-transit{grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr)!important;gap:20px!important}}
+.cm-site .cm-transit-text{order:1!important}
+.cm-site .cm-transit-map{order:2!important}
+.cm-site .cm-transit-text .cm-guide-body h3{display:none!important}
+/* 手机端：板块之间留白、标题带不横向溢出 */
+@media(max-width:900px){
+ .cm-site .cm-cols{display:flex!important;flex-direction:column!important;gap:16px!important}
+ .cm-site .cm-headline .meta{max-width:100%!important;overflow-x:auto!important;padding:0 2px}
+}
+@media(max-width:720px){
+ .cm-site .cm-headline p{display:block!important;font-size:13px!important;line-height:1.5!important}
+ .cm-site .cm-headline .wrap{gap:6px!important}
+ .cm-site .cm-market-right .cm-tile:nth-child(n+5){display:none!important}
+ .cm-site .cm-market-grid.no-street{grid-template-columns:1fr!important}
+}
+`;
 const final4Style=`
 /* 手机端制品名最多两行，别截成一个字 */
 @media(max-width:720px){
@@ -639,7 +657,7 @@ const final4Style=`
  .cm-site #sponsors{order:8!important}
 }
 `;
-export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+finalFixStyle+lastFixStyle+final2Style+final3Style+final4Style;
+export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+finalFixStyle+lastFixStyle+final2Style+final3Style+final4Style+final5Style;
 
 const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="cm-splash-bars" aria-hidden="true"><i></i><i></i><i></i></div><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 

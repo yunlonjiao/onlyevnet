@@ -3,7 +3,7 @@ import {validateIpOnlyTemplateDefinition} from '/v8/templates/ip-only-core-contr
 import {template01} from '/v8/templates/01-ip-only.js?v=8.41.5';
 import {template02} from '/v8/templates/02-scrapbook.js?v=8.41.4';
 
-import {template03} from '/v8/templates/03-creator-market.js?v=8.69.0';
+import {template03} from '/v8/templates/03-creator-market.js?v=8.70.0';
 import {template04} from '/v8/templates/04-creator-catalogue.js?v=8.43.0';
 import {template05} from '/v8/templates/05-live-poster.js?v=8.51.0';
 import {template06} from '/v8/templates/06-band-live.js?v=8.51.0';

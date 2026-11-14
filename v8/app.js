@@ -1781,7 +1781,7 @@ async function openImageCropper(src,path,returnCollection='',returnIndex='',owne
  try{
    if(activeCropper?.destroy)activeCropper.destroy();
    await new Promise(res=>{if(img.complete&&img.naturalWidth)return res();img.addEventListener('load',res,{once:true});img.addEventListener('error',res,{once:true});});
-   activeCropper=await createStudioCropper({image:img,stage,ratio:cfg.ratio,coverage:.72});
+   activeCropper=await createStudioCropper({image:img,stage,ratio:cfg.ratio,coverage:.9});
    const selection=activeCropper.getCropperSelection?.();
    if(selection){
      if(cfg.fixed&&Number.isFinite(cfg.ratio)){selection.aspectRatio=cfg.ratio;selection.initialAspectRatio=cfg.ratio}
