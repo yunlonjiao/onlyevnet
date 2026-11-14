@@ -85,7 +85,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   for(let i=0;i<contentsPages;i++){
     pages[contentsAt+i].html=head('CONTENTS',contentsPages>1?'目录 '+(i+1)+' / '+contentsPages:'目录')+'<ol class="cb-contents">'+contentItems.slice(i*6,i*6+6).join('')+'</ol>';
   }
-  const total=pages.length;
+  let total=pages.length;
   const page=(i,side)=>i<0||i>=total?'<div class="cb-page cb-blank '+side+'"></div>':'<div class="cb-page cb-kind-'+pages[i].kind+' '+side+'" data-catalogue-page="'+i+'">'+pages[i].html+(i>0?'<span class="cb-folio">'+String(i+1).padStart(2,'0')+'</span>':'')+'</div>';
   root.innerHTML='<div class="cb-stage"><div class="cb-book" data-catalogue-book></div><span class="cb-ribbon" aria-hidden="true"></span></div><div class="cb-controls"><button type="button" data-catalogue-step="-1" aria-label="上一页">‹</button><span data-catalogue-count></span><button type="button" data-catalogue-step="1" aria-label="下一页">›</button><input class="cb-jump" type="number" min="1" inputmode="numeric" aria-label="输入页码跳转" placeholder="页码"></div>';
   const book=root.querySelector('[data-catalogue-book]'),count=root.querySelector('[data-catalogue-count]');
@@ -145,6 +145,67 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   root.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();go(at+(single()?1:2))}if(e.key==='ArrowLeft'){e.preventDefault();go(at-(single()?1:2))}});
   if(typeof ResizeObserver==='function'){let wasSingle=single();new ResizeObserver(()=>{if(single()!==wasSingle&&!busy){wasSingle=single();render()}}).observe(root)}
   render();
+  // Generic pagination: measure list pages and push whatever overflows to continuation pages.
+  const splitSpec={news:".cb-news",tickets:".cb-tickets",circles:".cb-cuts",works:".cb-works",community:".cb-socials",sponsors:".cb-thanks",rules:".cb-rules"};
+  function paginateOverflow(list,pageW,pageH){
+    const probe=document.createElement("div");
+    probe.className="cb-page";
+    probe.style.cssText="position:absolute!important;left:-99999px!important;top:0!important;visibility:hidden!important;overflow:hidden!important;width:"+pageW+"px!important;height:"+pageH+"px!important;display:flex;flex-direction:column;pointer-events:none";
+    document.body.appendChild(probe);
+    const out=[];
+    for(const pg of list){
+      const sel=splitSpec[pg.kind];
+      if(!sel){out.push(pg);continue}
+      let html=pg.html,guard=0,first=true;
+      while(guard++<30){
+        probe.innerHTML=html;
+        const wrap=probe.querySelector(sel);
+        const over=probe.scrollHeight>pageH+2;
+        if(!wrap||!over||wrap.children.length<=1){out.push({...pg,html});break}
+        const moved=[];
+        while(wrap.children.length>1&&probe.scrollHeight>pageH+2){const last=wrap.lastElementChild;moved.unshift(last);wrap.removeChild(last);}
+        if(!moved.length){out.push({...pg,html});break}
+        if(first){out.push({...pg,html:probe.innerHTML});first=false}
+        probe.innerHTML=html;
+        const w2=probe.querySelector(sel);
+        while(w2.children.length>moved.length)w2.removeChild(w2.lastElementChild);
+        html=probe.innerHTML;
+      }
+    }
+    probe.remove();
+    return out;
+  }
+  function rebuildContents(list){
+    const kindMap={greeting:"greeting",news:"news",tickets:"tickets",map:"venue",circles:"circles",works:"works",traffic:"traffic",rules:"rules",community:"community",sponsors:"sponsors",rally:"rally"};
+    const starts={};
+    list.forEach((pg,i)=>(pg.kinds||[pg.kind]).forEach(k=>{const s=kindMap[k];if(s&&starts[s]===undefined)starts[s]=i}));
+    const labels={greeting:["GREETING","主办致辞"],news:["NEWS","最新公告"],tickets:["ADMISSION","入场票"],venue:["VENUE MAP","场地图"],circles:["CIRCLE LIST","参展社团"],works:["NEW WORKS","新刊与制品"],traffic:["ACCESS","交通到达"],rules:["RULES","入场与须知"],community:["COMMUNITY","社群"],sponsors:["SPONSORS","合作伙伴"],rally:["STAMP RALLY","打卡页"]};
+    const order=["greeting","news","tickets","venue","circles","works","traffic","rules","community","sponsors","rally"];
+    const items=order.filter(k=>starts[k]!==undefined).map(k=>'<li><button type="button" data-catalogue-goto="'+starts[k]+'"><span>'+labels[k][0]+'</span><b>'+labels[k][1]+'</b><i>P.'+String(starts[k]+1).padStart(2,"0")+'</i></button></li>');
+    const count=Math.max(1,Math.ceil(items.length/6));
+    const newPages=[];
+    for(let i=0;i<count;i++)newPages.push({kind:"contents",kinds:["contents"],html:'<header class="cb-page-head"><small>CONTENTS</small><b>'+(count>1?"目录 "+(i+1)+" / "+count:"目录")+'</b></header><ol class="cb-contents">'+items.slice(i*6,i*6+6).join("")+'</ol>'});
+    const without=list.filter(pg=>pg.kind!=="contents");
+    const insertAt=Math.min(1,without.length);
+    without.splice(insertAt,0,...newPages);
+    return without;
+  }
+  try{
+    const bk=root.querySelector("[data-catalogue-book]");
+    const rect=bk?bk.getBoundingClientRect():null;
+    if(rect&&rect.width>80&&rect.height>120){
+      const pageW=Math.round(rect.width/(single()?1:2));
+      const pageH=Math.round(rect.height);
+      const split=paginateOverflow(pages,pageW,pageH);
+      if(split.length!==pages.length){
+        const merged=rebuildContents(split);
+        pages.length=0;merged.forEach(pg=>pages.push(pg));
+        if(!single()&&pages.length%2)pages.splice(pages.length-1,0,{kind:'memo',kinds:['memo'],html:head('MEMO','我的备忘')+'<div class="cb-memo">'+fld('bookMemo',data.memo||'','div')+'</div>'});
+        total=pages.length;at=Math.min(at,total-1);render();
+        const j=root.querySelector('.cb-jump');if(j)j.max=String(total);
+      }
+    }
+  }catch(err){console.warn("[catalogue paginate]",err)}
   try{
     window.__oeCatalogueReplay=()=>{
       busy=false;at=0;render();
