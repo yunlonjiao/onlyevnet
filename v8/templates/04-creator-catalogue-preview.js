@@ -1,7 +1,7 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.77.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.78.0';
 
 const catalogueStyle=`
 .cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:#c8432b;--cc-lilac:#c9b99a;--cc-cyan:#7fe3ff;--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
@@ -101,7 +101,7 @@ const catalogueStyle=`
 .cc-site .loader.cc-entry{background:radial-gradient(circle at 50% 40%,#3a2580,#1b1240 70%)!important;place-items:center}
 .cc-entry .entry-ticket-label,.cc-entry .stub-barcode,.cc-entry .stub-code{display:none!important}
 .cc-entry-gate{cursor:pointer;background:none;border:0;padding:0;box-shadow:none;transform:none;perspective:1800px}
-.cc-entry-book{position:relative;width:min(360px,76vw);aspect-ratio:.72;transform-style:preserve-3d}
+.cc-entry-book{position:relative;width:var(--cc-page-w,min(520px,84vw));aspect-ratio:.72;transform-style:preserve-3d}
 .cc-entry-page{position:absolute;inset:0;border-radius:6px 16px 16px 6px;background:var(--cc-cream);background-image:radial-gradient(#2b1f4712 1px,transparent 1.2px);background-size:14px 14px;color:var(--cc-ink);display:flex;flex-direction:column;justify-content:center;gap:10px;padding:28px;text-align:left;box-shadow:0 30px 80px #000a}
 .cc-entry-kicker{font-size:12px;font-weight:1000;letter-spacing:.22em;color:#c8432b}
 .cc-entry-page .entry-ticket-title{font-size:30px;line-height:1.05;font-weight:1000}
@@ -321,18 +321,18 @@ const paperStyle=`
 @media(max-width:760px){.cc-site .cb-book.is-closed{transform:none}.cc-site .cb-book.is-end .cb-page.left{transform:none}.cc-site .cb-ribbon{display:none}.cc-site .brand{font-size:14px}}
 `;
 const fullBookStyle=`
-.cc-site{background:#e9e2d2}
-.cc-site .cc-catalogue{padding:0!important}
+.cc-site{--cc-page-w:min(520px,84vw);--cc-desk-grain:repeating-linear-gradient(92deg,#00000008 0 2px,transparent 2px 9px);background-image:var(--cc-desk-grain),radial-gradient(120% 90% at 50% 6%,#f5ead6 0%,#dfcaa9 44%,#b99f80 100%);background-attachment:fixed}
+.cc-site .cc-catalogue{padding:0!important;min-height:100dvh;display:grid;place-items:center}
 .cc-site .cc-catalogue>.wrap{max-width:none!important;width:100%!important;padding:0!important;margin:0!important}
-.cc-site .cb-stage{max-width:none!important;width:100vw!important;height:100dvh!important;perspective:2400px}
-.cc-site .cb-book{height:100%!important;min-height:0!important;grid-template-columns:1fr 1fr}
-.cc-site .cb-book.is-single{max-width:none!important;width:100vw!important;height:100dvh!important}
-.cc-site .cb-book.is-closed{grid-template-columns:1fr 1fr!important}
-.cc-site .cb-page{padding:clamp(20px,2.4vw,40px) clamp(20px,2.4vw,40px) clamp(48px,5vw,60px)!important}
-.cc-site .cb-controls{position:fixed!important;left:50%!important;bottom:16px!important;transform:translateX(-50%)!important;z-index:30;margin:0!important;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.78);backdrop-filter:blur(6px)}
+.cc-site .cb-stage{max-width:none!important;width:min(calc(var(--cc-page-w) * 2),96vw)!important;height:auto!important;perspective:2400px}
+.cc-site .cb-book{height:auto!important;min-height:0!important;aspect-ratio:1.44}
+.cc-site .cb-book.is-single{width:var(--cc-page-w)!important;max-width:none!important;aspect-ratio:.72;height:auto!important}
+.cc-site .cb-page{padding:clamp(18px,2vw,32px) clamp(18px,2vw,32px) clamp(42px,4vw,52px)!important}
+.cc-site .cb-controls{position:fixed!important;left:50%!important;bottom:14px!important;transform:translateX(-50%)!important;z-index:30;margin:0!important;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.82);backdrop-filter:blur(6px)}
 .cc-site .cb-book.is-closed{cursor:pointer}
 .cc-site .oe-book-closed .cb-controls{display:none!important}
-.cc-site .cb-book.is-closed .cb-cover::after{content:'点击翻开 · CLICK TO OPEN';position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:800;letter-spacing:.22em;opacity:.72;white-space:nowrap}
+.cc-site .cb-book.is-closed .cb-cover::after{content:'点击翻开 · CLICK TO OPEN';position:absolute;top:58px;left:32px;font-size:11px;font-weight:800;letter-spacing:.22em;opacity:.72;white-space:nowrap}
+.cc-site .loader.cc-entry{background-image:var(--cc-desk-grain),radial-gradient(120% 90% at 50% 6%,#f5ead6 0%,#dfcaa9 44%,#b99f80 100%)!important}
 `;
 export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle+listStyle+bookPagesStyle+paperStyle+fullBookStyle;
 
