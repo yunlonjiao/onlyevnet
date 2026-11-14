@@ -511,10 +511,12 @@ const finalFixStyle=`
 .cm-site .cm-booth-street{display:block;font-size:12px;font-weight:800;color:var(--cm-accent);margin:0 0 2px}
 `;
 const lastFixStyle=`
+/* 页脚去掉（导航已经覆盖全部入口） */
+.cm-site footer,.cm-site .footer{display:none!important}
 /* 街道宣传图（社团作品页） */
 .cm-site .cm-street-banners{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 16px}
 .cm-site .cm-street-banner{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:var(--cm-ink)}
-.cm-site .cm-street-banner-art{display:block;aspect-ratio:16/9;border-radius:12px;background:linear-gradient(140deg,#bfe7ff,#e7dcf7);background-size:cover;background-position:center;border:1px solid var(--cm-line)}
+.cm-site .cm-street-banner-art{display:block;aspect-ratio:4/3;border-radius:12px;background:linear-gradient(140deg,#bfe7ff,#e7dcf7);background-size:cover;background-position:center;border:1px solid var(--cm-line)}
 .cm-site .cm-street-banner-art.empty{background-image:linear-gradient(140deg,#e8f4fb,#eee7fa)}
 .cm-site .cm-street-banner b{font-size:15px;font-weight:800}
 .cm-site .cm-street-banner small{font-size:12px;color:var(--cm-soft)}
@@ -558,6 +560,6 @@ export const previewBody=`<div class="cm-site">${loader}
 <section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLES & WORKS','参展社团与制品')}<div class="cm-street-banners" data-oe-mount="street-banners" aria-label="街道宣传图"></div><div class="cm-street-filter" data-oe-mount="street-filter" aria-label="按街道筛选"></div><div class="booth-directory-rich"></div></div></section>
 <section class="section oe-page-view" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>
 </main>
-<footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
+
 </div>`;
 
