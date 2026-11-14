@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.80.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.81.0';
 /* Template 06 runs on the shared IP ONLY core; the live-house flyer art, the band list and the set times differ. */
 export const template06=makeIpOnlyTemplate({
  id:'06-band-live',name:'06 · 乐队演出',label:'乐队演出',studioName:'乐队演出',

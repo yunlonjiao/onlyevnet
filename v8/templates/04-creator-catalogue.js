@@ -1,5 +1,5 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.80.0';
-import {template03} from '/v8/templates/03-creator-market.js?v=8.80.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.81.0';
+import {template03} from '/v8/templates/03-creator-market.js?v=8.81.0';
 /* Template 04 runs on the shared IP ONLY core; its art and the page-flip web catalogue differ. */
 export const template04=makeIpOnlyTemplate({
  id:'04-creator-catalogue',name:'04 · 创作者场刊',label:'创作者场刊',studioName:'创作者场刊',

@@ -1,8 +1,8 @@
-import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.80.0';
-import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.80.0';
-import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.80.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.80.0';
-import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.80.0';
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.81.0';
+import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.81.0';
+import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.81.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.81.0';
+import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.81.0';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
 
@@ -650,5 +650,5 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       target.classList.add('cm-jump-hit');setTimeout(()=>target.classList.remove('cm-jump-hit'),1600);
     });
   }
-  return {openGiftLightbox,renderRibbon,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderHomeMirrors,renderUpdates,renderCommunity,renderSponsors,renderCustomPages,renderOptionalPages,renderFooter,renderCollections,enhanceImages};
+  return {openGiftLightbox,renderRibbon,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderHomeMirrors,renderUpdates,renderCommunity,renderSponsors,renderCustomPages,renderOptionalPages,renderFooter,renderCollections,renderCatalogueBook,enhanceImages};
 }

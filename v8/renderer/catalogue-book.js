@@ -32,8 +32,8 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const chunk=(list,n)=>{const out=[];for(let i=0;i<list.length;i+=n)out.push(list.slice(i,i+n));return out};
   const head=(jp,zh)=>'<header class="cb-page-head"><small>'+jp+'</small><b>'+zh+'</b></header>';
   const pages=[];
-  pages.push({kind:'cover',html:'<div class="cb-cover'+(data.cover?' has-art':'')+'"'+(data.editable?' data-oe-image="heroImage"':'')+(data.cover?' style="background-image:url(&quot;'+esc(data.cover)+'&quot;)"':'')+'><span class="cb-cover-badge">WEB CATALOGUE</span><span class="cb-cover-vol">電子場刊 VOL.01</span><h3>'+esc(data.eventName||'STARDUST ONLY')+'</h3><p>'+esc([data.date,data.location].filter(Boolean).join(' · '))+'</p><i class="cb-cover-star">✦</i></div>'});
-  const sections=[['greeting','ごあいさつ','主办致辞'],...(data.news.length?[['news','お知らせ','最新公告']]:[]),...(data.tickets.length?[['tickets','入場券','入场票']]:[]),['venue','会場マップ','场地图'],...(data.circles.length?[['circles','サークル一覧','参展社团']]:[]),...(data.works.length?[['works','新刊・グッズ','新刊与制品']]:[]),...(data.social.length?[['community','コミュニティ','社群']]:[]),...(data.sponsors.length?[['sponsors','協賛','合作伙伴']]:[]),['rally','スタンプラリー','打卡页']];
+  pages.push({kind:'cover',html:'<div class="cb-cover'+(data.cover?' has-art':'')+'"'+(data.editable?' data-oe-image="heroImage"':'')+(data.cover?' style="background-image:url(&quot;'+esc(data.cover)+'&quot;)"':'')+'><span class="cb-cover-badge">WEB CATALOGUE</span><span class="cb-cover-vol">电子场刊 VOL.01</span><h3>'+esc(data.eventName||'STARDUST ONLY')+'</h3><p>'+esc([data.date,data.location].filter(Boolean).join(' · '))+'</p><i class="cb-cover-star">✦</i></div>'});
+  const sections=[['greeting','GREETING','主办致辞'],...(data.news.length?[['news','NEWS','最新公告']]:[]),...(data.tickets.length?[['tickets','ADMISSION','入场票']]:[]),['venue','VENUE MAP','场地图'],...(data.circles.length?[['circles','CIRCLE LIST','参展社团']]:[]),...(data.works.length?[['works','NEW WORKS','新刊与制品']]:[]),...(data.social.length?[['community','COMMUNITY','社群']]:[]),...(data.sponsors.length?[['sponsors','SPONSORS','合作伙伴']]:[]),['rally','STAMP RALLY','打卡页']];
   const contentsAt=pages.length;pages.push({kind:'contents',html:''});
   const starts={};
   starts.greeting=pages.length;
@@ -73,7 +73,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   Object.keys(starts).forEach(k=>delete starts[k]);
   pages.forEach((pg,i)=>pg.kinds.forEach(k=>{if(secOf[k]&&starts[secOf[k]]===undefined)starts[secOf[k]]=i}));
   if(pages.length%2)pages.splice(pages.length-1,0,{kind:'memo',html:head('MEMO','备忘')+'<div class="cb-memo"></div>'});
-  pages[contentsAt].html=head('CONTENTS','目次')+'<ol class="cb-contents">'+sections.filter(([k])=>starts[k]!==undefined).map(([k,jp,zh])=>'<li><button type="button" data-catalogue-goto="'+starts[k]+'"><span>'+jp+'</span><b>'+zh+'</b><i>P.'+String(starts[k]+1).padStart(2,'0')+'</i></button></li>').join('')+'</ol>';
+  pages[contentsAt].html=head('CONTENTS','目录')+'<ol class="cb-contents">'+sections.filter(([k])=>starts[k]!==undefined).map(([k,jp,zh])=>'<li><button type="button" data-catalogue-goto="'+starts[k]+'"><span>'+jp+'</span><b>'+zh+'</b><i>P.'+String(starts[k]+1).padStart(2,'0')+'</i></button></li>').join('')+'</ol>';
   const total=pages.length;
   const page=(i,side)=>i<0||i>=total?'<div class="cb-page cb-blank '+side+'"></div>':'<div class="cb-page cb-kind-'+pages[i].kind+' '+side+'" data-catalogue-page="'+i+'">'+pages[i].html+(i>0?'<span class="cb-folio">'+String(i+1).padStart(2,'0')+'</span>':'')+'</div>';
   root.innerHTML='<div class="cb-stage"><div class="cb-book" data-catalogue-book></div><span class="cb-ribbon" aria-hidden="true"></span></div><div class="cb-controls"><button type="button" data-catalogue-step="-1" aria-label="上一页">‹</button><span data-catalogue-count></span><button type="button" data-catalogue-step="1" aria-label="下一页">›</button></div>';

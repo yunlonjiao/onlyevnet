@@ -1,35 +1,35 @@
 // @ts-check
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {renderRecap} from '/v8/renderer/recap.js?v=8.80.0';
-import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.80.0';
+import {renderRecap} from '/v8/renderer/recap.js?v=8.81.0';
+import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {getTemplatePreview,loadTemplatePreview} from '/v8/templates/preview-registry.js?v=8.80.0';
+import {getTemplatePreview,loadTemplatePreview} from '/v8/templates/preview-registry.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.80.0';
+import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.80.0';
+import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.80.0';
+import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createCollections} from '/v8/renderer/collections.js?v=8.80.0';
+import {createCollections} from '/v8/renderer/collections.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createParticipation} from '/v8/renderer/participation.js?v=8.80.0';
+import {createParticipation} from '/v8/renderer/participation.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRouter} from '/v8/renderer/router.js?v=8.80.0';
+import {createRouter} from '/v8/renderer/router.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createFields} from '/v8/renderer/fields.js?v=8.80.0';
+import {createFields} from '/v8/renderer/fields.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRuntime} from '/v8/renderer/runtime.js?v=8.80.0';
+import {createRuntime} from '/v8/renderer/runtime.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.80.0';
+import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.80.0';
+import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {validateRendererContext} from '/v8/renderer/context.js?v=8.80.0';
+import {validateRendererContext} from '/v8/renderer/context.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {mapCarouselStyle} from '/v8/renderer/map-carousel.js?v=8.80.0';
+import {mapCarouselStyle} from '/v8/renderer/map-carousel.js?v=8.81.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {catalogueBookStyle} from '/v8/renderer/catalogue-book.js?v=8.80.0';
+import {catalogueBookStyle} from '/v8/renderer/catalogue-book.js?v=8.81.0';
 
 const OE_MOBILE_CSS="@media(max-width:720px){#booths .booth-directory-grid,#booths .booth-grid,#booths .lineup-grid,#booths .product-directory-grid,.booth-directory-grid,.product-directory-grid,.lineup-grid,.guest-grid,.sponsor-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}";
 
@@ -264,7 +264,7 @@ async function handleMessage(m){
     router.showPage(router.getCurrentPage(),false);
     requestAnimationFrame(setupHomeMotion);
   }
-  if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value);if(m.path!=='heroImage'&&m.path!=='mobileHeroImage')applyEntryState();if(['eventStatus','eventStatusMode','eventStartDateTime','eventEndDateTime'].includes(m.path))applyLifecycleState()}
+  if(m.type==='OE_PATCH_FIELD'){setDeep(m.path,m.value);fields.applyField(m.path,m.value);if(m.path!=='heroImage'&&m.path!=='mobileHeroImage')applyEntryState();else collections.renderCatalogueBook?.();if(['eventStatus','eventStatusMode','eventStartDateTime','eventEndDateTime'].includes(m.path))applyLifecycleState()}
   if(m.type==='OE_REPLACE_STATE'){mountTemplate(m.state?.templateId||DEFAULT_TEMPLATE_ID);state=m.state||{};applyState(state);runtime.initRuntime();requestAnimationFrame(setupHomeMotion)}
   if(m.type==='OE_SET_MODE'){
     fields.setMode(m.mode);
