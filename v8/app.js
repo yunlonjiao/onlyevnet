@@ -820,20 +820,6 @@ function openEntryAnimationInspector(){
    save();send({type:'OE_REPLACE_STATE',state});send({type:'OE_PREVIEW_ENTRY',state,play:false});openEntryAnimationInspector();
  });
 }
-function openTicketLinkInspector(){
-  setInspector('购票链接','购票按钮',
-    '<div class="entry-animation-inspector"><div class="item-fields">'+
-    '<label><span>售票平台链接</span><input id="ticketUrlInput" value="'+esc(state.ticketUrl||'')+'" placeholder="https://..."></label>'+
-    '<label><span>按钮文字</span><input id="ticketLabelInput" value="'+esc(state.ticketLinkLabel||'前往官方售票平台')+'" placeholder="前往官方售票平台"></label>'+
-    '</div><div class="entry-animation-actions"><button type="button" id="saveTicketLink">保存</button></div>'+
-    '<p class="inspector-note">留空时网站不显示购票按钮；活动结束后按钮会自动隐藏。</p></div>');
-  $('#saveTicketLink')?.addEventListener('click',()=>{
-    checkpoint();
-    state.ticketUrl=String($('#ticketUrlInput')?.value||'').trim();
-    state.ticketLinkLabel=String($('#ticketLabelInput')?.value||'').trim();
-    save();send({type:'OE_REPLACE_STATE',state});
-  });
-}
 function openStreetManager(){
   const groups=streetGroups(state);
   const images=new Map((state.streets||[]).map((s,i)=>[String(s.name||''),String(s.image||'')]));
@@ -890,7 +876,6 @@ function openPageTool(tool){
  if(tool==='lifecycle'){openLifecycleInspector();return}
  if(tool==='hero'){openHeroTitleInspector();return}
  if(tool==='banner'){openImageInspector('heroImage');return}
- if(tool==='ticketLink'){openTicketLinkInspector();return}
  if(tool==='intro'){openFieldInspector('tagline');return}
  if(tool==='seo'){openSeoInspector();return}
  if(tool==='recap'){openRecapDialog();return}
@@ -914,7 +899,7 @@ function renderPageContentNav(page,{openDefault=true}={}){
  const items=page==='home'&&state.templateId==='02-scrapbook'?
    PAGE_CONTENT_CONFIG.home.filter(x=>x.collection!=='ribbonItems'&&x.collection!=='explore').flatMap(x=>x.tool==='hero'?[x,{tool:'intro',label:'活动简介'}]:x.tool==='map'?[x,{collection:'guests',label:'嘉宾阵容'}]:[x]):
    (PAGE_CONTENT_CONFIG[page]||[]).filter(x=>!(activeTemplate.studioPages?.hiddenContent||[]).includes(x.collection||x.tool));
- const visibleItems=state.templateId==='03-creator-market'?[{tool:'basic',label:'基本信息'},{tool:'banner',label:'横幅'},{tool:'lifecycle',label:'活动状态'},{tool:'ticketLink',label:'购票链接'},...items.filter(x=>x.tool!=='hero'&&x.collection!=='explore'&&x.tool!=='basic'&&x.tool!=='lifecycle')]:items;
+ const visibleItems=state.templateId==='03-creator-market'?[{tool:'basic',label:'基本信息'},{tool:'banner',label:'横幅'},{tool:'lifecycle',label:'活动状态'},...items.filter(x=>x.tool!=='hero'&&x.collection!=='explore'&&x.tool!=='basic'&&x.tool!=='lifecycle')]:items;
  nav.innerHTML=visibleItems.map(x=>x.collection
    ?'<button type="button" data-page-content-manager="'+x.collection+'"><span>'+esc(x.label)+'</span><b data-content-count="'+x.collection+'">0</b></button>'
    :'<button type="button" data-page-tool="'+x.tool+'"><span>'+esc(x.label)+'</span></button>'

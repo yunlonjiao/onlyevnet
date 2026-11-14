@@ -511,6 +511,15 @@ const finalFixStyle=`
 .cm-site .cm-booth-street{display:block;font-size:12px;font-weight:800;color:var(--cm-accent);margin:0 0 2px}
 `;
 const lastFixStyle=`
+/* 首页街道卡：与街道海报同比例（竖版），右边的制品格跟着同一高度 */
+.cm-site .cm-street-card{aspect-ratio:1/1.414!important;height:auto!important}
+.cm-site .cm-market-left,.cm-site .cm-market-right{height:auto!important}
+.cm-site .cm-market-right{grid-template-rows:repeat(2,minmax(0,1fr))!important}
+/* 制品卡文字不被裁切 */
+.cm-site .cm-tile b{max-height:none!important;height:1.4em;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm-site .cm-tile small{max-height:none!important;height:1.3em;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 手机端板块之间留白 */
+@media(max-width:720px){.cm-site .section{padding-top:34px!important;padding-bottom:34px!important}.cm-site .head{margin-bottom:14px}.cm-site .cm-feed-head{margin-bottom:12px}}
 /* 街道宣传图按竖版海报（A4 比例）展示 */
 .cm-site .cm-street-banners{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))!important}
 .cm-site .cm-street-banner-art{aspect-ratio:1/1.414!important}
@@ -545,7 +554,31 @@ const lastFixStyle=`
 .cm-site .cm-tile-art{flex:1 1 auto;min-height:0;aspect-ratio:auto}
 @media(max-width:900px){.cm-site .cm-street-card,.cm-site .cm-market-right{height:auto!important}}
 `;
-export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+finalFixStyle+lastFixStyle;
+const final2Style=`
+@media(max-width:720px){
+ .cm-site .cm-headline .wrap{padding-top:12px!important;padding-bottom:12px!important;gap:8px!important}
+ .cm-site .cm-headline h1{font-size:22px!important}
+ .cm-site .cm-headline p{display:none!important}
+ .cm-site .cm-headline .meta{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}
+ .cm-site .cm-headline .meta::-webkit-scrollbar{display:none}
+}
+.cm-site .cm-tile b{padding:8px 10px 0!important}
+.cm-site .cm-tile small{padding:2px 10px 10px!important}
+.cm-site .cm-tile{padding:0 0 10px!important;box-sizing:border-box!important}
+.cm-site .cm-market-grid{grid-template-columns:minmax(200px,0.85fr) minmax(0,2fr)!important;align-items:stretch!important}
+.cm-site .cm-market-right{height:auto!important;grid-template-rows:repeat(2,minmax(0,1fr))!important}
+.cm-site .cm-tile{display:flex!important;flex-direction:column!important;grid-template-rows:none!important;height:100%!important;min-height:0}
+.cm-site .cm-tile-art{flex:1 1 auto!important;min-height:0!important}
+.cm-site .cm-tile b{flex:0 0 auto;height:1.4em;line-height:1.4}
+.cm-site .cm-tile small{flex:0 0 auto;height:1.35em;line-height:1.35}
+.cm-site #guide{display:block!important}
+.cm-site #guide.oe-page-hidden{display:block!important}
+.cm-site .cm-market-grid{align-items:stretch!important}
+.cm-site .cm-street-card{aspect-ratio:1/1.414!important;height:auto!important;width:100%!important}
+.cm-site .cm-market-left{height:auto!important}
+.cm-site .cm-market-right{height:auto!important;aspect-ratio:auto!important;grid-template-rows:repeat(2,minmax(0,1fr))!important}
+`;
+export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+finalFixStyle+lastFixStyle+final2Style;
 
 const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="cm-splash-bars" aria-hidden="true"><i></i><i></i><i></i></div><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
@@ -553,7 +586,7 @@ const head=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2
 const pageHead=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div><a class="section-back" href="#top" data-page-link="home">← 返回首页</a></div>';
 
 export const previewBody=`<div class="cm-site">${loader}
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团作品</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">社团作品</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
 <main id="top">
 <section class="hero"><div class="wrap"><div class="hero-art"><div class="kv"><strong class="cm-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section>
 <section class="cm-headline oe-home-only"><div class="wrap"><div class="cm-title"><span class="hero-kicker">同人创作展</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="meta"><span class="pill cm-status" data-oe-status="event">活动状态</span><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></section>
@@ -561,6 +594,7 @@ export const previewBody=`<div class="cm-site">${loader}
 <div class="cm-cols oe-home-only"><div class="cm-feed">
 <section class="cm-spotlight oe-home-only" id="spotlight" aria-label="随机推荐制品"><div class="wrap"><div class="cm-feed-head"><h2>推荐制品</h2><button type="button" class="cm-shuffle" data-spotlight-shuffle>换一换 ↻</button></div><div class="cm-market-grid"><div class="cm-market-left" data-oe-mount="street-card"></div><div class="cm-market-right" data-oe-mount="product-tiles"></div></div></div></section>
 <section class="section oe-home-only" id="map-home"><div class="wrap">${head('VENUE MAP','场地图')}<div class="cm-map-wrap"><div class="map-static-shell"><div class="map-static" id="venueMap" data-oe-image="venueMap.image"></div></div><div class="cm-streets" data-oe-mount="street-legend"></div></div></div></section>
+<section class="section oe-home-only" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>
 <section class="section" id="sponsors"><div class="wrap">${head('SPONSORS','合作伙伴')}<div class="sponsors"></div></div></section>
 </div><aside class="cm-rail" aria-label="公告与票务">
 <section class="updates-strip oe-home-only" id="updates"><div class="wrap">${head('NEWS','最新公告')}<div class="updates-list"></div></div></section>
@@ -569,7 +603,7 @@ export const previewBody=`<div class="cm-site">${loader}
 
 </aside></div>
 <section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLES & WORKS','参展社团与制品')}<div class="cm-street-banners" data-oe-mount="street-banners" aria-label="街道宣传图"></div><div class="cm-street-filter" data-oe-mount="street-filter" aria-label="按街道筛选"></div><div class="booth-directory-rich"></div></div></section>
-<section class="section oe-page-view" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>
+
 </main>
 
 </div>`;
