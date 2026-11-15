@@ -1,7 +1,7 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.89.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.90.0';
 
 const catalogueStyle=`
 .cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:#c8432b;--cc-lilac:#c9b99a;--cc-cyan:#7fe3ff;--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
@@ -321,14 +321,25 @@ const paperStyle=`
 @media(max-width:760px){.cc-site .cb-book.is-closed{transform:none}.cc-site .cb-book.is-end .cb-page.left{transform:none}.cc-site .cb-ribbon{display:none}.cc-site .brand{font-size:14px}}
 `;
 const fullBookStyle=`
+/* 书籍下方的信息条：活动状态 / 日期 / 城市 / 场馆 / 标语 */
+.cc-site .cb-infobar{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 8px;margin:0 auto 10px;max-width:min(900px,92vw);font-size:12px;font-weight:700;color:#5b4a3a;text-align:center}
+.cc-site .cb-infobar i{font-style:normal;opacity:.45}
+/* 社团/制品卡片不再被拉长：图片区固定比例，按内容排列 */
+.cc-site .cb-cuts{align-content:start!important;grid-template-rows:none!important;grid-auto-rows:auto!important}
+.cc-site .cb-cut-art{aspect-ratio:1/1;flex:0 0 auto!important;max-height:none!important}
+.cc-site .cb-works{align-content:start!important;grid-template-rows:none!important;grid-auto-rows:auto!important}
+.cc-site .cb-work-art{aspect-ratio:1/1;flex:0 0 auto!important}
+/* 留白页 */
+.cc-site .cb-blank-note{flex:1;display:grid;place-items:center;font-size:12px;letter-spacing:.3em;opacity:.35}
+.cc-site .cb-cover-status,.cc-site .cb-cover-venue,.cc-site .cb-cover-tagline{display:none!important}
 /* 入场与须知：去掉白底，只用细线分隔 */
 .cc-site .cb-rules article{background:transparent!important;border:1px solid #2b1f4733!important;border-radius:8px!important;padding:8px 12px!important}
 /* 社团 9 个/页：卡片更紧凑 */
-.cc-site .cb-cuts{gap:8px!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:minmax(0,1fr)!important;grid-template-rows:none!important}
+.cc-site .cb-cuts{gap:8px!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:none!important}
 .cc-site .cb-cut{padding:5px!important;gap:2px!important}
 .cc-site .cb-cut b{font-size:12px!important}.cc-site .cb-cut small{font-size:10px!important}
 /* 制品 16 个/页：4 列更紧凑 */
-.cc-site .cb-works{gap:8px!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-auto-rows:minmax(0,1fr)!important;grid-template-rows:none!important}
+.cc-site .cb-works{gap:8px!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-template-rows:none!important}
 .cc-site .cb-work b{font-size:12px!important}.cc-site .cb-work small{font-size:10px!important}
 /* 交通到达：图在上、文字在下 */
 .cc-site .cb-transit{min-height:0!important;flex:0 0 auto!important;max-height:52%}

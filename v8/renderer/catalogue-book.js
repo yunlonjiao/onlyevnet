@@ -36,12 +36,9 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const chunk=(list,n)=>{const out=[];for(let i=0;i<list.length;i+=n)out.push(list.slice(i,i+n));return out};
   const head=(jp,zh)=>'<header class="cb-page-head"><small>'+jp+'</small><b>'+zh+'</b></header>';
   const pages=[];
-  pages.push({kind:'cover',html:'<div class="cb-cover'+(data.cover?' has-art':'')+'"'+(data.editable?' data-oe-image="heroImage"':'')+(data.cover?' style="background-image:url(&quot;'+esc(data.cover)+'&quot;)"':'')+'><span class="cb-cover-badge">WEB CATALOGUE</span><span class="cb-cover-vol">电子场刊 VOL.01</span><h3>'+esc(data.eventName||'STARDUST ONLY')+'</h3><p>'+esc([data.date,data.location].filter(Boolean).join(' · '))+'</p>'+(data.status?'<span class="cb-cover-status">'+esc(data.status)+'</span>':'')+(data.venue?'<span class="cb-cover-venue">'+esc(data.venue)+'</span>':'')+(data.tagline?'<span class="cb-cover-tagline">'+esc(data.tagline)+'</span>':'')+'<i class="cb-cover-star">✦</i></div>'});
+  pages.push({kind:'cover',html:'<div class="cb-cover'+(data.cover?' has-art':'')+'"'+(data.editable?' data-oe-image="heroImage"':'')+(data.cover?' style="background-image:url(&quot;'+esc(data.cover)+'&quot;)"':'')+'><span class="cb-cover-badge">WEB CATALOGUE</span><span class="cb-cover-vol">电子场刊 VOL.01</span><h3>'+esc(data.eventName||'STARDUST ONLY')+'</h3><p>'+esc([data.date,data.location].filter(Boolean).join(' · '))+'</p><i class="cb-cover-star">✦</i></div>'});
   const sections=[...(data.news.length?[['news','NEWS','最新公告']]:[]),...(data.tickets.length?[['tickets','ADMISSION','入场票']]:[]),['venue','VENUE MAP','场地图'],...(data.circles.length?[['circles','CIRCLE LIST','参展社团']]:[]),...(data.works.length?[['works','NEW WORKS','新刊与制品']]:[]),...(data.traffic?[['traffic','ACCESS','交通到达']]:[]),...(data.rules.length?[['rules','RULES','入场与须知']]:[]),...(data.social.length?[['community','COMMUNITY','社群']]:[]),...(data.sponsors.length?[['sponsors','SPONSORS','合作伙伴']]:[]),['rally','STAMP RALLY','打卡页']];
-  const sectionCount=sections.filter(([k])=>k==='venue'||k==='rally'||(k==='news'&&data.news.length)||(k==='tickets'&&data.tickets.length)||(k==='circles'&&data.circles.length)||(k==='works'&&data.works.length)||(k==='traffic'&&data.traffic)||(k==='rules'&&data.rules.length)||(k==='community'&&data.social.length)||(k==='sponsors'&&data.sponsors.length)).length;
-  const contentsPages=Math.max(1,Math.ceil(sectionCount/6));
-  const contentsAt=pages.length;
-  for(let i=0;i<contentsPages;i++)pages.push({kind:'contents',html:''});
+  const contentsAt=pages.length;pages.push({kind:'contents',html:''});
   const starts={};
 
   const attr=(kind,i)=>' data-oe-item="'+kind+'" data-oe-index="'+i+'"';
@@ -52,7 +49,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
     const link=t==='tickets'?'<a class="cb-news-item" href="#tickets" data-catalogue-open="tickets"'+attr('updates',u.i)+'>':pageTargets(t)?'<a class="cb-news-item" href="#'+esc(t)+'" data-target-mode="page" data-page-link="'+esc(t)+'"'+attr('updates',u.i)+'>':'<div class="cb-news-item"'+attr('updates',u.i)+'>';
     return '<li>'+link+inner+(link.startsWith('<a')?'</a>':'</div>')+'</li>';
   }).join('')+'</ol>'}))}
-  if(data.tickets.length){starts.tickets=pages.length;const groups=chunk(data.tickets,4);groups.forEach((group,gi)=>pages.push({kind:'tickets',html:head('ADMISSION','入场票')+'<div class="cb-tickets">'+group.map((t,k)=>'<article class="cb-ticket"'+attr('tickets',t.i)+'><div class="cb-ticket-main"><small>ADMISSION TICKET · 入场券</small>'+fld('tickets.'+t.i+'.name',t.name,'b')+(t.gift||data.editable?fld('tickets.'+t.i+'.gift',t.gift,'p'):'')+(t.note||data.editable?fld('tickets.'+t.i+'.note',t.note,'em'):'')+'</div><div class="cb-ticket-stub"><span>No.'+String(gi*4+k+1).padStart(2,'0')+'</span>'+fld('tickets.'+t.i+'.price',t.price,'strong')+'</div></article>').join('')+'</div>'+(gi===groups.length-1?(data.ticketHref?'<a class="cb-buy ticket-purchase-link" href="'+esc(data.ticketHref)+'" target="_blank" rel="noopener">'+esc(data.ticketLabel)+' ↗</a>':(data.editable?'<span class="cb-buy cb-buy-empty">设置购票链接</span>':'')):'')}))}
+  if(data.tickets.length){starts.tickets=pages.length;const groups=chunk(data.tickets,4);groups.forEach((group,gi)=>pages.push({kind:'tickets',html:head('ADMISSION','入场票')+'<div class="cb-tickets">'+group.map((t,k)=>'<article class="cb-ticket"'+attr('tickets',t.i)+'><div class="cb-ticket-main"><small>ADMISSION TICKET · 入场券</small>'+fld('tickets.'+t.i+'.name',t.name,'b')+(t.gift||data.editable?fld('tickets.'+t.i+'.gift',t.gift,'p'):'')+(t.note||data.editable?fld('tickets.'+t.i+'.note',t.note,'em'):'')+'</div><div class="cb-ticket-stub"><span>No.'+String(gi*4+k+1).padStart(2,'0')+'</span>'+fld('tickets.'+t.i+'.price',t.price,'strong')+'</div></article>').join('')+'</div>'+(gi===groups.length-1?(data.ticketHref?'<a class="cb-buy ticket-purchase-link" href="'+esc(data.ticketHref)+'" target="_blank" rel="noopener">'+esc(data.ticketLabel)+' ↗</a>':(data.editable?'<button type="button" class="cb-buy cb-buy-empty" data-ticket-settings>设置购票链接 ↗</button>':'')):'')}))}
   starts.venue=pages.length;
   const routes=data.routes.length?'<nav class="cb-routes" aria-label="逛展导览"><b>✦ 逛展导览 ✦</b>'+data.routes.map(r=>'<a class="cb-route" href="#'+esc(r.target)+'" data-target-mode="page" data-page-link="'+esc(r.target)+'"'+attr('explore',r.i)+'><span>✦</span>'+fld('venueMap.links.'+r.i+'.label',r.label)+'<i>›</i></a>').join('')+'</nav>':'';
   if(data.maps.length)data.maps.forEach((m,i)=>pages.push({kind:'map',html:head('VENUE MAP','会场配置图'+(data.maps.length>1?' '+(i+1)+' / '+data.maps.length:''))+'<button type="button" class="cb-map" data-product-lightbox="'+esc(m.image)+'"><img src="'+esc(m.image)+'" alt="'+esc(m.title||'会场配置图')+'"></button>'+(m.title?'<p class="cb-map-title">'+esc(m.title)+'</p>':'')}));
@@ -60,7 +57,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   if(data.circles.length){starts.circles=pages.length;chunk(data.circles,9).forEach(group=>pages.push({kind:'circles',html:head('CIRCLE LIST','参展社团')+'<div class="cb-cuts">'+group.map(c=>'<a class="cb-cut" href="#booths" data-target-mode="page" data-page-link="booths" data-catalogue-booth="'+c.boothIndex+'"><span class="cb-space">'+esc(c.no||'—')+'</span><span class="cb-cut-art">'+(c.cut?'<img src="'+esc(c.cut)+'" alt="'+esc(c.name)+'" loading="lazy">':'<em>'+esc((c.name||'?').slice(0,2))+'</em>')+'</span><b>'+esc(c.name)+'</b><small>'+esc(c.type)+'</small></a>').join('')+'</div>'}))}
   if(data.works.length){starts.works=pages.length;chunk(data.works,16).forEach(group=>pages.push({kind:'works',html:head('NEW WORKS','新刊与制品')+'<div class="cb-works">'+group.map(w=>'<a class="cb-work" href="#booths" data-target-mode="page" data-page-link="booths" data-catalogue-product="'+w.boothIndex+':'+w.productIndex+'"><span class="cb-work-art">'+(w.image?'<img src="'+esc(w.image)+'" alt="'+esc(w.name)+'" loading="lazy">':'<em>NEW</em>')+'</span><b>'+esc(w.name)+'</b><small>'+esc([w.no,w.price].filter(Boolean).join(' · '))+'</small></a>').join('')+'</div>'}))}
   if(data.traffic){starts.traffic=pages.length;pages.push({kind:'traffic',html:head('ACCESS','交通到达')+(data.transitImage?'<button type="button" class="cb-map cb-transit" data-product-lightbox="'+esc(data.transitImage)+'"><img src="'+esc(data.transitImage)+'" alt="交通路线图"></button>':'<div class="cb-transit-empty"><b>交通路线图</b><span>主办方暂未上传路线图</span></div>')+'<p class="cb-traffic-copy">'+esc(data.traffic.text)+'</p>'})}
-  if(data.rules.length){starts.rules=pages.length;chunk(data.rules,2).forEach((group,gi)=>pages.push({kind:'rules',html:head('RULES','入场与须知'+(data.rules.length>2?' '+(gi+1)+' / '+Math.ceil(data.rules.length/2):''))+'<div class="cb-rules cb-rules-full">'+group.map((r,i)=>'<article><b>'+String(gi*2+i+1).padStart(2,'0')+' '+esc(r.title)+'</b><p>'+esc(r.text)+'</p></article>').join('')+'</div>'}))}
+  if(data.rules.length){starts.rules=pages.length;chunk(data.rules,2).forEach((group,gi)=>pages.push({kind:'rules',html:head('RULES','入场与须知')+'<div class="cb-rules cb-rules-full">'+group.map((r,i)=>'<article><b>'+String(gi*2+i+1).padStart(2,'0')+' '+esc(r.title)+'</b><p>'+esc(r.text)+'</p></article>').join('')+'</div>'}))}
   if(data.social.length){starts.community=pages.length;chunk(data.social,4).forEach(group=>pages.push({kind:'community',html:head('COMMUNITY','社群')+'<div class="cb-socials">'+group.map(x=>'<article class="cb-social"'+attr('socialLinks',x.i)+'><span class="cb-social-art">'+(x.image?'<img src="'+esc(x.image)+'" alt="'+esc(x.label)+'" loading="lazy">':'<em>'+esc((x.label||'群').slice(0,2))+'</em>')+'</span>'+fld('socialLinks.'+x.i+'.label',x.label,'b')+(x.note||data.editable?fld('socialLinks.'+x.i+'.note',x.note,'p'):'')+(x.url?'<a href="'+esc(x.url)+'" target="_blank" rel="noopener">进入 ↗</a>':'')+'</article>').join('')+'</div>'}))}
   if(data.sponsors.length){starts.sponsors=pages.length;chunk(data.sponsors,8).forEach(group=>pages.push({kind:'sponsors',html:head('SPECIAL THANKS','合作伙伴')+'<div class="cb-thanks">'+group.map(x=>{const inner=(x.logo?'<img src="'+esc(x.logo)+'" alt="'+esc(x.name)+'" loading="lazy">':'')+fld('sponsors.'+x.i+'.name',x.name,'b')+(x.level||data.editable?fld('sponsors.'+x.i+'.level',x.level,'small'):'');return (x.url?'<a class="cb-sponsor" href="'+esc(x.url)+'" target="_blank" rel="noopener"'+attr('sponsors',x.i)+'>':'<div class="cb-sponsor"'+attr('sponsors',x.i)+'>')+inner+(x.url?'</a>':'</div>')}).join('')+'</div>'}))}
   starts.rally=pages.length;
@@ -80,14 +77,11 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const secOf={news:'news',tickets:'tickets',map:'venue',circles:'circles',works:'works',traffic:'traffic',rules:'rules',community:'community',sponsors:'sponsors',rally:'rally'};
   Object.keys(starts).forEach(k=>delete starts[k]);
   pages.forEach((pg,i)=>pg.kinds.forEach(k=>{if(secOf[k]&&starts[secOf[k]]===undefined)starts[secOf[k]]=i}));
-  if(pages.length%2)pages.splice(pages.length-1,0,{kind:'memo',html:head('MEMO','我的备忘')+'<div class="cb-memo">'+fld('bookMemo',data.memo||'','div')+'</div>'});
+  if(pages.length%2)pages.splice(pages.length-1,0,{kind:'blank',html:'<div class="cb-blank-note">此页留白 ✦</div>'});
   const contentItems=sections.filter(([k])=>starts[k]!==undefined).map(([k,jp,zh])=>'<li><button type="button" data-catalogue-goto="'+starts[k]+'"><span>'+jp+'</span><b>'+zh+'</b><i>P.'+String(starts[k]+1).padStart(2,'0')+'</i></button></li>');
-  for(let i=0;i<contentsPages;i++){
-    pages[contentsAt+i].html=head('CONTENTS',contentsPages>1?'目录 '+(i+1)+' / '+contentsPages:'目录')+'<ol class="cb-contents">'+contentItems.slice(i*6,i*6+6).join('')+'</ol>';
-  }
-  let total=pages.length;
+  pages[contentsAt].html=head('CONTENTS','目录')+'<ol class="cb-contents">'+contentItems.join('')+'</ol>';  let total=pages.length;
   const page=(i,side)=>i<0||i>=total?'<div class="cb-page cb-blank '+side+'"></div>':'<div class="cb-page cb-kind-'+pages[i].kind+' '+side+'" data-catalogue-page="'+i+'">'+pages[i].html+(i>0?'<span class="cb-folio">'+String(i+1).padStart(2,'0')+'</span>':'')+'</div>';
-  root.innerHTML='<div class="cb-stage"><div class="cb-book" data-catalogue-book></div><span class="cb-ribbon" aria-hidden="true"></span></div><div class="cb-controls"><button type="button" data-catalogue-step="-1" aria-label="上一页">‹</button><span data-catalogue-count></span><button type="button" data-catalogue-step="1" aria-label="下一页">›</button><input class="cb-jump" type="number" min="1" inputmode="numeric" aria-label="输入页码跳转" placeholder="页码"></div>';
+  root.innerHTML='<div class="cb-infobar">'+[data.status,data.date,data.location,data.venue,data.tagline].filter(Boolean).map(v=>'<span>'+esc(v)+'</span>').join('<i>·</i>')+'</div><div class="cb-stage"><div class="cb-book" data-catalogue-book></div><span class="cb-ribbon" aria-hidden="true"></span></div><div class="cb-controls"><button type="button" data-catalogue-step="-1" aria-label="上一页">‹</button><span data-catalogue-count></span><button type="button" data-catalogue-step="1" aria-label="下一页">›</button><input class="cb-jump" type="number" min="1" inputmode="numeric" aria-label="输入页码跳转" placeholder="页码"></div>';
   const book=root.querySelector('[data-catalogue-book]'),count=root.querySelector('[data-catalogue-count]');
   const single=()=>root.clientWidth<760;
   // Desktop shows spreads [i-1,i] where i is even (the cover sits alone on the right).
@@ -146,7 +140,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   if(typeof ResizeObserver==='function'){let wasSingle=single();new ResizeObserver(()=>{if(single()!==wasSingle&&!busy){wasSingle=single();render()}}).observe(root)}
   render();
   // Generic pagination: measure list pages and push whatever overflows to continuation pages.
-  const splitSpec={news:".cb-news",tickets:".cb-tickets",circles:".cb-cuts",works:".cb-works",community:".cb-socials",sponsors:".cb-thanks",rules:".cb-rules"};
+  const splitSpec={contents:".cb-contents",news:".cb-news",tickets:".cb-tickets",circles:".cb-cuts",works:".cb-works",community:".cb-socials",sponsors:".cb-thanks",rules:".cb-rules"};
   function paginateOverflow(list,pageW,pageH){
     const probe=document.createElement("div");
     probe.className="cb-page";
@@ -182,15 +176,10 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
     const labels={news:["NEWS","最新公告"],tickets:["ADMISSION","入场票"],venue:["VENUE MAP","场地图"],circles:["CIRCLE LIST","参展社团"],works:["NEW WORKS","新刊与制品"],traffic:["ACCESS","交通到达"],rules:["RULES","入场与须知"],community:["COMMUNITY","社群"],sponsors:["SPONSORS","合作伙伴"],rally:["STAMP RALLY","打卡页"]};
     const order=["news","tickets","venue","circles","works","traffic","rules","community","sponsors","rally"];
     const items=order.filter(k=>starts[k]!==undefined).map(k=>'<li><button type="button" data-catalogue-goto="'+starts[k]+'"><span>'+labels[k][0]+'</span><b>'+labels[k][1]+'</b><i>P.'+String(starts[k]+1).padStart(2,"0")+'</i></button></li>');
-    const count=Math.max(1,Math.ceil(items.length/6));
-    const newPages=[];
-    for(let i=0;i<count;i++)newPages.push({kind:"contents",kinds:["contents"],html:'<header class="cb-page-head"><small>CONTENTS</small><b>'+(count>1?"目录 "+(i+1)+" / "+count:"目录")+'</b></header><ol class="cb-contents">'+items.slice(i*6,i*6+6).join("")+'</ol>'});
     const without=list.filter(pg=>pg.kind!=="contents");
-    const insertAt=Math.min(1,without.length);
-    without.splice(insertAt,0,...newPages);
+    without.splice(Math.min(1,without.length),0,{kind:"contents",kinds:["contents"],html:'<header class="cb-page-head"><small>CONTENTS</small><b>目录</b></header><ol class="cb-contents">'+items.join("")+'</ol>'});
     return without;
-  }
-  try{
+  }  try{
     const bk=root.querySelector("[data-catalogue-book]");
     const rect=bk?bk.getBoundingClientRect():null;
     if(rect&&rect.width>80&&rect.height>120){
