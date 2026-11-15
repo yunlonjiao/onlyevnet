@@ -1,7 +1,7 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.88.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.89.0';
 
 const catalogueStyle=`
 .cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:#c8432b;--cc-lilac:#c9b99a;--cc-cyan:#7fe3ff;--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
@@ -321,6 +321,25 @@ const paperStyle=`
 @media(max-width:760px){.cc-site .cb-book.is-closed{transform:none}.cc-site .cb-book.is-end .cb-page.left{transform:none}.cc-site .cb-ribbon{display:none}.cc-site .brand{font-size:14px}}
 `;
 const fullBookStyle=`
+/* 入场与须知：去掉白底，只用细线分隔 */
+.cc-site .cb-rules article{background:transparent!important;border:1px solid #2b1f4733!important;border-radius:8px!important;padding:8px 12px!important}
+/* 社团 9 个/页：卡片更紧凑 */
+.cc-site .cb-cuts{gap:8px!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:minmax(0,1fr)!important;grid-template-rows:none!important}
+.cc-site .cb-cut{padding:5px!important;gap:2px!important}
+.cc-site .cb-cut b{font-size:12px!important}.cc-site .cb-cut small{font-size:10px!important}
+/* 制品 16 个/页：4 列更紧凑 */
+.cc-site .cb-works{gap:8px!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-auto-rows:minmax(0,1fr)!important;grid-template-rows:none!important}
+.cc-site .cb-work b{font-size:12px!important}.cc-site .cb-work small{font-size:10px!important}
+/* 交通到达：图在上、文字在下 */
+.cc-site .cb-transit{min-height:0!important;flex:0 0 auto!important;max-height:52%}
+.cc-site .cb-traffic-copy{font-size:12px!important;line-height:1.7!important}
+.cc-site .cb-transit-empty{flex:0 0 auto;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:2px dashed #2b1f4733;border-radius:10px;opacity:.7;margin-bottom:10px}
+.cc-site .cb-transit-empty b{font-size:14px}.cc-site .cb-transit-empty span{font-size:12px}
+/* 封面补充活动信息 */
+.cc-site .cb-cover-status{align-self:flex-start;margin:8px 0 0;padding:3px 10px;border-radius:999px;background:#e7f7ee;color:#0f7a44;font-size:11px;font-weight:900}
+.cc-site .cb-cover-status:empty{display:none}
+.cc-site .cb-cover-venue{font-size:12px;font-weight:800;color:#f6efe2;opacity:.85}
+.cc-site .cb-cover-tagline{font-size:12px;line-height:1.6;color:#f6efe2;opacity:.8}
 /* 书本在页面里居中：把路由锚点从栅格里拿出去，否则它会占掉一半行高 */
 .cc-site #catalogue{position:relative}
 .cc-site #map-home{position:absolute!important;top:0;left:0;width:1px;height:1px;overflow:hidden;display:block!important}
