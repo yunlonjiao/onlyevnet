@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.93.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.93.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.94.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.94.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.93.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.93.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.93.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.93.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.94.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.94.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.94.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.94.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -809,14 +809,12 @@ function openStreetManager(){
       (img?'<img src="'+esc(img)+'" alt="" style="width:64px;height:36px;object-fit:cover;border-radius:6px">':'')+
       '<button type="button" class="ghost" data-street-delete="'+esc(g.name)+'">删除街道</button></div></div>';
   }).join('');
-  const bookToggle=state.templateId==='04-creator-catalogue'?'<label class="toggle-field" style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><input type="checkbox" id="bookStreetPage" '+(state.bookStreetPage===true?'checked':'')+'><span>在书里显示「街道导览」页</span></label>':'';
   setInspector('摊位','街道',
     '<div class="entry-animation-inspector">'+
-    bookToggle+(rows||'<div class="sidebar-content-empty">还没有街道，先在摊位的「街道」字段里填写。</div>')+
+    (rows||'<div class="sidebar-content-empty">还没有街道，先在摊位的「街道」字段里填写。</div>')+
     '<div class="item-fields"><label><span>新增街道</span><input id="newStreetName" placeholder="例如 D 街道 · 新刊区"></label></div>'+
     '<div class="entry-animation-actions"><button type="button" id="addStreetBtn">新增街道</button></div>'+
     '<p class="inspector-note">街道来自每个摊位的「街道」字段；改名会同步更新该街道下的所有摊位，宣传图用于社团作品页的街道横幅和首页街道卡。</p></div>');
-  inspector.querySelector('#bookStreetPage')?.addEventListener('change',e=>{checkpoint();state.bookStreetPage=e.target.checked;save();send({type:'OE_REPLACE_STATE',state});});
   inspector.querySelectorAll('[data-street-rename]').forEach(input=>input.addEventListener('change',()=>{
     const from=input.dataset.streetRename,to=String(input.value||'').trim();
     if(!to||to===from)return;
@@ -953,6 +951,19 @@ function syncModuleControls(){
  if(guestPageRow)guestPageRow.style.display=state.templateId==='02-scrapbook'?'none':'';
  // Templates without some first-level pages (03 has no 活动 / 嘉宾) or without custom pages.
  (activeTemplate.studioPages?.hidden||[]).forEach(page=>{const row=document.querySelector('[data-page-row="'+page+'"]');if(row)row.style.display='none'});
+ const bookStreetRow=(()=>{
+   if(state.templateId!=='04-creator-catalogue')return null;
+   let row=document.querySelector('[data-page-row="bookStreets"]');
+   const nav=document.querySelector('.page-nav');
+   if(!row&&nav){
+     row=document.createElement('div');row.className='page-tree-row';row.dataset.pageRow='bookStreets';
+     row.innerHTML='<button type="button"><span class="nav-icon">◎</span><span>街道导览</span></button><label class="page-inline-switch" title="在书里显示街道导览页"><input type="checkbox" data-book-street aria-label="街道导览页面"><i></i></label>';
+     const custom=nav.querySelector('#customPageRows');if(custom)nav.insertBefore(row,custom);else nav.appendChild(row);
+     row.querySelector('[data-book-street]').addEventListener('change',e=>{checkpoint();state.bookStreetPage=e.target.checked;save();send({type:'OE_REPLACE_STATE',state});});
+   }
+   if(row){row.style.display='';const cb=row.querySelector('[data-book-street]');if(cb)cb.checked=state.bookStreetPage===true;}
+   return row;
+ })();
  const animRow=document.querySelector('.entry-animation-row');if(animRow)animRow.style.display=(activeTemplate.studioPages?.hidden||[]).includes('animation')?'none':'';
  const customPageButton=document.querySelector('#createCustomPageBtn');
  if(customPageButton)customPageButton.hidden=activeTemplate.studioPages?.customPages===false;
@@ -985,7 +996,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.93.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.94.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1163,7 +1174,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.93.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.94.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}

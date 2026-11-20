@@ -1,17 +1,23 @@
-import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.93.0';
-import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.93.0';
-import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.93.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.93.0';
-import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.93.0';
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.94.0';
+import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.94.0';
+import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.94.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.94.0';
+import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.94.0';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
 
   function enhanceImages(){
+    qa('img[data-product-lightbox]').forEach(img=>{if(!img.hasAttribute('style'))img.style.cursor='zoom-in'});
     qa('img').forEach(img=>{
       if(!img.hasAttribute('loading'))img.setAttribute('loading','lazy');
       if(!img.hasAttribute('decoding'))img.setAttribute('decoding','async');
       if(img.dataset.oeImageGuard==='1')return;
       img.dataset.oeImageGuard='1';
+      // 所有内容图片都能点开放大（和 01/02 一样）
+      if(!img.closest('[data-product-lightbox]')&&!img.closest('#loader')&&!img.closest('.inspector')&&!img.closest('.sidebar')){
+        img.dataset.productLightbox=img.currentSrc||img.getAttribute('src')||'';
+        img.style.cursor='zoom-in';
+      }
       const markFailed=()=>{
         const host=img.closest('.guest-image,.directory-product-image,.directory-booth-logo,.ticket-image,.guide-access-media,.social-image,.sponsor-logo,.custom-page-image,.optional-page-image,.activity-feature-media')||img.parentElement;
         if(host)host.classList.add('image-failed');
