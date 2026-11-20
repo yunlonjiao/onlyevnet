@@ -43,7 +43,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const sections=[...(data.news.length?[['news','NEWS','最新公告']]:[]),...(data.tickets.length?[['tickets','ADMISSION','入场票']]:[]),['venue','VENUE MAP','场地图'],...(data.streetPage&&data.streets.length?[['streets','STREET GUIDE','街道导览']]:[]),...(data.circles.length?[['circles','CIRCLE LIST','参展社团']]:[]),...(data.works.length?[['works','NEW WORKS','新刊与制品']]:[]),...(data.traffic?[['traffic','ACCESS','交通到达']]:[]),...(data.rules.length?[['rules','RULES','入场与须知']]:[]),...(data.social.length?[['community','COMMUNITY','社群']]:[]),...(data.sponsors.length?[['sponsors','SPONSORS','合作伙伴']]:[])];
   const contentsProbe=root.clientWidth||1024;
   const contentsSectionCount=sections.filter(([k])=>k==='venue'||(k==='streets'&&data.streetPage&&data.streets.length)||(k==='news'&&data.news.length)||(k==='tickets'&&data.tickets.length)||(k==='circles'&&data.circles.length)||(k==='works'&&data.works.length)||(k==='traffic'&&data.traffic)||(k==='rules'&&data.rules.length)||(k==='community'&&data.social.length)||(k==='sponsors'&&data.sponsors.length)).length;
-  const contentsPerPage=contentsProbe<760?7:99;
+  const contentsPerPage=99;
   const contentsPageCount=Math.max(1,Math.ceil(contentsSectionCount/contentsPerPage));
   const contentsAt=pages.length;
   for(let i=0;i<contentsPageCount;i++)pages.push({kind:'contents',html:''});
@@ -66,7 +66,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   if(data.circles.length){starts.circles=pages.length;chunk(data.circles,9).forEach(group=>pages.push({kind:'circles',html:head('CIRCLE LIST','参展社团')+'<div class="cb-cuts">'+group.map(c=>'<div class="cb-cut" data-catalogue-booth="'+c.boothIndex+'"><span class="cb-space">'+esc(c.no||'—')+'</span><span class="cb-cut-art">'+(c.cut?'<img src="'+esc(c.cut)+'" alt="'+esc(c.name)+'" loading="lazy">':'<em>'+esc((c.name||'?').slice(0,2))+'</em>')+'</span><b>'+esc(c.name)+'</b><small>'+esc(c.type)+'</small></div>').join('')+'</div>'}))}
   if(data.works.length){starts.works=pages.length;chunk(data.works,16).forEach(group=>pages.push({kind:'works',html:head('NEW WORKS','新刊与制品')+'<div class="cb-works">'+group.map(w=>'<div class="cb-work" data-catalogue-product="'+w.boothIndex+':'+w.productIndex+'"><span class="cb-work-art">'+(w.image?'<img src="'+esc(w.image)+'" alt="'+esc(w.name)+'" loading="lazy">':'<em>NEW</em>')+'</span><b>'+esc(w.name)+'</b><small>'+esc([w.no,w.price].filter(Boolean).join(' · '))+'</small></div>').join('')+'</div>'}))}
   if(data.traffic){starts.traffic=pages.length;pages.push({kind:'traffic',html:head('ACCESS','交通到达')+(data.transitImage?'<button type="button" class="cb-map cb-transit" data-product-lightbox="'+esc(data.transitImage)+'"><img src="'+esc(data.transitImage)+'" alt="交通路线图"></button>':'<div class="cb-transit-empty"><b>交通路线图</b><span>主办方暂未上传路线图</span></div>')+'<p class="cb-traffic-copy">'+esc(data.traffic.text)+'</p>'+(data.navUrl?'<a class="cb-buy cb-nav" href="'+esc(data.navUrl)+'" target="_blank" rel="noopener">导航到场馆 ↗</a>':'')})}
-  if(data.rules.length){starts.rules=pages.length;chunk(data.rules,root.clientWidth<760?1:2).forEach((group,gi)=>pages.push({kind:'rules',html:head('RULES','入场与须知')+'<div class="cb-rules cb-rules-full">'+group.map((r,i)=>'<article><b>'+String(gi*2+i+1).padStart(2,'0')+' '+esc(r.title)+'</b><p>'+esc(r.text)+'</p></article>').join('')+'</div>'}))}
+  if(data.rules.length){starts.rules=pages.length;chunk(data.rules,2).forEach((group,gi)=>pages.push({kind:'rules',html:head('RULES','入场与须知')+'<div class="cb-rules cb-rules-full">'+group.map((r,i)=>'<article><b>'+String(gi*2+i+1).padStart(2,'0')+' '+esc(r.title)+'</b><p>'+esc(r.text)+'</p></article>').join('')+'</div>'}))}
   if(data.social.length){starts.community=pages.length;chunk(data.social,4).forEach(group=>pages.push({kind:'community',html:head('COMMUNITY','社群')+'<div class="cb-socials">'+group.map(x=>'<article class="cb-social"'+attr('socialLinks',x.i)+'><span class="cb-social-art">'+(x.image?'<img src="'+esc(x.image)+'" alt="'+esc(x.label)+'" loading="lazy">':'<em>'+esc((x.label||'群').slice(0,2))+'</em>')+'</span>'+fld('socialLinks.'+x.i+'.label',x.label,'b')+(x.note||data.editable?fld('socialLinks.'+x.i+'.note',x.note,'p'):'')+(x.url?'<a href="'+esc(x.url)+'" target="_blank" rel="noopener">进入 ↗</a>':'')+'</article>').join('')+'</div>'}))}
   if(data.sponsors.length){starts.sponsors=pages.length;chunk(data.sponsors,8).forEach(group=>pages.push({kind:'sponsors',html:head('SPECIAL THANKS','合作伙伴')+'<div class="cb-thanks">'+group.map(x=>{const inner=(x.logo?'<img src="'+esc(x.logo)+'" alt="'+esc(x.name)+'" loading="lazy">':'')+fld('sponsors.'+x.i+'.name',x.name,'b')+(x.level||data.editable?fld('sponsors.'+x.i+'.level',x.level,'small'):'');return (x.url?'<a class="cb-sponsor" href="'+esc(x.url)+'" target="_blank" rel="noopener"'+attr('sponsors',x.i)+'>':'<div class="cb-sponsor"'+attr('sponsors',x.i)+'>')+inner+(x.url?'</a>':'</div>')}).join('')+'</div>'}))}
   pages.push({kind:'backcover',html:'<div class="cb-backcover"><span class="cb-backcover-mark">✦</span><b>'+esc(data.eventName||'STARDUST ONLY')+'</b><p>'+esc([data.date,data.location].filter(Boolean).join(' · '))+'</p><small>电子场刊 · 感谢翻阅</small></div>'});
@@ -138,15 +138,15 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   };
   document.addEventListener('click',document.__oeBookOpen,true);
   root.addEventListener('click',e=>{const g=e.target.closest('[data-catalogue-goto]');if(g){e.preventDefault();e.stopPropagation();go(Number(g.dataset.catalogueGoto))}});
-  let startX=null;
+  let startX=null,startY=null,startT=0;
   const openOnClick=()=>{
     if(single()&&at===0){go(1);return true}
     if(book.classList.contains('is-closed')&&!single()){go(at+2);return true}
     return false;
   };
   book.addEventListener('click',e=>{if(openOnClick()){e.preventDefault();e.stopPropagation()}});
-  book.addEventListener('pointerdown',e=>{startX=e.clientX});
-  book.addEventListener('pointerup',e=>{if(startX===null)return;const dx=e.clientX-startX;startX=null;if(Math.abs(dx)>50){book._oeSwiped=true;go(at+(dx<0?1:-1)*(single()?1:2))}});
+  book.addEventListener('pointerdown',e=>{startX=e.clientX;startY=e.clientY;startT=Date.now()});
+  book.addEventListener('pointerup',e=>{if(startX===null)return;const dx=e.clientX-startX,dy=e.clientY-startY,dt=Date.now()-startT;startX=null;startY=null;if(Math.abs(dx)<55||Math.abs(dx)<Math.abs(dy)*1.2||dt>900)return;book._oeSwiped=true;go(at+(dx<0?1:-1)*(single()?1:2))});
   book.addEventListener('click',e=>{if(book._oeSwiped){e.preventDefault();e.stopPropagation();book._oeSwiped=false}},true);
   root.tabIndex=0;
   root.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();go(at+(single()?1:2))}if(e.key==='ArrowLeft'){e.preventDefault();go(at-(single()?1:2))}});
