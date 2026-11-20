@@ -37,7 +37,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const head=(jp,zh)=>'<header class="cb-page-head"><small>'+jp+'</small><b>'+zh+'</b></header>';
   const pages=[];
   pages.push({kind:'cover',html:'<div class="cb-cover'+(data.cover?' has-art':'')+'"'+(data.editable?' data-oe-image="heroImage"':'')+(data.cover?' style="background-image:url(&quot;'+esc(data.cover)+'&quot;)"':'')+'><span class="cb-cover-badge">WEB CATALOGUE</span><span class="cb-cover-vol">电子场刊 VOL.01</span><h3>'+esc(data.eventName||'STARDUST ONLY')+'</h3><p>'+esc([data.date,data.location].filter(Boolean).join(' · '))+'</p><i class="cb-cover-star">✦</i></div>'});
-  const sections=[...(data.news.length?[['news','NEWS','最新公告']]:[]),...(data.tickets.length?[['tickets','ADMISSION','入场票']]:[]),['venue','VENUE MAP','场地图'],...(data.circles.length?[['circles','CIRCLE LIST','参展社团']]:[]),...(data.works.length?[['works','NEW WORKS','新刊与制品']]:[]),...(data.traffic?[['traffic','ACCESS','交通到达']]:[]),...(data.rules.length?[['rules','RULES','入场与须知']]:[]),...(data.social.length?[['community','COMMUNITY','社群']]:[]),...(data.sponsors.length?[['sponsors','SPONSORS','合作伙伴']]:[]),['rally','STAMP RALLY','打卡页']];
+  const sections=[...(data.news.length?[['news','NEWS','最新公告']]:[]),...(data.tickets.length?[['tickets','ADMISSION','入场票']]:[]),['venue','VENUE MAP','场地图'],...(data.circles.length?[['circles','CIRCLE LIST','参展社团']]:[]),...(data.works.length?[['works','NEW WORKS','新刊与制品']]:[]),...(data.traffic?[['traffic','ACCESS','交通到达']]:[]),...(data.rules.length?[['rules','RULES','入场与须知']]:[]),...(data.social.length?[['community','COMMUNITY','社群']]:[]),...(data.sponsors.length?[['sponsors','SPONSORS','合作伙伴']]:[])];
   const contentsAt=pages.length;pages.push({kind:'contents',html:''});
   const starts={};
 
@@ -60,8 +60,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   if(data.rules.length){starts.rules=pages.length;chunk(data.rules,2).forEach((group,gi)=>pages.push({kind:'rules',html:head('RULES','入场与须知')+'<div class="cb-rules cb-rules-full">'+group.map((r,i)=>'<article><b>'+String(gi*2+i+1).padStart(2,'0')+' '+esc(r.title)+'</b><p>'+esc(r.text)+'</p></article>').join('')+'</div>'}))}
   if(data.social.length){starts.community=pages.length;chunk(data.social,4).forEach(group=>pages.push({kind:'community',html:head('COMMUNITY','社群')+'<div class="cb-socials">'+group.map(x=>'<article class="cb-social"'+attr('socialLinks',x.i)+'><span class="cb-social-art">'+(x.image?'<img src="'+esc(x.image)+'" alt="'+esc(x.label)+'" loading="lazy">':'<em>'+esc((x.label||'群').slice(0,2))+'</em>')+'</span>'+fld('socialLinks.'+x.i+'.label',x.label,'b')+(x.note||data.editable?fld('socialLinks.'+x.i+'.note',x.note,'p'):'')+(x.url?'<a href="'+esc(x.url)+'" target="_blank" rel="noopener">进入 ↗</a>':'')+'</article>').join('')+'</div>'}))}
   if(data.sponsors.length){starts.sponsors=pages.length;chunk(data.sponsors,8).forEach(group=>pages.push({kind:'sponsors',html:head('SPECIAL THANKS','合作伙伴')+'<div class="cb-thanks">'+group.map(x=>{const inner=(x.logo?'<img src="'+esc(x.logo)+'" alt="'+esc(x.name)+'" loading="lazy">':'')+fld('sponsors.'+x.i+'.name',x.name,'b')+(x.level||data.editable?fld('sponsors.'+x.i+'.level',x.level,'small'):'');return (x.url?'<a class="cb-sponsor" href="'+esc(x.url)+'" target="_blank" rel="noopener"'+attr('sponsors',x.i)+'>':'<div class="cb-sponsor"'+attr('sponsors',x.i)+'>')+inner+(x.url?'</a>':'</div>')}).join('')+'</div>'}))}
-  starts.rally=pages.length;
-  pages.push({kind:'rally',html:head('STAMP RALLY','打卡页')+'<p class="cb-rally-copy">逛社团、收集印章，在会场留下属于你的回忆。</p><div class="cb-stamps">'+['入场','社团','新刊','合影','场贩','再见'].map(s=>'<span>'+s+'</span>').join('')+'</div><p class="cb-rally-end">SEE YOU AT THE VENUE ✦</p>'});
+  pages.push({kind:'backcover',html:'<div class="cb-backcover"><span class="cb-backcover-mark">✦</span><b>'+esc(data.eventName||'STARDUST ONLY')+'</b><p>'+esc([data.date,data.location].filter(Boolean).join(' · '))+'</p><small>电子场刊 · 感谢翻阅</small></div>'});
   // Short sections share a page, so one announcement or two tickets do not leave a page mostly empty.
   const tally=(pg,re)=>(pg.html.match(re)||[]).length;
   const est=pg=>pg.kind==='news'?70+tally(pg,/class="cb-news-item/g)*66:pg.kind==='tickets'?70+tally(pg,/class="cb-ticket"/g)*139+(pg.html.includes('cb-buy')?50:0):pg.kind==='community'?70+Math.ceil(tally(pg,/class="cb-social"/g)/2)*282:pg.kind==='sponsors'?70+Math.ceil(tally(pg,/class="cb-sponsor"/g)/3)*52:0;
@@ -74,13 +73,13 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
     else{pg.h=h;packed.push(pg)}
   });
   pages.length=0;packed.forEach(pg=>pages.push(pg));
-  const secOf={news:'news',tickets:'tickets',map:'venue',circles:'circles',works:'works',traffic:'traffic',rules:'rules',community:'community',sponsors:'sponsors',rally:'rally'};
+  const secOf={news:'news',tickets:'tickets',map:'venue',circles:'circles',works:'works',traffic:'traffic',rules:'rules',community:'community',sponsors:'sponsors',};
   Object.keys(starts).forEach(k=>delete starts[k]);
   pages.forEach((pg,i)=>pg.kinds.forEach(k=>{if(secOf[k]&&starts[secOf[k]]===undefined)starts[secOf[k]]=i}));
   if(pages.length%2)pages.splice(pages.length-1,0,{kind:'blank',html:'<div class="cb-blank-note">此页留白 ✦</div>'});
   const contentItems=sections.filter(([k])=>starts[k]!==undefined).map(([k,jp,zh])=>'<li><button type="button" data-catalogue-goto="'+starts[k]+'"><span>'+jp+'</span><b>'+zh+'</b><i>P.'+String(starts[k]+1).padStart(2,'0')+'</i></button></li>');
   pages[contentsAt].html=head('CONTENTS','目录')+'<ol class="cb-contents">'+contentItems.join('')+'</ol>';  let total=pages.length;
-  const page=(i,side)=>i<0||i>=total?'<div class="cb-page cb-blank '+side+'"></div>':'<div class="cb-page cb-kind-'+pages[i].kind+' '+side+'" data-catalogue-page="'+i+'">'+pages[i].html+(i>0?'<span class="cb-folio">'+String(i+1).padStart(2,'0')+'</span>':'')+'</div>';
+  const page=(i,side)=>i<0||i>=total?'<div class="cb-page cb-blank '+side+'"></div>':'<div class="cb-page cb-kind-'+pages[i].kind+' '+side+'" data-catalogue-page="'+i+'">'+pages[i].html+(i>0&&pages[i].kind!=='backcover'?'<span class="cb-folio">'+String(i+1).padStart(2,'0')+'</span>':'')+'</div>';
   root.innerHTML='<div class="cb-infobar">'+[data.status,data.date,data.location,data.venue,data.tagline].filter(Boolean).map(v=>'<span>'+esc(v)+'</span>').join('<i>·</i>')+'</div><div class="cb-stage"><div class="cb-book" data-catalogue-book></div><span class="cb-ribbon" aria-hidden="true"></span></div><div class="cb-controls"><button type="button" data-catalogue-step="-1" aria-label="上一页">‹</button><span data-catalogue-count></span><button type="button" data-catalogue-step="1" aria-label="下一页">›</button><input class="cb-jump" type="number" min="1" inputmode="numeric" aria-label="输入页码跳转" placeholder="页码"></div>';
   const book=root.querySelector('[data-catalogue-book]'),count=root.querySelector('[data-catalogue-count]');
   const single=()=>root.clientWidth<760;
@@ -170,11 +169,11 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
     return out;
   }
   function rebuildContents(list){
-    const kindMap={news:"news",tickets:"tickets",map:"venue",circles:"circles",works:"works",traffic:"traffic",rules:"rules",community:"community",sponsors:"sponsors",rally:"rally"};
+    const kindMap={news:"news",tickets:"tickets",map:"venue",circles:"circles",works:"works",traffic:"traffic",rules:"rules",community:"community",sponsors:"sponsors",};
     const starts={};
     list.forEach((pg,i)=>(pg.kinds||[pg.kind]).forEach(k=>{const s=kindMap[k];if(s&&starts[s]===undefined)starts[s]=i}));
-    const labels={news:["NEWS","最新公告"],tickets:["ADMISSION","入场票"],venue:["VENUE MAP","场地图"],circles:["CIRCLE LIST","参展社团"],works:["NEW WORKS","新刊与制品"],traffic:["ACCESS","交通到达"],rules:["RULES","入场与须知"],community:["COMMUNITY","社群"],sponsors:["SPONSORS","合作伙伴"],rally:["STAMP RALLY","打卡页"]};
-    const order=["news","tickets","venue","circles","works","traffic","rules","community","sponsors","rally"];
+    const labels={news:["NEWS","最新公告"],tickets:["ADMISSION","入场票"],venue:["VENUE MAP","场地图"],circles:["CIRCLE LIST","参展社团"],works:["NEW WORKS","新刊与制品"],traffic:["ACCESS","交通到达"],rules:["RULES","入场与须知"],community:["COMMUNITY","社群"],sponsors:["SPONSORS","合作伙伴"]};
+    const order=["news","tickets","venue","circles","works","traffic","rules","community","sponsors"];
     const items=order.filter(k=>starts[k]!==undefined).map(k=>'<li><button type="button" data-catalogue-goto="'+starts[k]+'"><span>'+labels[k][0]+'</span><b>'+labels[k][1]+'</b><i>P.'+String(starts[k]+1).padStart(2,"0")+'</i></button></li>');
     const without=list.filter(pg=>pg.kind!=="contents");
     without.splice(Math.min(1,without.length),0,{kind:"contents",kinds:["contents"],html:'<header class="cb-page-head"><small>CONTENTS</small><b>目录</b></header><ol class="cb-contents">'+items.join("")+'</ol>'});
@@ -214,6 +213,11 @@ export const catalogueBookStyle=`
 .cb-transit{min-height:180px}
 .cb-rules-full{display:grid;gap:14px}
 .cb-memo div{min-height:100%;white-space:pre-line;outline:none}
+.cb-backcover{position:absolute;inset:0;border-radius:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:32px;text-align:center;background:linear-gradient(160deg,#9a3a28,#6e2418);color:#fbf6ea}
+.cb-backcover-mark{font-size:26px;opacity:.85}
+.cb-backcover b{font-size:clamp(22px,2.4vw,30px);letter-spacing:.02em}
+.cb-backcover p{margin:0;font-size:13px;opacity:.9}
+.cb-backcover small{font-size:11px;letter-spacing:.22em;opacity:.7}
 .cb-stage{container-type:inline-size;position:relative;perspective:2200px;max-width:1100px;margin:0 auto}
 .cb-book{position:relative;display:grid;grid-template-columns:1fr 1fr;min-height:max(420px,calc(100cqw / 1.42));touch-action:pan-y;user-select:none}
 .cb-book.is-single{grid-template-columns:1fr;aspect-ratio:auto;min-height:560px;max-width:520px;margin:0 auto}
