@@ -16,6 +16,8 @@ export function catalogueBookData(state){
     memo:String(state?.bookMemo||''),
     status:({upcoming:'活动未开始',live:'活动进行中',ended:'活动已结束'})[state?.eventStatus||'']||'',
     navUrl:/^https?:\/\//i.test(String(state?.navigationUrl||'').trim())?String(state.navigationUrl).trim():'',
+    streetPage:state?.bookStreetPage===true,
+    streets:(()=>{const map=new Map();booths.forEach(b=>{const raw=String(b.street||'').trim();const letter=(String(b.no||'').trim().match(/^[A-Za-z]/)||[])[0];const name=raw||(letter?letter.toUpperCase()+' 区':'未分街道');const row=map.get(name)||{name,count:0,nos:[]};row.count++;if(b.no)row.nos.push(String(b.no));map.set(name,row)});return [...map.values()].map(r=>{const sorted=r.nos.slice().sort((a,b)=>a.localeCompare(b,'zh-CN',{numeric:true}));return {name:r.name,count:r.count,range:sorted.length?(sorted.length>1?sorted[0]+'–'+sorted[sorted.length-1]:sorted[0]):''}})})(),
     maps,
     circles:booths.map(b=>({no:String(b.no||''),name:String(b.name||''),type:String(b.type||''),cut:String(b.logo||b.products?.find(p=>p.image)?.image||''),boothIndex:b.boothIndex})),
     news:(state?.updates||[]).map((u,i)=>({i,title:String(u?.title||''),date:String(u?.date||''),target:String(u?.target||'')})).filter(u=>u.title.trim()),
@@ -38,12 +40,12 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const head=(jp,zh)=>'<header class="cb-page-head"><small>'+jp+'</small><b>'+zh+'</b></header>';
   const pages=[];
   pages.push({kind:'cover',html:'<div class="cb-cover'+(data.cover?' has-art':'')+'"'+(data.editable?' data-oe-image="heroImage"':'')+(data.cover?' style="background-image:url(&quot;'+esc(data.cover)+'&quot;)"':'')+'><span class="cb-cover-badge">WEB CATALOGUE</span><span class="cb-cover-vol">电子场刊 VOL.01</span><h3>'+esc(data.eventName||'STARDUST ONLY')+'</h3><p>'+esc([data.date,data.location].filter(Boolean).join(' · '))+'</p><i class="cb-cover-star">✦</i></div>'});
-  const sections=[...(data.news.length?[['news','NEWS','最新公告']]:[]),...(data.tickets.length?[['tickets','ADMISSION','入场票']]:[]),['venue','VENUE MAP','场地图'],...(data.circles.length?[['circles','CIRCLE LIST','参展社团']]:[]),...(data.works.length?[['works','NEW WORKS','新刊与制品']]:[]),...(data.traffic?[['traffic','ACCESS','交通到达']]:[]),...(data.rules.length?[['rules','RULES','入场与须知']]:[]),...(data.social.length?[['community','COMMUNITY','社群']]:[]),...(data.sponsors.length?[['sponsors','SPONSORS','合作伙伴']]:[])];
+  const sections=[...(data.news.length?[['news','NEWS','最新公告']]:[]),...(data.tickets.length?[['tickets','ADMISSION','入场票']]:[]),['venue','VENUE MAP','场地图'],...(data.streetPage&&data.streets.length?[['streets','STREET GUIDE','街道导览']]:[]),...(data.circles.length?[['circles','CIRCLE LIST','参展社团']]:[]),...(data.works.length?[['works','NEW WORKS','新刊与制品']]:[]),...(data.traffic?[['traffic','ACCESS','交通到达']]:[]),...(data.rules.length?[['rules','RULES','入场与须知']]:[]),...(data.social.length?[['community','COMMUNITY','社群']]:[]),...(data.sponsors.length?[['sponsors','SPONSORS','合作伙伴']]:[])];
   const contentsAt=pages.length;pages.push({kind:'contents',html:''});
   const starts={};
 
   const attr=(kind,i)=>' data-oe-item="'+kind+'" data-oe-index="'+i+'"';
-  const pageTargets=t=>t==='booths'||t==='guide'||t.startsWith('custom-');
+  const pageTargets=()=>false;
   if(data.news.length){starts.news=pages.length;chunk(data.news,5).forEach((group,gi)=>pages.push({kind:'news',html:head('NEWS','最新公告')+'<ol class="cb-news">'+group.map((u,k)=>{
     const t=({passport:'activities','guide-home':'guide','schedule-home':'activities'}[u.target]||u.target||'');
     const inner='<span class="cb-news-no">'+String(gi*5+k+1).padStart(2,'0')+'</span><time>'+esc(u.date)+'</time>'+fld('updates.'+u.i+'.title',u.title,'b')+'<i aria-hidden="true">›</i>';
@@ -55,8 +57,9 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const routes=data.routes.length?'<nav class="cb-routes" aria-label="逛展导览"><b>✦ 逛展导览 ✦</b>'+data.routes.map(r=>'<a class="cb-route" href="#'+esc(r.target)+'" data-target-mode="page" data-page-link="'+esc(r.target)+'"'+attr('explore',r.i)+'><span>✦</span>'+fld('venueMap.links.'+r.i+'.label',r.label)+'<i>›</i></a>').join('')+'</nav>':'';
   if(data.maps.length)data.maps.forEach((m,i)=>pages.push({kind:'map',html:head('VENUE MAP','会场配置图'+(data.maps.length>1?' '+(i+1)+' / '+data.maps.length:''))+'<button type="button" class="cb-map" data-product-lightbox="'+esc(m.image)+'"><img src="'+esc(m.image)+'" alt="'+esc(m.title||'会场配置图')+'"></button>'+(m.title?'<p class="cb-map-title">'+esc(m.title)+'</p>':'')}));
   else pages.push({kind:'map',html:head('VENUE MAP','会场配置图')+'<div class="cb-map cb-map-empty"><b>场地图</b><span>主办方暂未上传场地图</span></div>'});
-  if(data.circles.length){starts.circles=pages.length;chunk(data.circles,9).forEach(group=>pages.push({kind:'circles',html:head('CIRCLE LIST','参展社团')+'<div class="cb-cuts">'+group.map(c=>'<a class="cb-cut" href="#booths" data-target-mode="page" data-page-link="booths" data-catalogue-booth="'+c.boothIndex+'"><span class="cb-space">'+esc(c.no||'—')+'</span><span class="cb-cut-art">'+(c.cut?'<img src="'+esc(c.cut)+'" alt="'+esc(c.name)+'" loading="lazy">':'<em>'+esc((c.name||'?').slice(0,2))+'</em>')+'</span><b>'+esc(c.name)+'</b><small>'+esc(c.type)+'</small></a>').join('')+'</div>'}))}
-  if(data.works.length){starts.works=pages.length;chunk(data.works,16).forEach(group=>pages.push({kind:'works',html:head('NEW WORKS','新刊与制品')+'<div class="cb-works">'+group.map(w=>'<a class="cb-work" href="#booths" data-target-mode="page" data-page-link="booths" data-catalogue-product="'+w.boothIndex+':'+w.productIndex+'"><span class="cb-work-art">'+(w.image?'<img src="'+esc(w.image)+'" alt="'+esc(w.name)+'" loading="lazy">':'<em>NEW</em>')+'</span><b>'+esc(w.name)+'</b><small>'+esc([w.no,w.price].filter(Boolean).join(' · '))+'</small></a>').join('')+'</div>'}))}
+  if(data.streetPage&&data.streets.length){starts.streets=pages.length;chunk(data.streets,14).forEach(group=>pages.push({kind:'streets',html:head('STREET GUIDE','街道导览')+'<div class="cb-street-list">'+group.map(x=>'<div class="cb-street-row"><b>'+esc(x.name)+'</b><span>'+esc([x.range,x.count+' 个社团'].filter(Boolean).join(' · '))+'</span></div>').join('')+'</div>'}))}
+  if(data.circles.length){starts.circles=pages.length;chunk(data.circles,9).forEach(group=>pages.push({kind:'circles',html:head('CIRCLE LIST','参展社团')+'<div class="cb-cuts">'+group.map(c=>'<div class="cb-cut" data-catalogue-booth="'+c.boothIndex+'"><span class="cb-space">'+esc(c.no||'—')+'</span><span class="cb-cut-art">'+(c.cut?'<img src="'+esc(c.cut)+'" alt="'+esc(c.name)+'" loading="lazy">':'<em>'+esc((c.name||'?').slice(0,2))+'</em>')+'</span><b>'+esc(c.name)+'</b><small>'+esc(c.type)+'</small></div>').join('')+'</div>'}))}
+  if(data.works.length){starts.works=pages.length;chunk(data.works,16).forEach(group=>pages.push({kind:'works',html:head('NEW WORKS','新刊与制品')+'<div class="cb-works">'+group.map(w=>'<div class="cb-work" data-catalogue-product="'+w.boothIndex+':'+w.productIndex+'"><span class="cb-work-art">'+(w.image?'<img src="'+esc(w.image)+'" alt="'+esc(w.name)+'" loading="lazy">':'<em>NEW</em>')+'</span><b>'+esc(w.name)+'</b><small>'+esc([w.no,w.price].filter(Boolean).join(' · '))+'</small></div>').join('')+'</div>'}))}
   if(data.traffic){starts.traffic=pages.length;pages.push({kind:'traffic',html:head('ACCESS','交通到达')+(data.transitImage?'<button type="button" class="cb-map cb-transit" data-product-lightbox="'+esc(data.transitImage)+'"><img src="'+esc(data.transitImage)+'" alt="交通路线图"></button>':'<div class="cb-transit-empty"><b>交通路线图</b><span>主办方暂未上传路线图</span></div>')+'<p class="cb-traffic-copy">'+esc(data.traffic.text)+'</p>'+(data.navUrl?'<a class="cb-buy cb-nav" href="'+esc(data.navUrl)+'" target="_blank" rel="noopener">导航到场馆 ↗</a>':'')})}
   if(data.rules.length){starts.rules=pages.length;chunk(data.rules,2).forEach((group,gi)=>pages.push({kind:'rules',html:head('RULES','入场与须知')+'<div class="cb-rules cb-rules-full">'+group.map((r,i)=>'<article><b>'+String(gi*2+i+1).padStart(2,'0')+' '+esc(r.title)+'</b><p>'+esc(r.text)+'</p></article>').join('')+'</div>'}))}
   if(data.social.length){starts.community=pages.length;chunk(data.social,4).forEach(group=>pages.push({kind:'community',html:head('COMMUNITY','社群')+'<div class="cb-socials">'+group.map(x=>'<article class="cb-social"'+attr('socialLinks',x.i)+'><span class="cb-social-art">'+(x.image?'<img src="'+esc(x.image)+'" alt="'+esc(x.label)+'" loading="lazy">':'<em>'+esc((x.label||'群').slice(0,2))+'</em>')+'</span>'+fld('socialLinks.'+x.i+'.label',x.label,'b')+(x.note||data.editable?fld('socialLinks.'+x.i+'.note',x.note,'p'):'')+(x.url?'<a href="'+esc(x.url)+'" target="_blank" rel="noopener">进入 ↗</a>':'')+'</article>').join('')+'</div>'}))}
@@ -74,7 +77,7 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
     else{pg.h=h;packed.push(pg)}
   });
   pages.length=0;packed.forEach(pg=>pages.push(pg));
-  const secOf={news:'news',tickets:'tickets',map:'venue',circles:'circles',works:'works',traffic:'traffic',rules:'rules',community:'community',sponsors:'sponsors',};
+  const secOf={streets:'streets',news:'news',tickets:'tickets',map:'venue',circles:'circles',works:'works',traffic:'traffic',rules:'rules',community:'community',sponsors:'sponsors',};
   Object.keys(starts).forEach(k=>delete starts[k]);
   pages.forEach((pg,i)=>pg.kinds.forEach(k=>{if(secOf[k]&&starts[secOf[k]]===undefined)starts[secOf[k]]=i}));
   if(pages.length%2)pages.splice(pages.length-1,0,{kind:'blank',html:'<div class="cb-blank-note">此页留白 ✦</div>'});
@@ -170,11 +173,11 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
     return out;
   }
   function rebuildContents(list){
-    const kindMap={news:"news",tickets:"tickets",map:"venue",circles:"circles",works:"works",traffic:"traffic",rules:"rules",community:"community",sponsors:"sponsors",};
+    const kindMap={streets:"streets",news:"news",tickets:"tickets",map:"venue",circles:"circles",works:"works",traffic:"traffic",rules:"rules",community:"community",sponsors:"sponsors",};
     const starts={};
     list.forEach((pg,i)=>(pg.kinds||[pg.kind]).forEach(k=>{const s=kindMap[k];if(s&&starts[s]===undefined)starts[s]=i}));
-    const labels={news:["NEWS","最新公告"],tickets:["ADMISSION","入场票"],venue:["VENUE MAP","场地图"],circles:["CIRCLE LIST","参展社团"],works:["NEW WORKS","新刊与制品"],traffic:["ACCESS","交通到达"],rules:["RULES","入场与须知"],community:["COMMUNITY","社群"],sponsors:["SPONSORS","合作伙伴"]};
-    const order=["news","tickets","venue","circles","works","traffic","rules","community","sponsors"];
+    const labels={streets:["STREET GUIDE","街道导览"],news:["NEWS","最新公告"],tickets:["ADMISSION","入场票"],venue:["VENUE MAP","场地图"],circles:["CIRCLE LIST","参展社团"],works:["NEW WORKS","新刊与制品"],traffic:["ACCESS","交通到达"],rules:["RULES","入场与须知"],community:["COMMUNITY","社群"],sponsors:["SPONSORS","合作伙伴"]};
+    const order=["streets","news","tickets","venue","circles","works","traffic","rules","community","sponsors"];
     const items=order.filter(k=>starts[k]!==undefined).map(k=>'<li><button type="button" data-catalogue-goto="'+starts[k]+'"><span>'+labels[k][0]+'</span><b>'+labels[k][1]+'</b><i>P.'+String(starts[k]+1).padStart(2,"0")+'</i></button></li>');
     const without=list.filter(pg=>pg.kind!=="contents");
     without.splice(Math.min(1,without.length),0,{kind:"contents",kinds:["contents"],html:'<header class="cb-page-head"><small>CONTENTS</small><b>目录</b></header><ol class="cb-contents">'+items.join("")+'</ol>'});
@@ -214,6 +217,10 @@ export const catalogueBookStyle=`
 .cb-transit{min-height:180px}
 .cb-rules-full{display:grid;gap:14px}
 .cb-memo div{min-height:100%;white-space:pre-line;outline:none}
+.cb-street-list{display:grid;gap:10px;flex:1;align-content:start}
+.cb-street-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid #2b1f4733;border-radius:8px}
+.cb-street-row b{font-size:15px}
+.cb-street-row span{font-size:12px;opacity:.75}
 .cb-backcover{position:absolute;inset:0;border-radius:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:32px;text-align:center;background:linear-gradient(160deg,#9a3a28,#6e2418);color:#fbf6ea}
 .cb-backcover-mark{font-size:26px;opacity:.85}
 .cb-backcover b{font-size:clamp(22px,2.4vw,30px);letter-spacing:.02em}

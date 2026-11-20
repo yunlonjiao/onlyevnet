@@ -1,7 +1,7 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.92.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.93.0';
 
 const catalogueStyle=`
 .cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:#c8432b;--cc-lilac:#c9b99a;--cc-cyan:#7fe3ff;--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
@@ -394,8 +394,8 @@ export const previewBody=`<div class="cc-site">${loader}
 <main id="top">
 <section class="cc-catalogue oe-home-only" id="catalogue" aria-label="电子场刊"><span id="map-home" aria-hidden="true"></span><div class="wrap"><div data-oe-mount="catalogue-book"></div></div></section>
 <section class="cc-stash" id="tickets" hidden aria-hidden="true"><div class="ticket-grid"></div><div class="ticket-actions"></div></section>
-<section class="section oe-page-view" id="booths"><div class="wrap">${pageHead('CIRCLE LIST','参展社团与制品')}<div class="booth-directory-rich"></div></div></section>
-<section class="section oe-page-view" id="guide"><div class="wrap">${pageHead('GUIDE','观展指南')}<div class="guide-grid guide-detail-grid"></div></div></section>
+
+
 </main>
 
 </div>`;
