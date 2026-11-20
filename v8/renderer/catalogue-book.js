@@ -24,7 +24,6 @@ export function catalogueBookData(state){
     tickets:(state?.tickets||[]).map((t,i)=>({i,name:String(t?.name||''),price:String(t?.price||''),gift:String(t?.gift||''),note:String(t?.note||'')})).filter(t=>t.name.trim()),
     ticketHref:/^https?:\/\//i.test(String(state?.ticketUrl||'').trim())?String(state.ticketUrl).trim():'',
     ticketLabel:String(state?.ticketLinkLabel||'').trim()||'前往官方售票平台',
-    routes:(state?.venueMap?.links||[]).map((l,i)=>({i,label:String(l?.label||''),target:String(l?.target||'')})).filter(l=>l.label.trim()&&(l.target==='booths'||l.target==='guide'||l.target.startsWith('custom-'))&&state?.modules?.[l.target]!==false),
     social:(state?.socialLinks||[]).map((x,i)=>({i,label:String(x?.label||''),note:String(x?.note||''),image:String(x?.image||''),url:/^https?:\/\//i.test(String(x?.url||'').trim())?String(x.url).trim():''})).filter(x=>x.label.trim()||x.note.trim()||x.image||x.url),
     sponsors:(state?.sponsors||[]).map((x,i)=>({i,name:String(x?.name||''),level:String(x?.level||''),logo:String(x?.logo||''),url:/^https?:\/\//i.test(String(x?.url||'').trim())?String(x.url).trim():''})).filter(x=>x.name.trim()||x.logo||x.url),
     works:booths.flatMap(b=>(b.products||[]).map((p,productIndex)=>({name:String(p.name||''),price:String(p.price||''),image:String(p.image||''),no:String(b.no||''),circle:String(b.name||''),boothIndex:b.boothIndex,productIndex}))).filter(w=>w.name)
@@ -50,16 +49,14 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   const starts={};
 
   const attr=(kind,i)=>' data-oe-item="'+kind+'" data-oe-index="'+i+'"';
-  const pageTargets=()=>false;
-  if(data.news.length){starts.news=pages.length;chunk(data.news,5).forEach((group,gi)=>pages.push({kind:'news',html:head('NEWS','最新公告')+'<ol class="cb-news">'+group.map((u,k)=>{
+    if(data.news.length){starts.news=pages.length;chunk(data.news,5).forEach((group,gi)=>pages.push({kind:'news',html:head('NEWS','最新公告')+'<ol class="cb-news">'+group.map((u,k)=>{
     const t=({passport:'activities','guide-home':'guide','schedule-home':'activities'}[u.target]||u.target||'');
     const inner='<span class="cb-news-no">'+String(gi*5+k+1).padStart(2,'0')+'</span><time>'+esc(u.date)+'</time>'+fld('updates.'+u.i+'.title',u.title,'b')+'<i aria-hidden="true">›</i>';
-    const link=t==='tickets'?'<a class="cb-news-item" href="#tickets" data-catalogue-open="tickets"'+attr('updates',u.i)+'>':pageTargets(t)?'<a class="cb-news-item" href="#'+esc(t)+'" data-target-mode="page" data-page-link="'+esc(t)+'"'+attr('updates',u.i)+'>':'<div class="cb-news-item"'+attr('updates',u.i)+'>';
+        const link=t==='tickets'?'<a class="cb-news-item" href="#tickets" data-catalogue-open="tickets"'+attr('updates',u.i)+'>':'<div class="cb-news-item"'+attr('updates',u.i)+'>';
     return '<li>'+link+inner+(link.startsWith('<a')?'</a>':'</div>')+'</li>';
   }).join('')+'</ol>'}))}
   if(data.tickets.length){starts.tickets=pages.length;const groups=chunk(data.tickets,4);groups.forEach((group,gi)=>pages.push({kind:'tickets',html:head('ADMISSION','入场票')+'<div class="cb-tickets">'+group.map((t,k)=>'<article class="cb-ticket"'+attr('tickets',t.i)+'><div class="cb-ticket-main"><small>ADMISSION TICKET · 入场券</small>'+fld('tickets.'+t.i+'.name',t.name,'b')+(t.gift||data.editable?fld('tickets.'+t.i+'.gift',t.gift,'p'):'')+(t.note||data.editable?fld('tickets.'+t.i+'.note',t.note,'em'):'')+'</div><div class="cb-ticket-stub"><span>No.'+String(gi*4+k+1).padStart(2,'0')+'</span>'+fld('tickets.'+t.i+'.price',t.price,'strong')+'</div></article>').join('')+'</div>'+(gi===groups.length-1?(data.status==='活动已结束'?'':data.ticketHref?'<a class="cb-buy ticket-purchase-link" href="'+esc(data.ticketHref)+'" target="_blank" rel="noopener">'+esc(data.ticketLabel)+' ↗</a>':(data.editable?'<button type="button" class="cb-buy cb-buy-empty" data-ticket-settings>设置购票链接 ↗</button>':'')):'')}))}
   starts.venue=pages.length;
-  const routes=data.routes.length?'<nav class="cb-routes" aria-label="逛展导览"><b>✦ 逛展导览 ✦</b>'+data.routes.map(r=>'<a class="cb-route" href="#'+esc(r.target)+'" data-target-mode="page" data-page-link="'+esc(r.target)+'"'+attr('explore',r.i)+'><span>✦</span>'+fld('venueMap.links.'+r.i+'.label',r.label)+'<i>›</i></a>').join('')+'</nav>':'';
   if(data.maps.length)data.maps.forEach((m,i)=>pages.push({kind:'map',html:head('VENUE MAP','会场配置图'+(data.maps.length>1?' '+(i+1)+' / '+data.maps.length:''))+'<button type="button" class="cb-map" data-product-lightbox="'+esc(m.image)+'"><img src="'+esc(m.image)+'" alt="'+esc(m.title||'会场配置图')+'"></button>'+(m.title?'<p class="cb-map-title">'+esc(m.title)+'</p>':'')}));
   else pages.push({kind:'map',html:head('VENUE MAP','会场配置图')+'<div class="cb-map cb-map-empty"><b>场地图</b><span>主办方暂未上传场地图</span></div>'});
   if(data.streetPage&&data.streets.length){starts.streets=pages.length;chunk(data.streets,14).forEach(group=>pages.push({kind:'streets',html:head('STREET GUIDE','街道导览')+'<div class="cb-street-list">'+group.map(x=>'<div class="cb-street-row"><b>'+esc(x.name)+'</b><span>'+esc([x.range,x.count+' 个社团'].filter(Boolean).join(' · '))+'</span></div>').join('')+'</div>'}))}
@@ -150,99 +147,9 @@ export function mountCatalogueBook(root,data,{storageKey='oe-catalogue-page'}={}
   book.addEventListener('click',e=>{if(book._oeSwiped){e.preventDefault();e.stopPropagation();book._oeSwiped=false}},true);
   root.tabIndex=0;
   root.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();go(at+(single()?1:2))}if(e.key==='ArrowLeft'){e.preventDefault();go(at-(single()?1:2))}});
-  if(typeof ResizeObserver==='function'){let wasSingle=single();new ResizeObserver(()=>{if(single()!==wasSingle&&!busy){wasSingle=single();repaginate()}}).observe(root)}
-  const basePages=pages.map(pg=>({...pg,kinds:(pg.kinds||[pg.kind]).slice()}));
+  if(typeof ResizeObserver==='function'){let wasSingle=single();new ResizeObserver(()=>{if(single()!==wasSingle&&!busy){wasSingle=single();render()}}).observe(root)}
   render();
   // Generic pagination: measure list pages and push whatever overflows to continuation pages.
-  const splitSpec={contents:".cb-contents",news:".cb-news",tickets:".cb-tickets",circles:".cb-cuts",works:".cb-works",community:".cb-socials",sponsors:".cb-thanks",rules:".cb-rules"};
-  function paginateOverflow(list,pageW,pageH){
-    const probe=document.createElement("div");
-    probe.className="cb-page cb-probe";
-    probe.style.cssText="position:absolute!important;left:-99999px!important;top:0!important;visibility:hidden!important;overflow:hidden!important;width:"+pageW+"px!important;display:flex;flex-direction:column;pointer-events:none";
-    document.body.appendChild(probe);
-    const out=[];
-    for(const pg of list){
-      const sel=splitSpec[pg.kind];
-      if(!sel){out.push(pg);continue}
-      let html=pg.html,guard=0,first=true;
-      while(guard++<30){
-        probe.innerHTML=html;
-        const wrap=probe.querySelector(sel);
-        const over=probe.getBoundingClientRect().height>pageH+2;
-        if(!wrap||!over||wrap.children.length<=1){out.push({...pg,html});break}
-        const moved=[];
-        while(wrap.children.length>1&&probe.getBoundingClientRect().height>pageH+2){const last=wrap.lastElementChild;moved.unshift(last);wrap.removeChild(last);}
-        if(!moved.length){out.push({...pg,html});break}
-        if(first){out.push({...pg,html:probe.innerHTML});first=false}
-        probe.innerHTML=html;
-        const w2=probe.querySelector(sel);
-        while(w2.children.length>moved.length)w2.removeChild(w2.lastElementChild);
-        html=probe.innerHTML;
-      }
-    }
-    probe.remove();
-    return out;
-  }
-  function measureContentsCapacity(pageW,pageH){
-    try{
-      const probe=document.createElement("div");
-      probe.className="cb-page cb-probe";
-      probe.style.cssText="position:absolute!important;left:-99999px!important;top:0!important;visibility:hidden!important;width:"+pageW+"px!important;display:flex;flex-direction:column;pointer-events:none";
-      probe.innerHTML='<header class="cb-page-head"><small>CONTENTS</small><b>目录</b></header><ol class="cb-contents"><li><button type="button"><span>NEWS</span><b>最新公告</b><i>P.03</i></button></li></ol>';
-      document.body.appendChild(probe);
-      const lis=probe.querySelectorAll(".cb-contents li");
-      const one=probe.getBoundingClientRect().height;
-      const itemH=lis.length?lis[0].getBoundingClientRect().height:44;
-      probe.remove();
-      const overhead=Math.max(60,one-itemH);
-      const cap=Math.max(1,Math.floor((pageH-overhead-8)/Math.max(20,itemH+4)));
-      return Math.min(12,cap);
-    }catch{return 6}
-  }
-  function rebuildContents(list,cap=6){
-    const kindMap={streets:"streets",news:"news",tickets:"tickets",map:"venue",circles:"circles",works:"works",traffic:"traffic",rules:"rules",community:"community",sponsors:"sponsors"};
-    const starts={};
-    list.forEach((pg,i)=>(pg.kinds||[pg.kind]).forEach(k=>{const s=kindMap[k];if(s&&starts[s]===undefined)starts[s]=i}));
-    const labels={streets:["STREET GUIDE","街道导览"],news:["NEWS","最新公告"],tickets:["ADMISSION","入场票"],venue:["VENUE MAP","场地图"],circles:["CIRCLE LIST","参展社团"],works:["NEW WORKS","新刊与制品"],traffic:["ACCESS","交通到达"],rules:["RULES","入场与须知"],community:["COMMUNITY","社群"],sponsors:["SPONSORS","合作伙伴"]};
-    const order=["streets","news","tickets","venue","circles","works","traffic","rules","community","sponsors"];
-    const items=order.filter(k=>starts[k]!==undefined).map(k=>'<li><button type="button" data-catalogue-goto="'+starts[k]+'"><span>'+labels[k][0]+'</span><b>'+labels[k][1]+'</b><i>P.'+String(starts[k]+1).padStart(2,"0")+'</i></button></li>');
-    const size=Math.max(1,cap||6);
-    const count=Math.max(1,Math.ceil(items.length/size));
-    const newPages=[];
-    for(let i=0;i<count;i++)newPages.push({kind:"contents",kinds:["contents"],html:'<header class="cb-page-head"><small>CONTENTS</small><b>'+(count>1?"目录 "+(i+1)+" / "+count:"目录")+'</b></header><ol class="cb-contents">'+items.slice(i*size,i*size+size).join("")+'</ol>'});
-    const without=list.filter(pg=>pg.kind!=="contents");
-    without.splice(Math.min(1,without.length),0,...newPages);
-    return without;
-  }
-  function repaginate(){
-    try{
-      const bk=root.querySelector("[data-catalogue-book]");
-      const rect=bk?bk.getBoundingClientRect():null;
-      if(!rect||rect.width<80)return;
-      if(single()){pages.length=0;basePages.forEach(pg=>pages.push({...pg,kinds:(pg.kinds||[pg.kind]).slice()}));total=pages.length;at=Math.min(at,total-1);render();const jj=root.querySelector(".cb-jump");if(jj)jj.max=String(total);return}
-      const pageW=Math.round(rect.width/(single()?1:2));
-      const pageH=Math.round(pageW/0.72);
-      pages.length=0;basePages.forEach(pg=>pages.push({...pg,kinds:(pg.kinds||[pg.kind]).slice()}));
-      const split=paginateOverflow(pages,pageW,pageH);
-      const cap=measureContentsCapacity(pageW,pageH);
-      let merged=rebuildContents(split,cap);
-      for(let pass=0;pass<3;pass++){
-        const before=merged.filter(pg=>pg.kind==="contents").length;
-        merged=rebuildContents(paginateOverflow(merged,pageW,pageH),cap);
-        const after=merged.filter(pg=>pg.kind==="contents").length;
-        if(before===after)break;
-      }
-      pages.length=0;merged.forEach(pg=>pages.push(pg));
-      if(!single()&&pages.length%2)pages.splice(pages.length-1,0,{kind:"blank",html:'<div class="cb-blank-note">此页留白 ✦</div>'});
-      total=pages.length;at=Math.min(at,total-1);render();
-      const j=root.querySelector(".cb-jump");if(j)j.max=String(total);
-    }catch(err){console.warn("[catalogue paginate]",err)}
-  }
-  repaginate();
-  requestAnimationFrame(()=>repaginate());
-  setTimeout(repaginate,300);
-  setTimeout(repaginate,900);
-  if(typeof window!=='undefined'){let rpTimer=0;window.addEventListener('resize',()=>{clearTimeout(rpTimer);rpTimer=setTimeout(repaginate,180)})}
   try{
     window.__oeCatalogueReplay=()=>{
       busy=false;at=0;render();
@@ -259,14 +166,10 @@ export const catalogueBookStyle=`
 .cb-jump::-webkit-outer-spin-button,.cb-jump::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .cb-buy-empty{display:inline-block;padding:8px 14px;font-size:12px;font-weight:800;border:1px dashed currentColor;border-radius:8px;opacity:.6}
 .cb-traffic-copy{margin:0;font-size:13px;line-height:1.8;white-space:pre-line}
-.cb-transit{min-height:180px}
-.cb-rules-full{display:grid;gap:14px}
-.cb-memo div{min-height:100%;white-space:pre-line;outline:none}
 .cb-street-list{display:grid;gap:10px;flex:1;align-content:start}
 .cb-street-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid #2b1f4733;border-radius:8px}
 .cb-street-row b{font-size:15px}
 .cb-street-row span{font-size:12px;opacity:.75}
-.cb-probe>*{flex:0 0 auto!important}
 .cb-backcover{position:absolute;inset:0;border-radius:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:32px;text-align:center;background:linear-gradient(160deg,#9a3a28,#6e2418);color:#fbf6ea}
 .cb-backcover-mark{font-size:26px;opacity:.85}
 .cb-backcover b{font-size:clamp(22px,2.4vw,30px);letter-spacing:.02em}
@@ -318,8 +221,7 @@ export const catalogueBookStyle=`
 .cb-ticket-stub{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;padding:10px 16px;min-width:88px}
 .cb-ticket-stub span{font-size:11px;font-weight:900}.cb-ticket-stub strong{font-size:22px}
 .cb-buy{align-self:flex-end;padding:10px 18px;font-weight:900;text-decoration:none;margin-top:auto}
-.cb-routes{display:flex;flex-direction:column;gap:8px}.cb-routes>b{text-align:center;font-size:13px;letter-spacing:.14em}
-.cb-route{display:flex;align-items:center;gap:8px;padding:9px 14px;text-decoration:none;color:inherit;font-weight:800;font-size:14px}.cb-route i{margin-left:auto;font-style:normal}
+
 .cb-map-empty{flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:160px;opacity:.7;cursor:default}
 .cb-socials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .cb-social{display:flex;flex-direction:column;gap:6px;padding:10px;min-width:0}
@@ -335,10 +237,6 @@ export const catalogueBookStyle=`
 .cb-bubble p{margin:0;padding:14px 16px;border-radius:18px;position:relative;line-height:1.7;font-size:14px}
 .cb-avatar{flex:0 0 46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:22px}
 .cb-rules{display:grid;gap:10px}.cb-rules p{margin:4px 0 0;font-size:12px;line-height:1.6;white-space:pre-line}
-.cb-stamps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:6px 0}
-.cb-stamps span{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:13px;transform:rotate(-8deg)}
-.cb-rally-copy,.cb-rally-end{margin:0;font-size:13px;line-height:1.7}.cb-rally-end{font-weight:1000;letter-spacing:.12em;text-align:center;margin-top:auto}
-.cb-memo{flex:1;background-image:repeating-linear-gradient(transparent 0 27px,currentColor 27px 28px);opacity:.15}
 @media(max-width:760px){.cb-socials{grid-template-columns:1fr 1fr}.cb-cuts{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr))}.cb-works{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.cb-leaf{transition:none}}
 `;

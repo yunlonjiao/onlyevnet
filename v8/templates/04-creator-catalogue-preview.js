@@ -1,7 +1,7 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.101.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.102.0';
 
 const catalogueStyle=`
 .cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:#c8432b;--cc-lilac:#c9b99a;--cc-cyan:#7fe3ff;--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
@@ -85,7 +85,6 @@ const catalogueStyle=`
 .cc-site .cb-work-art{background:#efe4cd;border-radius:10px;border:2px solid #2b1f4718}
 .cc-site .cb-work-art em{font-style:normal;font-weight:1000;color:#c8432b;transform:rotate(-8deg)}
 .cc-site .cb-map{background:#fff;border-radius:10px;border:2px solid #2b1f4722}
-.cc-site .cb-stamps span{border:3px dashed #c8432b;color:#c8432b}
 .cc-site .cb-controls button{border:2px solid #fff;background:#ffffff14;color:#fff}
 .cc-site .cb-controls span{color:#e6dcff}
 /* Shared components on the night sky */
@@ -262,9 +261,6 @@ const bookPagesStyle=`
 .cc-site .cb-ticket-main small{color:#c8432b}
 .cc-site .cb-ticket-stub{background:var(--cc-pink);border-left:3px dashed var(--cc-ink);color:#2b1036}
 .cc-site .cb-buy{background:var(--cc-ink);color:#fff;border-radius:999px;box-shadow:4px 4px 0 var(--cc-pink)}
-.cc-site .cb-routes>b{color:#c8432b}
-.cc-site .cb-route{background:#fff;color:var(--cc-ink);border:2px solid var(--cc-ink);border-radius:999px}
-.cc-site .cb-route span{color:#c8432b}
 .cc-site .cb-map-empty{background:#fff;color:var(--cc-ink);border:2px dashed #2b1f4733;border-radius:10px}
 .cc-site .cb-social{background:#fff;color:var(--cc-ink);border:2px solid var(--cc-ink);border-radius:12px}
 .cc-site .cb-social-art{background:linear-gradient(135deg,#c9b99a,#d9a066);border-radius:8px;color:#fff}
@@ -292,7 +288,7 @@ const paperStyle=`
 .cc-site .cb-cover-badge{background:#fbf6ea;color:var(--cc-ink);border-radius:2px;box-shadow:none;border:1px solid var(--cc-ink)}
 .cc-site .cb-cover-star{color:#fbf6ea;text-shadow:none}
 .cc-site .cb-ribbon{background:var(--cc-pink)}
-.cc-site .cb-bubble p,.cc-site .cb-cut,.cc-site .cb-news-item,.cc-site .cb-ticket,.cc-site .cb-route,.cc-site .cb-social,.cc-site .cb-sponsor{box-shadow:none;border-color:var(--cc-ink);border-radius:3px}
+.cc-site .cb-bubble p,.cc-site .cb-cut,.cc-site .cb-news-item,.cc-site .cb-ticket,.cc-site .cc-site .cb-social,.cc-site .cb-sponsor{box-shadow:none;border-color:var(--cc-ink);border-radius:3px}
 .cc-site .cb-avatar,.cc-site .cb-news-no,.cc-site .cb-ticket-stub{background:var(--cc-pink);color:#fff;border-color:var(--cc-ink)}
 .cc-site .cb-buy{background:var(--cc-ink);box-shadow:none;border-radius:3px}
 .cc-site .cb-space{background:var(--cc-ink);color:#fbf6ea}
@@ -348,7 +344,6 @@ const fullBookStyle=`
 .cc-site .cb-work-art{aspect-ratio:1/1;flex:0 0 auto!important}
 /* 留白页 */
 .cc-site .cb-blank-note{flex:1;display:grid;place-items:center;font-size:12px;letter-spacing:.3em;opacity:.35}
-.cc-site .cb-cover-status,.cc-site .cb-cover-venue,.cc-site .cb-cover-tagline{display:none!important}
 /* 入场与须知：去掉白底，只用细线分隔 */
 .cc-site .cb-rules article{background:transparent!important;border:1px solid #2b1f4733!important;border-radius:8px!important;padding:8px 12px!important}
 /* 社团 9 个/页：卡片更紧凑 */
@@ -364,10 +359,6 @@ const fullBookStyle=`
 .cc-site .cb-transit-empty{flex:0 0 auto;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:2px dashed #2b1f4733;border-radius:10px;opacity:.7;margin-bottom:10px}
 .cc-site .cb-transit-empty b{font-size:14px}.cc-site .cb-transit-empty span{font-size:12px}
 /* 封面补充活动信息 */
-.cc-site .cb-cover-status{align-self:flex-start;margin:8px 0 0;padding:3px 10px;border-radius:999px;background:#e7f7ee;color:#0f7a44;font-size:11px;font-weight:900}
-.cc-site .cb-cover-status:empty{display:none}
-.cc-site .cb-cover-venue{font-size:12px;font-weight:800;color:#f6efe2;opacity:.85}
-.cc-site .cb-cover-tagline{font-size:12px;line-height:1.6;color:#f6efe2;opacity:.8}
 /* 书本在页面里居中：把路由锚点从栅格里拿出去，否则它会占掉一半行高 */
 .cc-site #catalogue{position:relative}
 .cc-site #map-home{position:absolute!important;top:0;left:0;width:1px;height:1px;overflow:hidden;display:block!important}
