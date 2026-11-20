@@ -1,7 +1,7 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.91.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.92.0';
 
 const catalogueStyle=`
 .cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:#c8432b;--cc-lilac:#c9b99a;--cc-cyan:#7fe3ff;--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
@@ -321,6 +321,11 @@ const paperStyle=`
 @media(max-width:760px){.cc-site .cb-book.is-closed{transform:none}.cc-site .cb-book.is-end .cb-page.left{transform:none}.cc-site .cb-ribbon{display:none}.cc-site .brand{font-size:14px}}
 `;
 const fullBookStyle=`
+/* 封底：像封面一样单页居中，不再左右各一半 */
+.cc-site .cb-book.is-end{grid-template-columns:1fr!important;width:var(--cc-page-w)!important;max-width:var(--cc-page-w)!important;margin:0 auto!important;aspect-ratio:.72!important}
+.cc-site .cb-book.is-end .cb-blank{display:none!important}
+.cc-site .cb-book.is-end .cb-page{border-radius:12px!important}
+.cc-site .cb-buy.cb-nav{margin-top:8px;align-self:flex-start}
 /* 书籍下方的信息条：活动状态 / 日期 / 城市 / 场馆 / 标语 */
 .cc-site .cb-infobar{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 8px;margin:0 auto 10px;max-width:min(900px,92vw);font-size:12px;font-weight:700;color:#5b4a3a;text-align:center}
 .cc-site .cb-infobar i{font-style:normal;opacity:.45}
