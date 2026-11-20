@@ -1,7 +1,7 @@
-import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.94.0';
-import {mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.94.0';
-import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.94.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.94.0';
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.96.0';
+import {mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.96.0';
+import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.96.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.96.0';
 export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyle='',escapeHtml:esc}){
   return function buildStandaloneHtml(){
     const state=getState(),clone=document.body.cloneNode(true);
@@ -172,8 +172,13 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
         if(rich){
           e.preventDefault();
           let dlg=$("#oeImagePreview");
-          if(!dlg){dlg=document.createElement("dialog");dlg.id="oeImagePreview";dlg.className="gift-lightbox";dlg.innerHTML='<button type="button" aria-label="关闭">×</button><img alt="图片预览">';document.body.appendChild(dlg);dlg.querySelector("button").onclick=()=>dlg.close();dlg.addEventListener("click",ev=>{if(ev.target===dlg)dlg.close()})}
-          dlg.querySelector("img").src=rich.dataset.productLightbox;dlg.showModal();return;
+          const srcs=[...document.querySelectorAll("[data-product-lightbox]")].filter(n=>n.getClientRects().length>0).map(n=>n.dataset.productLightbox||n.querySelector("img")?.src).filter(Boolean);
+          const list=srcs.length?srcs:[rich.dataset.productLightbox];
+          let idx=Math.max(0,list.indexOf(rich.dataset.productLightbox));
+          if(!dlg){dlg=document.createElement("dialog");dlg.id="oeImagePreview";dlg.className="gift-lightbox";dlg.innerHTML='<button type="button" class="gift-lightbox-close" aria-label="关闭">×</button><button type="button" class="gift-lightbox-nav prev" aria-label="上一张">‹</button><button type="button" class="gift-lightbox-nav next" aria-label="下一张">›</button><img alt="图片预览"><span class="gift-lightbox-count"></span>';dlg.style.position="relative";dlg.style.overflow="visible";const SS=(el,css)=>{if(el)el.style.cssText=css};SS(dlg.querySelector(".gift-lightbox-close"),"position:absolute;top:-8px;right:-8px;z-index:3;width:34px;height:34px;border:0;border-radius:50%;background:#fff;color:#1b1240;font-size:18px;line-height:1;cursor:pointer");SS(dlg.querySelector(".prev"),"position:absolute;top:50%;left:-58px;transform:translateY(-50%);z-index:3;width:46px;height:46px;border:0;border-radius:50%;background:#ffffffd9;color:#1b1240;font-size:26px;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 18px #0005");SS(dlg.querySelector(".next"),"position:absolute;top:50%;right:-58px;transform:translateY(-50%);z-index:3;width:46px;height:46px;border:0;border-radius:50%;background:#ffffffd9;color:#1b1240;font-size:26px;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 18px #0005");SS(dlg.querySelector(".gift-lightbox-count"),"position:absolute;bottom:-34px;left:50%;transform:translateX(-50%);color:#fff;font:800 12px/1 system-ui;letter-spacing:.12em;opacity:.85");document.body.appendChild(dlg);dlg.querySelector(".gift-lightbox-close").onclick=()=>dlg.close();dlg.addEventListener("click",ev=>{if(ev.target===dlg)dlg.close()});dlg.querySelector(".prev").onclick=ev=>{ev.stopPropagation();window.__oeStepLight(-1)};dlg.querySelector(".next").onclick=ev=>{ev.stopPropagation();window.__oeStepLight(1)};dlg.addEventListener("keydown",ev=>{if(ev.key==="ArrowLeft"){ev.preventDefault();window.__oeStepLight(-1)}if(ev.key==="ArrowRight"){ev.preventDefault();window.__oeStepLight(1)}})}
+          window.__oeStepLight=d=>{idx=(idx+d+list.length)%list.length;paint()};
+          const paint=()=>{dlg.querySelector("img").src=list[idx]||"";const c=dlg.querySelector(".gift-lightbox-count");if(c)c.textContent=(idx+1)+" / "+list.length;dlg.classList.toggle("single",list.length<2)};
+          paint();dlg.showModal();return;
         }
         const pin=e.target.closest(".pin");
         if(pin){const pop=$("#mapPop");if(pop)pop.innerHTML="<b>"+pin.dataset.name+"</b><br><span>"+pin.dataset.info+"</span>";return}

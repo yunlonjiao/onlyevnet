@@ -1,8 +1,8 @@
-import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.94.0';
-import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.94.0';
-import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.94.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.94.0';
-import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.94.0';
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.96.0';
+import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.96.0';
+import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.96.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.96.0';
+import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.96.0';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
 
@@ -43,12 +43,39 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
     requestAnimationFrame(()=>{const seq=track.querySelector('.ribbon-sequence');if(!seq)return;const seconds=Math.max(16,Math.min(42,seq.scrollWidth/72));track.style.setProperty('--ribbon-duration',seconds.toFixed(2)+'s')});
   }
 
+  let lightboxList=[],lightboxAt=0;
+  function paintLightbox(){
+    const dlg=$('#giftLightbox');if(!dlg)return;
+    const img=dlg.querySelector('img');if(img)img.src=lightboxList[lightboxAt]||'';
+    const c=dlg.querySelector('.gift-lightbox-count');if(c)c.textContent=(lightboxAt+1)+' / '+lightboxList.length;
+    dlg.classList.toggle('single',lightboxList.length<2);
+  }
+  function stepLightbox(d){if(!lightboxList.length)return;lightboxAt=(lightboxAt+d+lightboxList.length)%lightboxList.length;paintLightbox()}
   function ensureLightbox(){
     let dlg=$('#giftLightbox');if(dlg)return dlg;
-    dlg=document.createElement('dialog');dlg.id='giftLightbox';dlg.className='gift-lightbox';dlg.innerHTML='<button type="button" aria-label="关闭">×</button><img alt="图片预览">';
-    document.body.appendChild(dlg);dlg.querySelector('button').onclick=()=>dlg.close();dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});return dlg;
+    dlg=document.createElement('dialog');dlg.id='giftLightbox';dlg.className='gift-lightbox';
+    dlg.innerHTML='<button type="button" class="gift-lightbox-close" aria-label="关闭">×</button><button type="button" class="gift-lightbox-nav prev" aria-label="上一张">‹</button><button type="button" class="gift-lightbox-nav next" aria-label="下一张">›</button><img alt="图片预览"><span class="gift-lightbox-count"></span>';
+    dlg.style.position='relative';dlg.style.overflow='visible';
+    const setStyle=(el,css)=>{if(el)el.style.cssText=css};
+    setStyle(dlg.querySelector('.gift-lightbox-close'),'position:absolute;top:-8px;right:-8px;z-index:3;width:34px;height:34px;border:0;border-radius:50%;background:#fff;color:#1b1240;font-size:18px;line-height:1;cursor:pointer');
+    setStyle(dlg.querySelector('.prev'),'position:absolute;top:50%;left:-58px;transform:translateY(-50%);z-index:3;width:46px;height:46px;border:0;border-radius:50%;background:#ffffffd9;color:#1b1240;font-size:26px;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 18px #0005');
+    setStyle(dlg.querySelector('.next'),'position:absolute;top:50%;right:-58px;transform:translateY(-50%);z-index:3;width:46px;height:46px;border:0;border-radius:50%;background:#ffffffd9;color:#1b1240;font-size:26px;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 18px #0005');
+    setStyle(dlg.querySelector('.gift-lightbox-count'),'position:absolute;bottom:-34px;left:50%;transform:translateX(-50%);color:#fff;font:800 12px/1 system-ui;letter-spacing:.12em;opacity:.85');
+    document.body.appendChild(dlg);
+    dlg.querySelector('.gift-lightbox-close').onclick=()=>dlg.close();
+    dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+    dlg.querySelector('.prev').onclick=e=>{e.stopPropagation();stepLightbox(-1)};
+    dlg.querySelector('.next').onclick=e=>{e.stopPropagation();stepLightbox(1)};
+    dlg.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){e.preventDefault();stepLightbox(-1)}if(e.key==='ArrowRight'){e.preventDefault();stepLightbox(1)}});
+    return dlg;
   }
-  function openGiftLightbox(src){if(!src)return;const dlg=ensureLightbox();dlg.querySelector('img').src=src;dlg.showModal()}
+  function openGiftLightbox(src,list){
+    if(!src)return;const dlg=ensureLightbox();
+    const all=(Array.isArray(list)?list:[]).filter(Boolean);
+    lightboxList=all.length?all:[src];
+    const found=lightboxList.indexOf(src);lightboxAt=found>=0?found:0;
+    paintLightbox();dlg.showModal();
+  }
   function renderTickets(){
     const box=mount('tickets','#tickets .ticket-grid');if(!box)return;const state=getState();
     box.innerHTML=(state.tickets||[]).map((x,i)=>{

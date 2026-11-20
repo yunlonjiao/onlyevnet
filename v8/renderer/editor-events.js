@@ -105,7 +105,7 @@ export function bindEditorEvents({getMode,getState,setDeep,send,router,openGiftL
     const giftImage=e.target.closest?.('[data-ticket-image]');
     if(giftImage){const i=Number(giftImage.dataset.ticketImage);if(getMode()==='preview'){e.preventDefault();openGiftLightbox(getState().tickets?.[i]?.image);return}else{e.preventDefault();send({type:'OE_SELECT_ITEM',collection:'tickets',index:i});return}}
     const richImage=e.target.closest?.('[data-product-lightbox]');
-    if(richImage&&getMode()!=='edit'){e.preventDefault();openGiftLightbox(richImage.dataset.productLightbox);return}
+    if(richImage&&getMode()!=='edit'){e.preventDefault();const srcs=[...document.querySelectorAll('img[data-product-lightbox]')].filter(i=>i.getClientRects().length>0&&getComputedStyle(i).visibility!=='hidden').map(i=>i.dataset.productLightbox||i.src);if(!srcs.includes(richImage.dataset.productLightbox))srcs.push(richImage.dataset.productLightbox);openGiftLightbox(richImage.dataset.productLightbox,srcs);return}
     const img=e.target.closest?.('[data-oe-image]');
     if(img&&getMode()==='edit'){e.preventDefault();send({type:'OE_SELECT_IMAGE',path:img.dataset.oeImage});return}
     const scheduleCard=e.target.closest?.('#activities .timetable-row[data-oe-item="schedule"]');
