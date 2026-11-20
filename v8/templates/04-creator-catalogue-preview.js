@@ -1,7 +1,7 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.99.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.100.0';
 
 const catalogueStyle=`
 .cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:#c8432b;--cc-lilac:#c9b99a;--cc-cyan:#7fe3ff;--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
@@ -321,6 +321,11 @@ const paperStyle=`
 @media(max-width:760px){.cc-site .cb-book.is-closed{transform:none}.cc-site .cb-book.is-end .cb-page.left{transform:none}.cc-site .cb-ribbon{display:none}.cc-site .brand{font-size:14px}}
 `;
 const fullBookStyle=`
+@media(max-width:760px){
+ .cc-site .cb-transit-empty{min-height:104px!important;margin-bottom:6px!important}
+ .cc-site .cb-traffic-copy{font-size:11px!important;line-height:1.55!important}
+ .cc-site .cb-transit{max-height:46%!important}
+}
 /* 手机端单页固定书高：内容超出时页内滚动，绝不撑出书外 */
 .cc-site .cb-book.is-single{height:calc(var(--cc-page-w) * 1.3889)!important;aspect-ratio:auto!important}
 .cc-site .cb-book.is-single .cb-page{height:100%!important;max-height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;padding-bottom:64px!important}
@@ -370,7 +375,7 @@ const fullBookStyle=`
 body{padding-bottom:0!important;background:#e3d4b8!important}
 html{background:#e3d4b8}
 @media(max-width:560px){body{padding-bottom:0!important}}
-.cc-site{--cc-page-w:min(520px,84vw);--cc-desk-grain:repeating-linear-gradient(92deg,#00000008 0 2px,transparent 2px 9px);background-image:var(--cc-desk-grain),radial-gradient(120% 90% at 50% 6%,#f5ead6 0%,#dfcaa9 44%,#b99f80 100%);background-attachment:fixed}
+.cc-site{--cc-page-w:min(520px,94vw);--cc-desk-grain:repeating-linear-gradient(92deg,#00000008 0 2px,transparent 2px 9px);background-image:var(--cc-desk-grain),radial-gradient(120% 90% at 50% 6%,#f5ead6 0%,#dfcaa9 44%,#b99f80 100%);background-attachment:fixed}
 .cc-site .cc-catalogue{padding:0!important;min-height:100dvh;display:grid;place-items:center}
 .cc-site .cc-catalogue>.wrap{max-width:none!important;width:100%!important;padding:0!important;margin:0!important}
 .cc-site .cb-stage{max-width:none!important;width:min(calc(var(--cc-page-w) * 2),96vw)!important;height:auto!important;perspective:2400px}
