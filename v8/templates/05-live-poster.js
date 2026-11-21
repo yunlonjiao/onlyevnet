@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.212.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.213.0';
 /* Template 05 runs on the shared IP ONLY core; the stage-night art, the LINE UP and the TIME TABLE differ. */
 export const template05=makeIpOnlyTemplate({
  id:'05-live-poster',name:'05 · 舞台现场',label:'舞台现场',studioName:'舞台现场',
@@ -12,8 +12,9 @@ export const template05=makeIpOnlyTemplate({
 });
 // Starter content for a live show: a short running order and four performers.
 const d=template05.defaults;
-d.socialLinks=(d.socialLinks||[]).slice(0,3);
-d.socialLinks=(d.socialLinks||[]).filter(x=>!/摊主|COS|报名/.test(String(x.label||'')));
+
+
+d.socialLinks=[{id:'s1',label:'游客群',note:'活动信息与现场问答',url:''},{id:'s2',label:'B站',note:'PV 与出演公开',url:''},{id:'s3',label:'小红书',note:'返图与攻略',url:''}];
 d.tagline='喜欢的乐队和声优都在台上，来现场听。';
 d.modules={...d.modules,booths:false,sponsors:true,ribbon:false,featuredActivities:false,explore:false,guests:true,activities:true};
 d.ribbonItems=[{id:'rb1',text:'出演阵容公开'},{id:'rb2',text:'节目表已更新'},{id:'rb3',text:'票务开售中'},{id:'rb4',text:'应援规则见指南'}];
