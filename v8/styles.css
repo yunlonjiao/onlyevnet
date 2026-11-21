@@ -1326,8 +1326,6 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 .inspector .row{margin-top:12px!important}
 .inspector .item-media-row{gap:10px!important}
 
-/* inspector 头部满宽：与面板同宽，不再是一块内缩白卡 */
-.inspector{background:#f7f7fa!important}
-.inspector-header{margin:0 -14px 12px!important;padding:12px 14px!important;background:#fff!important;border-bottom:1px solid #ececf0!important;border-radius:0!important;position:sticky;top:0;z-index:3}
-.inspector .reference-panel,.inspector .item-media,.inspector .item-fields label{background:#fff!important;border-radius:12px!important}
-.inspector{padding-top:0!important}
+/* 面板头部：唯一权威规则（满宽、贴顶、白底） */
+.inspector{padding:0 14px 18px!important}
+.inspector-header{margin:0 -14px!important;padding:12px 14px!important;background:#fff!important;border-bottom:1px solid #ececf0!important;border-radius:0!important;position:sticky!important;top:0!important;z-index:5!important;box-sizing:border-box!important}
