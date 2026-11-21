@@ -2,7 +2,7 @@
    anime cafe and tea-party event pages (Animate Cafe collaborations, "お茶会" invitations).
    The home page answers what happens, and when, before anything else. Hooks follow Template 01;
    everything visual is scoped to .tp-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.255.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.257.0';
 
 const style=`
 .tp-site{overflow-x:clip;--primary:#f08fa8;--secondary:#8fd3bb;--tp-cream:#fff6ec;--tp-paper:#fffdf8;--tp-pink:var(--primary);--tp-rose:#fadbe3;--tp-mint:#bfe6d6;--tp-lav:#dccffa;--tp-brown:#5a3d3a;--tp-soft:#8c6f6a;--tp-gold:#d9a441;--tp-line:#ecd5cc;
@@ -239,7 +239,7 @@ const menuStyle=`
 .tp-menu #participation .featured-activity-copy{padding:14px 16px 18px}
 .tp-menu #participation .featured-activity-copy h3,.tp-menu #participation .featured-activity-copy b{font-size:17px}
 .tp-menu .tp-agenda-body,.tp-menu .tp-activity,.tp-menu .tp-guest{box-shadow:none}
-.tp-site .footer{margin-top:40px}.tp-hero-tight .tp-site .hero{}.tp-site .hero{padding-top:12px!important}.tp-site .footer .footer-social{display:none!important}.tp-site .footer .footer-grid{grid-template-columns:1.4fr 1fr 1fr!important}
+.tp-site .footer{margin-top:40px}.tp-nav-final .tp-site .nav .links{justify-content:center!important}.tp-nav-final .tp-site .nav .btn{margin-left:auto!important}.tp-nav-final .tp-site .hero{padding-top:42px!important}.tp-nav-final .tp-site .hero .kicker,.tp-nav-final .tp-site .hero .hero-kicker{margin-top:0!important}.tp-site .nav .wrap{flex-wrap:nowrap!important;align-items:center!important}.tp-site .nav .brand{flex:0 0 auto!important}.tp-site .nav .links{flex:1 1 auto!important;justify-content:flex-end!important;gap:22px!important;white-space:nowrap!important}.tp-site .tp-routes{display:none!important}.tp-site .hero{padding-top:26px!important;padding-bottom:34px!important}.tp-hero-tight .tp-site .hero{}.tp-site .hero{padding-top:12px!important}.tp-site .footer .footer-social{display:none!important}.tp-site .footer .footer-grid{grid-template-columns:1.4fr 1fr 1fr!important}
 @media(max-width:820px){.tp-menu{width:calc(100% - 16px);margin-top:14px;border-radius:22px}.tp-menu:before{inset:8px;border-radius:15px}.tp-menu .hero{padding:30px 20px 20px}.tp-menu .section,.tp-menu .updates-strip{padding:30px 20px 6px}.tp-menu #tickets .ticket-grid{padding:4px 14px}}
 `;
 const ownStyle=`
