@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.109.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.112.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -329,22 +329,21 @@ const featuredShape=`
 @media(max-width:620px){.ls-site #participation .featured-activity-card{grid-template-columns:96px minmax(0,1fr)!important}}
 `;
 const warmStage=String.raw`
-/* 暖色舞台：嘉宾活动 / 舞台演出 / 乐队都能用，不做夜店霓虹 */
-.ls-site{--ls-bg:#171110;--ls-bg2:#211816;--ls-pink:#d8452b;--ls-cyan:#e8a33d;--ls-yellow:#ffd166;--ls-violet:#6d3324;--ls-line:#4a382e;--ls-soft:#efdfcc;background:#171110;color:#f6ead9}
-.ls-site .ls-titlebar{background:linear-gradient(90deg,#8f2c1d,#d8452b 55%,#e8a33d)!important;color:#fff}
-.ls-site .hero-art .kv{background:linear-gradient(150deg,#5d2a20,#b23a22 55%,#e8a33d)!important;box-shadow:0 24px 60px #0008!important}
-.ls-site .hero-art .kv::after,.ls-site .hero-art .kv::before{opacity:.35!important}
-.ls-site .hero{background:radial-gradient(ellipse 70% 40% at 50% 0,#d8452b2e,transparent 72%),#171110!important}
-.ls-site .hero h1{color:#fff7ec!important;text-shadow:0 3px 0 #0006!important}
-.ls-site .hero-copy p{color:#e6d3bd!important}
-.ls-site .ls-btn.pink,.ls-site .ls-btn.yellow{background:#d8452b!important;color:#fff!important;box-shadow:0 8px 0 #0005!important}
-.ls-site .ls-btn{background:#2b201b!important;color:#f6ead9!important;border-color:#6b4d3c!important;box-shadow:0 8px 0 #0005!important}
-.ls-site .section{background:#1b1412!important;border-color:#3a2c25!important}
-.ls-site .section h2,.ls-site .section .eyebrow{color:#ffd166!important}
-.ls-site .pill{background:#2b201b!important;color:#ffd9a8!important;border-color:#6b4d3c!important}
-.ls-site .nav{background:#120d0c!important;border-color:#2f231e!important}
-.ls-site .nav .brand{color:#ffd166!important}
-.ls-site .timeline .row,.ls-site .timeline>*{border-color:#3a2c25!important}
+/* 暖色浅背景舞台：嘉宾活动 / 舞台演出 / 乐队都能用，不做夜店霓虹 */
+.ls-site{--ls-bg:#fbf3e6;--ls-bg2:#f6e9d6;--ls-pink:#c8402a;--ls-cyan:#b97a25;--ls-yellow:#e0a13c;--ls-violet:#8a4a33;--ls-line:#d9c6ae;--ls-soft:#3a2b22;background:#fbf3e6;color:#33251c}
+.ls-site .ls-titlebar{background:linear-gradient(90deg,#b23a22,#d8452b 55%,#e8a33d)!important;color:#fff}
+.ls-site .hero{background:radial-gradient(ellipse 70% 40% at 50% 0,#e8a33d33,transparent 72%),#fbf3e6!important}
+.ls-site .hero-art .kv{background:linear-gradient(150deg,#f3c68f,#e8a33d 55%,#d8452b)!important;box-shadow:0 22px 50px #b23a2233!important}
+.ls-site .hero h1{color:#2b1d15!important;text-shadow:none!important}
+.ls-site .hero-copy p{color:#5a4433!important}
+.ls-site .nav{background:#fdf7ec!important;border-color:#e3d1b8!important}
+.ls-site .nav .brand{color:#b23a22!important}
+.ls-site .ls-btn{background:#fffaf0!important;color:#3a2b22!important;border-color:#d9c6ae!important;box-shadow:0 4px 0 #0001!important}
+.ls-site .ls-btn.pink,.ls-site .ls-btn.yellow{background:#d8452b!important;color:#fff!important;box-shadow:0 4px 0 #0001!important}
+.ls-site .pill{background:#fffaf0!important;color:#8a4a33!important;border-color:#d9c6ae!important}.ls-site .pill,.ls-site .pill *{color:#8a4a33!important}
+.ls-site .section{background:#fffdf7!important;border-color:#e3d1b8!important;box-shadow:0 10px 30px #b23a2210!important}
+.ls-site .section h2,.ls-site .section .eyebrow{color:#b23a22!important}
+.ls-site .timeline .row,.ls-site .timeline>*{border-color:#e3d1b8!important}
 .ls-site .ls-routes{display:none!important}
 .ls-site .updates-strip a{color:inherit!important;pointer-events:none}
 html[data-oe-template="05-live-poster"] .mobile-dock{display:none!important}

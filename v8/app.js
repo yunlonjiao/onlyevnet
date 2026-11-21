@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.109.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.109.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.112.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.112.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.109.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.109.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.109.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.109.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.112.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.112.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.112.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.112.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -567,7 +567,7 @@ function buildCustomPageStarterItems(presetKey){
  const rows=CUSTOM_PAGE_STARTERS[presetKey]||CUSTOM_PAGE_STARTERS.custom;
  return rows.map(([title,meta,text])=>({id:uid('ci'),title,meta,text,image:'',url:''}));
 }
-function guideLabelText(){try{const id=(activeTemplate&&activeTemplate.id)||'';if(id.indexOf('03')===0||id.indexOf('04')===0)return '创作展指南';if(id.indexOf('05')===0||id.indexOf('06')===0)return '观演秩序';if(id.indexOf('07')===0||id.indexOf('08')===0)return '活动须知';}catch{}return '观展指南'}
+function guideLabelText(){const qs=new URLSearchParams(location.search);const id=qs.get('template')||(typeof activeTemplate!=='undefined'&&activeTemplate&&activeTemplate.id)||'';if(id.indexOf('03')===0||id.indexOf('04')===0)return '创作展指南';if(id.indexOf('05')===0||id.indexOf('06')===0)return '观演秩序';if(id.indexOf('07')===0||id.indexOf('08')===0)return '活动须知';return '观展指南'}
 const PAGE_CONTENT_CONFIG={
  animation:[{tool:'entryAnimation',label:'入场动画'}],
  home:[
@@ -945,6 +945,7 @@ function syncModuleControls(){
  if(guestPageRow)guestPageRow.style.display=state.templateId==='02-scrapbook'?'none':'';
  // Templates without some first-level pages (03 has no 活动 / 嘉宾) or without custom pages.
  (activeTemplate.studioPages?.hidden||[]).forEach(page=>{const row=document.querySelector('[data-page-row="'+page+'"]');if(row)row.style.display='none'});
+ const guideRow=document.querySelector('[data-page-row="guide"]');if(guideRow){const span=guideRow.querySelector('span:last-child');if(span)span.textContent=guideLabelText()} /* 按活动类型命名指南页 */
  const bookStreetRow=(()=>{
    if(state.templateId!=='04-creator-catalogue')return null;
    let row=document.querySelector('[data-page-row="bookStreets"]');
@@ -990,7 +991,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.109.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.112.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1168,7 +1169,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.109.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.112.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
