@@ -1,10 +1,10 @@
 /* Template 03 · CREATOR MARKET visitor art on the shared IP ONLY core.
    Layout hooks (ids, data-oe-field, collection containers) follow Template 01 so the shared
    renderer, editor and exporter work unchanged; everything visual is scoped to .cm-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.131.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.135.0';
 
 const marketStyle=`
-.cm-site{--primary:#00aeecvar(--primary);--secondary:#a4d9f4var(--secondary);--cm-accent:var(--primary);--cm-accent-ink:#008ac0;--cm-ink:#18191c;--cm-muted:#61666d;--cm-soft:#9499a0;--cm-line:#e3e5e7var(--cm-line);--cm-bg:#f7f8fa;--cm-card:#fff;background:var(--cm-bg);color:var(--cm-ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
+.cm-site{--primary:#00aeec;--secondary:#a4d9f4;--cm-accent:var(--primary);--cm-accent-ink:#008ac0;--cm-ink:#18191c;--cm-muted:#61666d;--cm-soft:#9499a0;--cm-line:#e3e5e7;--cm-bg:#f7f8fa;--cm-card:#fff;background:var(--cm-bg);color:var(--cm-ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
 .cm-site .wrap{max-width:1380px;padding:0 24px;margin:0 auto}
 .cm-site .nav{position:sticky;top:0;z-index:40;height:70px;background:#fff;border:0;border-bottom:1px solid var(--cm-line);box-shadow:0 2px 10px #00000005;backdrop-filter:none}
 .cm-site .nav .wrap{height:100%;display:flex;align-items:center;gap:20px}

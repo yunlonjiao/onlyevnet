@@ -2,10 +2,10 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.131.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.135.0';
 
 const style=`
-.bd-site{overflow-x:clip;--primary:#ff8fb8var(--primary);--secondary:#8fd3ffvar(--secondary);--bd-cream:#fffaf0;--bd-paper:#fffefb;--bd-accent:var(--primary);--bd-sky:var(--secondary);--bd-yellow:#ffd86bvar(--bd-yellow);--bd-mint:#b9efd8;--bd-ink:#4a3358;--bd-soft:#85708f;--bd-line:#f0dfe6;
+.bd-site{overflow-x:clip;--primary:#ff8fb8;--secondary:#8fd3ff;--bd-cream:#fffaf0;--bd-paper:#fffefb;--bd-accent:var(--primary);--bd-sky:var(--secondary);--bd-yellow:#ffd86b;--bd-mint:#b9efd8;--bd-ink:#4a3358;--bd-soft:#85708f;--bd-line:#f0dfe6;
  position:relative;min-height:100vh;color:var(--bd-ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
  background-color:var(--bd-cream);
  background-image:radial-gradient(circle,var(--primary)55 2.4px,transparent 2.8px),radial-gradient(circle,var(--secondary)66 2px,transparent 2.4px),radial-gradient(circle,var(--bd-yellow)88 2.6px,transparent 3px);background-size:97px 97px,131px 131px,79px 79px;background-position:0 0,40px 55px,20px 30px}

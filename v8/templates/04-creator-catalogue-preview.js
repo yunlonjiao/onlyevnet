@@ -1,10 +1,10 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.131.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.135.0';
 
 const catalogueStyle=`
-.cc-site{--primary:#c8432bvar(--primary);--secondary:#7fe3ffvar(--secondary);--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:var(--primary);--cc-lilac:#c9b99avar(--cc-lilac);--cc-cyan:var(--secondary);--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
+.cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:var(--primary);--cc-lilac:#c9b99a;--cc-cyan:var(--secondary);--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
  position:relative;min-height:100vh;color:#fff;font-family:"M PLUS Rounded 1c","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
  background:radial-gradient(1.5px 1.5px at 12% 18%,#fff 98%,transparent),radial-gradient(1px 1px at 32% 62%,#fff 98%,transparent),radial-gradient(1.5px 1.5px at 72% 28%,#fff 98%,transparent),radial-gradient(1px 1px at 88% 78%,#fff 98%,transparent),radial-gradient(1px 1px at 52% 88%,#fffa 98%,transparent),radial-gradient(circle at 80% -10%,#5b3fb0 0,transparent 45%),radial-gradient(circle at -10% 40%,#8a2d7c 0,transparent 40%),var(--cc-night);background-size:340px 340px,260px 260px,420px 420px,300px 300px,380px 380px,100% 100%,100% 100%,auto}
 .cc-site .wrap{max-width:1240px;padding:0 24px;margin:0 auto}
@@ -72,7 +72,7 @@ const catalogueStyle=`
 /* Keep catalogue TOC controls below the sticky 68px navigation when scrolled into view. */
 .cc-site .cb-contents button{scroll-margin-top:110px;scroll-margin-bottom:28px}
 .cc-site .cb-book{scroll-margin-top:96px}
-.cc-site .cb-contents span{color:var(--primary)}.cc-site .cb-contents i{font-style:normal;font-weight:900;color:#2f5d62var(--cc-cyan)}
+.cc-site .cb-contents span{color:var(--primary)}.cc-site .cb-contents i{font-style:normal;font-weight:900;color:#2f5d62}
 .cc-site .cb-bubble p{background:#fff;border:3px solid var(--cc-ink);box-shadow:4px 4px 0 var(--cc-pink)}
 .cc-site .cb-avatar{background:var(--cc-pink);color:#fff;border:3px solid var(--cc-ink)}
 .cc-site .cb-rules article{background:#fff;border-radius:12px;padding:10px 12px;border:2px solid #2b1f4722}
