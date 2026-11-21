@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.267.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.269.0';
 /* Template 06 runs on the shared IP ONLY core; the invitation-card art and the activity-first home differ. */
 export const template07=makeIpOnlyTemplate({
  id:'07-tea-party',name:'07 · 茶会小聚',label:'茶会小聚',studioName:'茶会小聚',
@@ -12,6 +12,7 @@ export const template07=makeIpOnlyTemplate({
 });
 // Starter content for a small gathering: a few activities, a short agenda and the hosts.
 const d=template07.defaults;
+d.socialLinks=(d.socialLinks||[]).filter(x=>!/摊主|COS|报名/.test(String(x.label||'')));
 d.tagline='喝茶，聊天，玩小游戏。一个下午，和同好待在一起。';
 d.modules={...d.modules,booths:false,sponsors:false,ribbon:false,guests:true,activities:true,guide:true,community:true};
 d.tickets=[
