@@ -2,7 +2,7 @@
    yellow, big band names and set times. The visual language follows Japanese band-anime live pages
    (BanG Dream!, Bocchi the Rock!) and hand-made live-house flyers. Hooks follow Template 01;
    everything visual is scoped to .bl-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.123.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.125.0';
 
 const style=`
 .bl-site{overflow-x:clip;--primary:#ffd500;--secondary:#ff3b3b;--bl-ink:#101010;--bl-paper:#f2efe6;--bl-yellow:#ffd500;--bl-red:#ff3b3b;--bl-gray:#6b6b66;--bl-line:#101010;
@@ -300,7 +300,11 @@ const featuredShape=`
 .bl-site #updates .updates-list{display:block}
 .bl-site #updates .updates-list>a{display:grid!important;grid-template-columns:96px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;padding:10px 0;border:0;border-bottom:2px solid #111;text-align:left}
 `;
-export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+phoneFix+splitStyle+featuredShape;
+const bandPalettes=String.raw`
+html[data-oe-palette06="ice"] .bl-site{--primary:#2f6f9f;--secondary:#5f9fc4;--bl-yellow:#2f6f9f;--bl-red:#5f9fc4;--bl-paper:#eef4f9;--bl-ink:#16242e;--bl-gray:#4a6273;--bl-line:#16242e}
+html[data-oe-palette06="brick"] .bl-site{--primary:#c8402a;--secondary:#e8a33d;--bl-yellow:#c8402a;--bl-red:#e8a33d;--bl-paper:#f5e9d8;--bl-ink:#241a15;--bl-gray:#6b5648;--bl-line:#241a15}
+`;
+export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+phoneFix+splitStyle+featuredShape+bandPalettes;
 export const previewBody=`<div class="bl-site">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">买票 ↗</a></div></header>
 <main id="top"><div class="bl-split"><aside class="bl-bill">
