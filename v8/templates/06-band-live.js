@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.206.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.207.0';
 /* Template 06 runs on the shared IP ONLY core; the live-house flyer art, the band list and the set times differ. */
 export const template06=makeIpOnlyTemplate({
  id:'06-band-live',name:'06 · 乐队演出',label:'乐队演出',studioName:'乐队演出',
@@ -12,7 +12,7 @@ export const template06=makeIpOnlyTemplate({
 });
 // Starter content for a four-band night.
 const d=template06.defaults;
-d.socialLinks=(d.socialLinks||[]).slice(0,3);
+d.socialLinks=(d.socialLinks||[]).slice(0,2);
 d.tagline='四组乐队连着演，一个晚上。门票含一杯饮料。';
 d.modules={...d.modules,booths:false,sponsors:true,ribbon:true,guests:true,activities:true,guide:true,community:true};
 d.ribbonItems=[{id:'rb1',text:'出演乐队公开'},{id:'rb2',text:'预售票开售中'},{id:'rb3',text:'门票含一杯饮料'},{id:'rb4',text:'请自备耳塞'}];
