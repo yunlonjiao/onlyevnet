@@ -2,7 +2,7 @@
    anime cafe and tea-party event pages (Animate Cafe collaborations, "お茶会" invitations).
    The home page answers what happens, and when, before anything else. Hooks follow Template 01;
    everything visual is scoped to .tp-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.276.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.277.0';
 
 const style=`
 .tp-site{overflow-x:clip;--primary:#f08fa8;--secondary:#8fd3bb;--tp-cream:#fff6ec;--tp-paper:#fffdf8;--tp-pink:var(--primary);--tp-rose:#fadbe3;--tp-mint:#bfe6d6;--tp-lav:#dccffa;--tp-brown:#5a3d3a;--tp-soft:#8c6f6a;--tp-gold:#d9a441;--tp-line:#ecd5cc;
@@ -303,7 +303,7 @@ export const previewBody=`<div class="tp-site tp-nav-final tp-nav-clean tp-inner
 <section class="hero"><div class="wrap hero-grid"><div class="hero-copy tp-title"><span class="hero-kicker">TEA PARTY · 茶会邀请</span></div><div class="hero-art"><div class="kv"><strong class="tp-kv-fallback" data-oe-field="eventName">BILIBILI ONLY</strong></div></div><div class="hero-copy tp-detail"><p data-oe-field="tagline"></p><div class="meta tp-rows"><div class="tp-row"><b>日期</b><span class="pill" data-oe-field="date"></span></div><div class="tp-row"><b>地点</b><span class="pill" data-oe-field="location"></span></div><div class="tp-row"><b>详情</b><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></div></div></section>
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NOTICE','茶会通知'))}
 <div id="today">${coreSection('participation',{ey:"TODAY'S MENU",title:'今天玩什么'})}</div>
-<section class="section oe-page-view" id="activities"><div class="wrap">${head('TIMETABLE','当天流程')}<div class="timeline" data-oe-mirror="timetable"></div>${more('activities','查看完整流程')}</div></section>
+${coreSection('activities',{ey:'AGENDA',title:'当天流程'})}
 <section class="section oe-home-only" id="lineup"><div class="wrap">${head("WHO'S THERE",'今天同席的人')}<div class="lineup-strip" data-oe-mirror="lineup"></div>${more('guests','全部介绍')}</div></section>
 ${coreSection('tickets',{ey:'ENTRY',title:'参加方式'})}
 ${ownMapSection('tp',{ey:'PLACE',title:'场地'})}
