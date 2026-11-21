@@ -1,4 +1,4 @@
-import {activityMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.207.0';
+import {activityMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.210.0';
 export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>document.querySelector('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
   const externalHref=value=>{const raw=String(value||'').trim();if(!raw)return '';if(/^https?:\/\//i.test(raw))return raw;if(/^www\./i.test(raw)||/^[\w.-]+\.[a-z]{2,}(?:[\/:?#]|$)/i.test(raw))return 'https://'+raw;return ''};
@@ -29,7 +29,7 @@ export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send})
         const meta=[activity.area,shortMeta(activity)].filter(Boolean).join(' · ');
         return '<a class="featured-activity-card reveal in" '+(!x?'data-featured-empty="1" ':'')+'href="#activities" data-target-mode="page" data-page-link="activities" data-activity-plan-id="'+esc(activity.id||'')+'" data-oe-item="featuredActivities" data-oe-index="'+slotIndex+'">'+
           image+'<div class="featured-activity-copy"><span class="featured-activity-kicker">'+(rank===0?'EDITOR\'S PICK':'FEATURED')+'</span>'+
-          '<h3>'+esc(activity.title||'选择精选活动')+'</h3>'+(meta?'<small>'+esc(meta)+'</small>':'')+
+          '<h3>'+esc(activity.title||'选择精选活动')+'</h3>'+(meta?'<small>'+esc(meta)+'</small>':'')+((getState().templateId==='06-band-live')?'<small class="bl-set-meta">'+esc([activity.time,((getState().guests||[]).filter(g=>(activity.guestIds||[]).includes(g.id)).map(g=>g.name).join(' / ')),(()=>{const s=String(activity.setlist||'');const n=(s.match(/《[^》]+》/g)||[]).length||s.split(/[\/、,，]/).filter(Boolean).length;return n?'共 '+n+' 首':''})()].filter(Boolean).join(' · '))+'</small>':'')+
           '<p>'+esc(activity.text||activity.detail||'')+'</p><span class="featured-activity-link">'+(activity.id?'查看活动详情 ↗':'点击设置活动')+'</span></div></a>';
       }).join('');
     }
