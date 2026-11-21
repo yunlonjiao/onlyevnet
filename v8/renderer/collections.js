@@ -1,8 +1,8 @@
-import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.159.0';
-import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.159.0';
-import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.159.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.159.0';
-import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.159.0';
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.160.0';
+import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.160.0';
+import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.160.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.160.0';
+import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.160.0';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
 
@@ -416,9 +416,9 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       const plans=(state.participation||[]).filter(a=>(a.guestIds||[]).includes(g.id));
       const schedules=(state.schedule||[]).filter(a=>(a.guestIds||[]).includes(g.id));
       const img=g.image?'<button class="guest-image" data-product-lightbox="'+esc(g.image)+'" data-oe-image="guests.'+i+'.image" type="button"><img src="'+esc(g.image)+'" alt="'+esc(g.name||'嘉宾')+'"></button>':(getMode()==='edit'?'<button class="guest-image empty" type="button" data-oe-image="guests.'+i+'.image">＋ 嘉宾图</button>':'<div class="guest-image empty" aria-hidden="true"></div>');
-      const planLinks=plans.map(a=>'<a href="#activities" data-target-mode="page" data-page-link="activities" data-activity-plan-id="'+esc(a.id)+'">'+esc(a.title)+'</a>');
-      const scheduleLinks=schedules.map(a=>'<a href="#activities" data-target-mode="page" data-page-link="activities" data-activity-index="'+Math.max(0,(state.schedule||[]).indexOf(a))+'">'+esc((a.time?a.time+' ':'')+a.title)+'</a>');
-      const related=(planLinks.length||scheduleLinks.length)?'<div class="guest-note guest-related-note"><b>关联活动</b><div class="guest-related-links">'+[...planLinks,...scheduleLinks].join('')+'</div></div>':'';
+      const planLinks=plans.map(a=>'<a href="#participation" data-target-mode="home" data-activity-plan-id="'+esc(a.id)+'">'+esc((a.time?a.time+' ':'')+a.title)+'</a>');
+      const scheduleLinks=[];
+      const related=(planLinks.length)?'<div class="guest-note guest-related-note"><b>关联活动</b><div class="guest-related-links">'+[...planLinks,...scheduleLinks].join('')+'</div></div>':'';
       const guestType=['person','duo','band','group','official'].includes(g.guestType)?g.guestType:'person';
       const members=String(g.members||'').trim();
       const attendance=String(g.attendanceNote||'').trim();
