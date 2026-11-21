@@ -1348,3 +1348,7 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 .inspector .check-row{display:flex!important;align-items:center!important;gap:9px!important;padding:7px 2px!important}
 .inspector .check-row input[type=checkbox]{width:16px!important;height:16px!important;min-height:0!important;padding:0!important;margin:0!important;border-radius:4px!important;accent-color:#6c5ce7!important;flex:0 0 16px!important}
 .inspector .check-row span{font-size:12px!important;line-height:1.4!important;color:#3f3f46!important}
+
+/* 面板块间距唯一规则 */
+.inspector .item-fields,.inspector .reference-panel,.inspector .item-media,.inspector .row{margin:0 0 20px!important}
+.inspector .item-fields:last-child,.inspector .reference-panel:last-child,.inspector .item-media:last-child{margin-bottom:6px!important}
