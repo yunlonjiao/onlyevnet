@@ -155,13 +155,13 @@ export function guideMarkup({state,x,i,field,esc,image,navigation,preset,kindLab
   const label=esc(x.label||kindLabel[preset]||'GUIDE');
   if(id===CM)return '<article class="cm-guide"'+common+'><div class="cm-guide-icon">'+num(i)+'</div><div class="cm-guide-body"><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id===CC)return '<article class="cc-guide"'+common+'><span class="cc-guide-no">注意事項 '+num(i)+'</span><div class="cc-guide-body"><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
-  if(id===BL)return '<article class="bl-note"'+common+'><div class="bl-note-no">'+num(i)+'</div><div class="bl-note-body"><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
+  if(id===BL)return '<article class="bl-note guide-card"'+common+'><div class="bl-note-no">'+num(i)+'</div><div class="bl-note-body"><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id===TP)return '<article class="tp-rule"'+common+'><div class="tp-rule-card"><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id===BD)return '<article class="bd-tip"'+common+'><span class="bd-tip-pin">'+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='02-scrapbook')return '<article class="scrap-guide"'+common+'><span>NOTE '+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='03-school-festival')return '<article class="school-guide"'+common+'><div class="school-guide-no">'+num(i)+'</div><div><span>'+label+'</span><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='04-museum-editorial')return '<article class="museum-guide"'+common+'><aside>'+num(i)+' / '+label+'</aside><div><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
-  if(id==='05-live-poster')return '<article class="live-guide"'+common+'><span>'+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
+  if(id==='05-live-poster')return '<article class="live-guide guide-card"'+common+'><span>'+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
   if(id==='06-expo-catalogue')return '<article class="expo-guide-row"'+common+'><span>G-'+num(i)+'</span><div>'+label+'</div><div><h3>'+title+'</h3>'+text+'</div><div>'+navigation+'</div>'+image+'</article>';
   return '<article class="kimetsu-guide"'+common+'><span>'+num(i)+'</span><div><small>'+label+'</small><h3>'+title+'</h3>'+text+navigation+'</div>'+image+'</article>';
 }

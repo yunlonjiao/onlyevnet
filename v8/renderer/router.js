@@ -1,4 +1,4 @@
-import {quickMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.154.0';
+import {quickMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.155.0';
 export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,onPageNavigate=()=>{}}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
   const lifecycleStatus=()=>{
@@ -97,6 +97,9 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
     const guestHome=getState().templateId==='02-scrapbook'&&page==='guests';
     if(guestHome)page='home';
     if(page!=='home'&&!isStandalonePage(page))page='home';
+    // 05/06 keep 嘉宾 / 活动 / 观演秩序 inline, so there is no #guests / #activities / #guide
+    // element to show. Never blank the single page by "navigating" to an absent page.
+    if(page!=='home'&&!document.getElementById(page))page='home';
     if(page!=='home'&&!moduleOn(page)&&getMode?.()!=='edit')page='home';
     const changed=currentPage!==page;
     currentPage=page;

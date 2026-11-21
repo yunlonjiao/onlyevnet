@@ -2,7 +2,7 @@
    yellow, big band names and set times. The visual language follows Japanese band-anime live pages
    (BanG Dream!, Bocchi the Rock!) and hand-made live-house flyers. Hooks follow Template 01;
    everything visual is scoped to .bl-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.154.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.155.0';
 
 const style=`
 .bl-site{overflow-x:clip;--primary:#ffd500;--secondary:#ff3b3b;--bl-ink:#101010;--bl-paper:#f2efe6;--bl-yellow:#ffd500;--bl-red:#ff3b3b;--bl-gray:#6b6b66;--bl-line:#101010;
@@ -303,6 +303,10 @@ const featuredShape=`
 const bandPalettes=String.raw`
 html[data-oe-template="06-band-live"] #home-guide .section-back{display:none!important}
 html[data-oe-template="06-band-live"] #home-guests .section-back{display:none!important}
+/* The inline 入场须知 list mounts in .guide-detail-content; Template 01's 112px index rail column is
+   not used here, so let the numbered rows span the full section width. */
+html[data-oe-template="06-band-live"] #home-guide .guide-detail-grid{display:block!important}
+html[data-oe-template="06-band-live"] #home-guide .guide-detail-content{display:block!important}
 html[data-oe-palette06="ice"] .bl-site{--primary:#2f6f9f;--secondary:#5f9fc4;--bl-yellow:#2f6f9f;--bl-red:#5f9fc4;--bl-paper:#eef4f9;--bl-ink:#16242e;--bl-gray:#4a6273;--bl-line:#16242e}
 html[data-oe-palette06="brick"] .bl-site{--primary:#c8402a;--secondary:#e8a33d;--bl-yellow:#c8402a;--bl-red:#e8a33d;--bl-paper:#f5e9d8;--bl-ink:#241a15;--bl-gray:#6b5648;--bl-line:#241a15}
 `;
@@ -315,10 +319,9 @@ ${coreRibbon()}
 ${setSection}
 ${coreSection('tickets',{ey:'TICKET',title:'门票'})}
 ${ownMapSection('bl',{ey:'ACCESS',title:'场地'})}
-${coreSection('guests',{ey:'BANDS',title:'出演乐队'}).replace('class="section oe-page-view" id="guests"','class="section" id="home-guests"').replace('id="guests"','id="home-guests"')}
-${coreSection('guide',{ey:'INFO',title:'入场须知'})}
+${coreSection('guests',{ey:'BANDS',title:'出演乐队'}).replace('class="section oe-page-view" id="guests"','class="section" id="home-guests"').replace('id="guests"','id="home-guests"').replace('<div class="guest-grid"></div>','<div class="guest-grid" data-oe-mount="guests"></div>')}
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip section"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新消息'))}
-${coreSection('guide',{ey:'RULES',title:'入场须知'}).replace('class="section oe-page-view" id="guide"','class="section" id="home-guide"')}
+${coreSection('guide',{ey:'RULES',title:'入场须知'}).replace('class="section oe-page-view" id="guide"','class="section" id="home-guide"').replace('<div class="guide-grid guide-detail-grid"></div>','<div class="guide-grid guide-detail-grid" data-oe-mount="guide-detail"></div>')}
 ${ownCommunitySection('bl',{ey:'COMMUNITY',title:'社群'})}
 ${ownSponsorsSection('bl',{ey:'THANKS',title:'合作支持'})}
 </div></div></main>

@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.154.0';
+import {coreStyle,coreSection,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.155.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -315,6 +315,10 @@ const phoneFix=`
 `;
 const warmStage=String.raw`
 html[data-oe-template="05-live-poster"] #home-guide .section-back{display:none!important}
+/* The inline 观演秩序 section mounts its cards in .guide-detail-content; the shared renderer keeps
+   a 112px index rail column for Template 01's guide page, which this template does not use. */
+html[data-oe-template="05-live-poster"] #home-guide .guide-detail-grid{display:block!important}
+html[data-oe-template="05-live-poster"] #home-guide .guide-detail-content{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))!important;gap:16px!important}
 .ls-site #updates{padding-top:72px!important}.ls-site .ls-news-head{margin-bottom:20px!important}
 .ls-site .live-pass-band{background:var(--ls-pink)!important;color:#fff!important}
 .ls-site .live-pass-price{color:var(--ls-cyan)!important}
@@ -392,7 +396,7 @@ ${ownMapSection('ls',{ey:'ACCESS',title:'场地图'})}
 ${timetableSection}
 ${guestsSection}
 ${programmeSection}
-${coreSection('guide',{ey:'RULES',title:'观演秩序'}).replace('class="section oe-page-view" id="guide"','class="section" id="home-guide"')}
+${coreSection('guide',{ey:'RULES',title:'观演秩序'}).replace('class="section oe-page-view" id="guide"','class="section" id="home-guide"').replace('<div class="guide-grid guide-detail-grid"></div>','<div class="guide-grid guide-detail-grid" data-oe-mount="guide-detail"></div>')}
 ${ownCommunitySection('ls',{ey:'COMMUNITY',title:'社群'})}
 ${ownSponsorsSection('ls',{ey:'SUPPORT',title:'合作支持'})}
 </main>
