@@ -1352,3 +1352,11 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 /* 面板块间距唯一规则 */
 .inspector .item-fields,.inspector .reference-panel,.inspector .item-media,.inspector .row{margin:0 0 20px!important}
 .inspector .item-fields:last-child,.inspector .reference-panel:last-child,.inspector .item-media:last-child{margin-bottom:6px!important}
+
+/* 歌单 chip 编辑器 */
+.chip-editor{display:grid!important;gap:8px!important}
+.chip-list{display:flex!important;flex-wrap:wrap!important;gap:6px!important}
+.chip{display:inline-flex!important;align-items:center!important;gap:6px!important;padding:6px 10px!important;border-radius:999px!important;background:#f1eefe!important;color:#4a3aa8!important;font-size:12px!important;font-weight:700!important}
+.chip button{border:0!important;background:none!important;color:#6c5ce7!important;font-size:14px!important;line-height:1!important;cursor:pointer!important;padding:0!important}
+.chip-input{width:100%!important;min-height:38px!important;padding:8px 12px!important;border-radius:10px!important;border:1px dashed #c9c4e8!important;background:#fff!important;font-size:13px!important}
+.inspector textarea.chip-source{display:none!important}
