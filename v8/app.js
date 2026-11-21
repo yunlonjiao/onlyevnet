@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.210.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.210.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.211.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.211.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.210.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.210.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.210.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.210.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.211.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.211.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.211.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.211.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -1002,7 +1002,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.210.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.211.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1176,7 +1176,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.210.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.211.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1880,3 +1880,8 @@ try{new MutationObserver(__cleanGuestPanels).observe(document.body,{childList:tr
 
 
 
+
+
+/* 首页内容三项入口：点击打开对应集合面板 */
+const __homeEntryClick=(e)=>{const el=e.target.closest&&e.target.closest('button');if(!el)return;const t=(el.textContent||'').trim();const map={'现场活动':'participation','出演阵容':'guests','观演秩序':'guide'};const key=map[t];if(!key)return;if(!el.closest('.sidebar,.page-nav,.content-list,#contentListPanel'))return;e.preventDefault();e.stopPropagation();try{openCollectionManager(key)}catch(err){console.warn('[home entry]',err)}};
+document.addEventListener('click',__homeEntryClick,true);
