@@ -2,7 +2,7 @@
    yellow, big band names and set times. The visual language follows Japanese band-anime live pages
    (BanG Dream!, Bocchi the Rock!) and hand-made live-house flyers. Hooks follow Template 01;
    everything visual is scoped to .bl-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.155.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.156.0';
 
 const style=`
 .bl-site{overflow-x:clip;--primary:#ffd500;--secondary:#ff3b3b;--bl-ink:#101010;--bl-paper:#f2efe6;--bl-yellow:#ffd500;--bl-red:#ff3b3b;--bl-gray:#6b6b66;--bl-line:#101010;
@@ -301,6 +301,12 @@ const featuredShape=`
 .bl-site #updates .updates-list>a{display:grid!important;grid-template-columns:96px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;padding:10px 0;border:0;border-bottom:2px solid #111;text-align:left}
 `;
 const bandPalettes=String.raw`
+html[data-oe-template="05-live-poster"] #home-guide .guide-detail-grid,html[data-oe-template="06-band-live"] #home-guide .guide-detail-grid{grid-template-columns:1fr!important;display:grid!important;gap:14px!important}
+html[data-oe-template="05-live-poster"] #home-guide .guide-card,html[data-oe-template="06-band-live"] #home-guide .guide-card{color:var(--ls-soft,#33251c)!important;background:#fffdf7!important;border:1px solid var(--ls-line,#e3d1b8)!important;border-radius:14px!important;padding:16px 18px!important}
+html[data-oe-template="05-live-poster"] #home-guide .guide-card *,html[data-oe-template="06-band-live"] #home-guide .guide-card *{color:inherit!important}
+html[data-oe-template="05-live-poster"] #home-guide .guide-card h3,html[data-oe-template="06-band-live"] #home-guide .guide-card h3{color:#b23a22!important}
+html[data-oe-template="05-live-poster"] .guest-related-links a,html[data-oe-template="06-band-live"] .guest-related-links a{pointer-events:none!important;color:#8a6a52!important;text-decoration:none!important;border-color:#e3d1b8!important}
+html[data-oe-template="05-live-poster"] .guest-related-note,html[data-oe-template="06-band-live"] .guest-related-note{background:#f7eddc!important;color:#3a2b22!important}
 html[data-oe-template="06-band-live"] #home-guide .section-back{display:none!important}
 html[data-oe-template="06-band-live"] #home-guests .section-back{display:none!important}
 /* The inline 入场须知 list mounts in .guide-detail-content; Template 01's 112px index rail column is

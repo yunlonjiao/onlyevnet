@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.155.0';
+import {coreStyle,coreSection,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.156.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -314,6 +314,12 @@ const phoneFix=`
 @media(max-width:820px){.ls-site .hero-grid{grid-template-columns:minmax(0,1fr);gap:22px;padding:14px 0}.ls-site .hero-art{order:-1;aspect-ratio:16/11;max-height:340px}.ls-site .hero-copy{min-width:0}}
 `;
 const warmStage=String.raw`
+html[data-oe-template="05-live-poster"] #home-guide .guide-detail-grid,html[data-oe-template="06-band-live"] #home-guide .guide-detail-grid{grid-template-columns:1fr!important;display:grid!important;gap:14px!important}
+html[data-oe-template="05-live-poster"] #home-guide .guide-card,html[data-oe-template="06-band-live"] #home-guide .guide-card{color:var(--ls-soft,#33251c)!important;background:#fffdf7!important;border:1px solid var(--ls-line,#e3d1b8)!important;border-radius:14px!important;padding:16px 18px!important}
+html[data-oe-template="05-live-poster"] #home-guide .guide-card *,html[data-oe-template="06-band-live"] #home-guide .guide-card *{color:inherit!important}
+html[data-oe-template="05-live-poster"] #home-guide .guide-card h3,html[data-oe-template="06-band-live"] #home-guide .guide-card h3{color:#b23a22!important}
+html[data-oe-template="05-live-poster"] .guest-related-links a,html[data-oe-template="06-band-live"] .guest-related-links a{pointer-events:none!important;color:#8a6a52!important;text-decoration:none!important;border-color:#e3d1b8!important}
+html[data-oe-template="05-live-poster"] .guest-related-note,html[data-oe-template="06-band-live"] .guest-related-note{background:#f7eddc!important;color:#3a2b22!important}
 html[data-oe-template="05-live-poster"] #home-guide .section-back{display:none!important}
 /* The inline 观演秩序 section mounts its cards in .guide-detail-content; the shared renderer keeps
    a 112px index rail column for Template 01's guide page, which this template does not use. */
