@@ -2,7 +2,7 @@
    anime cafe and tea-party event pages (Animate Cafe collaborations, "お茶会" invitations).
    The home page answers what happens, and when, before anything else. Hooks follow Template 01;
    everything visual is scoped to .tp-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.263.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.264.0';
 
 const style=`
 .tp-site{overflow-x:clip;--primary:#f08fa8;--secondary:#8fd3bb;--tp-cream:#fff6ec;--tp-paper:#fffdf8;--tp-pink:var(--primary);--tp-rose:#fadbe3;--tp-mint:#bfe6d6;--tp-lav:#dccffa;--tp-brown:#5a3d3a;--tp-soft:#8c6f6a;--tp-gold:#d9a441;--tp-line:#ecd5cc;
@@ -305,10 +305,13 @@ ${coreSection('updates').replace('class="updates-strip"','class="updates-strip o
 <div id="today">${coreSection('participation',{ey:"TODAY'S MENU",title:'今天玩什么'})}</div>
 <section class="section oe-home-only" id="timetable"><div class="wrap">${head('TIMETABLE','当天流程')}<div class="timeline" data-oe-mirror="timetable"></div>${more('activities','查看完整流程')}</div></section>
 <section class="section oe-home-only" id="lineup"><div class="wrap">${head("WHO'S THERE",'今天同席的人')}<div class="lineup-strip" data-oe-mirror="lineup"></div>${more('guests','全部介绍')}</div></section>
+${coreSection('featuredActivities',{ey:'PICKS',title:'精选活动'})}
 ${coreSection('tickets',{ey:'ENTRY',title:'参加方式'})}
 ${ownMapSection('tp',{ey:'PLACE',title:'场地'})}
 ${coreSection('guests',{ey:'MEMBERS',title:'同席的人'})}
 ${coreSection('guide',{ey:'NOTICE',title:'参加须知'})})}
+${ownCommunitySection('tp',{ey:'CONTACT',title:'联系与交流'})}
+${ownSponsorsSection('tp',{ey:'THANKS',title:'合作支持'})}
 </div></main>
 
 <nav class="mobile-dock"><a href="#top" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
