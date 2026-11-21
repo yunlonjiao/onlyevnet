@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.127.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.127.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.128.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.128.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.127.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.127.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.127.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.127.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.128.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.128.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.128.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.128.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -991,7 +991,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.127.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.128.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1165,7 +1165,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.127.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.128.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1182,16 +1182,25 @@ function openAddressInspector(){
   '<label><span>导航链接</span><input type="url" data-sync-path="navigationUrl" value="'+esc(state.navigationUrl||'')+'" placeholder="https://"></label>'+
  '</div><div class="row"><button id="testNavigation" type="button">打开导航 ↗</button></div><p class="inspector-note">活动状态默认自动判断：开始前为未开始，活动时间内为进行中，超过结束时间后自动变为已结束。</p>');
  const tplId=(activeTemplate?.id||'');
- if(tplId.indexOf('05')===0||tplId.indexOf('06')===0){
-  const is05=tplId.indexOf('05')===0;
-  const key=is05?'palette05':'palette06';
-  const options=is05
-   ?'<option value="warm">原色</option><option value="ice">雾蓝</option><option value="forest">森绿</option><option value="mauve">沙紫</option>'
-   :'<option value="classic">原色</option><option value="ice">冷蓝</option><option value="brick">砖红</option>';
+ const PALETTES={
+  '01':[['original','原色'],['ice','冷蓝'],['cream','奶油棕']],
+  '02':[['original','原色'],['blue','灰蓝'],['sand','暖砂']],
+  '03':[['original','原色'],['matcha','抹茶'],['pink','藕粉']],
+  '04':[['original','原色'],['gray','冷灰'],['wine','酒红']],
+  '05':[['warm','原色'],['ice','雾蓝'],['forest','森绿'],['mauve','沙紫']],
+  '06':[['classic','原色'],['ice','冷蓝'],['brick','砖红']],
+  '07':[['original','原色'],['mint','薄荷'],['sakura','樱粉']],
+  '08':[['original','原色'],['sky','星空蓝'],['butter','奶油黄']]
+ };
+ const num=(tplId.match(/^0\d/)||[])[0];
+ if(num&&PALETTES[num]){
+  const key="palette"+num;
+  const options=PALETTES[num].map(([v,l])=>'<option value="'+v+'">'+l+'</option>').join('');
   const box=document.createElement("label");
   box.innerHTML='<span>配色方案</span><select data-palette>'+options+'</select>';
   inspector.querySelector(".item-fields")?.appendChild(box);
-  const sel=inspector.querySelector("[data-palette]");if(sel){sel.value=state[key]||(is05?"warm":"classic");sel.addEventListener("change",()=>{checkpoint();state[key]=sel.value;save();send({type:"OE_REPLACE_STATE",state})})}
+  const sel=inspector.querySelector("[data-palette]");
+  if(sel){sel.value=state[key]||PALETTES[num][0][0];sel.addEventListener("change",()=>{checkpoint();state[key]=sel.value;save();send({type:"OE_REPLACE_STATE",state})})}
  }
  bindInspectorStateInput(inspector.querySelector('[data-sync-path="eventStartDateTime"]'),'eventStartDateTime',{clean:true});
  bindInspectorStateInput(inspector.querySelector('[data-sync-path="eventEndDateTime"]'),'eventEndDateTime',{clean:true});
