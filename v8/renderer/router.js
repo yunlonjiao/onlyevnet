@@ -1,4 +1,4 @@
-import {quickMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.104.0';
+import {quickMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.109.0';
 export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,onPageNavigate=()=>{}}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
   const lifecycleStatus=()=>{
@@ -49,7 +49,7 @@ export function createRouter({qs:$,qsa:qa,getState,getMode,renderParticipation,o
       ['tickets','tickets','票务与特典','查看票种 →','home'],
       ['booths','booths','摊位与制品','查看摊位 →','page'],
       ['activities','activities','活动','查看活动 →','page'],
-      ['guide','guide','观展指南','查看指南 →','page'],
+      ['guide','guide',(document.documentElement.dataset.oeGuideLabel||'观展指南'),'查看指南 →','page'],
       ['map','map-home','场地图','查看场地 →','home']
     ].filter(x=>moduleOn(x[0]));
     if(lifecycleStatus()==='live'){

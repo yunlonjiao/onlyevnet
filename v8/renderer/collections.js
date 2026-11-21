@@ -1,8 +1,8 @@
-import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.104.0';
-import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.104.0';
-import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.104.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.104.0';
-import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.104.0';
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.109.0';
+import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.109.0';
+import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.109.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.109.0';
+import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.109.0';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
 
@@ -548,7 +548,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       participate.hidden=!links.length;
     }
     const visit=mount('footer-visit','.footer-visit');if(visit){
-      const links=[link('tickets','票务'),link('map-home','场地图'),...(on('guide')?[link('guide','观展指南','page')]:[])];
+      const links=[link('tickets','票务'),link('map-home','场地图'),...(on('guide')?[link('guide','guideLabel()','page')]:[])];
       visit.innerHTML='<b>观展</b><nav>'+links.join('')+'</nav>';
     }
     const social=mount('footer-social','.footer-social');if(social){
@@ -685,3 +685,5 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
   }
   return {openGiftLightbox,renderRibbon,renderTickets,renderHighlights,renderSchedule,renderGuide,renderMap,renderBooths,renderGuests,renderHomeMirrors,renderUpdates,renderCommunity,renderSponsors,renderCustomPages,renderOptionalPages,renderFooter,renderCollections,renderCatalogueBook,enhanceImages};
 }
+
+function guideLabel(){return document.documentElement.dataset.oeGuideLabel||'观展指南'}

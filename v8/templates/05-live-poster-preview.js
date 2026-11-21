@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.104.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.109.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -360,7 +360,7 @@ ${coreSection('tickets',{ey:'TICKET',title:'票务'})}
 ${ownMapSection('ls',{ey:'ACCESS',title:'场地图'})}
 ${timetableSection}
 ${coreSection('guests',{ey:'CAST',title:'出演阵容'})}
-${coreSection('guide',{ey:'INFORMATION',title:'观演须知'})}
+${coreSection('participation',{ey:'PROGRAMME',title:'现场活动'})}
 ${ownCommunitySection('ls',{ey:'COMMUNITY',title:'社群'})}
 ${ownSponsorsSection('ls',{ey:'SUPPORT',title:'合作支持'})}
 </main>

@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.104.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.109.0';
 /* Template 06 runs on the shared IP ONLY core; the live-house flyer art, the band list and the set times differ. */
 export const template06=makeIpOnlyTemplate({
  id:'06-band-live',name:'06 · 乐队演出',label:'乐队演出',studioName:'乐队演出',
@@ -24,8 +24,8 @@ const g0=d.guests[0];
 d.guests=[
  {...g0,id:'g1',guestType:'band',name:'MIDNIGHT TRAIN',role:'BAND',members:'Aki / Ren / Yuu / Mio',attendanceNote:'全员出演',works:'曲目：夜行 / 末班车 / 站台灯',intro:'四人摇滚乐队，主唱兼吉他。这次带来三首新歌。',appearance:'20:00 第 4 组'},
  {...g0,id:'g2',guestType:'band',name:'paper moon',role:'BAND',members:'Hina / Sora / Kai',attendanceNote:'三人出演',works:'曲目：纸月亮 / 窗边 / 回信',intro:'三人编制的 indie 乐队，主打轻快的吉他旋律。',appearance:'19:10 第 3 组'},
- {...g0,id:'g3',guestType:'band',name:'回声实验室',role:'BAND',members:'小野 / 阿澈 / 七海 / 琉',attendanceNote:'全员出演',works:'曲目：回声 / 频率 / 零点',intro:'电子与摇滚混合的四人乐队，现场有视觉投影。',appearance:'18:30 第 2 组'},
- {...g0,id:'g4',guestType:'band',name:'COLOR BARS',role:'OPENING ACT',members:'Mai / Toto',attendanceNote:'两人出演',works:'曲目：彩条 / 信号 / 晴天',intro:'开场乐队，带着新鲜的 demo 来暖场。',appearance:'18:00 第 1 组'}
+ {...g0,id:'g3',guestType:'person',name:'小野 澪',role:'SINGER',members:'',attendanceNote:'全员出演',works:'曲目：回声 / 频率 / 零点',intro:'电子与摇滚混合的四人乐队，现场有视觉投影。',appearance:'18:30 第 2 组'},
+ {...g0,id:'g4',guestType:'band',name:'COLOR BARS',role:'BAND',members:'Mai / Toto',attendanceNote:'两人出演',works:'曲目：彩条 / 信号 / 晴天',intro:'开场乐队，带着新鲜的 demo 来暖场。',appearance:'18:00 第 1 组'}
 ];
 d.schedule=[
  {id:'s1',day:'LIVE',time:'17:30',endTime:'',title:'OPEN · 开场入场',stage:'LIVE HOUSE',category:'入场',detail:'按票号顺序入场，饮料券在吧台兑换。',guestIds:[],registrationUrl:''},
