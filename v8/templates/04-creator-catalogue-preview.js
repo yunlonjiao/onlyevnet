@@ -1,10 +1,10 @@
 ﻿/* Template 04 · CREATOR CATALOGUE visitor art on the shared IP ONLY core: an illustrated
    doujin-event pamphlet. Layout hooks follow Template 01 so the shared renderer, editor and
    exporter work unchanged; everything visual is scoped to .cc-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.129.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.130.0';
 
 const catalogueStyle=`
-.cc-site{--primary:#c8432b;--secondary:#7fe3ff;--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:#c8432b;--cc-lilac:#c9b99a;--cc-cyan:#7fe3ff;--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
+.cc-site{--primary:#c8432bvar(--primary);--secondary:#7fe3ffvar(--secondary);--cc-night:#1b1240;--cc-night-2:#2a1b5e;--cc-pink:var(--primary);--cc-lilac:#c9b99a;--cc-cyan:var(--secondary);--cc-cream:#fff8ef;--cc-ink:#2b1f47;--cc-line:#ffffff26;
  position:relative;min-height:100vh;color:#fff;font-family:"M PLUS Rounded 1c","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
  background:radial-gradient(1.5px 1.5px at 12% 18%,#fff 98%,transparent),radial-gradient(1px 1px at 32% 62%,#fff 98%,transparent),radial-gradient(1.5px 1.5px at 72% 28%,#fff 98%,transparent),radial-gradient(1px 1px at 88% 78%,#fff 98%,transparent),radial-gradient(1px 1px at 52% 88%,#fffa 98%,transparent),radial-gradient(circle at 80% -10%,#5b3fb0 0,transparent 45%),radial-gradient(circle at -10% 40%,#8a2d7c 0,transparent 40%),var(--cc-night);background-size:340px 340px,260px 260px,420px 420px,300px 300px,380px 380px,100% 100%,100% 100%,auto}
 .cc-site .wrap{max-width:1240px;padding:0 24px;margin:0 auto}
@@ -16,7 +16,7 @@ const catalogueStyle=`
 .cc-site .nav .links{display:flex;gap:22px;margin-left:auto}
 .cc-site .nav .links a{color:#e6dcff;font-size:13px;font-weight:800;border:0;background:none;padding:0}
 .cc-site .nav .links a:hover{color:var(--cc-cyan)}
-.cc-site .nav .wrap>.btn{background:var(--cc-pink);color:#2b1036;border:0;border-radius:999px;box-shadow:0 0 0 3px #c8432b55;font-weight:900;font-size:12px;padding:8px 14px;white-space:nowrap}
+.cc-site .nav .wrap>.btn{background:var(--cc-pink);color:#2b1036;border:0;border-radius:999px;box-shadow:0 0 0 3px var(--primary)55;font-weight:900;font-size:12px;padding:8px 14px;white-space:nowrap}
 .cc-site .nav .links a{white-space:nowrap}
 /* Hero: poster card with key art, speed lines and stickers */
 .cc-site .hero{min-height:0;padding:44px 0 30px;background:transparent;overflow:hidden;display:block}
@@ -57,7 +57,7 @@ const catalogueStyle=`
 .cc-site .cb-page.left{box-shadow:inset -26px 0 30px -20px #2b1f4740,0 18px 50px #0007}
 .cc-site .cb-page.right{box-shadow:inset 26px 0 30px -20px #2b1f4740,0 18px 50px #0007}
 .cc-site .cb-ribbon{position:absolute;top:-10px;right:18%;width:22px;height:90px;background:var(--cc-pink);clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%);z-index:6}
-.cc-site .cb-page-head small{color:#c8432b}.cc-site .cb-page-head b{color:var(--cc-ink)}
+.cc-site .cb-page-head small{color:var(--primary)}.cc-site .cb-page-head b{color:var(--cc-ink)}
 .cc-site .cb-page-head{border-bottom:3px dotted #2b1f4733;padding-bottom:8px}
 .cc-site .cb-folio{color:#2b1f4799}
 .cc-site .cb-cover{background-color:#3a2b78;background-image:radial-gradient(circle at 50% 36%,#ffffff40 0 16%,transparent 17%),repeating-conic-gradient(from 0deg at 50% 36%,#ffffff12 0 3deg,transparent 3deg 12deg),linear-gradient(165deg,#b9895a,#d9a066 62%,#ffd27f);color:#fff}
@@ -72,7 +72,7 @@ const catalogueStyle=`
 /* Keep catalogue TOC controls below the sticky 68px navigation when scrolled into view. */
 .cc-site .cb-contents button{scroll-margin-top:110px;scroll-margin-bottom:28px}
 .cc-site .cb-book{scroll-margin-top:96px}
-.cc-site .cb-contents span{color:#c8432b}.cc-site .cb-contents i{font-style:normal;font-weight:900;color:#2f5d62}
+.cc-site .cb-contents span{color:var(--primary)}.cc-site .cb-contents i{font-style:normal;font-weight:900;color:#2f5d62}
 .cc-site .cb-bubble p{background:#fff;border:3px solid var(--cc-ink);box-shadow:4px 4px 0 var(--cc-pink)}
 .cc-site .cb-avatar{background:var(--cc-pink);color:#fff;border:3px solid var(--cc-ink)}
 .cc-site .cb-rules article{background:#fff;border-radius:12px;padding:10px 12px;border:2px solid #2b1f4722}
@@ -83,7 +83,7 @@ const catalogueStyle=`
 .cc-site .cb-cut-art em{font-style:normal;font-weight:1000;font-size:22px;color:#c9b99a}
 .cc-site .cb-work{color:var(--cc-ink)}
 .cc-site .cb-work-art{background:#efe4cd;border-radius:10px;border:2px solid #2b1f4718}
-.cc-site .cb-work-art em{font-style:normal;font-weight:1000;color:#c8432b;transform:rotate(-8deg)}
+.cc-site .cb-work-art em{font-style:normal;font-weight:1000;color:var(--primary);transform:rotate(-8deg)}
 .cc-site .cb-map{background:#fff;border-radius:10px;border:2px solid #2b1f4722}
 .cc-site .cb-controls button{border:2px solid #fff;background:#ffffff14;color:#fff}
 .cc-site .cb-controls span{color:#e6dcff}
@@ -102,11 +102,11 @@ const catalogueStyle=`
 .cc-entry-gate{cursor:pointer;background:none;border:0;padding:0;box-shadow:none;transform:none;perspective:1800px}
 .cc-entry-book{position:relative;width:var(--cc-page-w,min(520px,84vw));aspect-ratio:.72;transform-style:preserve-3d}
 .cc-entry-page{position:absolute;inset:0;border-radius:6px 16px 16px 6px;background:var(--cc-cream);background-image:radial-gradient(#2b1f4712 1px,transparent 1.2px);background-size:14px 14px;color:var(--cc-ink);display:flex;flex-direction:column;justify-content:center;gap:10px;padding:28px;text-align:left;box-shadow:0 30px 80px #000a}
-.cc-entry-kicker{font-size:12px;font-weight:1000;letter-spacing:.22em;color:#c8432b}
+.cc-entry-kicker{font-size:12px;font-weight:1000;letter-spacing:.22em;color:var(--primary)}
 .cc-entry-page .entry-ticket-title{font-size:30px;line-height:1.05;font-weight:1000}
 .cc-entry-page .entry-ticket-subtitle{font-size:13px;color:#2f5d62}
 .cc-entry-meta{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:800}
-.cc-entry-hint{margin-top:8px;font-size:12px;font-weight:900;color:#c8432b}
+.cc-entry-hint{margin-top:8px;font-size:12px;font-weight:900;color:var(--primary)}
 .cc-entry-cover{position:absolute;inset:0;border-radius:6px 16px 16px 6px;transform-origin:left center;transition:transform 1s cubic-bezier(.4,.1,.2,1);backface-visibility:hidden;overflow:hidden;border:5px solid #fff;box-shadow:0 30px 80px #000a,inset 10px 0 18px -10px #0006;display:flex;flex-direction:column;justify-content:flex-end;padding:22px;color:#fff}
 .cc-site .cc-entry-photo{position:absolute!important;inset:0!important;transform:none!important;border:0!important;border-radius:0!important;width:auto!important;height:auto!important;background-color:#3a2b78;background-image:radial-gradient(circle at 50% 36%,#ffffff40 0 16%,transparent 17%),repeating-conic-gradient(from 0deg at 50% 36%,#ffffff12 0 3deg,transparent 3deg 12deg),linear-gradient(165deg,#b9895a,#d9a066 62%,#ffd27f);background-size:cover;background-position:center}
 .cc-entry-cover-title,.cc-entry-tap{position:relative;z-index:1}
@@ -149,8 +149,8 @@ const catalogueStyle=`
 .cc-product-info{display:flex;flex-direction:column;gap:3px;padding:10px 12px 0}
 .cc-product-info b{font-size:15px;font-weight:1000}
 .cc-product-info small{font-size:11px;color:#2f5d62;font-weight:800}
-.cc-product .product-tag{font-style:normal;align-self:flex-start;font-size:11px;font-weight:900;color:#c8432b}
-.cc-product footer{display:flex;justify-content:space-between;align-items:center;padding:8px 12px 12px;font-weight:1000;color:#c8432b}
+.cc-product .product-tag{font-style:normal;align-self:flex-start;font-size:11px;font-weight:900;color:var(--primary)}
+.cc-product footer{display:flex;justify-content:space-between;align-items:center;padding:8px 12px 12px;font-weight:1000;color:var(--primary)}
 .cc-product .wishlist-product{border:2px solid var(--cc-ink);border-radius:999px;background:#fff;padding:3px 10px;font-size:11px;font-weight:900;color:var(--cc-ink);box-shadow:none}
 .cc-product .wishlist-product.active{background:#e9c46a}
 /* 04 guide: manga panels with speech-bubble tails */
@@ -158,7 +158,7 @@ const catalogueStyle=`
 .cc-guide{position:relative;display:flex;flex-direction:column;gap:8px;background:#fff;color:var(--cc-ink);border:3px solid var(--cc-ink);border-radius:18px;padding:22px 20px 18px;box-shadow:6px 6px 0 var(--cc-pink);grid-column:auto!important;min-height:0}
 .cc-guide:after{content:"";position:absolute;left:34px;bottom:-15px;width:22px;height:22px;background:#fff;border-right:3px solid var(--cc-ink);border-bottom:3px solid var(--cc-ink);transform:rotate(45deg)}
 .cc-guide-no{position:absolute;top:-14px;left:16px;background:var(--cc-cyan);color:var(--cc-ink);border:2px solid var(--cc-ink);border-radius:999px;padding:3px 12px;font-size:11px;font-weight:1000;letter-spacing:.08em}
-.cc-guide-body small{color:#c8432b;font-size:11px;font-weight:1000;letter-spacing:.16em}
+.cc-guide-body small{color:var(--primary);font-size:11px;font-weight:1000;letter-spacing:.16em}
 .cc-guide-body h3{margin:2px 0 6px;font-size:19px;font-weight:1000}
 .cc-guide-body p{margin:0;font-size:13px;line-height:1.85;color:#4a3d66;white-space:pre-line}
 .cc-guide .guide-venue-nav{display:inline-block;margin-top:10px;background:var(--cc-pink);color:#2b1036;border:2px solid var(--cc-ink);border-radius:999px;box-shadow:none;font-size:12px;font-weight:900;padding:6px 14px}
@@ -258,19 +258,19 @@ const bookPagesStyle=`
 .cc-site .cb-news-no{background:var(--cc-pink);color:#2b1036;border-radius:6px;padding:2px 8px;font-weight:1000;font-size:12px}
 .cc-site .cb-news-item i{color:#2f5d62;font-style:normal;font-size:20px}
 .cc-site .cb-ticket{background:#fff;color:var(--cc-ink);border:3px solid var(--cc-ink);border-radius:14px;box-shadow:5px 5px 0 var(--cc-lilac);overflow:hidden}
-.cc-site .cb-ticket-main small{color:#c8432b}
+.cc-site .cb-ticket-main small{color:var(--primary)}
 .cc-site .cb-ticket-stub{background:var(--cc-pink);border-left:3px dashed var(--cc-ink);color:#2b1036}
 .cc-site .cb-buy{background:var(--cc-ink);color:#fff;border-radius:999px;box-shadow:4px 4px 0 var(--cc-pink)}
 .cc-site .cb-map-empty{background:#fff;color:var(--cc-ink);border:2px dashed #2b1f4733;border-radius:10px}
 .cc-site .cb-social{background:#fff;color:var(--cc-ink);border:2px solid var(--cc-ink);border-radius:12px}
 .cc-site .cb-social-art{background:linear-gradient(135deg,#c9b99a,#d9a066);border-radius:8px;color:#fff}
-.cc-site .cb-social a{color:#c8432b}
+.cc-site .cb-social a{color:var(--primary)}
 .cc-site .cb-sponsor{background:#fff;color:var(--cc-ink);border:2px solid var(--cc-ink);border-radius:999px}
 .cc-site .cb-page{color:var(--cc-ink)}
 `;
 /* paper programme: a printed booklet lying on a desk. Warm paper, ink and one vermilion; no neon, no outlined type */
 const paperStyle=`
-.cc-site{--primary:#c8432b;--secondary:#2f5d62;--cc-night:#cfc2a9;--cc-night-2:#bfb095;--cc-pink:#c8432b;--cc-lilac:#d8c9a8;--cc-cyan:#2f5d62;--cc-cream:#fbf6ea;--cc-ink:#2a2622;--cc-line:#2a262226;color:var(--cc-ink);font-family:"Noto Serif SC","Songti SC","Source Han Serif SC",serif;
+.cc-site{--primary:var(--primary);--secondary:#2f5d62;--cc-night:#cfc2a9;--cc-night-2:#bfb095;--cc-pink:var(--primary);--cc-lilac:#d8c9a8;--cc-cyan:#2f5d62;--cc-cream:#fbf6ea;--cc-ink:#2a2622;--cc-line:#2a262226;color:var(--cc-ink);font-family:"Noto Serif SC","Songti SC","Source Han Serif SC",serif;
  background:repeating-linear-gradient(90deg,#ffffff08 0 2px,transparent 2px 7px),radial-gradient(circle at 50% 0,#e4d9c3,transparent 70%),var(--cc-night)}
 .cc-site .nav{background:#2a2622;border-bottom:3px solid var(--cc-pink);height:48px}
 .cc-site .brand:before{content:"■ ";color:var(--cc-pink)}

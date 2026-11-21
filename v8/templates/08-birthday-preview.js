@@ -2,13 +2,13 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.129.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.130.0';
 
 const style=`
-.bd-site{overflow-x:clip;--primary:#ff8fb8;--secondary:#8fd3ff;--bd-cream:#fffaf0;--bd-paper:#fffefb;--bd-accent:var(--primary);--bd-sky:#8fd3ff;--bd-yellow:#ffd86b;--bd-mint:#b9efd8;--bd-ink:#4a3358;--bd-soft:#85708f;--bd-line:#f0dfe6;
+.bd-site{overflow-x:clip;--primary:#ff8fb8var(--primary);--secondary:#8fd3ffvar(--secondary);--bd-cream:#fffaf0;--bd-paper:#fffefb;--bd-accent:var(--primary);--bd-sky:var(--secondary);--bd-yellow:#ffd86b;--bd-mint:#b9efd8;--bd-ink:#4a3358;--bd-soft:#85708f;--bd-line:#f0dfe6;
  position:relative;min-height:100vh;color:var(--bd-ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
  background-color:var(--bd-cream);
- background-image:radial-gradient(circle,#ff8fb855 2.4px,transparent 2.8px),radial-gradient(circle,#8fd3ff66 2px,transparent 2.4px),radial-gradient(circle,#ffd86b88 2.6px,transparent 3px);background-size:97px 97px,131px 131px,79px 79px;background-position:0 0,40px 55px,20px 30px}
+ background-image:radial-gradient(circle,var(--primary)55 2.4px,transparent 2.8px),radial-gradient(circle,var(--secondary)66 2px,transparent 2.4px),radial-gradient(circle,#ffd86b88 2.6px,transparent 3px);background-size:97px 97px,131px 131px,79px 79px;background-position:0 0,40px 55px,20px 30px}
 .bd-site .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
 .bd-site a{color:inherit}
 .bd-site h1,.bd-site .head h2,.bd-site .bd-gift h3{font-family:"Noto Serif SC","Songti SC",serif}
