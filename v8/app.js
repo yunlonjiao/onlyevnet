@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.164.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.164.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.165.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.165.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.164.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.164.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.164.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.164.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.165.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.165.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.165.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.165.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -1002,7 +1002,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.164.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.165.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1176,7 +1176,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.164.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.165.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1596,7 +1596,8 @@ function imageSlotConfig(path){
  if(path==='mobileHeroImage')return {label:'手机主视觉 KV',ratio:4/5,ratioLabel:'手机端独立主视觉 · 比例 4:5',width:1080,height:1350,fixed:true};
  if(path==='entryAnimation.kvDesktop')return {label:'开屏桌面 KV',ratio:16/9,ratioLabel:'桌面开屏 · 比例 16:9',width:1920,height:1080,fixed:true};
  if(path==='entryAnimation.kvMobile')return {label:'开屏手机 KV',ratio:9/16,ratioLabel:'手机开屏 · 比例 9:16',width:1080,height:1920,fixed:true};
- if(path==='venueMap.transitImage')return {label:'交通路线图',ratio:4/3,ratioLabel:'交通路线图 · 比例 4:3',width:1440,height:1080,fixed:true};
+ if(path==='venueMap.image')return {label:'场地图',ratio:16/9,ratioLabel:'场地图 · 比例 16:9',width:1600,height:900,fixed:true};
+ if(path==='venueMap.transitImage')return {label:'交通路线图',ratio:16/9,ratioLabel:'交通路线图 · 比例 16:9',width:1600,height:900,fixed:true};
  if(/^streets\.\d+\.image$/.test(path))return {label:'街道宣传图',ratio:1/1.414,ratioLabel:'街道海报 · A4 竖版（1:1.414）',width:1080,height:1527,fixed:true};
  if(path==='seo.ogImage')return {label:'分享封面',ratio:1.91,ratioLabel:'社交分享推荐比例 1.91:1',width:1200,height:628,fixed:true};
  if(/^recap\.photos\.\d+\.image$/.test(path))return {label:'现场照片',ratio:4/3,ratioLabel:'裁剪框可移动 · 比例 4:3',width:1200,height:900,fixed:true};
