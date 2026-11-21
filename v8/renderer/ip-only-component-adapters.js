@@ -136,7 +136,14 @@ export function activityMarkup({state,x,i,field,esc,image,scheduleInfo,venueInfo
   if(id==='02-scrapbook')return '<article class="scrap-activity"'+common+'><div class="scrap-activity-photo">'+image+'</div><div class="scrap-activity-note"><span>MEMORY PLAN '+num(i)+'</span>'+title+'<small>'+typeLabel+'</small>'+summary+meta+guestHtml+action+body+'</div></article>';
   if(id==='03-school-festival')return '<article class="school-activity"'+common+'><header><span>'+num(i)+'</span><b>'+typeLabel+'</b></header><div class="school-activity-main">'+image+'<div>'+title+summary+meta+guestHtml+action+body+'</div></div></article>';
   if(id==='04-museum-editorial')return '<article class="museum-activity"'+common+'><aside><span>PROGRAM '+num(i)+'</span><small>'+typeLabel+'</small></aside><div class="museum-activity-copy">'+title+summary+meta+guestHtml+body+action+'</div>'+image+'</article>';
-  if(id==='05-live-poster')return '<article class="live-activity"'+common+'><div class="live-activity-no">'+num(i)+'</div><div class="live-activity-visual">'+image+'</div><div class="live-activity-copy"><span>'+typeLabel+'</span>'+title+summary+meta+guestHtml+body+action+'</div></article>';
+  if(id==='05-live-poster'){
+    // 05 现场活动 is a home-page programme list: time + title + a setlist line, no detail modules.
+    const time=String(x.time||'').trim();
+    const setlist=String(x.setlist||'').split(/\n+/).map(s=>s.trim()).filter(Boolean).join(' / ');
+    const head=time?'<div class="live-activity-head">'+field('participation.'+i+'.time',time,'time','live-activity-time')+'<span class="live-activity-type">'+esc(typeLabel)+'</span></div>':'<div class="live-activity-head"><span class="live-activity-type">'+esc(typeLabel)+'</span></div>';
+    const programme=setlist?field('participation.'+i+'.setlist',setlist,'p','live-activity-setlist'):'';
+    return '<article class="live-activity"'+common+'><div class="live-activity-visual">'+(image||'<span>PROGRAMME</span>')+'</div><div class="live-activity-copy">'+head+title+programme+summary+action+'</div></article>';
+  }
   if(id==='06-expo-catalogue')return '<article class="expo-activity-row"'+common+'><span>A-'+num(i)+'</span><div>'+typeLabel+'</div><div>'+title+summary+'</div><div>'+meta+guestHtml+'</div><div>'+action+body+'</div>'+image+'</article>';
   return '<article class="kimetsu-activity"'+common+'><div class="kimetsu-activity-mark">'+num(i)+'</div>'+image+'<div class="kimetsu-activity-copy"><span>'+typeLabel+'</span>'+title+summary+meta+guestHtml+body+action+'</div></article>';
 }

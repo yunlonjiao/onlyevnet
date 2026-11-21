@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.143.0';
+import {coreStyle,coreSection,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.144.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -73,19 +73,38 @@ const style=`
 .ls-site .timeline-row time small{display:block;margin-top:4px;font-size:12px;font-weight:700;font-style:normal;color:var(--ls-soft)}
 .ls-site .timeline-stage{font-size:12px;font-weight:900;letter-spacing:.16em;color:var(--ls-cyan);text-transform:uppercase}
 .ls-site .timeline-row b{font-size:18px;font-weight:900}
-/* updates / featured */
-.ls-site .updates-strip{background:none;border:0;padding:44px 0 0}
-.ls-site .updates-list{display:flex;flex-direction:column;gap:8px}
-.ls-site .live-update{display:grid;grid-template-columns:44px 90px minmax(0,1fr) 24px;gap:14px;align-items:center;padding:14px 18px;background:#ffffff0a;border-left:4px solid var(--ls-yellow);text-decoration:none;color:#fff}
-.ls-site .live-update span{font-weight:1000;color:var(--ls-yellow);font-style:italic}.ls-site .live-update time{color:var(--ls-soft);font-size:13px}.ls-site .live-update b{font-size:15px}
-.ls-site .featured-activity-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.ls-site .featured-activity-card{background:#ffffff0c;border:1px solid var(--ls-line);border-radius:0;color:#fff;box-shadow:none;overflow:hidden;text-decoration:none}
-.ls-site .featured-activity-card h3,.ls-site .featured-activity-card b{color:#fff}.ls-site .featured-activity-card p{color:var(--ls-soft)}
-.ls-site .featured-activity-kicker{color:var(--ls-pink);font-weight:1000;letter-spacing:.18em}
-.ls-site .featured-activity-link{color:var(--ls-cyan);font-weight:900}
-/* tickets */
-.ls-site .ticket-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.ls-site .ticket-actions .btn{background:var(--ls-yellow);color:#171230;border:0;border-radius:0;font-weight:1000;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);padding:13px 30px;box-shadow:none}
+/* NEWS: one left-aligned column — heading on top, then number / date / title / arrow rows.
+   The renderer fills [data-oe-mount="updates"] with <a class="live-update">…</a>. */
+.ls-site .section.ls-news{padding:56px 0}
+.ls-site .section.ls-news>.wrap{display:block;width:min(1200px,calc(100% - 44px));max-width:none;margin:0 auto;padding:0}
+.ls-site .ls-news-head{display:flex;align-items:baseline;gap:14px;margin:0 0 18px;text-align:left;position:static}
+.ls-site .ls-news-head .ls-ey{font-size:12px;font-weight:1000;letter-spacing:.32em;color:var(--ls-cyan);line-height:1}
+.ls-site .ls-news-head h2{margin:0;font-size:clamp(26px,3.2vw,38px);line-height:1.1;font-weight:1000;font-style:italic;color:var(--ls-pink);text-shadow:none}
+.ls-site .ls-news-list{display:block;width:100%;margin:0;padding:0;text-align:left;overflow:visible}
+.ls-site .ls-news-list .live-update{display:grid;grid-template-columns:52px 92px minmax(0,1fr) 22px;align-items:center;gap:16px;padding:15px 4px;border-bottom:1px solid var(--ls-line);background:none;color:var(--ls-soft);text-decoration:none;text-align:left}
+.ls-site .ls-news-list .live-update:first-child{border-top:1px solid var(--ls-line)}
+.ls-site .ls-news-list .live-update>span{font-size:20px;font-weight:1000;font-style:italic;line-height:1;color:var(--ls-pink)}
+.ls-site .ls-news-list .live-update>time{font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--ls-cyan)}
+.ls-site .ls-news-list .live-update>b{font-size:17px;font-weight:800;line-height:1.5;color:var(--ls-soft);overflow-wrap:anywhere}
+.ls-site .ls-news-list .live-update>i{font-style:normal;font-size:15px;line-height:1;color:var(--ls-pink);text-align:right}
+.ls-site .ls-news-list .live-update:hover{background:color-mix(in srgb,var(--ls-pink) 7%,transparent)}
+.ls-site .ls-news-list .live-update:hover>b{color:var(--ls-pink)}
+/* TICKETS: PASS band | copy | gift illustration | price, name in dark ink on the cream card.
+   The renderer fills [data-oe-mount="tickets"] with <article class="ticket live-pass">…</article>. */
+.ls-site .ls-ticket-list{display:grid;grid-template-columns:1fr;gap:16px}
+.ls-site .ticket-actions{display:flex;justify-content:flex-end;margin-top:22px}
+.ls-site .ticket-actions .btn{background:var(--ls-pink);color:#fff;border:0;border-radius:0;font-weight:1000;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);padding:13px 30px;box-shadow:none}
+.ls-site .live-pass{position:relative;display:grid;grid-template-columns:84px minmax(0,1fr) auto auto;grid-template-areas:"band copy art price";align-items:stretch;min-width:0;padding:0;border:1px solid var(--ls-line);border-radius:16px;background:color-mix(in srgb,var(--ls-bg) 55%,#fff);color:var(--ls-soft);box-shadow:0 10px 26px color-mix(in srgb,var(--ls-pink) 10%,transparent);overflow:hidden}
+.ls-site .live-pass:before,.ls-site .live-pass:after{display:none;content:none;border:0}
+.ls-site .live-pass-band{grid-area:band;display:grid;place-items:center;padding:20px 6px;background:color-mix(in srgb,var(--ls-pink) 12%,#fff);border-right:1px dashed var(--ls-line);color:var(--ls-pink);font-size:11px;font-weight:1000;letter-spacing:.18em;line-height:1.5;text-align:center;writing-mode:horizontal-tb}
+.ls-site .live-pass-copy{grid-area:copy;display:flex;flex-direction:column;gap:8px;min-width:0;padding:20px 22px;text-align:left}
+.ls-site .live-pass-copy>h3{margin:0;font-size:22px;font-weight:1000;line-height:1.3;color:var(--ls-soft);-webkit-text-fill-color:currentColor}
+.ls-site .live-pass-copy .oe-ticket-gift{display:block;white-space:pre-line;font-size:13.5px;line-height:1.75;color:var(--ls-soft)}
+.ls-site .live-pass-copy .oe-ticket-note{display:block;margin:0;font-size:12px;line-height:1.6;color:var(--ls-soft);opacity:.7}
+.ls-site .live-pass-price{grid-area:price;display:grid;place-items:center;padding:20px 26px;border-left:1px dashed var(--ls-line);font-size:30px;font-weight:1000;font-style:italic;line-height:1;color:var(--ls-pink);white-space:nowrap}
+.ls-site .live-pass-price .oe-ticket-price{font:inherit;color:inherit;line-height:1}
+.ls-site .live-pass .ticket-gift-image{grid-area:art;align-self:center;display:block;width:200px;height:auto;margin:0;padding:0 18px 0 0;border:0;border-radius:0;background:none;box-shadow:none;overflow:visible;cursor:zoom-in;box-sizing:border-box}
+.ls-site .live-pass .ticket-gift-image img{display:block;width:100%;height:auto;max-height:160px;aspect-ratio:4/3;object-fit:cover;border-radius:10px}
 /* map */
 /* activities page (TIME TABLE detail) */
 .ls-site .activity-switch-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:22px}
@@ -99,20 +118,48 @@ const style=`
 .ls-site .live-running-order time{font-size:28px;font-weight:1000;font-style:italic;line-height:1.05}.ls-site .live-running-order time small{display:block;font-size:12px;font-style:normal;color:var(--ls-soft);margin-top:4px}
 .ls-site .live-running-order span{display:block;font-size:12px;font-weight:900;letter-spacing:.16em;color:var(--ls-cyan);text-transform:uppercase;margin-bottom:4px}
 .ls-site .live-running-order b{font-size:19px;font-weight:900}.ls-site .live-running-order p{margin:6px 0 0;color:var(--ls-soft);font-size:14px;line-height:1.7}
-.ls-site .live-activity{display:grid;grid-template-columns:54px 220px minmax(0,1fr);gap:18px;padding:18px;margin-bottom:14px;background:#ffffff0a;border:1px solid var(--ls-line);color:#fff;border-radius:0;box-shadow:none}
-.ls-site .live-activity-no{font-size:22px;font-weight:1000;font-style:italic;color:#ffffff55}
-.ls-site .live-activity h3{margin:4px 0 8px;font-size:22px;font-weight:1000;color:#fff}.ls-site .live-activity-copy>span{color:var(--ls-pink);font-weight:1000;letter-spacing:.16em;font-size:12px}.ls-site .live-activity p{color:var(--ls-soft);line-height:1.8}
-.ls-site .live-activity-visual img{width:100%;display:block}
-/* guests page */
-.ls-site .guest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
-.ls-site .live-performer{--c:var(--ls-pink);position:relative;display:grid;grid-template-columns:130px minmax(0,1fr);gap:16px;padding:16px;background:#ffffff0a;border:1px solid var(--ls-line);border-top:4px solid var(--c);color:#fff;border-radius:0;box-shadow:none}
-.ls-site .live-performer:nth-child(4n+2){--c:var(--ls-cyan)}.ls-site .live-performer:nth-child(4n+3){--c:var(--ls-yellow)}.ls-site .live-performer:nth-child(4n+4){--c:var(--ls-violet)}
-.ls-site .live-performer-no{position:absolute;right:14px;top:8px;font-size:34px;font-weight:1000;font-style:italic;color:#ffffff1c}
-.ls-site .live-performer .guest-image{border:0;padding:0;background:none;display:block}.ls-site .live-performer img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
-.ls-site .live-performer .guest-image.empty{aspect-ratio:3/4;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 60%,#000),#1c1648);color:#ffffff66}
-.ls-site .live-performer-copy small{color:var(--c);font-weight:1000;letter-spacing:.16em;font-size:11px;text-transform:uppercase}.ls-site .live-performer-copy b{display:block;font-size:21px;font-weight:1000;margin:2px 0 6px;color:#fff}
-.ls-site .live-performer-copy,.ls-site .live-performer-copy p,.ls-site .live-performer-copy .oe-secondary-copy{color:var(--ls-soft);font-size:13px;line-height:1.7}
-.ls-site .live-performer a{color:var(--ls-cyan)}
+/* PROGRAMME: a time-ordered card list. The renderer fills [data-oe-mount="activity-projects"]
+   with <article class="live-activity">…</article> (see ip-only-component-adapters.js). */
+.ls-site .ls-programme-list{display:flex;flex-direction:column;gap:14px}
+.ls-site .live-activity{display:grid;grid-template-columns:184px minmax(0,1fr);gap:18px;align-items:start;min-width:0;padding:16px;border:1px solid var(--ls-line);border-radius:14px;background:color-mix(in srgb,var(--ls-bg) 55%,#fff);color:var(--ls-soft)}
+.ls-site .live-activity-visual{width:100%;min-width:0;aspect-ratio:16/10;border-radius:10px;overflow:hidden;background:color-mix(in srgb,var(--ls-pink) 14%,#fff);display:grid;place-items:center}
+.ls-site .live-activity-visual img{width:100%;height:100%;object-fit:cover;display:block}
+.ls-site .live-activity-visual .activity-feature-media{display:block;width:100%;height:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.ls-site .live-activity-visual .activity-feature-media-empty{display:grid;place-items:center;gap:2px;color:var(--ls-pink);background:color-mix(in srgb,var(--ls-pink) 12%,#fff);font-size:10px;font-weight:1000;letter-spacing:.2em}
+.ls-site .live-activity-visual>span{font-size:10px;font-weight:1000;letter-spacing:.24em;color:var(--ls-pink);opacity:.75}
+.ls-site .live-activity-visual:empty:after{content:"PROGRAMME";font-size:10px;font-weight:1000;letter-spacing:.24em;color:var(--ls-pink);opacity:.7}
+.ls-site .live-activity-copy{display:flex;flex-direction:column;gap:6px;min-width:0;text-align:left}
+.ls-site .live-activity-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.ls-site .live-activity-head .live-activity-time{font-size:26px;font-weight:1000;font-style:italic;line-height:1;color:var(--ls-pink);letter-spacing:.01em}
+.ls-site .live-activity-head .live-activity-type{font-size:10px;font-weight:1000;letter-spacing:.2em;color:var(--ls-cyan);border:1px solid color-mix(in srgb,var(--ls-cyan) 40%,transparent);border-radius:999px;padding:3px 10px}
+.ls-site .live-activity-copy>h3{margin:0;font-size:20px;font-weight:1000;line-height:1.35;color:var(--ls-soft)}
+.ls-site .live-activity-setlist{margin:2px 0 0;padding-left:12px;border-left:3px solid var(--ls-yellow);font-size:13px;line-height:1.7;color:var(--ls-soft);opacity:.9}
+.ls-site .live-activity-copy .oe-secondary-copy{margin:0;font-size:12.5px;line-height:1.7;color:var(--ls-soft);opacity:.78}
+/* CAST: portrait + name / type / intro. The renderer fills [data-oe-mount="guests"]. */
+.ls-site .ls-cast-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;align-items:stretch}
+.ls-site .live-performer{--c:var(--ls-pink);position:relative;display:grid;grid-template-columns:128px minmax(0,1fr);gap:16px;align-items:start;min-width:0;padding:16px;border:1px solid var(--ls-line);border-top:4px solid var(--c);border-radius:14px;background:color-mix(in srgb,var(--ls-bg) 55%,#fff);color:var(--ls-soft);text-align:left}
+.ls-site .live-performer:nth-child(4n+2){--c:var(--ls-cyan)}
+.ls-site .live-performer:nth-child(4n+3){--c:var(--ls-yellow)}
+.ls-site .live-performer:nth-child(4n+4){--c:var(--ls-violet)}
+.ls-site .live-performer-no{position:absolute;right:12px;top:8px;z-index:0;font-size:26px;font-weight:1000;font-style:italic;line-height:1;color:color-mix(in srgb,var(--c) 42%,transparent);pointer-events:none}
+.ls-site .live-performer>.guest-image{grid-column:1;grid-row:1 / span 2;display:block;width:100%;aspect-ratio:3/4;padding:0;border:2px solid var(--c);border-radius:10px;background:color-mix(in srgb,var(--c) 20%,#fff);overflow:hidden;cursor:zoom-in}
+.ls-site .live-performer>.guest-image img{display:block;width:100%;height:100%;object-fit:cover}
+.ls-site .live-performer>.guest-image.empty{display:grid;place-items:center;padding:8px;color:var(--c);font-size:11px;font-weight:800;letter-spacing:.08em;text-align:center}
+.ls-site .live-performer-copy{grid-column:2;display:flex;flex-direction:column;gap:8px;min-width:0}
+.ls-site .live-performer-copy>small{color:var(--c);font-size:10px;font-weight:1000;letter-spacing:.22em;line-height:1.4;text-transform:uppercase}
+.ls-site .live-performer-copy>b{display:block;margin:0;font-size:19px;font-weight:1000;line-height:1.3;color:var(--ls-soft)}
+.ls-site .live-performer-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;font-size:12px;line-height:1.6;color:var(--ls-soft)}
+.ls-site .live-performer-meta>b{font-size:10px;font-weight:1000;letter-spacing:.14em;color:var(--c)}
+.ls-site .live-performer-meta .oe-secondary-copy{opacity:.85}
+.ls-site .live-performer .guest-info-block{font-size:12.5px;line-height:1.7;color:var(--ls-soft)}
+.ls-site .live-performer .guest-info-block>b{display:block;margin:0 0 2px;font-size:10px;font-weight:1000;letter-spacing:.16em;color:var(--c)}
+.ls-site .live-performer .guest-info-block p{margin:0;font-size:12.5px;line-height:1.7}
+.ls-site .live-performer .guest-platforms{font-size:11px;color:var(--ls-soft)}
+.ls-site .live-performer .guest-platforms>b{font-size:10px;font-weight:1000;letter-spacing:.14em;color:var(--c)}
+.ls-site .live-performer .guest-platform-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.ls-site .live-performer .guest-platform-list a{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border:1px solid color-mix(in srgb,var(--ls-cyan) 35%,transparent);border-radius:999px;color:var(--ls-cyan);font-size:11px;text-decoration:none}
+/* Single page: the linked "关联活动" note only points at the (hidden) activities page. */
+.ls-site .live-performer .guest-related-note{display:none}
 /* guide / community / sponsors / footer */
 .ls-site .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
 .ls-site .live-guide,.ls-site .guide-grid article,.ls-site .live-social{background:#ffffff0a;border:1px solid var(--ls-line);border-radius:0;color:#fff;box-shadow:none;padding:18px}
@@ -139,43 +186,6 @@ const style=`
 .ls-site .activity-view-tabs button,.ls-site .activity-day-tabs button{background:none!important;color:#fff!important;border:1px solid #ffffff44!important}
 .ls-site .activity-view-tabs button.active,.ls-site .activity-day-tabs button.active{background:var(--ls-pink)!important;border-color:var(--ls-pink)!important}
 .ls-site .ls-btn:not(.pink){background:#ffffff14;border:0;color:#fff}
-.ls-site .updates-strip .wrap{width:100%}
-.ls-site .featured-activity-grid{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-.ls-site .featured-activity-card{display:flex;flex-direction:column;background:#ffffff0c!important;color:#fff!important}
-.ls-site .featured-activity-media{aspect-ratio:16/9;background:linear-gradient(160deg,#2a1b6e,#ff3d8b66);display:grid;place-items:center;color:#ffffff66;font-weight:1000;letter-spacing:.2em;font-size:12px}
-.ls-site .featured-activity-media img{width:100%;height:100%;object-fit:cover;display:block}
-.ls-site .featured-activity-copy{padding:16px 18px 18px;display:flex;flex-direction:column;gap:6px}
-.ls-site .featured-activity-copy h3,.ls-site .featured-activity-copy b{color:#fff!important}
-.ls-site .featured-activity-copy p{color:var(--ls-soft)!important;margin:0}
-.ls-site .live-performer,.ls-site .live-performer *,.ls-site .live-guide *,.ls-site .live-activity *{color:#fff}
-.ls-site .live-performer .guest-image.empty,.ls-site .live-performer .guest-image{background:linear-gradient(160deg,color-mix(in srgb,var(--c) 60%,#000),#1c1648)!important;border:0!important;border-radius:0!important;min-height:0}
-.ls-site .live-performer .guest-note,.ls-site .live-performer .guest-related-note,.ls-site .live-performer [class*="guest-"][class*="note"]{background:#ffffff0d!important;border:1px solid var(--ls-line)!important;border-radius:0!important;box-shadow:none!important}
-.ls-site .live-performer .guest-note b,.ls-site .live-performer .guest-note strong{color:var(--ls-yellow)}
-.ls-site .live-performer .guest-poster-name,.ls-site .live-performer-copy>b{color:#fff;font-size:21px}
-.ls-site .live-performer-copy>small{color:var(--c)}
-.ls-site .live-performer .oe-secondary-copy,.ls-site .live-performer p,.ls-site .live-performer .guest-note{color:var(--ls-soft)}
-.ls-site .live-performer a,.ls-site .live-performer .guest-related-links a{color:var(--ls-cyan);background:none;border-color:#35e3ff66}
-.ls-site .live-guide p,.ls-site .live-activity p,.ls-site .live-activity .oe-secondary-copy{color:var(--ls-soft)}
-.ls-site .live-activity>*,.ls-site .live-guide{background:none}
-.ls-site .live-performer-copy *{color:#fff!important}
-.ls-site .live-performer-copy>small,.ls-site .live-performer-copy>small *{color:var(--c)!important}
-.ls-site .live-performer-copy .oe-secondary-copy,.ls-site .live-performer-copy p,.ls-site .live-performer-copy .guest-note,.ls-site .live-performer-copy dd{color:var(--ls-soft)!important}
-.ls-site .live-performer-copy a,.ls-site .live-performer-copy a *{color:var(--ls-cyan)!important}
-.ls-site .live-performer-copy .guest-note b,.ls-site .live-performer-copy .guest-note strong{color:var(--ls-yellow)!important}
-.ls-site .live-performer{grid-template-columns:140px minmax(0,1fr);align-items:start}
-.ls-site .live-performer>.guest-image{width:100%;display:block;aspect-ratio:3/4}
-.ls-site .live-performer-copy{min-width:0}
-.ls-site #guests .live-performer-copy *{color:#fff!important}
-.ls-site #guests .live-performer-copy>small,.ls-site #guests .live-performer-copy>small *{color:var(--c)!important}
-.ls-site #guests .live-performer-copy .oe-secondary-copy,.ls-site #guests .live-performer-copy p,.ls-site #guests .live-performer-copy .guest-note,.ls-site #guests .live-performer-copy dd{color:var(--ls-soft)!important}
-.ls-site #guests .live-performer-copy a,.ls-site #guests .live-performer-copy a *{color:var(--ls-cyan)!important}
-.ls-site #guests .live-performer-copy .guest-note b,.ls-site #guests .live-performer-copy .guest-note strong{color:var(--ls-yellow)!important}
-.ls-site #participation .featured-activity-card,.ls-site #participation .featured-activity-card.reveal{background:#ffffff0c!important;color:#fff!important;border:1px solid var(--ls-line)!important;border-radius:0!important;box-shadow:none!important}
-.ls-site #participation .featured-activity-media,.ls-site #participation .featured-activity-media.is-empty{background:linear-gradient(160deg,#2a1b6e,#ff3d8b66)!important;color:#ffffff88!important;border:0!important}
-.ls-site #participation .featured-activity-copy,.ls-site #participation .featured-activity-copy *{color:#fff!important}
-.ls-site #participation .featured-activity-copy p{color:var(--ls-soft)!important}
-.ls-site #participation .featured-activity-kicker{color:var(--ls-pink)!important}
-.ls-site #participation .featured-activity-link{color:var(--ls-cyan)!important}
 .ls-site #activities .activity-view-tabs button.active,.ls-site #activities .activity-day-tabs button.active{background:var(--ls-pink)!important;border-color:var(--ls-pink)!important;color:#fff!important}
 .ls-site #activities .activity-view-tabs button:not(.active),.ls-site #activities .activity-day-tabs button:not(.active){background:transparent!important}
 .ls-site #activities .activity-page-subhead{border-color:#ffffff22!important}
@@ -185,26 +195,33 @@ const style=`
 .ls-site .kv{clip-path:polygon(0 0,100% 0,88% 100%,0 100%);border-radius:10px}
 .ls-site .hero-art:after{right:auto;left:-14px}
 .ls-site .hero h1{font-size:clamp(34px,4.6vw,76px);overflow-wrap:normal;word-break:keep-all}
-.ls-site .ticket:before,.ls-site .ticket:after,.ls-site .ticket *:before,.ls-site .ticket *:after{pointer-events:none}
-.ls-site .kv{border-radius:10px}
 /* entry gate: a plain centred stack (the shared gate is a grid) */
 .ls-entry .ls-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;grid-template-columns:none;min-height:0;height:auto;aspect-ratio:auto;box-sizing:border-box}
 .ls-entry .ls-entry-kicker{align-self:center;width:auto;height:auto;flex:none}
 .ls-entry .entry-ticket-title{max-width:100%;overflow-wrap:anywhere;font-size:clamp(30px,7vw,56px)}
 .ls-entry .ls-entry-meta,.ls-entry .ls-entry-hint{width:auto}
 .ls-site .ls-info{display:block}
-.ls-site .featured-activity-grid{grid-template-rows:none!important;grid-auto-rows:auto!important;align-items:start}
-.ls-site #participation .featured-activity-card,.ls-site #participation .featured-activity-card:first-child{grid-row:auto!important;grid-column:auto!important;height:auto!important;min-height:0!important}
 @media(max-width:820px){
  .ls-site .hero-grid{grid-template-columns:minmax(0,1fr)}.ls-site .hero-art{aspect-ratio:16/11;order:-1}
  .ls-site .nav .links{display:none}.ls-site .nav .wrap>.btn{margin-left:auto;padding:9px 16px}
  .ls-site .timeline-row{grid-template-columns:96px minmax(0,1fr);gap:4px 14px}.ls-site .timeline-row time{font-size:24px;grid-row:span 2}.ls-site .timeline-row b{font-size:16px}
  .ls-site .live-running-order{grid-template-columns:44px minmax(0,1fr)}.ls-site .live-running-order>aside{grid-column:2}.ls-site .live-running-order time{grid-column:2}
- .ls-site .live-activity{grid-template-columns:1fr}.ls-site .featured-activity-grid{grid-template-columns:1fr}
- .ls-site .live-update{grid-template-columns:34px minmax(0,1fr);}.ls-site .live-update time{display:none}.ls-site .live-update i{display:none}
- .ls-site .live-performer{grid-template-columns:104px minmax(0,1fr)}
+ .ls-site .ls-cast-grid{grid-template-columns:1fr}
+ .ls-site .ls-programme-list .live-activity{grid-template-columns:1fr}
+ .ls-site .ls-programme-list .live-activity-visual{aspect-ratio:16/9}
  .ls-site .lineup-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-}`;
+}
+@media(max-width:620px){
+ .ls-site .ls-news-list .live-update{grid-template-columns:38px minmax(0,62px) minmax(0,1fr) 18px;gap:10px}
+ .ls-site .ls-news-list .live-update>span{font-size:17px}
+ .ls-site .live-pass{grid-template-columns:64px minmax(0,1fr);grid-template-areas:"band copy" "art art" "price price"}
+ .ls-site .live-pass-copy{padding:16px 18px}
+ .ls-site .live-pass-price{justify-items:start;border-left:0;border-top:1px dashed var(--ls-line);padding:12px 18px;font-size:24px}
+ .ls-site .live-pass .ticket-gift-image{width:100%;padding:0 18px 14px}
+ .ls-site .live-pass .ticket-gift-image img{max-height:200px;aspect-ratio:16/9}
+ .ls-site .live-performer{grid-template-columns:96px minmax(0,1fr);gap:12px}
+}
+`;
 
 const loader=`<div class="loader ls-entry" id="loader"><div class="gate ls-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><span class="ls-entry-kicker">LIVE</span><b class="entry-ticket-title">BILIBILI ONLY</b><span class="entry-ticket-subtitle"></span><div class="ls-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><span class="ls-entry-hint">TAP TO ENTER</span><div class="entry-photo" aria-label="活动KV"></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
@@ -246,7 +263,7 @@ const referenceStyle=`
 
 /* skeleton: every section is a numbered scene. The title column stays pinned on the left while the content scrolls on the right, with a thin rule between scenes */
 .ls-site main{counter-reset:scene}
-.ls-site .section,.ls-site .updates-strip{margin:0;padding:56px 0;background:transparent;border:0;border-top:1px solid #ffffff24}
+.ls-site .section{margin:0;padding:56px 0;background:transparent;border:0;border-top:1px solid #ffffff24}
 .ls-site .section>.wrap{width:min(1240px,calc(100% - 48px));max-width:none;margin:0 auto;padding:0;display:grid;grid-template-columns:230px minmax(0,1fr);column-gap:48px;align-items:start}
 .ls-site .section .head{grid-column:1;grid-row:1 / span 8;position:sticky;top:84px;display:block;margin:0;padding:0;min-height:0;text-align:left;background:none;border:0}
 .ls-site .section .head>div{display:block;text-align:left}
@@ -257,11 +274,8 @@ const referenceStyle=`
 .ls-site .section .head .section-back{position:static;display:inline-block;margin-top:16px;transform:none;font-size:12px}
 .ls-site .section>.wrap>:not(.head){grid-column:2;width:auto;margin:0}
 .ls-site .section-orbit,.ls-site .section-no{display:none}
-@media(max-width:900px){.ls-site .section,.ls-site .updates-strip{padding:36px 0}.ls-site .section>.wrap{display:block;width:calc(100% - 32px)}.ls-site .section .head{position:static;margin-bottom:20px}.ls-site .section:not(.oe-page-view) .head:before{font-size:52px}.ls-site .section .head h2{font-size:26px}}
-.ls-site #tickets .ticket-grid{grid-template-columns:1fr;gap:12px}
-.ls-site .guest-grid,.ls-site .lineup{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
-.ls-site .ticket:before{display:none}
-.ls-site .ticket:before{display:none}
+@media(max-width:900px){.ls-site .section{padding:36px 0}.ls-site .section>.wrap{display:block;width:calc(100% - 32px)}.ls-site .section .head{position:static;margin-bottom:20px}.ls-site .section:not(.oe-page-view) .head:before{font-size:52px}.ls-site .section .head h2{font-size:26px}}
+.ls-site .lineup{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 `;
 const ownStyle=`
 
@@ -295,29 +309,9 @@ const ownStyle=`
 .ls-sponsor b{font-size:15px;letter-spacing:.12em}
 .ls-sponsor img{max-height:40px;width:auto}
 `;
-const featuredFix=`
-/* featured plans: image on top, text below, same height; an empty cover is a thin strip, not a placeholder laid over the text */
-.ls-site .featured-activity-card{display:flex;flex-direction:column;align-items:stretch;height:100%}
-.ls-site .featured-activity-media{position:relative;flex:none;width:100%;aspect-ratio:16/9}
-.ls-site .featured-activity-media.is-empty{aspect-ratio:auto;height:46px}
-.ls-site .featured-activity-media.is-empty span{position:static;font-size:11px;letter-spacing:.22em}
-.ls-site .featured-activity-copy{position:static;display:flex;flex-direction:column;gap:6px;padding:16px 18px 18px;text-align:left;align-self:stretch!important;width:100%!important;margin:0!important;grid-column:auto!important}
-.ls-site .featured-all-link{display:flex!important;width:max-content!important;margin:24px auto 0!important;align-self:center!important;justify-self:center!important}
-.ls-site .featured-activity-grid{align-items:stretch}
-`;
 const phoneFix=`
 @media(max-width:620px){.ls-site .timeline-row{grid-template-columns:78px minmax(0,1fr);gap:2px 12px;padding:10px 0}.ls-site .timeline-row time{grid-row:span 2}.ls-site .timeline-row b{font-size:15px}}
 @media(max-width:820px){.ls-site .hero-grid{grid-template-columns:minmax(0,1fr);gap:22px;padding:14px 0}.ls-site .hero-art{order:-1;aspect-ratio:16/11;max-height:340px}.ls-site .hero-copy{min-width:0}}
-`;
-const featuredShape=`
-.ls-site .featured-all-link{border-radius:0!important;background:none!important;color:var(--ls-cyan)!important;border:1px solid #35e3ff66!important;box-shadow:none!important}
-
-/* featured plans: wide stage tiles, a tall image strip on the left of each */
-.ls-site #participation .featured-activity-grid{grid-template-columns:1fr!important;gap:14px}
-.ls-site #participation .featured-activity-card{display:grid!important;grid-template-columns:170px minmax(0,1fr)!important;height:auto!important;align-items:stretch}
-.ls-site #participation .featured-activity-card .featured-activity-media,.ls-site #participation .featured-activity-card .featured-activity-media.is-empty{aspect-ratio:auto!important;height:auto!important;min-height:112px!important}
-.ls-site #participation .featured-activity-card .featured-activity-media.is-empty span{writing-mode:vertical-rl;letter-spacing:.3em}
-@media(max-width:620px){.ls-site #participation .featured-activity-card{grid-template-columns:96px minmax(0,1fr)!important}}
 `;
 const warmStage=String.raw`
 html[data-oe-template="05-live-poster"] .footer{display:none!important}
@@ -330,7 +324,7 @@ html[data-oe-template="05-live-poster"] #home-guests .section-back{display:none!
 .ls-site .hero-art .kv{background-image:var(--oe-hero-image-desktop,none),linear-gradient(150deg,#f3c68f,#e8a33d 55%,#d8452b)!important;background-size:cover!important;background-position:var(--oe-hero-focal-desktop,50% 50%)!important;background-repeat:no-repeat!important;box-shadow:0 22px 50px #b23a2233!important}
 .ls-site .hero h1{color:#2b1d15!important;text-shadow:none!important}
 .ls-site .hero-copy p{color:#5a4433!important}
-.ls-site .updates-strip{text-align:left!important;justify-content:flex-start!important}.ls-site .updates-strip>*{text-align:left!important}.ls-site .nav{background:#fdf7ec!important;border-color:#e3d1b8!important}
+.ls-site .nav{background:#fdf7ec!important;border-color:#e3d1b8!important}
 .ls-site .nav .brand{color:#b23a22!important}
 .ls-site .ls-btn{background:#fffaf0!important;color:#3a2b22!important;border-color:#d9c6ae!important;box-shadow:0 4px 0 #0001!important}
 .ls-site .ls-btn.pink,.ls-site .ls-btn.yellow{background:#d8452b!important;color:#fff!important;box-shadow:0 4px 0 #0001!important}
@@ -339,7 +333,6 @@ html[data-oe-template="05-live-poster"] #home-guests .section-back{display:none!
 .ls-site .section h2,.ls-site .section .eyebrow{color:#b23a22!important}
 .ls-site .timeline .row,.ls-site .timeline>*{border-color:#e3d1b8!important}
 .ls-site .ls-routes{display:none!important}
-.ls-site .updates-strip a{color:inherit!important;pointer-events:none}
 html[data-oe-template="05-live-poster"] .mobile-dock{display:none!important}
 /* 05 配色方案：暖阳（默认）/ 雾蓝 / 森绿 / 沙紫 */
 html[data-oe-palette05="ice"] .ls-site{--ls-bg:#eef4f9;--ls-bg2:#e3eef7;--ls-pink:#2f6f9f;--ls-cyan:#5f9fc4;--ls-yellow:#e8b64c;--ls-violet:#3f6f8a;--ls-line:#c6d8e6;--ls-soft:#22323d;background:#eef4f9;color:#22323d}
@@ -370,18 +363,28 @@ html[data-oe-palette05="mauve"] .ls-site .section{background:#fffafd!important;b
 html[data-oe-palette05="mauve"] .ls-site .ls-btn.pink,html[data-oe-palette05="mauve"] .ls-site .ls-btn.yellow{background:#8a4b6b!important;color:#fff!important}
 html[data-oe-palette05="mauve"] .ls-site .hero h1{color:#2a1c28!important}
 `;
-export const previewStyle=coreStyle+style+referenceStyle+ownStyle+featuredFix+phoneFix+featuredShape+warmStage;
+export const previewStyle=coreStyle+style+referenceStyle+ownStyle+phoneFix+warmStage;
+/* The four content blocks below are written fresh for 05 and only rely on the shared renderer's mount
+   points (data-oe-mount), so no Template 01 card rules reach them:
+   · #updates   → [data-oe-mount="updates"]          (renderUpdates)
+   · #tickets   → [data-oe-mount="tickets"]          (renderTickets)
+   · #home-guests → [data-oe-mount="guests"]         (renderGuests)
+   · #participation → [data-oe-mount="activity-projects"] (renderParticipation) */
+const newsSection=`<section class="section ls-news" id="updates"><div class="wrap"><div class="ls-news-head"><span class="ls-ey">NEWS</span><h2>最新公告</h2></div><div class="ls-news-list" data-oe-mount="updates"></div></div></section>`;
+const ticketsSection=`<section class="section" id="tickets"><div class="wrap"><div class="head"><div><span class="ey">TICKET</span><h2>票务</h2></div></div><div class="ls-ticket-list" data-oe-mount="tickets"></div><div class="ticket-actions" data-oe-mount="ticket-actions"></div></div></section>`;
+const guestsSection=`<section class="section" id="home-guests"><div class="wrap"><div class="head"><div><span class="ey">CAST</span><h2>出演阵容</h2></div></div><div class="ls-cast-grid" data-oe-mount="guests"></div></div></section>`;
+const programmeSection=`<section class="section" id="participation"><div class="wrap"><div class="head"><div><span class="ey">PROGRAMME</span><h2>现场活动</h2></div></div><div class="ls-programme-list" data-oe-mount="activity-projects"></div></div></section>`;
 export const previewBody=`<div class="ls-site">
 <main id="top">
 <section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="ls-kv-fallback" data-oe-field="eventName">BILIBILI ONLY</strong></div></div><div class="hero-copy"><h1 data-oe-field="eventName">BILIBILI ONLY</h1><p data-oe-field="tagline"></p><div class="meta ls-info"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="ls-cta"></div></div></div></section>
-${coreSection('updates').replace('class="updates-strip"','class="updates-strip section"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新公告'))}
-${coreSection('tickets',{ey:'TICKET',title:'票务'})}
+${newsSection}
+${ticketsSection}
 ${ownMapSection('ls',{ey:'ACCESS',title:'场地图'})}
 ${timetableSection}
-${coreSection('guests',{ey:'CAST',title:'出演阵容'}).replace('class="section oe-page-view" id="guests"','class="section" id="home-guests"').replace('id="guests"','id="home-guests"')}
-${coreSection('participation',{ey:'PROGRAMME',title:'现场活动'})}
+${guestsSection}
+${programmeSection}
 ${ownCommunitySection('ls',{ey:'COMMUNITY',title:'社群'})}
 ${ownSponsorsSection('ls',{ey:'SUPPORT',title:'合作支持'})}
 </main>
-<footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
+<footer class="footer" hidden aria-hidden="true"></footer>
 </div>`;

@@ -1,4 +1,4 @@
-import {activityMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.143.0';
+import {activityMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.144.0';
 export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>document.querySelector('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
   const externalHref=value=>{const raw=String(value||'').trim();if(!raw)return '';if(/^https?:\/\//i.test(raw))return raw;if(/^www\./i.test(raw)||/^[\w.-]+\.[a-z]{2,}(?:[\/:?#]|$)/i.test(raw))return 'https://'+raw;return ''};
@@ -35,7 +35,10 @@ export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send})
     }
 
     const page=mount('activity-projects','#activities .activity-project-list');
-    if(page)page.innerHTML=items.map((x,i)=>{
+    // 05 现场活动 is a single-page programme list, so it is ordered by start time (other templates keep state order).
+    const ordered=items.map((x,i)=>({x,i}));
+    if(state.templateId==='05-live-poster')ordered.sort((a,b)=>String(a.x.time||'99:99').localeCompare(String(b.x.time||'99:99')));
+    if(page)page.innerHTML=ordered.map(({x,i})=>{
       const type=x.activityType||'general';
       const guests=(x.guestIds||[]).map(id=>(state.guests||[]).find(g=>g.id===id)).filter(Boolean);
       const linkedSchedule=schedule.map((row,index)=>({row,index})).filter(({row})=>row.participationId===x.id);
