@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.225.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.225.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.227.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.227.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.225.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.225.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.225.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.225.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.227.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.227.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.227.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.227.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -882,7 +882,7 @@ function renderPageContentNav(page,{openDefault=true}={}){
  const items=page==='home'&&state.templateId==='02-scrapbook'?
    PAGE_CONTENT_CONFIG.home.filter(x=>x.collection!=='ribbonItems'&&x.collection!=='explore').flatMap(x=>x.tool==='hero'?[x,{tool:'intro',label:'活动简介'}]:x.tool==='map'?[x,{collection:'guests',label:'嘉宾阵容'}]:[x]):
    (PAGE_CONTENT_CONFIG[page]||[]).filter(x=>!(activeTemplate.studioPages?.hiddenContent||[]).includes(x.collection||x.tool));
- if(page==='home'&&/^0[56]/.test(state.templateId)){items.push({collection:'participation',label:'现场活动'},{collection:'guests',label:'出演阵容'},{collection:'guide',label:'观演秩序'})}
+ if(page==='home'&&/^0[56]/.test(state.templateId)){items.push({collection:'participation',label:'现场活动'},{collection:'guests',label:'出演阵容'},{collection:'guide',label:'观演秩序'},{collection:'schedule',label:'活动日程'})}
  const list03=[{tool:'basic',label:'基本信息'},{tool:'banner',label:'横幅'},{tool:'lifecycle',label:'活动状态'},{tool:'traffic',label:'交通到达'},{collection:'guide',label:'规则与须知'},...items.filter(x=>x.tool!=='hero'&&x.collection!=='explore'&&x.tool!=='basic'&&x.tool!=='lifecycle'&&x.collection!=='guide')];
  const list04=[{tool:'basic',label:'基本信息'},{tool:'cover',label:'封面 KV'},{tool:'lifecycle',label:'活动状态'},{collection:'updates',label:'最新公告'},{collection:'tickets',label:'入场票'},{tool:'map',label:'场地图'},{collection:'booths',label:'参展社团与制品'},{tool:'streets',label:'街道'},{tool:'traffic',label:'交通到达'},{collection:'guide',label:'入场与须知'},{collection:'socialLinks',label:'社群'},{collection:'sponsors',label:'赞助'}];
  const visibleItems=page!=='home'?items:state.templateId==='03-creator-market'?list03:state.templateId==='04-creator-catalogue'?list04:items;
@@ -1020,7 +1020,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.225.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.227.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1194,7 +1194,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.225.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.227.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1905,10 +1905,10 @@ const __homeEntryClick=(e)=>{
  let el=e.target;
  while(el&&el!==document.body){
   const txt=(el.textContent||'').trim();
-  const keys=['现场活动','出演阵容','观演秩序'];
+  const keys=['现场活动','出演阵容','观演秩序','活动日程'];
   const hit=(txt.length<=18&&!el.closest('.inspector'))?keys.find(k=>txt.startsWith(k)):null;
   if(hit){
-   const map={'现场活动':'participation','出演阵容':'guests','观演秩序':'guide'};
+   const map={'现场活动':'participation','出演阵容':'guests','观演秩序':'guide','活动日程':'schedule'};
    e.preventDefault();e.stopPropagation();
    try{openCollectionManager(map[hit])}catch(err){console.warn('[home entry]',err)}
    return;

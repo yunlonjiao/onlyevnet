@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.225.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.227.0';
 /* Template 08 runs on the shared IP ONLY core; the birthday-card art and the support-first home differ. */
 export const template08=makeIpOnlyTemplate({
  id:'08-birthday',name:'08 · 生日应援',label:'生日应援',studioName:'生日应援',
