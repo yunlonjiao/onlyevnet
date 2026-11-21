@@ -1,10 +1,10 @@
 /* Template 03 · CREATOR MARKET visitor art on the shared IP ONLY core.
    Layout hooks (ids, data-oe-field, collection containers) follow Template 01 so the shared
    renderer, editor and exporter work unchanged; everything visual is scoped to .cm-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.130.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.131.0';
 
 const marketStyle=`
-.cm-site{--primary:#00aeecvar(--primary);--secondary:#a4d9f4var(--secondary);--cm-accent:var(--primary);--cm-accent-ink:#008ac0;--cm-ink:#18191c;--cm-muted:#61666d;--cm-soft:#9499a0;--cm-line:#e3e5e7;--cm-bg:#f7f8fa;--cm-card:#fff;background:var(--cm-bg);color:var(--cm-ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
+.cm-site{--primary:#00aeecvar(--primary);--secondary:#a4d9f4var(--secondary);--cm-accent:var(--primary);--cm-accent-ink:#008ac0;--cm-ink:#18191c;--cm-muted:#61666d;--cm-soft:#9499a0;--cm-line:#e3e5e7var(--cm-line);--cm-bg:#f7f8fa;--cm-card:#fff;background:var(--cm-bg);color:var(--cm-ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
 .cm-site .wrap{max-width:1380px;padding:0 24px;margin:0 auto}
 .cm-site .nav{position:sticky;top:0;z-index:40;height:70px;background:#fff;border:0;border-bottom:1px solid var(--cm-line);box-shadow:0 2px 10px #00000005;backdrop-filter:none}
 .cm-site .nav .wrap{height:100%;display:flex;align-items:center;gap:20px}
@@ -93,7 +93,7 @@ const marketStyle=`
 .cm-entry-info .entry-ticket-subtitle{font-size:13px;color:var(--cm-muted)}
 .cm-entry-meta{display:flex;flex-direction:column;gap:2px;font-size:14px;color:var(--cm-ink)}
 .cm-entry-meta b{font-weight:800}
-.cm-entry-progress{height:4px;border-radius:4px;background:#e3e5e7;overflow:hidden;margin-top:10px}
+.cm-entry-progress{height:4px;border-radius:4px;background:var(--cm-line);overflow:hidden;margin-top:10px}
 .cm-entry-progress i{display:block;height:100%;width:18%;background:var(--cm-accent);border-radius:inherit;transition:width 1.5s ease}
 .loader.entry-playing .cm-entry-progress i{width:100%}
 .cm-entry-hint{font-size:12px;color:var(--cm-soft)}
@@ -123,7 +123,7 @@ const marketStyle=`
 .cm-booth p{margin:2px 0 6px;color:var(--cm-muted);font-size:13px;line-height:1.6}
 .cm-booth footer{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap}
 .cm-booth .favorite-booth{border:0;border-radius:6px;background:var(--cm-accent);color:#fff;padding:6px 14px;font-weight:700;font-size:12px;box-shadow:none}
-.cm-booth .favorite-booth.active{background:#e3e5e7;color:var(--cm-muted)}
+.cm-booth .favorite-booth.active{background:var(--cm-line);color:var(--cm-muted)}
 .cm-booth .booth-products-link{border:1px solid var(--cm-line);background:#fff;border-radius:6px;padding:6px 12px;font-size:12px;color:var(--cm-muted);box-shadow:none}
 .cm-site .product-directory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:16px}
 .cm-product{display:flex;flex-direction:column;gap:8px;background:none;border:0}
@@ -260,7 +260,7 @@ const referenceStyle=`
 .cm-feed .cm-spotlight{background:none;border:0;padding:0}
 .cm-rail .updates-list{border:0;border-radius:0;counter-reset:rank;background:none}
 .cm-rail .cm-update{counter-increment:rank;padding:9px 0;gap:10px;align-items:flex-start;flex-wrap:wrap}
-.cm-rail .cm-update:before{content:counter(rank);flex:0 0 20px;height:20px;border-radius:4px;background:#e3e5e7;color:#61666d;font-size:12px;font-weight:800;display:grid;place-items:center}
+.cm-rail .cm-update:before{content:counter(rank);flex:0 0 20px;height:20px;border-radius:4px;background:var(--cm-line);color:#61666d;font-size:12px;font-weight:800;display:grid;place-items:center}
 .cm-rail .cm-update:nth-child(-n+3):before{background:#fb7299;color:#fff}
 .cm-rail .cm-update-tag{display:none}
 .cm-rail .cm-update b{flex:1 1 0;min-width:0;font-size:14px;line-height:1.5}
@@ -474,7 +474,7 @@ const orderStyle=`
 .cm-site .loader .cm-entry-info{display:none!important}
 .cm-site .loader .skip{top:14px;right:14px;bottom:auto;left:auto;padding:8px 14px;font-size:12px;border:0;background:#00000059;color:#fff;backdrop-filter:blur(6px)}
 .event-status-live .cm-site .cm-status{background:#e7f7ee;border-color:#b7e6c9;color:#0f7a44}
-.event-status-ended .cm-site .cm-status{background:#f2f3f5;border-color:#e3e5e7;color:#7a828a}
+.event-status-ended .cm-site .cm-status{background:#f2f3f5;border-color:var(--cm-line);color:#7a828a}
 
 @media(max-width:900px){
  /* 手机端把「公告 / 票务 / 社群」插到推荐与场地图之间 */

@@ -2,13 +2,13 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.130.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.131.0';
 
 const style=`
-.bd-site{overflow-x:clip;--primary:#ff8fb8var(--primary);--secondary:#8fd3ffvar(--secondary);--bd-cream:#fffaf0;--bd-paper:#fffefb;--bd-accent:var(--primary);--bd-sky:var(--secondary);--bd-yellow:#ffd86b;--bd-mint:#b9efd8;--bd-ink:#4a3358;--bd-soft:#85708f;--bd-line:#f0dfe6;
+.bd-site{overflow-x:clip;--primary:#ff8fb8var(--primary);--secondary:#8fd3ffvar(--secondary);--bd-cream:#fffaf0;--bd-paper:#fffefb;--bd-accent:var(--primary);--bd-sky:var(--secondary);--bd-yellow:#ffd86bvar(--bd-yellow);--bd-mint:#b9efd8;--bd-ink:#4a3358;--bd-soft:#85708f;--bd-line:#f0dfe6;
  position:relative;min-height:100vh;color:var(--bd-ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
  background-color:var(--bd-cream);
- background-image:radial-gradient(circle,var(--primary)55 2.4px,transparent 2.8px),radial-gradient(circle,var(--secondary)66 2px,transparent 2.4px),radial-gradient(circle,#ffd86b88 2.6px,transparent 3px);background-size:97px 97px,131px 131px,79px 79px;background-position:0 0,40px 55px,20px 30px}
+ background-image:radial-gradient(circle,var(--primary)55 2.4px,transparent 2.8px),radial-gradient(circle,var(--secondary)66 2px,transparent 2.4px),radial-gradient(circle,var(--bd-yellow)88 2.6px,transparent 3px);background-size:97px 97px,131px 131px,79px 79px;background-position:0 0,40px 55px,20px 30px}
 .bd-site .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
 .bd-site a{color:inherit}
 .bd-site h1,.bd-site .head h2,.bd-site .bd-gift h3{font-family:"Noto Serif SC","Songti SC",serif}
@@ -43,7 +43,7 @@ const style=`
 .bd-site .kv.empty{background-image:radial-gradient(circle at 30% 25%,#ffffffbb 0 12%,transparent 13%),radial-gradient(circle at 72% 70%,#ffffff99 0 9%,transparent 10%),linear-gradient(160deg,color-mix(in srgb,var(--bd-accent) 50%,#fff),#cfe9ff 60%,#fff2c4)!important}
 .bd-kv-fallback{display:none;position:absolute;inset:0;align-items:center;justify-content:center;padding:14%;text-align:center;font-family:"Noto Serif SC",serif;font-size:clamp(26px,5vw,46px);font-weight:900;line-height:1.2;color:var(--bd-ink);overflow-wrap:anywhere}
 .bd-site .kv.empty .bd-kv-fallback{display:flex}
-.bd-site .hero-art:before{content:"";position:absolute;left:50%;top:-26px;width:110px;height:34px;background:#ffd86bcc;transform:translateX(-50%) rotate(-3deg);z-index:2}
+.bd-site .hero-art:before{content:"";position:absolute;left:50%;top:-26px;width:110px;height:34px;background:var(--bd-yellow)cc;transform:translateX(-50%) rotate(-3deg);z-index:2}
 .bd-site .hero-art:after{content:"★";position:absolute;right:-28px;bottom:-14px;font-size:46px;color:var(--bd-yellow);text-shadow:2px 2px 0 #e0b23a;z-index:2}
 .bd-balloon{position:absolute;width:64px;height:78px;border-radius:50% 50% 48% 48%;z-index:1;pointer-events:none}
 .bd-balloon:after{content:"";position:absolute;left:50%;top:100%;width:2px;height:70px;background:#4a335855}
@@ -152,7 +152,7 @@ const style=`
 .bd-site .bd-btn{background:transparent;color:#fff;border-color:#fff}.bd-site .bd-btn.accent{background:#fff;color:var(--bd-accent);box-shadow:none}
 .bd-balloon{display:none}
 .bd-site .head{flex-direction:row;flex-wrap:wrap;align-items:flex-end;text-align:left}.bd-site .head>div{width:auto;flex:1}
-.bd-site .head h2{background:linear-gradient(transparent 62%,#ffd86b 62%);padding:0 6px;display:inline-block;font-weight:700;letter-spacing:.02em}
+.bd-site .head h2{background:linear-gradient(transparent 62%,var(--bd-yellow) 62%);padding:0 6px;display:inline-block;font-weight:700;letter-spacing:.02em}
 .bd-site .head h2:after{display:none}
 .bd-site .head .ey{display:inline-block;padding:3px 12px;border-radius:999px;background:color-mix(in srgb,var(--bd-accent) 14%,#fff);color:var(--bd-accent)!important;margin-bottom:6px}
 .bd-site .head .section-back{position:static;margin-left:auto}
