@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.141.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.142.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -329,6 +329,12 @@ const featuredShape=`
 @media(max-width:620px){.ls-site #participation .featured-activity-card{grid-template-columns:96px minmax(0,1fr)!important}}
 `;
 const warmStage=String.raw`
+.ls-site .live-pass-copy h3,.ls-site .live-pass-copy .oe-ticket-gift,.ls-site .live-pass-copy .oe-ticket-note{color:#3a2b22!important}
+.ls-site .live-pass-copy h3{font-size:22px!important;font-weight:900!important}
+.ls-site .ticket-gift-image{display:block!important;width:100%!important;margin:14px 0 0!important;border:0!important;background:transparent!important;padding:0!important}
+.ls-site .ticket-gift-image img{display:block!important;width:100%!important;height:auto!important;aspect-ratio:16/9!important;object-fit:cover!important;border-radius:12px!important}
+.ls-site #updates .wrap{max-width:1180px!important;margin:0 auto!important;padding:0 28px!important;display:block!important}
+.ls-site #updates .updates-list{max-width:760px!important;margin:18px 0 0!important}
 .ls-site #updates .wrap{display:block!important}
 .ls-site #updates .updates-list{display:grid!important;gap:10px!important;margin-top:18px!important}
 .ls-site #updates .live-update{display:grid!important;grid-template-columns:44px 64px minmax(0,1fr) 20px!important;align-items:center!important;gap:12px!important;padding:12px 0!important;border-bottom:1px solid #e3d1b8!important;text-align:left!important}
