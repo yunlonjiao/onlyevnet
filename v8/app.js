@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.224.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.224.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.225.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.225.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.224.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.224.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.224.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.224.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.225.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.225.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.225.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.225.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -942,6 +942,7 @@ function presetEntriesFor(collection){
   return e;
  }
  if(collection==='participation'){
+  if(/^06/.test(tpl)){const band={stage:'乐队演出',live:'暖场乐队',signing:'签售 / 合影',merch:'周边物贩',exchange:'演后交流'};return Object.entries(PARTICIPATION_PRESETS).filter(([k])=>band[k]).map(([k,x])=>[k,Object.assign({},x,{title:band[k]})]);}
   let e=Object.entries(PARTICIPATION_PRESETS);
   if(/^0[56]/.test(tpl))e=e.filter(([k,x])=>!/COS|痛车|摄影/i.test(String(x.title||'')));
   return e;
@@ -1019,7 +1020,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.224.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.225.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1193,7 +1194,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.224.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.225.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1277,7 +1278,7 @@ const collectionMeta={
  tickets:{title:'票务',fields:[['name','票名'],['price','价格'],['gift','特典'],['note','备注']]},
  featuredActivities:{title:'活动精选',fields:[]},
  participation:{title:'活动',fields:[['title','活动名称'],['text','一句话简介'],['detail','活动内容'],['participationMode','参与方式'],['requirements','参加要求'],['rules','通用规则与注意事项'],['url','报名 / 外部链接']]},
- schedule:{title:'活动日程',fields:[['day','日期 / DAY'],['time','开始时间'],['endTime','结束时间'],['title','活动名称'],['stage','地点区域'],['detail','活动简介'],['registrationUrl','报名 / 外部链接']]},
+ schedule:{title:'活动日程',fields:[['day','日期 / DAY'],['time','开始时间'],['endTime','结束时间'],['title','活动名称'],['stage','地点区域'],['detail','活动简介'],['setlist','曲目 / 歌单'],['registrationUrl','报名 / 外部链接']]},
  guide:{title:'指南内容',fields:[['title','标题'],['label','英文小标题'],['text','说明']]},
  guests:{title:'嘉宾',fields:[['name','姓名 / 团体名称'],['members','成员（可选）'],['attendanceNote','出席说明（可选）'],['works','代表作 / 主要内容'],['intro','介绍']]},
  booths:{title:'摊位',fields:[['no','摊位号'],['street','街道'],['name','社团名'],['type','分类'],['intro','简介']]},
