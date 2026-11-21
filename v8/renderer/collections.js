@@ -1,8 +1,8 @@
-import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.152.0';
-import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.152.0';
-import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.152.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.152.0';
-import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.152.0';
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.154.0';
+import {streetGroups,mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.154.0';
+import {venueMapList,mapCarouselMarkup,bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.154.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.154.0';
+import {ticketMarkup,guestMarkup,scheduleMarkup,updateMarkup,sponsorMarkup,boothMarkup,productMarkup,guideMarkup,communityMarkup,mapLinkMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.154.0';
 export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>$('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
 
@@ -180,7 +180,7 @@ export function createCollections({qs:$,qsa:qa,escapeHtml:esc,getState,getMode,s
       if(rulesBox)rulesBox.innerHTML='<div class="guide-detail-content">'+rules.map((x,i)=>card(x,i,'detail')).join('')+'</div>';
       return;
     }
-    const detail=mount('guide-detail','#guide .guide-detail-grid');if(detail)detail.innerHTML='<div class="guide-detail-content">'+items.map((x,i)=>card(x,i,'detail')).join('')+'</div>';
+    const detail=mount('guide-detail','#home-guide .guide-detail-grid, #guide .guide-detail-grid');if(detail)detail.innerHTML='<div class="guide-detail-content">'+items.map((x,i)=>card(x,i,'detail')).join('')+'</div>';
   }
 
   function renderMap(){
