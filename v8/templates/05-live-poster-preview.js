@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.140.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.141.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -329,6 +329,12 @@ const featuredShape=`
 @media(max-width:620px){.ls-site #participation .featured-activity-card{grid-template-columns:96px minmax(0,1fr)!important}}
 `;
 const warmStage=String.raw`
+.ls-site #updates .wrap{display:block!important}
+.ls-site #updates .updates-list{display:grid!important;gap:10px!important;margin-top:18px!important}
+.ls-site #updates .live-update{display:grid!important;grid-template-columns:44px 64px minmax(0,1fr) 20px!important;align-items:center!important;gap:12px!important;padding:12px 0!important;border-bottom:1px solid #e3d1b8!important;text-align:left!important}
+.ls-site #updates .live-update span{font-style:italic!important;font-weight:900!important;color:#b23a22!important}
+.ls-site #updates .live-update time,.ls-site #updates .live-update b{color:#3a2b22!important}
+.ls-site .live-pass img{display:block!important;width:100%!important;aspect-ratio:16/9!important;object-fit:cover!important;border-radius:12px!important;margin:12px 0 0!important}
 .ls-site .ticket,.ls-site .ticket p,.ls-site .ticket span,.ls-site .ticket b,.ls-site .ticket small{color:#3a2b22!important}.ls-site .ticket .price,.ls-site .ticket strong,.ls-site .ticket em{color:#b23a22!important}.ls-site .ticket{background:#fffdf7!important;border-color:#e3d1b8!important}.inspector select{font-family:inherit!important;font-weight:650!important;font-size:13px!important}
 .ls-site #updates .wrap{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:16px!important}.ls-site #updates .head{width:100%!important}.ls-site #updates .updates-strip,.ls-site #updates [class*="list"],.ls-site #updates [class*="row"]{justify-content:flex-start!important;text-align:left!important;margin-left:0!important}.ls-site #updates .updates-strip>.wrap{display:flex!important}
 html[data-oe-template="05-live-poster"] #home-guests .section-back{display:none!important}
@@ -381,7 +387,6 @@ html[data-oe-palette05="mauve"] .ls-site .hero h1{color:#2a1c28!important}
 `;
 export const previewStyle=coreStyle+style+referenceStyle+ownStyle+featuredFix+phoneFix+featuredShape+warmStage;
 export const previewBody=`<div class="ls-site">
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">BILIBILI ONLY</a></div></header>
 <main id="top">
 <section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="ls-kv-fallback" data-oe-field="eventName">BILIBILI ONLY</strong></div></div><div class="hero-copy"><h1 data-oe-field="eventName">BILIBILI ONLY</h1><p data-oe-field="tagline"></p><div class="meta ls-info"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="ls-cta"></div></div></div></section>
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip section"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新公告'))}
