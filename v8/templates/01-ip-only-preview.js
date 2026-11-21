@@ -58,6 +58,9 @@ export const previewStyle = `
  .trip-logo,.venue-nav,.scrap-map-tag,.cm-shuffle,.cm-map-tag{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding-top:8px;padding-bottom:8px}
  button{min-width:44px;min-height:44px}
 }}}`;
+/* 01 overflow */
+const overflowFix=`.ribbon{overflow:hidden!important;max-width:100%!important}.ribbon-track{will-change:transform}`;
+
 export const previewBody = `<div class="loader" id="loader"><div class="gate" role="button" tabindex="0" aria-label="点击纪念票进入活动网站"><section class="ticket-half left"><div class="entry-photo" aria-label="活动KV"></div></section><aside class="ticket-half right"><div class="entry-ticket-label">MEMORIAL TICKET</div><div class="entry-ticket-title">BILIBILI ONLY</div><div class="entry-ticket-subtitle"></div><div class="entry-ticket-meta"><div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date">2030.01.01</b></div><div class="entry-ticket-time-wrap"><span>TIME</span><b class="entry-ticket-time"></b></div><div class="entry-ticket-location-wrap"><span>PLACE</span><b class="entry-ticket-location">杭州</b></div></div><div class="stub-barcode" aria-hidden="true"></div><div class="stub-code"><span class="entry-serial stub-number">NO. 048271</span></div></aside></div><button class="skip" id="skip">跳过动画 →</button></div>
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName" contenteditable="false">BILIBILI ONLY</a><nav class="links"><a href="#top" data-page-link="home">首页</a><a href="#booths" data-target-mode="page" data-page-link="booths">摊位</a><a href="#activities" data-target-mode="page" data-page-link="activities">活动</a><a href="#guests" data-target-mode="page" data-page-link="guests">嘉宾</a><a href="#guide" data-target-mode="page" data-page-link="guide">观展指南</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">前往购票平台 ↗</a></div></header>
 <main id="top">
