@@ -1,5 +1,5 @@
-import {IP_ONLY_CORE_MODULES,DEFAULT_IP_ONLY_PRESENTATION_PROFILE} from '/v8/templates/ip-only-core-contract.js?v=8.231.0';
-import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.231.0';
+import {IP_ONLY_CORE_MODULES,DEFAULT_IP_ONLY_PRESENTATION_PROFILE} from '/v8/templates/ip-only-core-contract.js?v=8.232.0';
+import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.232.0';
 export const template01 = {
   id:'01-ip-only',
   name:'01 · 综合活动站',
