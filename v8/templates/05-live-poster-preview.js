@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.145.0';
+import {coreStyle,coreSection,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.146.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -314,6 +314,7 @@ const phoneFix=`
 @media(max-width:820px){.ls-site .hero-grid{grid-template-columns:minmax(0,1fr);gap:22px;padding:14px 0}.ls-site .hero-art{order:-1;aspect-ratio:16/11;max-height:340px}.ls-site .hero-copy{min-width:0}}
 `;
 const warmStage=String.raw`
+.ls-site #updates{padding-top:72px!important}.ls-site .ls-news-head{margin-bottom:20px!important}
 .ls-site .live-pass-band{background:var(--ls-pink)!important;color:#fff!important}
 .ls-site .live-pass-price{color:var(--ls-cyan)!important}
 .ls-site .live-pass{border-color:var(--ls-line)!important;background:#fffdf7!important}

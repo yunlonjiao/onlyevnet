@@ -1312,3 +1312,8 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 .inspector .item-fields label{margin:0 0 14px!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;gap:6px!important}
 .inspector .item-fields label>span,.inspector label>span{font-size:11px!important;font-weight:700!important;color:#3f3f46!important;letter-spacing:.01em!important}
 .inspector-note{font-size:11.5px!important;line-height:1.65!important;color:#8b8b95!important;margin:10px 2px 0!important}
+
+/* 编辑器统一字重与字体 */
+.inspector label>span{font-weight:700!important}
+.inspector input,.inspector select,.inspector textarea{font-family:inherit!important;font-weight:600!important;font-size:13px!important}
+.inspector-note,.inspector .hint{font-weight:400!important}
