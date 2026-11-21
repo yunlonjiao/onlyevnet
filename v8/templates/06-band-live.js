@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.194.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.198.0';
 /* Template 06 runs on the shared IP ONLY core; the live-house flyer art, the band list and the set times differ. */
 export const template06=makeIpOnlyTemplate({
  id:'06-band-live',name:'06 · 乐队演出',label:'乐队演出',studioName:'乐队演出',
@@ -37,8 +37,9 @@ d.schedule=[
  {id:'s6',day:'LIVE',time:'21:00',endTime:'',title:'终演',stage:'LIVE HOUSE',category:'散场',detail:'有序散场，周边物贩开放到 21:30。',guestIds:[],registrationUrl:''}
 ];
 d.participation=[
- {id:'pa1',preset:'stage',activityType:'general',title:'周边物贩',meta:'场地后方 · 全程开放',text:'本场限定的 T 恤、徽章和 CD。',detail:'物贩在场地后方，演出间隙和散场后都可以购买。现金和扫码都可以。',participationMode:'现场购买',requirements:'无。',rules:'限定周边卖完即止，每人限购数量以现场告示为准。',target:'activities',url:'',guestIds:[]},
- {id:'pa2',preset:'guest',activityType:'general',title:'演后交流',meta:'场地后方 · 终演后',text:'终演后，乐队成员会在物贩处和大家聊几句。',detail:'乐队成员在物贩区，买周边的朋友可以请他们签名、合影。',participationMode:'现场排队',requirements:'无。',rules:'请排队，每人合影一次。',target:'activities',url:'',guestIds:['g1','g2']}
+ {id:'pa1',preset:'stage',activityType:'live',time:'18:00',title:'彩バー 暖场',meta:'LIVE HOUSE · 第 1 组',text:'开场乐队，三首轻快的歌。',setlist:'《彩》《信号》《晴天》',participationMode:'凭票入场',rules:'请勿推挤。',guestIds:['g4']},
+ {id:'pa2',preset:'stage',activityType:'live',time:'19:20',title:'紙月 专场',meta:'LIVE HOUSE · 第 3 组',text:'三人编制的 indie 现场。',setlist:'《紙の月》《窓辺》《返事》',participationMode:'凭票入场',rules:'演出中请勿使用闪光灯。',guestIds:['g2']},
+ {id:'pa3',preset:'stage',activityType:'live',time:'20:00',title:'夜光シグナル 压轴',meta:'LIVE HOUSE · 第 4 组',text:'压轴乐队，含安可。',setlist:'《夜行バス》《灯台》《始発》+ 安可',participationMode:'凭票入场',rules:'安可时请勿站上座椅。',guestIds:['g1']}
 ];
 d.featuredActivities=[{id:'fa1',participationId:'pa1',image:''},{id:'fa2',participationId:'pa2',image:''},{id:'fa3',participationId:'',image:''}];
 d.updates=[{id:'u1',date:'10/01',title:'出演乐队与出场顺序公开',target:''},{id:'u2',date:'09/28',title:'预售票开售',target:''}];
