@@ -1,15 +1,15 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
-import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.119.0';
-import {mountCost} from '/admin/cost.js?v=8.119.0';
-import {mountDeadlines} from '/admin/deadlines.js?v=8.119.0';
-import {loadAsk} from '/admin/ask.js?v=8.119.0';
-import {loadSignups} from '/admin/signups.js?v=8.119.0';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.119.0';
+import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.120.0';
+import {mountCost} from '/admin/cost.js?v=8.120.0';
+import {mountDeadlines} from '/admin/deadlines.js?v=8.120.0';
+import {loadAsk} from '/admin/ask.js?v=8.120.0';
+import {loadSignups} from '/admin/signups.js?v=8.120.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.120.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
 // Short Chinese tags for the template gallery (the internal art-direction names stay English).
-const TEMPLATE_TAGS={'01-ip-only':'综合 · 摊位 · 舞台 · 活动','02-scrapbook':'同人展 · 摊位 · COS · 现场活动','03-creator-market':'社区 · 内容流 · 创作者集市','04-creator-catalogue':'二次元 · 电子场刊','05-live-poster':'舞台 · 节目表 · 嘉宾','06-band-live':'乐队 · 现场 · 演出','07-tea-party':'小型活动 · 茶会 · 邀请函','08-birthday':'小型活动 · 生日 · 应援'};
+const TEMPLATE_TAGS={'01-ip-only':'综合 · 摊位 · 舞台 · 活动','02-scrapbook':'手账 · 摊位 · COS · 现场活动','03-creator-market':'社区 · 内容流 · 创作者集市','04-creator-catalogue':'二次元 · 电子场刊','05-live-poster':'舞台 · 节目表 · 嘉宾','06-band-live':'乐队 · 现场 · 演出','07-tea-party':'小型活动 · 茶会 · 邀请函','08-birthday':'小型活动 · 生日 · 应援'};
 const templateTag=t=>TEMPLATE_TAGS[t.id]||'';
 let selectedTemplateId=DEFAULT_TEMPLATE_ID;
 let projects=readProjects();
