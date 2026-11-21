@@ -1,7 +1,7 @@
-import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.146.0';
-import {mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.146.0';
-import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.146.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.146.0';
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.147.0';
+import {mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.147.0';
+import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.147.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.147.0';
 export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyle='',escapeHtml:esc}){
   return function buildStandaloneHtml(){
     const state=getState(),clone=document.body.cloneNode(true);
@@ -256,6 +256,6 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       ogImage?'<meta property="og:image" content="'+esc(ogImage)+'">':'',
       canonical?'<meta property="og:url" content="'+esc(canonical)+'">':''
     ].join('');
-    return '<!doctype html><html lang="zh-CN" class="event-status-'+eventStatus+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+meta+'<style>'+(previewStyle+extra).replace(/\/\*[\s\S]*?\*\//g,'')+'</style></head><body class="event-status-'+eventStatus+'">'+clone.innerHTML+'<script>'+runtime+'</script><script>'+"if('serviceWorker' in navigator&&location.protocol==='https:'&&/\\.onlyevent\\.cn$/.test(location.hostname))addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));"+'</script></body></html>';
+    return '<!doctype html><html lang="zh-CN" class="event-status-'+eventStatus+'" data-oe-template="'+(state.templateId||'')+'" data-oe-guide-label="'+(document.documentElement.dataset.oeGuideLabel||'')+'" data-oe-palette01="'+(state.palette01||'')+'" data-oe-palette02="'+(state.palette02||'')+'" data-oe-palette03="'+(state.palette03||'')+'" data-oe-palette04="'+(state.palette04||'')+'" data-oe-palette05="'+(state.palette05||'')+'" data-oe-palette06="'+(state.palette06||'')+'" data-oe-palette07="'+(state.palette07||'')+'" data-oe-palette08="'+(state.palette08||'')+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+meta+'<style>'+(previewStyle+extra).replace(/\/\*[\s\S]*?\*\//g,'')+'</style></head><body class="event-status-'+eventStatus+'">'+clone.innerHTML+'<script>'+runtime+'</script><script>'+"if('serviceWorker' in navigator&&location.protocol==='https:'&&/\\.onlyevent\\.cn$/.test(location.hostname))addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));"+'</script></body></html>';
   }
 }
