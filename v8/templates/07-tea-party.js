@@ -1,12 +1,12 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.270.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.273.0';
 /* Template 06 runs on the shared IP ONLY core; the invitation-card art and the activity-first home differ. */
 export const template07=makeIpOnlyTemplate({
  id:'07-tea-party',name:'07 · 茶会小聚',label:'茶会小聚',studioName:'茶会小聚',
  description:'邀请函风格：首页先讲清楚当天玩什么、几点做什么，适合茶会、小型 ONLY、生日会和线下交流会。',
  structureProfile:'invitation',artDirection:'tea-party',motionProfile:'gentle',
  theme:'#f08fa8',heroTitleColor:'#5a3d3a',heroTitleAccentColor:'#f08fa8',
- presentationProfile:{mobileDock:true},
- studioPages:{hidden:['booths'],hiddenContent:['explore','ribbonItems'],customPages:false},
+ presentationProfile:{entryAnimation:false,mobileDock:true},
+ studioPages:{hidden:['booths','animation'],hiddenContent:['explore','ribbonItems'],customPages:false},
  group:'small',
  design:{hero:'invitation-card+round-photo',motif:'lace-dots'}
 });
