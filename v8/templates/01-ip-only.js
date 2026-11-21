@@ -1,13 +1,13 @@
-import {IP_ONLY_CORE_MODULES,DEFAULT_IP_ONLY_PRESENTATION_PROFILE} from '/v8/templates/ip-only-core-contract.js?v=8.117.0';
-import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.117.0';
+import {IP_ONLY_CORE_MODULES,DEFAULT_IP_ONLY_PRESENTATION_PROFILE} from '/v8/templates/ip-only-core-contract.js?v=8.119.0';
+import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js?v=8.119.0';
 export const template01 = {
   id:'01-ip-only',
-  name:'01 · 同人集市',
-  label:'同人集市',
-  studioName:'同人集市',
+  name:'01 · 综合活动站',
+  label:'综合活动站',
+  studioName:'综合活动站',
   category:'单 IP / 同好活动',
   version:'1.0.0',
-  description:'同人展 / 同好聚会：颜色亮、贴纸多、描边粗，主推作品摊位、周边和当日活动，适合围着一部作品或角色办的线下聚会。',
+  description:'综合活动站：摊位、舞台、嘉宾、活动、票务、场地图都能放，相当于把 03–08 的内容装进一套模板，适合还没定形态或多块内容混办的活动。',
   structureProfile:'portal',
   design:{hero:'split-title+framed-art',motif:'sticker'},
   artDirection:'international-festival',
