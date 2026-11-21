@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.144.0';
+import {coreStyle,coreSection,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.145.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -314,6 +314,13 @@ const phoneFix=`
 @media(max-width:820px){.ls-site .hero-grid{grid-template-columns:minmax(0,1fr);gap:22px;padding:14px 0}.ls-site .hero-art{order:-1;aspect-ratio:16/11;max-height:340px}.ls-site .hero-copy{min-width:0}}
 `;
 const warmStage=String.raw`
+.ls-site .live-pass-band{background:var(--ls-pink)!important;color:#fff!important}
+.ls-site .live-pass-price{color:var(--ls-cyan)!important}
+.ls-site .live-pass{border-color:var(--ls-line)!important;background:#fffdf7!important}
+.ls-site .ls-news-list .live-update{display:grid!important;grid-template-columns:44px 64px minmax(0,1fr) 20px!important;align-items:center!important;gap:12px!important;background:#fffdf7!important;border:1px solid var(--ls-line)!important;border-radius:14px!important;padding:14px 16px!important;margin-bottom:10px!important}
+.ls-site .ls-news-list .live-update span{font-style:italic!important;font-weight:900!important;color:var(--ls-pink)!important}
+.ls-site .ls-news-list .live-update time{color:#8a6a52!important}
+.ls-site .ls-news-list .live-update b{color:var(--ls-soft)!important;font-size:15px!important}
 html[data-oe-template="05-live-poster"] .footer{display:none!important}
 
 html[data-oe-template="05-live-poster"] #home-guests .section-back{display:none!important}

@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.144.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.145.0';
 /* Template 06 runs on the shared IP ONLY core; the live-house flyer art, the band list and the set times differ. */
 export const template06=makeIpOnlyTemplate({
  id:'06-band-live',name:'06 · 乐队演出',label:'乐队演出',studioName:'乐队演出',
@@ -6,7 +6,7 @@ export const template06=makeIpOnlyTemplate({
  structureProfile:'lineup',artDirection:'band-live',motionProfile:'energetic',
  theme:'#ffd500',heroTitleColor:'#ffffff',heroTitleAccentColor:'#ffd500',
  presentationProfile:{ribbon:true,entryAnimation:false,mobileDock:false},
- studioPages:{hidden:['booths','animation','activities','guests','guide'],hiddenContent:[],customPages:false},
+ studioPages:{hidden:['booths','animation','activities','guests','guide'],hiddenContent:['ribbonItems','featuredActivities','explore'],customPages:false},
  group:'stage',
  design:{hero:'split-tilted-photo',motif:'photocopy-tape'}
 });
