@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.179.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.179.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.180.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.180.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.179.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.179.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.179.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.179.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.180.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.180.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.180.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.180.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -1002,7 +1002,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.179.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.180.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1176,7 +1176,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.179.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.180.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1877,5 +1877,5 @@ try{new MutationObserver(__cleanGuestPanels).observe(document.body,{childList:tr
 
 
 /* 面板头部必须与面板同宽：父级内边距归零，头部自身补内边距 */
-const __fixInspectorHeader=()=>{document.querySelectorAll('.inspector-header').forEach(h=>{h.style.setProperty('margin','0','important');h.style.setProperty('border-radius','0','important');h.style.setProperty('width','auto','important');h.style.setProperty('margin-left','-14px','important');h.style.setProperty('margin-right','-14px','important');h.style.setProperty('margin-top','0','important');h.style.setProperty('padding','12px 14px','important');let p=h.parentElement;while(p&&!p.classList.contains('inspector')){p.style.setProperty('padding-left','0','important');p.style.setProperty('padding-right','0','important');p.style.setProperty('padding-top','0','important');p=p.parentElement}})||[];};
+const __fixInspectorHeader=()=>{document.querySelectorAll('.inspector-header').forEach(h=>{const insp=h.closest('.inspector');const cs=insp?getComputedStyle(insp):null;const pl=cs?parseFloat(cs.paddingLeft):0,pr=cs?parseFloat(cs.paddingRight):0,pt=cs?parseFloat(cs.paddingTop):0;h.style.setProperty('box-sizing','border-box','important');h.style.setProperty('border-radius','0','important');h.style.setProperty('width','auto','important');h.style.setProperty('margin-left',(-pl)+'px','important');h.style.setProperty('margin-right',(-pr)+'px','important');h.style.setProperty('margin-top',(-pt)+'px','important');h.style.setProperty('padding',(pt||12)+'px '+Math.max(pl,12)+'px','important');let p=h.parentElement;while(p&&p!==insp){p.style.setProperty('padding-left','0','important');p.style.setProperty('padding-right','0','important');p.style.setProperty('padding-top','0','important');p=p.parentElement}})||[];};
 try{new MutationObserver(__fixInspectorHeader).observe(document.body,{childList:true,subtree:true})}catch(e){}
