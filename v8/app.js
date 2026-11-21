@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.166.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.166.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.167.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.167.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.166.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.166.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.166.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.166.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.167.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.167.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.167.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.167.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -1002,7 +1002,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.166.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.167.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1176,7 +1176,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.166.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.167.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1262,7 +1262,7 @@ const collectionMeta={
  participation:{title:'活动',fields:[['title','活动名称'],['text','一句话简介'],['detail','活动内容'],['participationMode','参与方式'],['requirements','参加要求'],['rules','通用规则与注意事项'],['url','报名 / 外部链接']]},
  schedule:{title:'活动日程',fields:[['day','日期 / DAY'],['time','开始时间'],['endTime','结束时间'],['title','活动名称'],['stage','地点区域'],['detail','活动简介'],['registrationUrl','报名 / 外部链接']]},
  guide:{title:'指南内容',fields:[['title','标题'],['label','英文小标题'],['text','说明']]},
- guests:{title:'嘉宾',fields:[['name','姓名 / 团体名称'],['role','身份 / 类型标签'],['members','成员（可选）'],['attendanceNote','出席说明（可选）'],['works','代表作 / 主要内容'],['intro','介绍']]},
+ guests:{title:'嘉宾',fields:[['name','姓名 / 团体名称'],['members','成员（可选）'],['attendanceNote','出席说明（可选）'],['works','代表作 / 主要内容'],['intro','介绍']]},
  booths:{title:'摊位',fields:[['no','摊位号'],['street','街道'],['name','社团名'],['type','分类'],['intro','简介']]},
  updates:{title:'重要更新',fields:[['date','日期'],['title','更新内容']]},socialLinks:{title:'社群入口',fields:[['label','名称'],['note','说明'],['url','链接']]},sponsors:{title:'赞助支持',fields:[['name','名称'],['level','级别'],['url','链接']]}
 };
@@ -1320,7 +1320,7 @@ function extraInspector(collection,index,item){
    const image=item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>';
    const socialPanel='<div class="reference-panel guest-social-editor"><div class="guest-social-editor-head"><b>个人平台</b><button type="button" data-guest-social-add>＋ 添加平台</button></div>'+
      '<div class="guest-social-editor-list">'+(socialLinks.length?socialLinks.map((link,j)=>'<div class="guest-social-editor-row"><span class="guest-platform-detected">'+esc(guestPlatformName(link.url))+'</span><input data-guest-social-url="'+j+'" value="'+esc(link.url||'')+'" placeholder="粘贴个人主页地址"><button type="button" class="ghost" data-guest-social-remove="'+j+'">×</button></div>').join(''):'<p class="inspector-note">添加个人主页地址后会自动识别平台；一个平台一条地址。</p>')+'</div></div>';
-   return '<div class="reference-panel guest-type-panel"><b>嘉宾类型</b><div class="guest-type-presets">'+guestTypes.map(([key,label])=>'<button type="button" data-guest-type="'+key+'" class="'+((item.guestType||'person')===key?'active':'')+'">'+label+'</button>').join('')+'</div><p class="inspector-note">类型只影响展示结构和图片比例；名称、成员、身份与文案仍可自由修改。</p></div>'+
+   return 
      '<div class="item-media"><span>嘉宾宣传图</span><div class="item-media-row">'+image+'<div><button data-media-path="guests.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="guests.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>'+
      socialPanel+
      '<div class="reference-panel guest-link-panel"><b>关联活动</b><div class="reference-list"><span>活动企划</span>'+(plans.length?plans.map(a=>'<label class="check-row"><input type="checkbox" data-guest-plan-ref="'+esc(a.id)+'" '+((a.guestIds||[]).includes(item.id)?'checked':'')+'><span>'+esc(a.title||'活动')+'</span></label>').join(''):'<span class="muted">暂无活动企划</span>')+'</div><div class="reference-list"><span>当天日程</span>'+(schedule.length?schedule.map(a=>'<label class="check-row"><input type="checkbox" data-guest-schedule-ref="'+esc(a.id)+'" '+((a.guestIds||[]).includes(item.id)?'checked':'')+'><span>'+esc((a.time?a.time+' ':'')+(a.title||'日程'))+'</span></label>').join(''):'<span class="muted">暂无当天日程</span>')+'</div></div>';
@@ -1587,6 +1587,7 @@ function mutateItem(collection,index,op){
  save();send({type:'OE_REPLACE_STATE',state});syncContentCounts();openCollectionManager(collection,index);openItemInspector(collection,index);
 }
 function imageSlotConfig(path){
+ if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾形象图',ratio:3/4,ratioLabel:'嘉宾形象图 · 比例 3:4',width:900,height:1200,fixed:true};
  if(path==='heroImage'&&state.templateId==='02-scrapbook')return {label:'首页全屏 KV',ratio:16/9,ratioLabel:'桌面端全屏主视觉 · 1920 × 1080',width:1920,height:1080,fixed:true};
  if(path==='heroImage'&&state.templateId==='04-creator-catalogue')return {label:'封面 KV',ratio:5/7,ratioLabel:'封面 KV · 比例 5:7（贴合书页）',width:1000,height:1400,fixed:true};
  if(path==='heroImage'&&state.templateId==='03-creator-market')return {label:'首页横幅',ratio:5/2,ratioLabel:'首页横幅 · 比例 5:2（宽幅）',width:1800,height:720,fixed:true};
