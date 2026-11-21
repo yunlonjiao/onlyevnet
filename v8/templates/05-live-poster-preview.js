@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.135.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.138.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -329,6 +329,7 @@ const featuredShape=`
 @media(max-width:620px){.ls-site #participation .featured-activity-card{grid-template-columns:96px minmax(0,1fr)!important}}
 `;
 const warmStage=String.raw`
+html[data-oe-template="05-live-poster"] #home-guests .section-back{display:none!important}
 /* 暖色浅背景舞台：嘉宾活动 / 舞台演出 / 乐队都能用，不做夜店霓虹 */
 .ls-site{--ls-bg:#fbf3e6;--ls-bg2:#f6e9d6;--ls-pink:#c8402a;--ls-cyan:#b97a25;--ls-yellow:#e0a13c;--ls-violet:#8a4a33;--ls-line:#d9c6ae;--ls-soft:#3a2b22;background:#fbf3e6;color:#33251c}
 .ls-site .ls-titlebar{background:linear-gradient(90deg,#b23a22,#d8452b 55%,#e8a33d)!important;color:#fff}
@@ -386,7 +387,7 @@ ${coreSection('updates').replace('class="updates-strip"','class="updates-strip s
 ${coreSection('tickets',{ey:'TICKET',title:'票务'})}
 ${ownMapSection('ls',{ey:'ACCESS',title:'场地图'})}
 ${timetableSection}
-${coreSection('guests',{ey:'CAST',title:'出演阵容'})}
+${coreSection('guests',{ey:'CAST',title:'出演阵容'}).replace('class="section oe-page-view" id="guests"','class="section" id="home-guests"').replace('id="guests"','id="home-guests"')}
 ${coreSection('participation',{ey:'PROGRAMME',title:'现场活动'})}
 ${ownCommunitySection('ls',{ey:'COMMUNITY',title:'社群'})}
 ${ownSponsorsSection('ls',{ey:'SUPPORT',title:'合作支持'})}
