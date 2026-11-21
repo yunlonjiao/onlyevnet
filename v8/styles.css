@@ -1343,3 +1343,8 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 .inspector-kicker{font-size:10px!important;line-height:1.2!important;font-weight:800!important;letter-spacing:.12em!important;color:#a1a1aa!important}
 .inspector-header b{font-size:16px!important;line-height:1.25!important;font-weight:800!important;color:#17171c!important;max-width:none!important;overflow:visible!important;white-space:normal!important}
 .inspector-badge,.inspector-status{font-size:9px!important;line-height:1!important;flex:0 0 auto!important}
+
+/* 勾选行：复选框回归小尺寸，不再被输入框样式放大 */
+.inspector .check-row{display:flex!important;align-items:center!important;gap:9px!important;padding:7px 2px!important}
+.inspector .check-row input[type=checkbox]{width:16px!important;height:16px!important;min-height:0!important;padding:0!important;margin:0!important;border-radius:4px!important;accent-color:#6c5ce7!important;flex:0 0 16px!important}
+.inspector .check-row span{font-size:12px!important;line-height:1.4!important;color:#3f3f46!important}

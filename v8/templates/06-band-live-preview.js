@@ -2,7 +2,7 @@
    yellow, big band names and set times. The visual language follows Japanese band-anime live pages
    (BanG Dream!, Bocchi the Rock!) and hand-made live-house flyers. Hooks follow Template 01;
    everything visual is scoped to .bl-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.211.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.212.0';
 
 const style=`
 .bl-site{overflow-x:clip;--primary:#ffd500;--secondary:#ff3b3b;--bl-ink:#101010;--bl-paper:#f2efe6;--bl-yellow:#ffd500;--bl-red:#ff3b3b;--bl-gray:#6b6b66;--bl-line:#101010;
@@ -326,7 +326,6 @@ ${coreSection('updates').replace('class="updates-strip"','class="updates-strip s
 ${coreSection('tickets',{ey:'TICKET',title:'门票'})}
 ${ownMapSection('bl',{ey:'ACCESS',title:'场地'})}
 ${coreSection('guests',{ey:'BANDS',title:'出演乐队'}).replace('class="section oe-page-view" id="guests"','class="section" id="home-guests"').replace('id="guests"','id="home-guests"').replace('<div class="guest-grid"></div>','<div class="guest-grid" data-oe-mount="guests"></div>')}
-${coreSection('participation',{ey:'LIVE SETS',title:'现场活动'})}
 ${setSection}
 ${coreSection('guide',{ey:'RULES',title:'入场须知'}).replace('class="section oe-page-view" id="guide"','class="section" id="home-guide"').replace('<div class="guide-grid guide-detail-grid"></div>','<div class="guide-grid guide-detail-grid" data-oe-mount="guide-detail"></div>')}
 ${ownCommunitySection('bl',{ey:'COMMUNITY',title:'社群'})}
