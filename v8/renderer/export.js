@@ -1,11 +1,14 @@
-import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.103.0';
-import {mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.103.0';
-import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.103.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.103.0';
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.104.0';
+import {mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.104.0';
+import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.104.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.104.0';
 export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyle='',escapeHtml:esc}){
   return function buildStandaloneHtml(){
     const state=getState(),clone=document.body.cloneNode(true);
     clone.querySelector('#giftLightbox')?.remove();
+    // single-page templates (05/06) must not ship their hidden page views
+    const oeTpl=document.documentElement.dataset.oeTemplate||'';
+    if(oeTpl.startsWith('05')||oeTpl.startsWith('06')){clone.querySelectorAll('.oe-page-view,.mobile-dock,.ls-pills').forEach(n=>n.remove())}
     clone.querySelectorAll('.custom-page-empty,.guide-access-media-empty,.optional-page-image.empty,.social-image.empty,.sponsor-logo.empty').forEach(el=>el.remove());
     clone.querySelectorAll('.guest-image.empty,.directory-product-image.empty').forEach(el=>{el.textContent='';el.removeAttribute('data-oe-image');el.setAttribute('aria-hidden','true')});
     clone.querySelectorAll('.activity-feature-media-empty').forEach(el=>{el.closest('.activity-feature')?.classList.add('no-media');el.remove()});
