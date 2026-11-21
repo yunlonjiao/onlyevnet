@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.138.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.139.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -213,7 +213,7 @@ const style=`
  .ls-site .lineup-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
 }`;
 
-const loader=`<div class="loader ls-entry" id="loader"><div class="gate ls-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><span class="ls-entry-kicker">LIVE</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="ls-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><span class="ls-entry-hint">TAP TO ENTER</span><div class="entry-photo" aria-label="活动KV"></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
+const loader=`<div class="loader ls-entry" id="loader"><div class="gate ls-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><span class="ls-entry-kicker">LIVE</span><b class="entry-ticket-title">BILIBILI ONLY</b><span class="entry-ticket-subtitle"></span><div class="ls-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><span class="ls-entry-hint">TAP TO ENTER</span><div class="entry-photo" aria-label="活动KV"></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
 const more=(href,page,text)=>'<div class="ls-more-row"><a class="ls-more" href="'+href+'" data-target-mode="page" data-page-link="'+page+'">'+text+' →</a></div>';
 const timetableSection=coreSection('activities',{ey:'TIME TABLE',title:'节目表'})
@@ -329,6 +329,7 @@ const featuredShape=`
 @media(max-width:620px){.ls-site #participation .featured-activity-card{grid-template-columns:96px minmax(0,1fr)!important}}
 `;
 const warmStage=String.raw`
+.ls-site #updates .wrap{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:16px!important}.ls-site #updates .head{width:100%!important}.ls-site #updates .updates-strip,.ls-site #updates [class*="list"],.ls-site #updates [class*="row"]{justify-content:flex-start!important;text-align:left!important;margin-left:0!important}.ls-site #updates .updates-strip>.wrap{display:flex!important}
 html[data-oe-template="05-live-poster"] #home-guests .section-back{display:none!important}
 /* 暖色浅背景舞台：嘉宾活动 / 舞台演出 / 乐队都能用，不做夜店霓虹 */
 .ls-site{--ls-bg:#fbf3e6;--ls-bg2:#f6e9d6;--ls-pink:#c8402a;--ls-cyan:#b97a25;--ls-yellow:#e0a13c;--ls-violet:#8a4a33;--ls-line:#d9c6ae;--ls-soft:#3a2b22;background:#fbf3e6;color:#33251c}
@@ -379,10 +380,10 @@ html[data-oe-palette05="mauve"] .ls-site .hero h1{color:#2a1c28!important}
 `;
 export const previewStyle=coreStyle+style+referenceStyle+ownStyle+featuredFix+phoneFix+featuredShape+warmStage;
 export const previewBody=`<div class="ls-site">
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">BILIBILI ONLY</a></div></header>
 <main id="top">
 <div class="ls-titlebar"><div class="wrap"><span>LIVE</span></div></div>
-<section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="ls-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy"><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta ls-info"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="ls-cta"><a class="ls-btn pink ticket-purchase-link" href="#tickets">购票</a></div></div></div></section>
+<section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="ls-kv-fallback" data-oe-field="eventName">BILIBILI ONLY</strong></div></div><div class="hero-copy"><h1 data-oe-field="eventName">BILIBILI ONLY</h1><p data-oe-field="tagline"></p><div class="meta ls-info"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="ls-cta"><a class="ls-btn pink ticket-purchase-link" href="#tickets">购票</a></div></div></div></section>
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip section"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新公告'))}
 ${coreSection('tickets',{ey:'TICKET',title:'票务'})}
 ${ownMapSection('ls',{ey:'ACCESS',title:'场地图'})}

@@ -1,6 +1,6 @@
 function entryLoader(kind){
   const photo='<div class="entry-photo" aria-label="活动KV"></div>';
-  const info='<div class="entry-ticket-label">MEMORIAL TICKET</div><div class="entry-ticket-title">STARDUST ONLY 2026</div><div class="entry-ticket-subtitle"></div><div class="entry-ticket-meta"><div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date">2030.01.01</b></div><div class="entry-ticket-time-wrap"><span>TIME</span><b class="entry-ticket-time"></b></div><div class="entry-ticket-location-wrap"><span>PLACE</span><b class="entry-ticket-location">杭州</b></div></div><div class="stub-barcode" aria-hidden="true"></div><div class="stub-code"><span class="entry-serial stub-number">NO. 048271</span></div>';
+  const info='<div class="entry-ticket-label">MEMORIAL TICKET</div><div class="entry-ticket-title">BILIBILI ONLY 2026</div><div class="entry-ticket-subtitle"></div><div class="entry-ticket-meta"><div class="entry-ticket-date-wrap"><span>DATE</span><b class="entry-ticket-date">2030.01.01</b></div><div class="entry-ticket-time-wrap"><span>TIME</span><b class="entry-ticket-time"></b></div><div class="entry-ticket-location-wrap"><span>PLACE</span><b class="entry-ticket-location">杭州</b></div></div><div class="stub-barcode" aria-hidden="true"></div><div class="stub-code"><span class="entry-serial stub-number">NO. 048271</span></div>';
   let inner='';
   if(kind==='scrap')inner='<div class="gate scrap-entry-gate" role="button" tabindex="0" aria-label="点击纪念票进入活动网站"><div class="scrap-entry-tape"><i></i><i></i><b>MEMORY TAPE</b></div><section class="ticket-half left">'+photo+'</section><aside class="ticket-half right">'+info+'</aside></div>';
   else if(kind==='school')inner='<div class="gate school-entry-gate" role="button" tabindex="0" aria-label="点击入场证进入活动网站"><div class="school-entry-number">04</div><section class="ticket-half left">'+photo+'</section><aside class="ticket-half right"><span class="school-entry-kicker">CAMPUS FESTIVAL PASS</span>'+info+'</aside></div>';
@@ -13,7 +13,7 @@ function entryLoader(kind){
 
 function scrapDesktopNav(){
  return '<header class="scrap-flight-header">'+
-  '<a class="scrap-flight-brand" href="#top" data-page-link="home"><small>ONLY EVENT / SPECIAL JOURNEY</small><b>STARDUST ONLY</b></a>'+
+  '<a class="scrap-flight-brand" href="#top" data-page-link="home"><small>ONLY EVENT / SPECIAL JOURNEY</small><b>BILIBILI ONLY</b></a>'+
   '<div class="scrap-flight-status"><span>BOARDING</span><i></i><span>2030.01.01</span><i></i><span>HANGZHOU</span></div>'+
   '<nav class="scrap-flight-links" data-oe-mount="nav-links">'+
    '<a href="#booths" data-target-mode="page" data-page-link="booths"><small>01</small>BOOTH</a>'+
@@ -32,7 +32,7 @@ function standardNav(cls=''){
   if(cls==='museum-nav')return '<header class="nav museum-nav"><a class="brand" href="#top">STARDUST<br><small>EXHIBITION</small></a><div class="museum-nav-rule"></div>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">ADMISSION</a></header>';
   if(cls==='live-nav')return '<header class="nav live-nav"><a class="brand" href="#top"><b>5TH</b><span>STARDUST<br>THANKS FESTIVAL</span></a>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">GET TICKET ↗</a></header>';
   if(cls==='expo-nav')return '<header class="nav expo-nav"><a class="brand" href="#top">STARDUST<br>EXPO</a>'+base+'<div class="expo-nav-code">2026 / HANGZHOU</div><a class="btn" href="#" target="_blank" rel="noopener">TICKET</a></header>';
-  return '<header class="nav kimetsu-nav"><a class="brand" href="#top"><b>追憶回廊</b><small>STARDUST ONLY</small></a>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">入場案内</a></header>';
+  return '<header class="nav kimetsu-nav"><a class="brand" href="#top"><b>追憶回廊</b><small>BILIBILI ONLY</small></a>'+base+'<a class="btn" href="#" target="_blank" rel="noopener">入場案内</a></header>';
 }
 function scrapMobileNav(){
  return '<nav class="scrap-pocket-nav" data-oe-mount="mobile-nav" aria-label="移动导航">'+

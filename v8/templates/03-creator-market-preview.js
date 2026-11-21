@@ -1,7 +1,7 @@
 /* Template 03 · CREATOR MARKET visitor art on the shared IP ONLY core.
    Layout hooks (ids, data-oe-field, collection containers) follow Template 01 so the shared
    renderer, editor and exporter work unchanged; everything visual is scoped to .cm-site. */
-import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.138.0';
+import {previewStyle as coreStyle} from '/v8/templates/01-ip-only-preview.js?v=8.139.0';
 
 const marketStyle=`
 .cm-site{--primary:#00aeec;--secondary:#a4d9f4;--cm-accent:var(--primary);--cm-accent-ink:#008ac0;--cm-ink:#18191c;--cm-muted:#61666d;--cm-soft:#9499a0;--cm-line:#e3e5e7;--cm-bg:#f7f8fa;--cm-card:#fff;background:var(--cm-bg);color:var(--cm-ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
@@ -686,7 +686,7 @@ const overrideStyle=`
 `;
 export const previewStyle=coreStyle+marketStyle+referenceStyle+hotStyle+spaceStyle+phoneFix+splashStyle+layoutStyle+orderStyle+overrideStyle;
 
-const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="cm-splash-bars" aria-hidden="true"><i></i><i></i><i></i></div><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">STARDUST ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
+const loader=`<div class="loader cm-entry" id="loader"><div class="gate cm-entry-gate" role="button" tabindex="0" aria-label="点击进入活动网站"><div class="cm-entry-card"><div class="cm-splash-bars" aria-hidden="true"><i></i><i></i><i></i></div><div class="entry-photo cm-entry-photo" aria-label="活动KV"></div><div class="cm-entry-info"><span class="cm-entry-kicker">同人创作展</span><b class="entry-ticket-title">BILIBILI ONLY</b><span class="entry-ticket-subtitle"></span><div class="cm-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><div class="cm-entry-progress"><i></i></div><span class="cm-entry-hint">点击进入 ›</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
 const head=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div></div>';
 const pageHead=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span><h2>'+title+'</h2></div><a class="section-back" href="#top" data-page-link="home">← 返回首页</a></div>';
@@ -694,8 +694,8 @@ const pageHead=(ey,title)=>'<div class="head"><div><span class="ey">'+ey+'</span
 export const previewBody=`<div class="cm-site">${loader}
 
 <main id="top">
-<section class="hero"><div class="wrap"><div class="hero-art"><div class="kv"><strong class="cm-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section>
-<section class="cm-headline oe-home-only"><div class="wrap"><div class="cm-title"><span class="hero-kicker">同人创作展</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="meta"><span class="pill cm-status" data-oe-status="event">活动状态</span><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></section>
+<section class="hero"><div class="wrap"><div class="hero-art"><div class="kv"><strong class="cm-kv-fallback" data-oe-field="eventName">BILIBILI ONLY</strong></div></div></div></section>
+<section class="cm-headline oe-home-only"><div class="wrap"><div class="cm-title"><span class="hero-kicker">同人创作展</span><h1 data-oe-field="eventName">BILIBILI ONLY</h1><p data-oe-field="tagline"></p></div><div class="meta"><span class="pill cm-status" data-oe-status="event">活动状态</span><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></section>
 
 <div class="cm-cols oe-home-only"><div class="cm-feed">
 <section class="cm-spotlight oe-home-only" id="spotlight" aria-label="随机推荐制品"><div class="wrap"><div class="cm-feed-head"><h2>推荐制品</h2><a class="cm-feed-link" href="#booths" data-target-mode="page" data-page-link="booths">社团作品 →</a><button type="button" class="cm-shuffle" data-spotlight-shuffle>换一换 ↻</button></div><div class="cm-market-grid"><div class="cm-market-left" data-oe-mount="street-card"></div><div class="cm-market-right" data-oe-mount="product-tiles"></div></div></div></section>

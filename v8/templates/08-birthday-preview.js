@@ -2,7 +2,7 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.138.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.139.0';
 
 const style=`
 .bd-site{overflow-x:clip;--primary:#ff8fb8;--secondary:#8fd3ff;--bd-cream:#fffaf0;--bd-paper:#fffefb;--bd-accent:var(--primary);--bd-sky:var(--secondary);--bd-yellow:#ffd86b;--bd-mint:#b9efd8;--bd-ink:#4a3358;--bd-soft:#85708f;--bd-line:#f0dfe6;
@@ -326,9 +326,9 @@ const featuredShape=`
 `;
 export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+boardStyle+featuredShape;
 export const previewBody=`<div class="bd-site">
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#participation">应援内容</a><a href="#tickets">赠品</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">预约领取 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">BILIBILI ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#participation">应援内容</a><a href="#tickets">赠品</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">预约领取 ↗</a></div></header>
 <main id="top">
-<section class="hero"><div class="wrap hero-grid"><div class="hero-copy bd-title"><span class="hero-kicker">HAPPY BIRTHDAY</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p></div><div class="hero-art"><div class="kv"><strong class="bd-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy bd-detail"><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bd-cta"><a class="bd-btn accent ticket-purchase-link" href="#tickets">预约领取</a><a class="bd-btn" href="#participation">看应援内容</a></div></div></div></section>
+<section class="hero"><div class="wrap hero-grid"><div class="hero-copy bd-title"><span class="hero-kicker">HAPPY BIRTHDAY</span><h1 data-oe-field="eventName">BILIBILI ONLY</h1><p data-oe-field="tagline"></p></div><div class="hero-art"><div class="kv"><strong class="bd-kv-fallback" data-oe-field="eventName">BILIBILI ONLY</strong></div></div><div class="hero-copy bd-detail"><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bd-cta"><a class="bd-btn accent ticket-purchase-link" href="#tickets">预约领取</a><a class="bd-btn" href="#participation">看应援内容</a></div></div></div></section>
 <div class="bd-board">
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip section oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新消息'))}
 ${coreSection('participation',{ey:'SUPPORT',title:'应援内容'})}

@@ -1,5 +1,5 @@
 export const ipOnlyDefaults={
-    eventName:'STARDUST ONLY',
+    eventName:'BILIBILI ONLY',
     eventStatusMode:'auto',
     eventStatus:'upcoming',
     eventStartDateTime:'2030-01-01T10:00',

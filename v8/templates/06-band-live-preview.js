@@ -2,7 +2,7 @@
    yellow, big band names and set times. The visual language follows Japanese band-anime live pages
    (BanG Dream!, Bocchi the Rock!) and hand-made live-house flyers. Hooks follow Template 01;
    everything visual is scoped to .bl-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.138.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.139.0';
 
 const style=`
 .bl-site{overflow-x:clip;--primary:#ffd500;--secondary:#ff3b3b;--bl-ink:#101010;--bl-paper:#f2efe6;--bl-yellow:#ffd500;--bl-red:#ff3b3b;--bl-gray:#6b6b66;--bl-line:#101010;
@@ -307,9 +307,9 @@ html[data-oe-palette06="brick"] .bl-site{--primary:#c8402a;--secondary:#e8a33d;-
 `;
 export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+phoneFix+splitStyle+featuredShape+bandPalettes;
 export const previewBody=`<div class="bl-site">
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">买票 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">BILIBILI ONLY</a><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">买票 ↗</a></div></header>
 <main id="top"><div class="bl-split"><aside class="bl-bill">
-<section class="hero"><div class="wrap hero-grid"><aside class="bl-rail"><span class="bl-rail-label">TODAY'S EVENT</span><b data-oe-field="date"></b><small>LIVE HOUSE</small></aside><div class="hero-copy"><span class="hero-kicker">LIVE HOUSE</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bl-cta"><a class="bl-btn yellow ticket-purchase-link" href="#tickets">买票</a><a class="bl-btn" href="#timetable">出场顺序</a></div></div><div class="hero-art"><div class="kv"><strong class="bl-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section></aside><div class="bl-sheet">
+<section class="hero"><div class="wrap hero-grid"><aside class="bl-rail"><span class="bl-rail-label">TODAY'S EVENT</span><b data-oe-field="date"></b><small>LIVE HOUSE</small></aside><div class="hero-copy"><span class="hero-kicker">LIVE HOUSE</span><h1 data-oe-field="eventName">BILIBILI ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bl-cta"><a class="bl-btn yellow ticket-purchase-link" href="#tickets">买票</a><a class="bl-btn" href="#timetable">出场顺序</a></div></div><div class="hero-art"><div class="kv"><strong class="bl-kv-fallback" data-oe-field="eventName">BILIBILI ONLY</strong></div></div></div></section></aside><div class="bl-sheet">
 ${coreRibbon()}
 ${setSection}
 ${coreSection('tickets',{ey:'TICKET',title:'门票'})}

@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.138.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.139.0';
 /* Template 05 runs on the shared IP ONLY core; the stage-night art, the LINE UP and the TIME TABLE differ. */
 export const template05=makeIpOnlyTemplate({
  id:'05-live-poster',name:'05 · 舞台现场',label:'舞台现场',studioName:'舞台现场',
@@ -23,10 +23,10 @@ d.tickets=[
 ];
 const g0=d.guests[0];
 d.guests=[
- {...g0,id:'g1',guestType:'band',name:'NEON SIGNAL',role:'BAND',members:'Aki / Ren / Yuu / Mio',attendanceNote:'全员出席',works:'主题曲演出',intro:'四人乐队，带来作品主题曲和三首新歌。',appearance:'18:30 主舞台'},
+ {...g0,id:'g1',guestType:'band',name:'夜光シグナル',role:'BAND',members:'Aki / Ren / Yuu / Mio',attendanceNote:'全员出席',works:'主题曲《星屑のシグナル》',intro:'四人乐队，带来作品主题曲和三首新歌。',appearance:'18:30 主舞台'},
  {...g0,id:'g2',guestType:'person',name:'星野 澪',role:'VOICE ACTOR',members:'',attendanceNote:'',works:'《星轨回响》角色配音',intro:'角色配音演员，演唱角色歌并参与现场问答。',appearance:'19:30 主舞台'},
- {...g0,id:'g3',guestType:'duo',name:'MOMO & RIN',role:'DUO',members:'MOMO / RIN',attendanceNote:'双人出演',works:'官方主题舞台',intro:'双人舞台表演，现场有合影环节。',appearance:'17:40 主舞台'},
- {...g0,id:'g4',guestType:'group',name:'月见组',role:'DJ / VISUAL',members:'',attendanceNote:'',works:'开场 DJ 与视觉演出',intro:'负责开场和换场的 DJ 与视觉演出。',appearance:'17:00 主舞台'}
+ {...g0,id:'g3',guestType:'duo',name:'月白ふたり',role:'DUO',members:'MOMO / RIN',attendanceNote:'双人出演',works:'原创舞台《月の窓》',intro:'双人舞台表演，现场有合影环节。',appearance:'17:40 主舞台'},
+ {...g0,id:'g4',guestType:'group',name:'音街レイ',role:'DJ / VISUAL',members:'',attendanceNote:'',works:'开场 DJ 与视觉演出',intro:'负责开场和换场的 DJ 与视觉演出。',appearance:'17:00 主舞台'}
 ];
 d.schedule=[
  {id:'s1',day:'DAY 1',time:'16:30',endTime:'17:00',title:'开场 · 入场',stage:'MAIN STAGE',category:'舞台',detail:'开放入场，播放暖场影像。',guestIds:[],registrationUrl:''},
