@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.112.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.114.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -340,7 +340,7 @@ const warmStage=String.raw`
 .ls-site .nav .brand{color:#b23a22!important}
 .ls-site .ls-btn{background:#fffaf0!important;color:#3a2b22!important;border-color:#d9c6ae!important;box-shadow:0 4px 0 #0001!important}
 .ls-site .ls-btn.pink,.ls-site .ls-btn.yellow{background:#d8452b!important;color:#fff!important;box-shadow:0 4px 0 #0001!important}
-.ls-site .pill{background:#fffaf0!important;color:#8a4a33!important;border-color:#d9c6ae!important}.ls-site .pill,.ls-site .pill *{color:#8a4a33!important}
+.ls-site .pill{background:#fffaf0!important;color:#8a4a33!important;border-color:#d9c6ae!important}.ls-site .pill,.ls-site .pill *{color:#8a4a33!important}.ls-site .event-status-badge{background:#fffaf0!important;color:#8a4a33!important;border:1px solid #d9c6ae!important}
 .ls-site .section{background:#fffdf7!important;border-color:#e3d1b8!important;box-shadow:0 10px 30px #b23a2210!important}
 .ls-site .section h2,.ls-site .section .eyebrow{color:#b23a22!important}
 .ls-site .timeline .row,.ls-site .timeline>*{border-color:#e3d1b8!important}
