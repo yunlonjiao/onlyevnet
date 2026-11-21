@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.236.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.236.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.240.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.240.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.236.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.236.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.236.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.236.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.240.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.240.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.240.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.240.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -1020,7 +1020,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.236.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.240.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1194,7 +1194,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.236.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.240.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1432,7 +1432,7 @@ function openProductInspector(boothIndex,productIndex,{focusImage=false}={}){
    const inp=document.createElement('input');inp.type='text';inp.className='chip-input';inp.placeholder='输入曲名后回车';
    wrap.append(list,inp);h.parentElement.insertBefore(wrap,h);h.classList.add('chip-source');
    const splitSongs=v=>String(v||'').split(/(?=《)|[\/、,，\n]+/).map(t=>t.trim()).filter(Boolean);
-   const sync=()=>{h.value=[...list.querySelectorAll('.chip')].map(c=>c.dataset.v).join('\n');h.dispatchEvent(new Event('input',{bubbles:true}));h.dispatchEvent(new Event('change',{bubbles:true}));h.blur&&h.blur()};
+   const sync=()=>{h.value=[...list.querySelectorAll('.chip')].map(c=>c.dataset.v).join('\n');h.dispatchEvent(new Event('input',{bubbles:true}));h.dispatchEvent(new Event('change',{bubbles:true}));h.blur&&h.blur();try{save();send({type:'OE_REPLACE_STATE',state})}catch(e){console.warn('[chips sync]',e)}};
    const add=v=>{if(!v)return;const c=document.createElement('span');c.className='chip';c.dataset.v=v;c.innerHTML=esc(v)+'<button type="button" aria-label="删除">×</button>';c.querySelector('button').onclick=()=>{c.remove();sync()};list.appendChild(c)};
    splitSongs(h.value).forEach(add);
    inp.addEventListener('keydown',e=>{if(e.key!=='Enter')return;e.preventDefault();add(inp.value.trim());inp.value='';sync()});
@@ -1495,7 +1495,7 @@ function openItemInspector(collection,index){
    const inp=document.createElement('input');inp.type='text';inp.className='chip-input';inp.placeholder='输入曲名后回车';
    wrap.append(list,inp);h.parentElement.insertBefore(wrap,h);h.classList.add('chip-source');
    const splitSongs=v=>String(v||'').split(/(?=《)|[\/、,，\n]+/).map(t=>t.trim()).filter(Boolean);
-   const sync=()=>{h.value=[...list.querySelectorAll('.chip')].map(c=>c.dataset.v).join('\n');h.dispatchEvent(new Event('input',{bubbles:true}));h.dispatchEvent(new Event('change',{bubbles:true}));h.blur&&h.blur()};
+   const sync=()=>{h.value=[...list.querySelectorAll('.chip')].map(c=>c.dataset.v).join('\n');h.dispatchEvent(new Event('input',{bubbles:true}));h.dispatchEvent(new Event('change',{bubbles:true}));h.blur&&h.blur();try{send({type:'OE_PATCH_FIELD',path:collection+'.'+index+'.setlist',value:h.value})}catch(e){}};
    const add=v=>{if(!v)return;const c=document.createElement('span');c.className='chip';c.dataset.v=v;c.innerHTML=esc(v)+'<button type="button" aria-label="删除">×</button>';c.querySelector('button').onclick=()=>{c.remove();sync()};list.appendChild(c)};
    splitSongs(h.value).forEach(add);
    inp.addEventListener('keydown',e=>{if(e.key!=='Enter')return;e.preventDefault();add(inp.value.trim());inp.value='';sync()});
