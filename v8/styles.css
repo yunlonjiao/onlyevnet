@@ -1317,3 +1317,11 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 .inspector label>span{font-weight:700!important}
 .inspector input,.inspector select,.inspector textarea{font-family:inherit!important;font-weight:600!important;font-size:13px!important}
 .inspector-note,.inspector .hint{font-weight:400!important}
+
+/* inspector 密度校正：右侧面板不贴边、块间距一致 */
+.inspector{padding:14px 14px 22px!important}
+.inspector .reference-panel,.inspector .item-media{margin:0 0 14px!important;padding:12px!important}
+.inspector .reference-list{gap:8px!important}
+.inspector .check-row{padding:6px 0!important}
+.inspector .row{margin-top:12px!important}
+.inspector .item-media-row{gap:10px!important}
