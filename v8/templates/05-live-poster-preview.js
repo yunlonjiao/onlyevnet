@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.125.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.126.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -333,7 +333,7 @@ const warmStage=String.raw`
 .ls-site{--ls-bg:#fbf3e6;--ls-bg2:#f6e9d6;--ls-pink:#c8402a;--ls-cyan:#b97a25;--ls-yellow:#e0a13c;--ls-violet:#8a4a33;--ls-line:#d9c6ae;--ls-soft:#3a2b22;background:#fbf3e6;color:#33251c}
 .ls-site .ls-titlebar{background:linear-gradient(90deg,#b23a22,#d8452b 55%,#e8a33d)!important;color:#fff}
 .ls-site .hero{background:radial-gradient(ellipse 70% 40% at 50% 0,#e8a33d33,transparent 72%),#fbf3e6!important}
-.ls-site .hero-art .kv{background:linear-gradient(150deg,#f3c68f,#e8a33d 55%,#d8452b)!important;box-shadow:0 22px 50px #b23a2233!important}
+.ls-site .hero-art .kv{background-image:var(--oe-hero-image-desktop,none),linear-gradient(150deg,#f3c68f,#e8a33d 55%,#d8452b)!important;background-size:cover!important;background-position:var(--oe-hero-focal-desktop,50% 50%)!important;background-repeat:no-repeat!important;box-shadow:0 22px 50px #b23a2233!important}
 .ls-site .hero h1{color:#2b1d15!important;text-shadow:none!important}
 .ls-site .hero-copy p{color:#5a4433!important}
 .ls-site .nav{background:#fdf7ec!important;border-color:#e3d1b8!important}
@@ -351,7 +351,7 @@ html[data-oe-template="05-live-poster"] .mobile-dock{display:none!important}
 html[data-oe-palette05="ice"] .ls-site{--ls-bg:#eef4f9;--ls-bg2:#e3eef7;--ls-pink:#2f6f9f;--ls-cyan:#5f9fc4;--ls-yellow:#e8b64c;--ls-violet:#3f6f8a;--ls-line:#c6d8e6;--ls-soft:#22323d;background:#eef4f9;color:#22323d}
 html[data-oe-palette05="ice"] .ls-site .ls-titlebar{background:linear-gradient(90deg,#1f4f73,#2f6f9f 55%,#5f9fc4)!important}
 html[data-oe-palette05="ice"] .ls-site .hero{background:radial-gradient(ellipse 70% 40% at 50% 0,#5f9fc433,transparent 72%),#eef4f9!important}
-html[data-oe-palette05="ice"] .ls-site .hero-art .kv{background:linear-gradient(150deg,#bcd8ea,#5f9fc4 55%,#2f6f9f)!important}
+html[data-oe-palette05="ice"] .ls-site .hero-art .kv{background-image:var(--oe-hero-image-desktop,none),linear-gradient(150deg,#bcd8ea,#5f9fc4 55%,#2f6f9f)!important}
 html[data-oe-palette05="ice"] .ls-site .nav{background:#f8fbfe!important;border-color:#d5e3ee!important}
 html[data-oe-palette05="ice"] .ls-site .nav .brand,html[data-oe-palette05="ice"] .ls-site .section h2,html[data-oe-palette05="ice"] .ls-site .section .eyebrow{color:#1f4f73!important}
 html[data-oe-palette05="ice"] .ls-site .section{background:#fdfeff!important;border-color:#d5e3ee!important}
@@ -360,7 +360,7 @@ html[data-oe-palette05="ice"] .ls-site .hero h1{color:#16242e!important}
 html[data-oe-palette05="forest"] .ls-site{--ls-bg:#eef5ec;--ls-bg2:#e3efe1;--ls-pink:#3f7a45;--ls-cyan:#6aa36f;--ls-yellow:#d9b25a;--ls-violet:#446b4a;--ls-line:#c9dcc6;--ls-soft:#1f2f22;background:#eef5ec;color:#1f2f22}
 html[data-oe-palette05="forest"] .ls-site .ls-titlebar{background:linear-gradient(90deg,#2c5a33,#3f7a45 55%,#6aa36f)!important}
 html[data-oe-palette05="forest"] .ls-site .hero{background:radial-gradient(ellipse 70% 40% at 50% 0,#6aa36f33,transparent 72%),#eef5ec!important}
-html[data-oe-palette05="forest"] .ls-site .hero-art .kv{background:linear-gradient(150deg,#cde3c6,#6aa36f 55%,#3f7a45)!important}
+html[data-oe-palette05="forest"] .ls-site .hero-art .kv{background-image:var(--oe-hero-image-desktop,none),linear-gradient(150deg,#cde3c6,#6aa36f 55%,#3f7a45)!important}
 html[data-oe-palette05="forest"] .ls-site .nav{background:#f8fcf7!important;border-color:#d7e6d3!important}
 html[data-oe-palette05="forest"] .ls-site .nav .brand,html[data-oe-palette05="forest"] .ls-site .section h2,html[data-oe-palette05="forest"] .ls-site .section .eyebrow{color:#2c5a33!important}
 html[data-oe-palette05="forest"] .ls-site .section{background:#fdfefb!important;border-color:#d7e6d3!important}
@@ -369,7 +369,7 @@ html[data-oe-palette05="forest"] .ls-site .hero h1{color:#1a2a1d!important}
 html[data-oe-palette05="mauve"] .ls-site{--ls-bg:#f6eef3;--ls-bg2:#efe2ea;--ls-pink:#8a4b6b;--ls-cyan:#a9748f;--ls-yellow:#d9a65a;--ls-violet:#6f4560;--ls-line:#e2cdd9;--ls-soft:#2f2130;background:#f6eef3;color:#2f2130}
 html[data-oe-palette05="mauve"] .ls-site .ls-titlebar{background:linear-gradient(90deg,#6b3a55,#8a4b6b 55%,#a9748f)!important}
 html[data-oe-palette05="mauve"] .ls-site .hero{background:radial-gradient(ellipse 70% 40% at 50% 0,#a9748f33,transparent 72%),#f6eef3!important}
-html[data-oe-palette05="mauve"] .ls-site .hero-art .kv{background:linear-gradient(150deg,#e4c8d6,#a9748f 55%,#8a4b6b)!important}
+html[data-oe-palette05="mauve"] .ls-site .hero-art .kv{background-image:var(--oe-hero-image-desktop,none),linear-gradient(150deg,#e4c8d6,#a9748f 55%,#8a4b6b)!important}
 html[data-oe-palette05="mauve"] .ls-site .nav{background:#fdf8fb!important;border-color:#e6d3de!important}
 html[data-oe-palette05="mauve"] .ls-site .nav .brand,html[data-oe-palette05="mauve"] .ls-site .section h2,html[data-oe-palette05="mauve"] .ls-site .section .eyebrow{color:#6b3a55!important}
 html[data-oe-palette05="mauve"] .ls-site .section{background:#fffafd!important;border-color:#e6d3de!important}

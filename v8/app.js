@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.125.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.125.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.126.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.126.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.125.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.125.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.125.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.125.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.126.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.126.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.126.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.126.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -991,7 +991,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.125.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.126.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1054,32 +1054,28 @@ function bindInspectorStateInput(input,path,{clean=false,number=false}={}){
   parseValue:number?Number:undefined,
   cleanValue:clean?cleanValue:undefined,
   update:(field,value)=>{setDeep(field,value);send({type:'OE_PATCH_FIELD',path:field,value})},
-  onUpdated:value=>{if(path==='heroTitleSize'){const out=$('#heroTitleSizeValue');if(out)out.textContent=value+' px'}}
  });
 }
 
 function openHeroTitleInspector(){
  const desktop=String(state.heroImage||'').trim(),mobile=String(state.mobileHeroImage||'').trim();
- const media=(path,label,src,emptyLabel)=>'<div class="item-media hero-media-field"><span>'+label+'</span><div class="item-media-row">'+(src?'<img src="'+esc(src)+'" alt="">':'<div class="item-media-empty">'+emptyLabel+'</div>')+'<div><button type="button" data-hero-image="'+path+'">选择 / 裁剪</button>'+(src?'<button type="button" class="ghost" data-hero-image-remove="'+path+'">移除</button>':'')+'</div></div></div>';
+ const media=(path,label,src,emptyLabel)=>'<div class="item-media hero-media-field"><span>'+label+'</span><div class="item-media-row"><button type="button" class="item-media-thumb '+(src?'':'empty')+'" data-hero-image="'+path+'" aria-label="上传'+label+'">'+(src?'<img src="'+esc(src)+'" alt="">':'<b>'+emptyLabel+'</b>')+'</button>'+(src?'<button type="button" class="item-media-remove" data-hero-image-remove="'+path+'">移除</button>':'')+'</div></div>';
  const isTravel=state.templateId==='02-scrapbook';
- setInspector('主视觉',isTravel?'KV 图片与裁切':'标题、图片与裁切',(isTravel?'':'<div class="item-fields">')+
- (isTravel?'':
+ setInspector('主视觉',isTravel?'KV 图片与裁切':'标题、图片与裁切',
+  '<div class="item-fields">'+
   '<label><span>第一行</span><input data-sync-path="heroTitle1" value="'+esc(state.heroTitle1||'')+'"></label>'+
   '<label><span>第二行</span><input data-sync-path="heroTitle2" value="'+esc(state.heroTitle2||'')+'"></label>'+
   '<label><span>第三行</span><input data-sync-path="heroTitle3" value="'+esc(state.heroTitle3||'')+'"></label>'+
-  '<label><span>字号 · <b id="heroTitleSizeValue">'+Number(state.heroTitleSize||126)+' px</b></span><input type="range" min="56" max="160" step="1" data-sync-path="heroTitleSize" value="'+Number(state.heroTitleSize||126)+'"></label>'+
-  '<label><span>主文字颜色</span><input type="color" data-sync-path="heroTitleColor" value="'+esc(state.heroTitleColor||'#17151b')+'"></label>'+
-  '<label><span>强调色</span><input type="color" data-sync-path="heroTitleAccentColor" value="'+esc(state.heroTitleAccentColor||'#ff5f91')+'"></label>')+
- (isTravel?'':'</div>')+''+media('heroImage','桌面 KV',desktop,'＋')+media('mobileHeroImage','手机 KV（可选）',mobile,'＋')+
- '<div class="item-fields hero-focal-fields">'+
+  '</div>'+
+  media('heroImage','桌面 KV',desktop,'＋')+media('mobileHeroImage','手机 KV（可选）',mobile,'＋')+
+  '<div class="item-fields hero-focal-fields">'+
   '<label><span>桌面焦点</span><input data-sync-path="heroFocalDesktop" value="'+esc(state.heroFocalDesktop||'50% 50%')+'" placeholder="50% 50%"></label>'+
   '<label><span>手机焦点</span><input data-sync-path="heroFocalMobile" value="'+esc(state.heroFocalMobile||'50% 50%')+'" placeholder="50% 50%"></label>'+
- '</div><p class="inspector-note">手机 KV 留空时自动使用桌面 KV。焦点格式示例：50% 30%，分别表示水平与垂直位置。</p>');
- inspector.querySelectorAll('[data-sync-path]').forEach(input=>bindInspectorStateInput(input,input.dataset.syncPath,{clean:input.type==='text',number:input.type==='range'}));
+  '</div><p class="inspector-note">手机 KV 留空时自动使用桌面 KV。焦点格式示例：50% 30%，分别表示水平与垂直位置。</p>');
+ inspector.querySelectorAll('[data-sync-path]').forEach(input=>bindInspectorStateInput(input,input.dataset.syncPath,{clean:input.type!=='color'}));
  inspector.querySelectorAll('[data-hero-image]').forEach(btn=>btn.addEventListener('click',()=>{$('#imageInput').dataset.path=btn.dataset.heroImage;$('#imageInput').click()}));
- inspector.querySelectorAll('[data-hero-image-remove]').forEach(btn=>btn.addEventListener('click',()=>{checkpoint();setDeep(btn.dataset.heroImageRemove,'');save();send({type:'OE_REPLACE_STATE',state});openHeroTitleInspector()}));
+ inspector.querySelectorAll('[data-hero-image-remove]').forEach(btn=>btn.addEventListener('click',()=>{checkpoint();setDeep(btn.dataset.heroImageRemove,'');save();send({type:'OE_PATCH_FIELD',path:btn.dataset.heroImageRemove,value:''})}));
 }
-
 function openLifecycleInspector(){
  const mode=String(state.eventStatusMode||'auto'),status=String(state.eventStatus||'upcoming');
  setInspector('活动状态','生命周期','<div class="lifecycle-grid">'+
@@ -1169,7 +1165,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.125.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.126.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
