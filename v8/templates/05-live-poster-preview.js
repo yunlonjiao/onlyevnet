@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.142.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.143.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -85,10 +85,6 @@ const style=`
 .ls-site .featured-activity-link{color:var(--ls-cyan);font-weight:900}
 /* tickets */
 .ls-site .ticket-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.ls-site .live-pass{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;padding:0;background:#ffffff0d;border:1px solid var(--ls-line);color:#fff;border-radius:0;box-shadow:none;overflow:hidden;position:relative}
-.ls-site .live-pass-band{align-self:stretch;writing-mode:vertical-rl;display:grid;place-items:center;padding:0 10px;background:var(--ls-pink);font-weight:1000;letter-spacing:.2em;font-size:12px}
-.ls-site .live-pass-copy{padding:18px 0}.ls-site .live-pass-copy h3{margin:0 0 6px;font-size:20px;font-weight:1000;color:#fff}.ls-site .live-pass-copy span,.ls-site .live-pass-copy small{display:block;color:var(--ls-soft);font-size:13px;line-height:1.6}
-.ls-site .live-pass-price{padding:0 20px;font-size:30px;font-weight:1000;font-style:italic;color:var(--ls-yellow)}
 .ls-site .ticket-actions .btn{background:var(--ls-yellow);color:#171230;border:0;border-radius:0;font-weight:1000;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);padding:13px 30px;box-shadow:none}
 /* map */
 /* activities page (TIME TABLE detail) */
@@ -190,7 +186,6 @@ const style=`
 .ls-site .hero-art:after{right:auto;left:-14px}
 .ls-site .hero h1{font-size:clamp(34px,4.6vw,76px);overflow-wrap:normal;word-break:keep-all}
 .ls-site .ticket:before,.ls-site .ticket:after,.ls-site .ticket *:before,.ls-site .ticket *:after{pointer-events:none}
-.ls-site .live-pass,.ls-site .guide-grid article,.ls-site .live-performer,.ls-site .live-guide{border-radius:8px}
 .ls-site .kv{border-radius:10px}
 /* entry gate: a plain centred stack (the shared gate is a grid) */
 .ls-entry .ls-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;grid-template-columns:none;min-height:0;height:auto;aspect-ratio:auto;box-sizing:border-box}
@@ -198,8 +193,6 @@ const style=`
 .ls-entry .entry-ticket-title{max-width:100%;overflow-wrap:anywhere;font-size:clamp(30px,7vw,56px)}
 .ls-entry .ls-entry-meta,.ls-entry .ls-entry-hint{width:auto}
 .ls-site .ls-info{display:block}
-.ls-site .live-pass-copy *{border:0!important;background:none!important;text-decoration:none!important}
-.ls-site .live-pass :before,.ls-site .live-pass :after{display:none}
 .ls-site .featured-activity-grid{grid-template-rows:none!important;grid-auto-rows:auto!important;align-items:start}
 .ls-site #participation .featured-activity-card,.ls-site #participation .featured-activity-card:first-child{grid-row:auto!important;grid-column:auto!important;height:auto!important;min-height:0!important}
 @media(max-width:820px){
@@ -297,7 +290,6 @@ const ownStyle=`
 .ls-people>*{width:min(300px,100%)}
 .ls-site .lineup-strip,.ls-site .lineup{justify-content:center}
 .ls-route-stop b{white-space:nowrap}
-.ls-site #updates .updates-list{width:min(1080px,calc(100% - 44px));margin:0 auto;max-width:none}
 .ls-thanks{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px 34px}
 .ls-sponsor{display:flex;align-items:center;gap:10px;background:none;border:0;box-shadow:none;padding:0;color:#fff}
 .ls-sponsor b{font-size:15px;letter-spacing:.12em}
@@ -318,7 +310,6 @@ const phoneFix=`
 @media(max-width:820px){.ls-site .hero-grid{grid-template-columns:minmax(0,1fr);gap:22px;padding:14px 0}.ls-site .hero-art{order:-1;aspect-ratio:16/11;max-height:340px}.ls-site .hero-copy{min-width:0}}
 `;
 const featuredShape=`
-.ls-site #updates .updates-list{width:100%;margin:0}
 .ls-site .featured-all-link{border-radius:0!important;background:none!important;color:var(--ls-cyan)!important;border:1px solid #35e3ff66!important;box-shadow:none!important}
 
 /* featured plans: wide stage tiles, a tall image strip on the left of each */
@@ -329,20 +320,8 @@ const featuredShape=`
 @media(max-width:620px){.ls-site #participation .featured-activity-card{grid-template-columns:96px minmax(0,1fr)!important}}
 `;
 const warmStage=String.raw`
-.ls-site .live-pass-copy h3,.ls-site .live-pass-copy .oe-ticket-gift,.ls-site .live-pass-copy .oe-ticket-note{color:#3a2b22!important}
-.ls-site .live-pass-copy h3{font-size:22px!important;font-weight:900!important}
-.ls-site .ticket-gift-image{display:block!important;width:100%!important;margin:14px 0 0!important;border:0!important;background:transparent!important;padding:0!important}
-.ls-site .ticket-gift-image img{display:block!important;width:100%!important;height:auto!important;aspect-ratio:16/9!important;object-fit:cover!important;border-radius:12px!important}
-.ls-site #updates .wrap{max-width:1180px!important;margin:0 auto!important;padding:0 28px!important;display:block!important}
-.ls-site #updates .updates-list{max-width:760px!important;margin:18px 0 0!important}
-.ls-site #updates .wrap{display:block!important}
-.ls-site #updates .updates-list{display:grid!important;gap:10px!important;margin-top:18px!important}
-.ls-site #updates .live-update{display:grid!important;grid-template-columns:44px 64px minmax(0,1fr) 20px!important;align-items:center!important;gap:12px!important;padding:12px 0!important;border-bottom:1px solid #e3d1b8!important;text-align:left!important}
-.ls-site #updates .live-update span{font-style:italic!important;font-weight:900!important;color:#b23a22!important}
-.ls-site #updates .live-update time,.ls-site #updates .live-update b{color:#3a2b22!important}
-.ls-site .live-pass img{display:block!important;width:100%!important;aspect-ratio:16/9!important;object-fit:cover!important;border-radius:12px!important;margin:12px 0 0!important}
-.ls-site .ticket,.ls-site .ticket p,.ls-site .ticket span,.ls-site .ticket b,.ls-site .ticket small{color:#3a2b22!important}.ls-site .ticket .price,.ls-site .ticket strong,.ls-site .ticket em{color:#b23a22!important}.ls-site .ticket{background:#fffdf7!important;border-color:#e3d1b8!important}.inspector select{font-family:inherit!important;font-weight:650!important;font-size:13px!important}
-.ls-site #updates .wrap{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:16px!important}.ls-site #updates .head{width:100%!important}.ls-site #updates .updates-strip,.ls-site #updates [class*="list"],.ls-site #updates [class*="row"]{justify-content:flex-start!important;text-align:left!important;margin-left:0!important}.ls-site #updates .updates-strip>.wrap{display:flex!important}
+html[data-oe-template="05-live-poster"] .footer{display:none!important}
+
 html[data-oe-template="05-live-poster"] #home-guests .section-back{display:none!important}
 /* 暖色浅背景舞台：嘉宾活动 / 舞台演出 / 乐队都能用，不做夜店霓虹 */
 .ls-site{--ls-bg:#fbf3e6;--ls-bg2:#f6e9d6;--ls-pink:#c8402a;--ls-cyan:#b97a25;--ls-yellow:#e0a13c;--ls-violet:#8a4a33;--ls-line:#d9c6ae;--ls-soft:#3a2b22;background:#fbf3e6;color:#33251c}
