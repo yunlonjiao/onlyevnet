@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.128.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.129.0';
 /* Template 05 runs on the shared IP ONLY core; the stage-night art, the LINE UP and the TIME TABLE differ. */
 export const template05=makeIpOnlyTemplate({
  id:'05-live-poster',name:'05 · 舞台现场',label:'舞台现场',studioName:'舞台现场',
@@ -12,8 +12,9 @@ export const template05=makeIpOnlyTemplate({
 });
 // Starter content for a live show: a short running order and four performers.
 const d=template05.defaults;
+d.socialLinks=(d.socialLinks||[]).slice(0,3);
 d.tagline='喜欢的乐队和声优都在台上，来现场听。';
-d.modules={...d.modules,booths:false,sponsors:true,ribbon:false};
+d.modules={...d.modules,booths:false,sponsors:true,ribbon:false,featuredActivities:false,explore:false,guests:true,activities:true};
 d.ribbonItems=[{id:'rb1',text:'出演阵容公开'},{id:'rb2',text:'节目表已更新'},{id:'rb3',text:'票务开售中'},{id:'rb4',text:'应援规则见指南'}];
 d.tickets=[
  {id:'t1',name:'一般席',price:'¥280',gift:'入场资格',note:'购买与退票规则以售票平台为准',image:''},
@@ -36,9 +37,9 @@ d.schedule=[
  {id:'s6',day:'DAY 1',time:'20:15',endTime:'20:30',title:'全体合唱 · 散场',stage:'MAIN STAGE',category:'舞台',detail:'全员合唱，结束后有序退场。',guestIds:[],registrationUrl:''}
 ];
 d.participation=[
- {id:'pa1',preset:'stage',activityType:'stage',title:'舞台表演',meta:'主舞台 · 全程',text:'舞蹈、舞台剧和互动表演轮番上演。',detail:'主舞台的舞蹈、舞台剧与互动环节，按节目表时间进行。',participationMode:'凭票入场',requirements:'按现场指引入座或站立观演。',rules:'请勿进入演出区域，不要推挤。',target:'',url:'',guestIds:[]},
- {id:'pa2',preset:'guest',activityType:'sign',title:'嘉宾签售',meta:'签售区 · 演出后',text:'嘉宾演出结束后在签售区签名、合影。',detail:'签售区购买周边即可参与签名与合影，每人一次。',participationMode:'现场排队',requirements:'需持有当日门票。',rules:'请按工作人员指引排队，不要代排。',target:'',url:'',guestIds:['g1','g2']},
- {id:'pa3',preset:'stage',activityType:'live',title:'乐队演出',meta:'主舞台 · 晚间',text:'乐队现场演出，含主题曲与新歌。',detail:'乐队带来主题曲和三首新歌，压轴时段有全员合唱。',participationMode:'凭票入场',requirements:'演出中请勿使用闪光灯。',rules:'请勿站上座椅，注意保管随身物品。',target:'',url:'',guestIds:['g1']}
+ {id:'pa1',preset:'stage',activityType:'stage',time:'17:40',setlist:'群舞《Signal》/ 短剧《夜行列》/ 互动环节',title:'舞台表演',meta:'主舞台 · 全程',text:'舞蹈、舞台剧和互动表演轮番上演。',detail:'主舞台的舞蹈、舞台剧与互动环节，按节目表时间进行。',participationMode:'凭票入场',requirements:'按现场指引入座或站立观演。',rules:'请勿进入演出区域，不要推挤。',target:'',url:'',guestIds:[]},
+ {id:'pa2',preset:'guest',activityType:'sign',time:'19:40',setlist:'签售：《星轨回响》画集 / 现场合影',title:'嘉宾签售',meta:'签售区 · 演出后',text:'嘉宾演出结束后在签售区签名、合影。',detail:'签售区购买周边即可参与签名与合影，每人一次。',participationMode:'现场排队',requirements:'需持有当日门票。',rules:'请按工作人员指引排队，不要代排。',target:'',url:'',guestIds:['g1','g2']},
+ {id:'pa3',preset:'stage',activityType:'live',time:'20:30',setlist:'主题曲《Stardust》/ 新歌《Signal Flare》/ 安可《Night Bus》',title:'乐队演出',meta:'主舞台 · 晚间',text:'乐队现场演出，含主题曲与新歌。',detail:'乐队带来主题曲和三首新歌，压轴时段有全员合唱。',participationMode:'凭票入场',requirements:'演出中请勿使用闪光灯。',rules:'请勿站上座椅，注意保管随身物品。',target:'',url:'',guestIds:['g1']}
 ];
 d.featuredActivities=[{id:'fa1',participationId:'pa1',image:''},{id:'fa2',participationId:'pa2',image:''},{id:'fa3',participationId:'pa3',image:''}];
 d.updates=[{id:'u1',date:'10/01',title:'出演阵容公开',target:''},{id:'u2',date:'09/28',title:'节目表已更新',target:''}];

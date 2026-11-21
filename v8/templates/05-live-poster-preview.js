@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.128.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.129.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -336,7 +336,7 @@ const warmStage=String.raw`
 .ls-site .hero-art .kv{background-image:var(--oe-hero-image-desktop,none),linear-gradient(150deg,#f3c68f,#e8a33d 55%,#d8452b)!important;background-size:cover!important;background-position:var(--oe-hero-focal-desktop,50% 50%)!important;background-repeat:no-repeat!important;box-shadow:0 22px 50px #b23a2233!important}
 .ls-site .hero h1{color:#2b1d15!important;text-shadow:none!important}
 .ls-site .hero-copy p{color:#5a4433!important}
-.ls-site .nav{background:#fdf7ec!important;border-color:#e3d1b8!important}
+.ls-site .updates-strip{text-align:left!important;justify-content:flex-start!important}.ls-site .updates-strip>*{text-align:left!important}.ls-site .nav{background:#fdf7ec!important;border-color:#e3d1b8!important}
 .ls-site .nav .brand{color:#b23a22!important}
 .ls-site .ls-btn{background:#fffaf0!important;color:#3a2b22!important;border-color:#d9c6ae!important;box-shadow:0 4px 0 #0001!important}
 .ls-site .ls-btn.pink,.ls-site .ls-btn.yellow{background:#d8452b!important;color:#fff!important;box-shadow:0 4px 0 #0001!important}
@@ -378,10 +378,10 @@ html[data-oe-palette05="mauve"] .ls-site .hero h1{color:#2a1c28!important}
 `;
 export const previewStyle=coreStyle+style+referenceStyle+ownStyle+featuredFix+phoneFix+featuredShape+warmStage;
 export const previewBody=`<div class="ls-site">
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">购票 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a></div></header>
 <main id="top">
 <div class="ls-titlebar"><div class="wrap"><span>LIVE</span></div></div>
-<section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="ls-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy"><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta ls-info"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="ls-cta"><a class="ls-btn pink ticket-purchase-link" href="#tickets">购票</a><a class="ls-btn" href="#timetable">看日程</a></div></div></div></section>
+<section class="hero"><div class="wrap hero-grid"><div class="hero-art"><div class="kv"><strong class="ls-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div><div class="hero-copy"><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta ls-info"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="ls-cta"><a class="ls-btn pink ticket-purchase-link" href="#tickets">购票</a></div></div></div></section>
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip section"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新公告'))}
 ${coreSection('tickets',{ey:'TICKET',title:'票务'})}
 ${ownMapSection('ls',{ey:'ACCESS',title:'场地图'})}
