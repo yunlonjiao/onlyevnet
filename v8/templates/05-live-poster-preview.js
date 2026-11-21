@@ -2,7 +2,7 @@
    (Love Live!, BanG Dream!, THE IDOLM@STER): night stage, spotlight beams, a LINE UP of portrait
    cards in each performer's colour and a TIME TABLE with big start times. Hooks follow Template 01;
    everything visual is scoped to .ls-site. */
-import {coreStyle,coreSection,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.160.0';
+import {coreStyle,coreSection,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.161.0';
 
 const style=`
 .ls-site{overflow-x:clip;--primary:#ff3d8b;--secondary:#35e3ff;--ls-bg:#0b0a1c;--ls-bg2:#15123a;--ls-pink:#ff3d8b;--ls-cyan:#35e3ff;--ls-yellow:#ffe14d;--ls-violet:#8a5cff;--ls-line:#ffffff24;--ls-soft:#c9c4ee;
@@ -399,7 +399,6 @@ export const previewBody=`<div class="ls-site">
 ${newsSection}
 ${ticketsSection}
 ${ownMapSection('ls',{ey:'ACCESS',title:'场地图'})}
-${timetableSection}
 ${guestsSection}
 ${programmeSection}
 ${coreSection('guide',{ey:'RULES',title:'观演秩序'}).replace('class="section oe-page-view" id="guide"','class="section" id="home-guide"').replace('<div class="guide-grid guide-detail-grid"></div>','<div class="guide-grid guide-detail-grid" data-oe-mount="guide-detail"></div>')}
