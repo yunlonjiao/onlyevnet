@@ -1,0 +1,15 @@
+﻿import {readFileSync} from 'node:fs';
+import {chromium} from '@playwright/test';
+const exe='C:\\Users\\32224\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe';
+const b=await chromium.launch({headless:true,executablePath:exe});
+const p=await b.newPage({viewport:{width:1500,height:1000}});
+await p.goto('http://127.0.0.1:4321/v8/?template=06-band-live&project=inspbase',{waitUntil:'domcontentloaded'});
+await p.waitForTimeout(2500);
+await p.getByText('活动日程',{exact:false}).first().click({timeout:6000}).catch(()=>{});
+await p.waitForTimeout(500);
+await p.getByText('18:00',{exact:false}).first().click({timeout:6000}).catch(()=>{});
+await p.waitForTimeout(700);
+const d=await p.evaluate(()=>{const h=document.querySelector('.inspector-header'),i=document.querySelector('.inspector'),inp=document.querySelector('.inspector input[data-key]'),cb=document.querySelector('.inspector input[type=checkbox]'),lb=document.querySelector('.inspector label span'),ch=document.querySelector('.chip');const cs=e=>e?getComputedStyle(e):null;const r=e=>e?Math.round(e.getBoundingClientRect().height):null;
+return {headerH:r(h),headerPad:cs(h)?.padding,title:cs(h?.querySelector('b'))?.fontSize,inspPad:cs(i)?.padding,inspBg:cs(i)?.backgroundColor,inpH:r(inp),inpFs:cs(inp)?.fontSize,cbW:cb?Math.round(cb.getBoundingClientRect().width):null,labelFs:cs(lb)?.fontSize,chipBg:cs(ch)?.backgroundColor,chipPad:cs(ch)?.padding}});
+console.log(JSON.stringify(d));
+await b.close();
