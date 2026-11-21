@@ -1,5 +1,5 @@
 /* 观众问题: the organizer side of the visitor question box. */
-import {getQuestions,setQuestionsEnabled,answerQuestion,deleteQuestion} from '/v8/publisher.js?v=8.121.0';
+import {getQuestions,setQuestionsEnabled,answerQuestion,deleteQuestion} from '/v8/publisher.js?v=8.122.0';
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const when=iso=>{const d=new Date(iso);return Number.isNaN(d.getTime())?'':(d.getMonth()+1)+'/'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
