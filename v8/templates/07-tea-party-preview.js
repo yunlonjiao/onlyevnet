@@ -2,7 +2,7 @@
    anime cafe and tea-party event pages (Animate Cafe collaborations, "お茶会" invitations).
    The home page answers what happens, and when, before anything else. Hooks follow Template 01;
    everything visual is scoped to .tp-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.254.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.255.0';
 
 const style=`
 .tp-site{overflow-x:clip;--primary:#f08fa8;--secondary:#8fd3bb;--tp-cream:#fff6ec;--tp-paper:#fffdf8;--tp-pink:var(--primary);--tp-rose:#fadbe3;--tp-mint:#bfe6d6;--tp-lav:#dccffa;--tp-brown:#5a3d3a;--tp-soft:#8c6f6a;--tp-gold:#d9a441;--tp-line:#ecd5cc;
@@ -239,7 +239,7 @@ const menuStyle=`
 .tp-menu #participation .featured-activity-copy{padding:14px 16px 18px}
 .tp-menu #participation .featured-activity-copy h3,.tp-menu #participation .featured-activity-copy b{font-size:17px}
 .tp-menu .tp-agenda-body,.tp-menu .tp-activity,.tp-menu .tp-guest{box-shadow:none}
-.tp-site .footer{margin-top:40px}.tp-site .footer .footer-social{display:none!important}.tp-site .footer .footer-grid{grid-template-columns:1.4fr 1fr 1fr!important}
+.tp-site .footer{margin-top:40px}.tp-hero-tight .tp-site .hero{}.tp-site .hero{padding-top:12px!important}.tp-site .footer .footer-social{display:none!important}.tp-site .footer .footer-grid{grid-template-columns:1.4fr 1fr 1fr!important}
 @media(max-width:820px){.tp-menu{width:calc(100% - 16px);margin-top:14px;border-radius:22px}.tp-menu:before{inset:8px;border-radius:15px}.tp-menu .hero{padding:30px 20px 20px}.tp-menu .section,.tp-menu .updates-strip{padding:30px 20px 6px}.tp-menu #tickets .ticket-grid{padding:4px 14px}}
 `;
 const ownStyle=`
@@ -298,19 +298,20 @@ const featuredShape=`
 `;
 export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+menuStyle+featuredShape;
 export const previewBody=`<div class="tp-site">
-<header class="nav"><div class="wrap"><span class="brand tp-brand-mark" aria-hidden="true">✳</span><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天流程</a></nav></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">BILIBILI ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席的人</a><a href="#tickets">报名</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" href="#tickets" data-ticket-settings>去报名 ↗</a></div></header>
 <main id="top"><div class="tp-menu">
-<section class="hero"><div class="wrap hero-grid"><div class="hero-copy tp-title"><span class="hero-kicker">TEA PARTY · 茶会邀请</span></div><div class="hero-art"><div class="kv"><strong class="tp-kv-fallback" data-oe-field="eventName">BILIBILI ONLY</strong></div></div><div class="hero-copy tp-detail"><p data-oe-field="tagline"></p><div class="meta tp-rows"><div class="tp-row"><b>日期</b><span class="pill" data-oe-field="date"></span></div><div class="tp-row"><b>地点</b><span class="pill" data-oe-field="location"></span></div><div class="tp-row"><b>详情</b><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div><div class="tp-cta"><a class="tp-btn pink ticket-purchase-link" href="#tickets" data-ticket-settings>前往官方售票平台 ↗</a></div></div></div></section>
+<section class="hero"><div class="wrap hero-grid"><div class="hero-copy tp-title"><span class="hero-kicker">TEA PARTY · 茶会邀请</span></div><div class="hero-art"><div class="kv"><strong class="tp-kv-fallback" data-oe-field="eventName">BILIBILI ONLY</strong></div></div><div class="hero-copy tp-detail"><p data-oe-field="tagline"></p><div class="meta tp-rows"><div class="tp-row"><b>日期</b><span class="pill" data-oe-field="date"></span></div><div class="tp-row"><b>地点</b><span class="pill" data-oe-field="location"></span></div><div class="tp-row"><b>详情</b><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></div></div></section>
 ${coreSection('updates').replace('class="updates-strip"','class="updates-strip oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NOTICE','茶会通知'))}
 <div id="today">${coreSection('participation',{ey:"TODAY'S MENU",title:'今天玩什么'})}</div>
 <section class="section oe-home-only" id="timetable"><div class="wrap">${head('TIMETABLE','当天流程')}<div class="timeline" data-oe-mirror="timetable"></div>${more('activities','查看完整流程')}</div></section>
 <section class="section oe-home-only" id="lineup"><div class="wrap">${head("WHO'S THERE",'今天同席的人')}<div class="lineup-strip" data-oe-mirror="lineup"></div>${more('guests','全部介绍')}</div></section>
 ${coreSection('tickets',{ey:'ENTRY',title:'参加方式'})}
-${ownMapSection('tp',{ey:'PLACE',title:'场地',routeTitle:'今日的去处'})}
+${ownMapSection('tp',{ey:'PLACE',title:'场地'})}
 ${coreSection('guests',{ey:'MEMBERS',title:'同席的人'})}
 ${coreSection('guide',{ey:'NOTICE',title:'参加须知'})})}
 </div></main>
 
 <nav class="mobile-dock"><a href="#top" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
+</div>v class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
 </div>`;
