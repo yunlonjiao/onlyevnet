@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.157.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.158.0';
 /* Template 06 runs on the shared IP ONLY core; the live-house flyer art, the band list and the set times differ. */
 export const template06=makeIpOnlyTemplate({
  id:'06-band-live',name:'06 · 乐队演出',label:'乐队演出',studioName:'乐队演出',
@@ -29,10 +29,10 @@ d.guests=[
 ];
 d.schedule=[
  {id:'s1',day:'LIVE',time:'17:30',endTime:'',title:'OPEN · 开场入场',stage:'LIVE HOUSE',category:'入场',detail:'按票号顺序入场，饮料券在吧台兑换。',guestIds:[],registrationUrl:''},
- {id:'s2',day:'LIVE',time:'18:00',endTime:'18:30',title:'COLOR BARS',stage:'LIVE HOUSE',category:'演出',detail:'第 1 组，开场乐队。',guestIds:['g4'],registrationUrl:''},
- {id:'s3',day:'LIVE',time:'18:40',endTime:'19:10',title:'回声实验室',stage:'LIVE HOUSE',category:'演出',detail:'第 2 组，带视觉投影。',guestIds:['g3'],registrationUrl:''},
- {id:'s4',day:'LIVE',time:'19:20',endTime:'19:50',title:'paper moon',stage:'LIVE HOUSE',category:'演出',detail:'第 3 组。',guestIds:['g2'],registrationUrl:''},
- {id:'s5',day:'LIVE',time:'20:00',endTime:'20:40',title:'MIDNIGHT TRAIN',stage:'LIVE HOUSE',category:'演出',detail:'第 4 组，压轴。',guestIds:['g1'],registrationUrl:''},
+ {id:'s2',day:'LIVE',time:'18:00',endTime:'18:30',title:'彩バー',stage:'LIVE HOUSE',category:'演出',detail:'第 1 组，开场乐队。',guestIds:['g4'],registrationUrl:''},
+ {id:'s3',day:'LIVE',time:'18:40',endTime:'19:10',title:'小野寺 凛',stage:'LIVE HOUSE',category:'演出',detail:'第 2 组，带视觉投影。',guestIds:['g3'],registrationUrl:''},
+ {id:'s4',day:'LIVE',time:'19:20',endTime:'19:50',title:'紙月',stage:'LIVE HOUSE',category:'演出',detail:'第 3 组。',guestIds:['g2'],registrationUrl:''},
+ {id:'s5',day:'LIVE',time:'20:00',endTime:'20:40',title:'夜光シグナル',stage:'LIVE HOUSE',category:'演出',detail:'第 4 组，压轴。',guestIds:['g1'],registrationUrl:''},
  {id:'s6',day:'LIVE',time:'21:00',endTime:'',title:'终演',stage:'LIVE HOUSE',category:'散场',detail:'有序散场，周边物贩开放到 21:30。',guestIds:[],registrationUrl:''}
 ];
 d.participation=[

@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.157.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.158.0';
 /* Template 05 runs on the shared IP ONLY core; the stage-night art, the LINE UP and the TIME TABLE differ. */
 export const template05=makeIpOnlyTemplate({
  id:'05-live-poster',name:'05 · 舞台现场',label:'舞台现场',studioName:'舞台现场',
@@ -31,9 +31,9 @@ d.guests=[
 d.schedule=[
  {id:'s1',day:'DAY 1',time:'16:30',endTime:'17:00',title:'开场 · 入场',stage:'MAIN STAGE',category:'舞台',detail:'开放入场，播放暖场影像。',guestIds:[],registrationUrl:''},
  {id:'s2',day:'DAY 1',time:'17:00',endTime:'17:40',title:'DJ 开场',stage:'MAIN STAGE',category:'舞台',detail:'开场 DJ 与视觉演出。',guestIds:['g4'],registrationUrl:''},
- {id:'s3',day:'DAY 1',time:'17:40',endTime:'18:20',title:'MOMO & RIN 舞台',stage:'MAIN STAGE',category:'舞台',detail:'双人舞台表演。',guestIds:['g3'],registrationUrl:''},
- {id:'s4',day:'DAY 1',time:'18:30',endTime:'19:15',title:'NEON SIGNAL LIVE',stage:'MAIN STAGE',category:'舞台',detail:'乐队演出，含主题曲。',guestIds:['g1'],registrationUrl:''},
- {id:'s5',day:'DAY 1',time:'19:30',endTime:'20:15',title:'星野澪 Talk & Live',stage:'MAIN STAGE',category:'舞台',detail:'角色歌演唱与现场问答。',guestIds:['g2'],registrationUrl:''},
+ {id:'s3',day:'DAY 1',time:'17:40',endTime:'18:20',title:'月白ふたり 舞台',stage:'MAIN STAGE',category:'舞台',detail:'双人舞台表演。',guestIds:['g3'],registrationUrl:''},
+ {id:'s4',day:'DAY 1',time:'18:30',endTime:'19:15',title:'夜光シグナル LIVE',stage:'MAIN STAGE',category:'舞台',detail:'乐队演出，含主题曲。',guestIds:['g1'],registrationUrl:''},
+ {id:'s5',day:'DAY 1',time:'19:30',endTime:'20:15',title:'星野 澪 Talk & Live',stage:'MAIN STAGE',category:'舞台',detail:'角色歌演唱与现场问答。',guestIds:['g2'],registrationUrl:''},
  {id:'s6',day:'DAY 1',time:'20:15',endTime:'20:30',title:'全体合唱 · 散场',stage:'MAIN STAGE',category:'舞台',detail:'全员合唱，结束后有序退场。',guestIds:[],registrationUrl:''}
 ];
 d.participation=[
