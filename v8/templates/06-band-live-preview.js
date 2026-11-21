@@ -2,7 +2,7 @@
    yellow, big band names and set times. The visual language follows Japanese band-anime live pages
    (BanG Dream!, Bocchi the Rock!) and hand-made live-house flyers. Hooks follow Template 01;
    everything visual is scoped to .bl-site. */
-import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.102.0';
+import {coreStyle,coreSection,coreRibbon,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.103.0';
 
 const style=`
 .bl-site{overflow-x:clip;--primary:#ffd500;--secondary:#ff3b3b;--bl-ink:#101010;--bl-paper:#f2efe6;--bl-yellow:#ffd500;--bl-red:#ff3b3b;--bl-gray:#6b6b66;--bl-line:#101010;
@@ -302,22 +302,18 @@ const featuredShape=`
 `;
 export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+phoneFix+splitStyle+featuredShape;
 export const previewBody=`<div class="bl-site">
-<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#guests" data-target-mode="page" data-page-link="guests">乐队</a><a href="#activities" data-target-mode="page" data-page-link="activities">出场顺序</a><a href="#tickets">门票</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">买票 ↗</a></div></header>
+<header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">STARDUST ONLY</a><a class="btn ticket-purchase-link" data-ticket-settings href="#" target="_blank" rel="noopener">买票 ↗</a></div></header>
 <main id="top"><div class="bl-split"><aside class="bl-bill">
 <section class="hero"><div class="wrap hero-grid"><aside class="bl-rail"><span class="bl-rail-label">TODAY'S EVENT</span><b data-oe-field="date"></b><small>LIVE HOUSE</small></aside><div class="hero-copy"><span class="hero-kicker">LIVE HOUSE</span><h1 data-oe-field="eventName">STARDUST ONLY</h1><p data-oe-field="tagline"></p><div class="meta"><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div><div class="bl-cta"><a class="bl-btn yellow ticket-purchase-link" href="#tickets">买票</a><a class="bl-btn" href="#timetable">出场顺序</a></div></div><div class="hero-art"><div class="kv"><strong class="bl-kv-fallback" data-oe-field="eventName">STARDUST ONLY</strong></div></div></div></section></aside><div class="bl-sheet">
 ${coreRibbon()}
-<section class="section oe-home-only" id="lineup"><div class="wrap">${head('LINE UP','出演乐队')}<div class="lineup-strip" data-oe-mirror="lineup"></div>${more('guests','乐队介绍')}</div></section>
-<section class="section oe-home-only" id="timetable"><div class="wrap">${head('SET TIMES','出场顺序')}<div class="timeline" data-oe-mirror="timetable"></div>${more('activities','完整出场顺序')}</div></section>
-${coreSection('updates').replace('class="updates-strip"','class="updates-strip section oe-home-only"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新消息'))}
-${coreSection('participation',{ey:'MERCH & MORE',title:'物贩与交流'})}
-${coreSection('tickets',{ey:'TICKET',title:'门票'})}
-${ownMapSection('bl',{ey:'ACCESS',title:'场地',routeTitle:'INDEX'})}
 ${setSection}
+${coreSection('tickets',{ey:'TICKET',title:'门票'})}
+${ownMapSection('bl',{ey:'ACCESS',title:'场地'})}
 ${coreSection('guests',{ey:'BANDS',title:'出演乐队'})}
 ${coreSection('guide',{ey:'INFO',title:'入场须知'})}
+${coreSection('updates').replace('class="updates-strip"','class="updates-strip section"').replace('<div class="wrap">','<div class="wrap">'+head('NEWS','最新消息'))}
 ${ownCommunitySection('bl',{ey:'COMMUNITY',title:'社群'})}
 ${ownSponsorsSection('bl',{ey:'THANKS',title:'合作支持'})}
 </div></div></main>
-<nav class="mobile-dock"><a href="#top" data-page-link="home">首页</a><a href="#guests" data-target-mode="page" data-page-link="guests">乐队</a><a href="#activities" data-target-mode="page" data-page-link="activities">顺序</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
 <footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
 </div>`;

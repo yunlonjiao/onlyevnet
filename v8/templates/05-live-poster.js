@@ -1,12 +1,12 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.102.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.103.0';
 /* Template 05 runs on the shared IP ONLY core; the stage-night art, the LINE UP and the TIME TABLE differ. */
 export const template05=makeIpOnlyTemplate({
  id:'05-live-poster',name:'05 · 舞台现场',label:'舞台现场',studioName:'舞台现场',
  description:'夜场舞台风格：首页先放出演嘉宾和节目表，适合乐队 Live、声优活动、演出和见面会。',
  structureProfile:'lineup',artDirection:'live-stage',motionProfile:'energetic',
  theme:'#ff3d8b',heroTitleColor:'#ffffff',heroTitleAccentColor:'#35e3ff',
- presentationProfile:{entryAnimation:true,mobileDock:true},
- studioPages:{hidden:['booths'],hiddenContent:['ribbonItems'],customPages:false},
+ presentationProfile:{entryAnimation:false,mobileDock:false},
+ studioPages:{hidden:['booths','animation'],hiddenContent:['ribbonItems'],customPages:false},
  group:'stage',
  design:{hero:'fullbleed-centered',motif:'stage-beams'}
 });
@@ -35,8 +35,8 @@ d.schedule=[
  {id:'s5',day:'DAY 1',time:'19:30',endTime:'20:15',title:'星野澪 Talk & Live',stage:'MAIN STAGE',category:'舞台',detail:'角色歌演唱与现场问答。',guestIds:['g2'],registrationUrl:''},
  {id:'s6',day:'DAY 1',time:'20:15',endTime:'20:30',title:'全体合唱 · 散场',stage:'MAIN STAGE',category:'舞台',detail:'全员合唱，结束后有序退场。',guestIds:[],registrationUrl:''}
 ];
-d.updates=[{id:'u1',date:'10/01',title:'出演阵容公开',target:'guests'},{id:'u2',date:'09/28',title:'节目表已更新',target:'activities'}];
-d.venueMap={image:'',links:[{id:'ml1',label:'节目表',target:'activities',itemType:'page',itemId:''},{id:'ml2',label:'出演嘉宾',target:'guests',itemType:'page',itemId:''},{id:'ml3',label:'观演指南',target:'guide',itemType:'page',itemId:''}]};
+d.updates=[{id:'u1',date:'10/01',title:'出演阵容公开',target:''},{id:'u2',date:'09/28',title:'节目表已更新',target:''}];
+d.venueMap={image:'',links:[]};
 d.booths=[];
 d.guide.items=d.guide.items.filter(x=>x.id!=='gd4');
 d.guide.items.push({id:'gd6',preset:'admission',title:'应援规则',label:'CHEER',text:'荧光棒、手幅等应援物品请按【主办方规定】携带。\n请勿遮挡后排视线，演出中不要站上座椅。\n拍摄与录音规则以现场公告为准。'});

@@ -1,12 +1,12 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.102.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.103.0';
 /* Template 06 runs on the shared IP ONLY core; the live-house flyer art, the band list and the set times differ. */
 export const template06=makeIpOnlyTemplate({
  id:'06-band-live',name:'06 · 乐队演出',label:'乐队演出',studioName:'乐队演出',
  description:'演出传单风格：黑白复印质感加一抹荧光黄，先看哪几组乐队、几点上场，适合 Live House 和乐队合演。',
  structureProfile:'lineup',artDirection:'band-live',motionProfile:'energetic',
  theme:'#ffd500',heroTitleColor:'#ffffff',heroTitleAccentColor:'#ffd500',
- presentationProfile:{ribbon:true,mobileDock:true},
- studioPages:{hidden:['booths'],hiddenContent:[],customPages:false},
+ presentationProfile:{ribbon:true,entryAnimation:false,mobileDock:false},
+ studioPages:{hidden:['booths','animation'],hiddenContent:[],customPages:false},
  group:'stage',
  design:{hero:'split-tilted-photo',motif:'photocopy-tape'}
 });
@@ -40,8 +40,8 @@ d.participation=[
  {id:'pa2',preset:'guest',activityType:'general',title:'演后交流',meta:'场地后方 · 终演后',text:'终演后，乐队成员会在物贩处和大家聊几句。',detail:'乐队成员在物贩区，买周边的朋友可以请他们签名、合影。',participationMode:'现场排队',requirements:'无。',rules:'请排队，每人合影一次。',target:'activities',url:'',guestIds:['g1','g2']}
 ];
 d.featuredActivities=[{id:'fa1',participationId:'pa1',image:''},{id:'fa2',participationId:'pa2',image:''},{id:'fa3',participationId:'',image:''}];
-d.updates=[{id:'u1',date:'10/01',title:'出演乐队与出场顺序公开',target:'guests'},{id:'u2',date:'09/28',title:'预售票开售',target:'tickets'}];
-d.venueMap={image:'',links:[{id:'ml1',label:'出场顺序',target:'activities',itemType:'page',itemId:''},{id:'ml2',label:'出演乐队',target:'guests',itemType:'page',itemId:''},{id:'ml3',label:'入场须知',target:'guide',itemType:'page',itemId:''}]};
+d.updates=[{id:'u1',date:'10/01',title:'出演乐队与出场顺序公开',target:''},{id:'u2',date:'09/28',title:'预售票开售',target:''}];
+d.venueMap={image:'',links:[]};
 d.booths=[];
 d.guide.items=[
  {id:'gd1',preset:'traffic',title:'场地与交通',label:'ACCESS',text:'场地：【Live House 名称】（【详细地址】）\n交通：【地铁或公交线路、站点、出口】，步行约【X】分钟。\n场地在【楼层】，没有电梯请留意。'},
