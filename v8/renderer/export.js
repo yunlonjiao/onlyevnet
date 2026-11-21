@@ -1,7 +1,7 @@
-import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.281.0';
-import {mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.281.0';
-import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.281.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.281.0';
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.282.0';
+import {mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.282.0';
+import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.282.0';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.282.0';
 export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyle='',escapeHtml:esc}){
   return function buildStandaloneHtml(){
     const state=getState(),clone=document.body.cloneNode(true);
@@ -77,7 +77,7 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
       function applyActivityFilters(){
         const root=$("#activities");if(!root)return;
         const activeDay=root.querySelector(".activity-day-tabs [data-activity-day].active")?.dataset.activityDay||"";
-        qa("#activities .timetable-row").forEach(row=>{row.hidden=!!activeDay&&row.dataset.activityDay!==activeDay});
+        qa("#activities [data-activity-day]:not(.activity-day-tabs [data-activity-day])").forEach(row=>{row.hidden=!!activeDay&&row.dataset.activityDay!==activeDay});
       }
       function setActivityView(view){
         const root=$("#activities");if(!root)return;
