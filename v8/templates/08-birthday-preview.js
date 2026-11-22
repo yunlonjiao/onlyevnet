@@ -2,9 +2,14 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.314.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.316.0';
 
 const style=`
+.bd-site.bd-final08 .bd-guide-stack .guide-detail-content{display:block!important;columns:auto!important}
+.bd-site.bd-final08 .bd-guide-stack .bd-tip{display:block!important;position:relative!important;height:auto!important;min-height:0!important;margin:0 0 26px!important;padding:56px 22px 22px!important;overflow:visible!important;break-inside:avoid!important}
+.bd-site.bd-final08 .bd-guide-stack .bd-tip .guide-access-media{position:relative!important;display:block!important;width:100%!important;aspect-ratio:16/9!important;max-height:300px!important;overflow:hidden!important;margin:0 0 14px!important;padding:0!important;border:0!important;border-radius:12px!important;background:#f3f0f2!important}
+.bd-site.bd-final08 .bd-guide-stack .bd-tip .guide-access-media img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}
+
 .bd-site.bd-final08 .guide-detail-content{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:24px!important;align-items:start!important;grid-auto-rows:auto!important}.bd-site.bd-final08 .bd-tip{display:block!important;position:relative!important;height:auto!important;min-height:0!important;padding:54px 20px 20px!important;overflow:visible!important}.bd-site.bd-final08 .bd-tip-pin{position:absolute!important;left:16px!important;top:14px!important;width:40px!important;height:40px!important;display:grid!important;place-items:center!important}.bd-site.bd-final08 .bd-tip>div{display:block!important}.bd-site.bd-final08 .bd-tip .guide-access-media{position:relative!important;display:block!important;width:100%!important;max-width:100%!important;aspect-ratio:16/9!important;max-height:300px!important;overflow:hidden!important;margin:0 0 14px!important;padding:0!important;border:0!important;border-radius:12px!important;background:#f3f0f2!important}.bd-site.bd-final08 .bd-tip .guide-access-media img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}
 
 .bd-site.bd-final08 #map-home .map-static-placeholder{width:100%!important;height:100%!important;display:grid!important;place-content:center!important;aspect-ratio:auto!important}
@@ -389,7 +394,7 @@ ${coreSection('tickets',{ey:'GIFTS',title:'赠品与领取'})}
 ${ownMapSection('bd',{ey:'PLACE',title:'场地',routeTitle:'去哪里'})}
 ${stepsSection}
 ${coreSection('guests',{ey:'MEMBERS',title:'协力的人'})}
-${coreSection('guide',{ey:'NOTICE',title:'领取与参观须知'})}
+${coreSection('guide',{ey:'NOTICE',title:'领取与参观须知'}).replace('class="section oe-page-view" id="guide"','class="section oe-page-view bd-guide-stack" id="guide"')}
 ${ownCommunitySection('bd',{ey:'CONTACT',title:'联系与交流'})}
 </div></main>
 <nav class="mobile-dock"><a href="#top" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
