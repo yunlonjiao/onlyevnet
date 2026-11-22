@@ -12,7 +12,7 @@ const PROJECTS_KEY='onlyevent-admin-projects-v1';
 const TEMPLATE_TAGS={'01-ip-only':'综合 · 摊位 · 舞台 · 活动','02-scrapbook':'同人 ONLY · 摊位 · COS · 活动','03-creator-market':'社区 · 内容流 · 创作者集市','04-creator-catalogue':'二次元 · 电子场刊','05-live-poster':'舞台 · 节目表 · 嘉宾','06-band-live':'乐队 · 现场 · 演出','07-tea-party':'小型活动 · 茶会 · 邀请函','08-birthday':'小型活动 · 生日 · 应援'};
 const templateTag=t=>TEMPLATE_TAGS[t.id]||'';
 let selectedTemplateId=DEFAULT_TEMPLATE_ID;
-let projects=readProjects();let cloudImporting=false,cloudImportDone=false;
+let projects=readProjects();let cloudImporting=false,cloudImportDone=false,cloudImportPromise=null;
 
 function readProjects(){
   try{return JSON.parse(localStorage.getItem(PROJECTS_KEY)||'[]')||[]}catch{return []}
@@ -312,10 +312,9 @@ async function syncCloudTrash(){
  const added=remote.filter(p=>!known.has(p.id)&&p.templateId&&templateIds.has(p.templateId)).map(p=>({id:p.id,name:p.name,templateId:p.templateId,status:'draft',siteUrl:'',updatedAt:p.updatedAt,cloudProjectId:p.id,deletedAt:p.deletedAt||new Date().toISOString()}));
  if(added.length){writeTrash([...trash,...added]);renderBinBadge();try{renderBin()}catch(e){}}
 }
-async function restoreCloudProjects(){
+async function runCloudImport(){
  loadOverview();
  if(!readCloudSession())return;
- if(cloudImportDone)return;
  cloudImporting=true;
  const ep=$('#emptyProjects'),eb=ep?.querySelector('b'),epP=ep?.querySelector('p');
  if(!projects.length&&ep){ep.hidden=false;if(eb)eb.textContent='正在同步账号里的活动…';if(epP)epP.textContent='稍等，正在从云端拉取活动。'}
@@ -346,6 +345,12 @@ async function restoreCloudProjects(){
  if(added.length){writeProjects([...projects,...added]);renderProjects($('#projectSearch').value);try{const active=document.querySelector('[data-admin-page].active')?.dataset.adminPage;if(active&&active!=='projects')showPage(active)}catch(e){}}
  cloudImporting=false;cloudImportDone=true;
  if(eb)eb.textContent='还没有活动项目';if(epP)epP.textContent='还没有活动，先去模板库挑一个模板。';cloudImporting=false;cloudImportDone=true;cloudImportDone=true;
+}
+async function restoreCloudProjects(){
+ if(cloudImportPromise)return cloudImportPromise;
+ if(cloudImportDone)return;
+ cloudImportPromise=runCloudImport().finally(()=>{cloudImportPromise=null;cloudImportDone=true});
+ return cloudImportPromise;
 }
 function migrateLegacyProject(){
   if(projects.length)return;
