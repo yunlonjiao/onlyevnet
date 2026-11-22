@@ -2,9 +2,19 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.324.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.326.0';
 
 const style=`
+html[data-oe-template="08-birthday"] #guide article.bd-tip{display:flex!important;flex-direction:column!important;height:auto!important;min-height:0!important}
+html[data-oe-template="08-birthday"] #guide article.bd-tip>button.guide-access-media{order:-1!important;flex:0 0 auto!important}
+html[data-oe-template="08-birthday"] #guide article.bd-tip>span.bd-tip-pin{order:-2!important;flex:0 0 auto!important}
+
+html[data-oe-template="08-birthday"] #guide .bd-tip{display:flex!important;flex-direction:column!important;height:auto!important;min-height:0!important}
+html[data-oe-template="08-birthday"] #guide .guide-access-media{order:-1!important}
+html[data-oe-template="08-birthday"] #guide .bd-tip-pin{order:-2!important}
+html[data-oe-template="08-birthday"] #activities .timetable-time strong,html[data-oe-template="08-birthday"] #activities .timetable-time,html[data-oe-template="08-birthday"] #activities .bd-step-time{white-space:nowrap!important}
+html[data-oe-template="08-birthday"] #activities .timetable-time strong{font-variant-numeric:tabular-nums!important;min-width:4.4em!important;display:inline-block!important}
+
 html[data-oe-template="08-birthday"] #guide .guide-grid{display:block!important;width:100%!important}
 html[data-oe-template="08-birthday"] #guide .guide-detail-content{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:24px!important;width:100%!important;max-width:none!important;align-items:flex-start!important}
 html[data-oe-template="08-birthday"] #guide .bd-tip{flex:0 0 calc(50% - 12px)!important;max-width:calc(50% - 12px)!important;display:block!important;position:relative!important;height:auto!important;margin:0!important;padding:20px 22px 22px!important}
