@@ -23,6 +23,13 @@ function formatTime(value){
   const d=value?new Date(value):new Date();
   return new Intl.DateTimeFormat('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(d);
 }
+function projectOptionLabel(p){
+ const parts=[String(p?.name||'未命名活动').trim()];
+ const date=String(p?.eventDate||'').trim();if(date)parts.push(date);
+ const slug=String(p?.siteUrl||'').replace(/^https?:\/\//,'').split('.onlyevent.cn')[0];if(slug)parts.push(slug);
+ const cloud=p?.localProjectId||'';if(!slug&&cloud)parts.push(String(cloud));
+ return parts.join(' · ');
+}
 function studioUrl(project){
   const q=new URLSearchParams({template:project.templateId||DEFAULT_TEMPLATE_ID,project:project.id});
   if(project.name)q.set('name',project.name);
@@ -194,7 +201,7 @@ async function loadStats(){
 }
 function renderStatsProjects(){
   const select=$('#statsProject'),keep=select.value;
-  select.innerHTML='';projects.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name||'未命名活动';select.appendChild(o)});
+  select.innerHTML='';projects.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=projectOptionLabel(p);select.appendChild(o)});
   if(keep&&projects.some(p=>p.id===keep))select.value=keep;
 }
 
@@ -204,7 +211,7 @@ const collectProject=()=>projects.find(p=>p.id===$('#collectProject').value)||nu
 function collectMsg(text,kind){authSetMessage('collectMessage',text,kind||'')}
 function renderCollectProjects(){
   const select=$('#collectProject'),keep=select.value;
-  select.innerHTML=projects.map(p=>'<option value="'+p.id+'">'+String(p.name||'未命名活动').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'})[c])+'</option>').join('');
+  select.innerHTML=projects.map(p=>'<option value="'+p.id+'">'+String(projectOptionLabel(p)).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'})[c])+'</option>').join('');
   if(keep&&projects.some(p=>p.id===keep))select.value=keep;
 }
 async function loadCollect(){
@@ -475,7 +482,7 @@ function showPage(name){
 function renderAskProjects(){
   const select=$('#askProject'),keep=select.value;
   select.innerHTML=projects.map(p=>'<option value="'+p.id+'"></option>').join('');
-  [...select.options].forEach((o,i)=>{o.textContent=projects[i].name||'未命名活动'});
+  [...select.options].forEach((o,i)=>{o.textContent=projectOptionLabel(projects[i])});
   if(keep&&projects.some(p=>p.id===keep))select.value=keep;
 }
 function loadAskPage(){
@@ -489,7 +496,7 @@ $('#askProject').onchange=loadAskPage;$('#askRefresh').onclick=loadAskPage;
 function renderSignupProjects(){
   const select=$('#signupProject'),keep=select.value;
   select.innerHTML=projects.map(p=>'<option value="'+p.id+'"></option>').join('');
-  [...select.options].forEach((o,i)=>{o.textContent=projects[i].name||'未命名活动'});
+  [...select.options].forEach((o,i)=>{o.textContent=projectOptionLabel(projects[i])});
   if(keep&&projects.some(p=>p.id===keep))select.value=keep;
 }
 function loadSignupPage(){
@@ -505,7 +512,7 @@ $('#signupProject').onchange=loadSignupPage;$('#signupRefresh').onclick=loadSign
 function loadCost(){
   const select=$('#costProject'),keep=select.value;
   select.innerHTML=projects.map(p=>'<option value="'+p.id+'"></option>').join('');
-  [...select.options].forEach((o,i)=>{o.textContent=projects[i].name||'未命名活动'});
+  [...select.options].forEach((o,i)=>{o.textContent=projectOptionLabel(projects[i])});
   if(keep&&projects.some(p=>p.id===keep))select.value=keep;
   $('#costRoot').innerHTML='';authSetMessage('costMessage',projects.length?'':'还没有活动，先去「模板库」新建一个。');
   if(projects.length)mountCost($('#costRoot'),select.value);
