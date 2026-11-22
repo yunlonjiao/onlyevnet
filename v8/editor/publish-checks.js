@@ -9,6 +9,8 @@ export function publishChecks(state,{hasBoothPage=true}={}){
   const add=text=>out.push(text);
   if(!filled(state.eventName)||String(state.eventName).trim()==='STARDUST ONLY')add('活动名称还是默认的「STARDUST ONLY」。');
   if(!filled(state.date)&&!filled(state.startAt))add('还没有填活动日期。');
+   if(filled(state.startAt)&&filled(state.endAt)&&new Date(state.endAt)<new Date(state.startAt))add('结束时间早于开始时间，首页状态会显示错乱。');
+   if(filled(state.eventStartDateTime)&&filled(state.eventEndDateTime)&&new Date(state.eventEndDateTime)<new Date(state.eventStartDateTime))add('结束时间早于开始时间，首页状态会显示错乱。');
   if(!filled(state.location)&&!filled(state.edition))add('还没有填活动地点。');
   if(!filled(state.heroImage)&&!filled(state.mobileHeroImage))add('还没有上传主视觉图。');
   if(Array.isArray(state.tickets)&&state.tickets.length&&!filled(state.ticketUrl))add('已经有票务信息，但没有填购票链接。');
