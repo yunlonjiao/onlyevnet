@@ -67,7 +67,7 @@ export async function logoutAccount(){
 }
 
 /* Reuse the cloud project recorded for this local project, or create one. */
-export async function ensureCloudProject({cloudProjectId,name,localProjectId=''}){
+export async function ensureCloudProject({cloudProjectId,name,localProjectId='',templateId='blank'}){
   if(cloudProjectId){
     const {projects=[]}=await api('/api/projects');
     if(projects.some(p=>p.id===cloudProjectId))return cloudProjectId;
