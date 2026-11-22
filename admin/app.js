@@ -12,7 +12,7 @@ const PROJECTS_KEY='onlyevent-admin-projects-v1';
 const TEMPLATE_TAGS={'01-ip-only':'综合 · 摊位 · 舞台 · 活动','02-scrapbook':'同人 ONLY · 摊位 · COS · 活动','03-creator-market':'社区 · 内容流 · 创作者集市','04-creator-catalogue':'二次元 · 电子场刊','05-live-poster':'舞台 · 节目表 · 嘉宾','06-band-live':'乐队 · 现场 · 演出','07-tea-party':'小型活动 · 茶会 · 邀请函','08-birthday':'小型活动 · 生日 · 应援'};
 const templateTag=t=>TEMPLATE_TAGS[t.id]||'';
 let selectedTemplateId=DEFAULT_TEMPLATE_ID;
-let projects=readProjects();
+let projects=readProjects();let cloudImporting=false;
 
 function readProjects(){
   try{return JSON.parse(localStorage.getItem(PROJECTS_KEY)||'[]')||[]}catch{return []}
@@ -315,9 +315,10 @@ async function syncCloudTrash(){
 async function restoreCloudProjects(){
  loadOverview();
  if(!readCloudSession())return;
+ cloudImporting=true;
  const ep=$('#emptyProjects'),eb=ep?.querySelector('b'),epP=ep?.querySelector('p');
  if(!projects.length&&ep){ep.hidden=false;if(eb)eb.textContent='正在同步账号里的活动…';if(epP)epP.textContent='稍等，正在从云端拉取活动。'}
- let remote=[];try{remote=await listCloudProjects()}catch{return}
+ let remote=[];try{remote=await listCloudProjects()}catch{cloudImporting=false;return}
  const known=new Set([...projects,...trash].map(p=>p.cloudProjectId||getCloudProjectId(p.templateId||DEFAULT_TEMPLATE_ID,p.id)).filter(Boolean));
  const templateIds=new Set(listTemplates().map(t=>t.id));
  const added=[];
@@ -341,7 +342,7 @@ async function restoreCloudProjects(){
   }catch(e){}
  }));
  if(added.length){writeProjects([...projects,...added]);renderProjects($('#projectSearch').value);try{const active=document.querySelector('[data-admin-page].active')?.dataset.adminPage;if(active&&active!=='projects')showPage(active)}catch(e){}}
- if(eb)eb.textContent='还没有活动项目';if(epP)epP.textContent='还没有活动，先去模板库挑一个模板。';
+ if(eb)eb.textContent='还没有活动项目';if(epP)epP.textContent='还没有活动，先去模板库挑一个模板。';cloudImporting=false;
 }
 function migrateLegacyProject(){
   if(projects.length)return;
@@ -550,7 +551,7 @@ $('#createForm').addEventListener('submit',e=>{e.preventDefault();createProject(
 $('#projectSearch').addEventListener('input',e=>renderProjects(e.target.value));
 
 $('#exportProjectBackupBtn').addEventListener('click',()=>{
- if(!projects.length){alert('目前还没有活动项目可备份。');return}
+ if(!projects.length){alert(cloudImporting?'正在从账号同步活动，请稍后再试。':'目前还没有活动项目可备份。');return}
  const includePublisherCredentials=$('#includePublisherCredentials').checked;
  if(includePublisherCredentials&&!confirm('备份文件将包含已发布网站的管理记录。导入后仍需登录同一主办方账号才能更新或下线网站。确认导出？'))return;
  try{
