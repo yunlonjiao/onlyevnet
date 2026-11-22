@@ -2,9 +2,21 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.292.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.296.0';
 
 const style=`
+.bd-site.bd-final08 .bd-routes,.bd-site.bd-final08 .bd-route-list{display:none!important}
+.bd-site.bd-final08 .activity-main-head{position:relative!important;padding:0 150px 16px 0!important;height:auto!important;border:0!important}
+.bd-site.bd-final08 .activity-main-head h2{font-size:clamp(30px,3.4vw,52px)!important;line-height:1.05!important}
+.bd-site.bd-final08 .activity-main-head .section-back{position:absolute!important;right:0!important;top:12px!important;left:auto!important;transform:none!important}
+.bd-site.bd-final08 #activities .activity-page-subhead{display:none!important}
+.bd-site.bd-final08 #guide ol{list-style:none!important;counter-reset:g!important;display:grid!important;gap:10px!important;padding-left:0!important}
+.bd-site.bd-final08 #guide ol>li{counter-increment:g!important;position:relative!important;padding:4px 0 4px 2.2em!important}
+.bd-site.bd-final08 #guide ol>li:before{content:counter(g)".";position:absolute;left:0;top:4px;font-weight:900;color:var(--bd-pink,#ff8fb8)}
+.bd-site.bd-final08 #contact [data-oe-item="socialLinks"]{margin:0!important;transform:none!important;min-height:200px!important;height:100%!important}
+.bd-site.bd-final08 #map-home .map-media{order:-1!important}
+.bd-site.bd-final08 #map-home .map-media:not(:has(img)){display:none!important}
+
 .bd-site{overflow-x:clip;--primary:#ff8fb8;--secondary:#8fd3ff;--bd-cream:#fffaf0;--bd-paper:#fffefb;--bd-accent:var(--primary);--bd-sky:var(--secondary);--bd-yellow:#ffd86b;--bd-mint:#b9efd8;--bd-ink:#4a3358;--bd-soft:#85708f;--bd-line:#f0dfe6;
  position:relative;min-height:100vh;color:var(--bd-ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
  background-color:var(--bd-cream);
@@ -325,7 +337,7 @@ const featuredShape=`
 @media(max-width:560px){.bd-site #participation .featured-activity-grid{grid-template-columns:1fr!important}}
 `;
 export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+boardStyle+featuredShape;
-export const previewBody=`<div class="bd-site bd-clean08">
+export const previewBody=`<div class="bd-site bd-clean08 bd-final08">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">BILIBILI ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天安排</a><a href="#guests" data-target-mode="page" data-page-link="guests">协力的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav></div></header>
 <main id="top">
 <section class="hero"><div class="wrap hero-grid"><div class="hero-copy bd-title"><span class="hero-kicker">HAPPY BIRTHDAY</span><h1 data-oe-field="eventName">BILIBILI ONLY</h1><p data-oe-field="tagline"></p></div><div class="hero-art"><div class="kv"><strong class="bd-kv-fallback" data-oe-field="eventName">BILIBILI ONLY</strong></div></div><div class="hero-copy bd-detail"><div class="meta"><span class="pill" data-oe-field="date"></span><span class="pill" data-oe-field="location"></span><a class="pill venue-nav" href="#map-home" data-oe-field="edition"></a></div></div></div></section>
