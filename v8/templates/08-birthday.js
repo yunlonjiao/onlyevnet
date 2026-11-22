@@ -1,4 +1,4 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.289.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.291.0';
 /* Template 08 runs on the shared IP ONLY core; the birthday-card art and the support-first home differ. */
 export const template08=makeIpOnlyTemplate({
  id:'08-birthday',name:'08 · 生日应援',label:'生日应援',studioName:'生日应援',
@@ -6,12 +6,13 @@ export const template08=makeIpOnlyTemplate({
  structureProfile:'invitation',artDirection:'birthday-card',motionProfile:'gentle',
  theme:'#ff8fb8',heroTitleColor:'#4a3358',heroTitleAccentColor:'#ff8fb8',
  presentationProfile:{mobileDock:true},
- studioPages:{hidden:['booths'],hiddenContent:[],customPages:false},
+ studioPages:{hidden:['booths'],hiddenContent:['ribbonItems','explore','socialLinks'],customPages:false},
  group:'small',
  design:{hero:'saturated-block+polaroid',motif:'confetti-scallop'}
 });
 // Starter content for a birthday support event: what is set up, what can be taken home, and when.
 const d=template08.defaults;
+d.socialLinks=(d.socialLinks||[]).filter(x=>!/摊主|COS|报名/.test(String(x.label||'')));
 d.tagline='今天是 TA 的生日。来看布置、领赠品，也留下一句祝福。';
 d.modules={...d.modules,booths:false,sponsors:false,ribbon:false,guests:true,activities:true,guide:true,community:true};
 d.ticketLinkLabel='预约领取';
@@ -29,7 +30,7 @@ d.participation=[
  {id:'pa3',preset:'guest',activityType:'general',title:'赠品领取',meta:'入口处 · 11:00 开始',text:'凭预约号领取生日明信片和挂件。',detail:'预约号会在预约成功后发给你。领取时报预约号即可，不用排太久的队。',participationMode:'凭预约号领取',requirements:'请提前预约。',rules:'一个预约号只能领取一次。',target:'activities',url:'',guestIds:[]},
  {id:'pa4',preset:'guest',activityType:'general',title:'一起唱生日歌',meta:'一楼展区 · 14:00',text:'下午两点，大家一起给 TA 唱生日歌。',detail:'主持人会带大家倒数。歌词会投在墙上，不会唱也可以跟着哼。',participationMode:'现场参加',requirements:'无。',rules:'请把手机调成静音。',target:'activities',url:'',guestIds:['g2']}
 ];
-d.featuredActivities=[{id:'fa1',participationId:'pa1',image:''},{id:'fa2',participationId:'pa2',image:''},{id:'fa3',participationId:'pa3',image:''}];
+d.featuredActivities=[{id:'fa1',participationId:'pa1',image:''},{id:'fa2',participationId:'pa2',image:''},{id:'fa3',participationId:'pa3',image:''},{id:'fa4',participationId:'',image:''},{id:'fa5',participationId:'',image:''},{id:'fa6',participationId:'',image:''}];
 d.schedule=[
  {id:'s1',day:'生日当天',time:'10:00',endTime:'',title:'布置区开放',stage:'一楼展区',category:'参观',detail:'可以开始参观和拍照。',guestIds:['g2'],registrationUrl:''},
  {id:'s2',day:'生日当天',time:'11:00',endTime:'17:00',title:'赠品领取',stage:'入口处',category:'领取',detail:'凭预约号领取，送完为止。',guestIds:[],registrationUrl:''},
