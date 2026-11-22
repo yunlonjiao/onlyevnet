@@ -343,6 +343,7 @@ async function restoreCloudProjects(){
   }catch(e){}
  }));
  if(added.length){writeProjects([...projects,...added]);renderProjects($('#projectSearch').value);try{const active=document.querySelector('[data-admin-page].active')?.dataset.adminPage;if(active&&active!=='projects')showPage(active)}catch(e){}}
+ cloudImporting=false;cloudImportDone=true;
  if(eb)eb.textContent='还没有活动项目';if(epP)epP.textContent='还没有活动，先去模板库挑一个模板。';cloudImporting=false;cloudImportDone=true;cloudImportDone=true;
 }
 function migrateLegacyProject(){
