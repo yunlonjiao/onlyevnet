@@ -2,9 +2,11 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.313.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.314.0';
 
 const style=`
+.bd-site.bd-final08 .guide-detail-content{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:24px!important;align-items:start!important;grid-auto-rows:auto!important}.bd-site.bd-final08 .bd-tip{display:block!important;position:relative!important;height:auto!important;min-height:0!important;padding:54px 20px 20px!important;overflow:visible!important}.bd-site.bd-final08 .bd-tip-pin{position:absolute!important;left:16px!important;top:14px!important;width:40px!important;height:40px!important;display:grid!important;place-items:center!important}.bd-site.bd-final08 .bd-tip>div{display:block!important}.bd-site.bd-final08 .bd-tip .guide-access-media{position:relative!important;display:block!important;width:100%!important;max-width:100%!important;aspect-ratio:16/9!important;max-height:300px!important;overflow:hidden!important;margin:0 0 14px!important;padding:0!important;border:0!important;border-radius:12px!important;background:#f3f0f2!important}.bd-site.bd-final08 .bd-tip .guide-access-media img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}
+
 .bd-site.bd-final08 #map-home .map-static-placeholder{width:100%!important;height:100%!important;display:grid!important;place-content:center!important;aspect-ratio:auto!important}
 .bd-site.bd-final08 #map-home .bd-map-box img{width:100%!important;height:100%!important;aspect-ratio:16/9!important;object-fit:cover!important}
 
