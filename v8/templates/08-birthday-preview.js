@@ -2,7 +2,7 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.308.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.309.0';
 
 const style=`
 .bd-site.bd-final08 .bd-step{position:relative!important;padding-left:64px!important}
@@ -20,8 +20,8 @@ const style=`
 .bd-site.bd-final08 .oe-page-view .head h2{font-size:clamp(30px,3.4vw,52px)!important;line-height:1.05!important}
 .bd-site.bd-final08 .oe-page-view .head .section-back{position:absolute!important;right:0!important;top:12px!important;left:auto!important;transform:none!important}
 .bd-site.bd-final08 #map-home .bd-map{display:flex!important;flex-direction:column!important}
-.bd-site.bd-final08 #map-home .bd-map-box{order:-1!important;width:100%!important;min-height:0!important}
-.bd-site.bd-final08 #map-home .map-static-placeholder{display:none!important}
+.bd-site.bd-final08 #map-home .bd-map-box{order:-1!important;width:100%!important;min-height:260px!important}
+.bd-site.bd-final08 #map-home .map-static-placeholder{display:grid!important}
 .bd-site.bd-final08 #map-home .bd-map-box img{width:100%!important;aspect-ratio:16/9!important;object-fit:cover!important;display:block!important}
 
 .bd-site.bd-final08 .nav .brand::before{content:"🎂"!important;font-size:.92em!important;display:inline-block!important;vertical-align:middle!important;line-height:1!important;margin-right:8px!important;transform:translateY(-1px)!important}
@@ -42,7 +42,7 @@ const style=`
 .bd-site.bd-final08 #guide ol>li:before{content:counter(g)".";position:absolute;left:0;top:4px;font-weight:900;color:var(--bd-pink,#ff8fb8)}
 .bd-site.bd-final08 #contact [data-oe-item="socialLinks"]{margin:0!important;transform:none!important;min-height:200px!important;height:100%!important}
 .bd-site.bd-final08 #map-home .map-media{order:-1!important}
-.bd-site.bd-final08 #map-home .map-media:not(:has(img)){display:none!important}
+.bd-site.bd-final08 #map-home .map-media:not(:has(img)){display:grid!important}
 
 .bd-site{overflow-x:clip;--primary:#ff8fb8;--secondary:#8fd3ff;--bd-cream:#fffaf0;--bd-paper:#fffefb;--bd-accent:var(--primary);--bd-sky:var(--secondary);--bd-yellow:#ffd86b;--bd-mint:#b9efd8;--bd-ink:#4a3358;--bd-soft:#85708f;--bd-line:#f0dfe6;
  position:relative;min-height:100vh;color:var(--bd-ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
