@@ -2,9 +2,16 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.309.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.310.0';
 
 const style=`
+.bd-site.bd-final08 .guide-detail-content{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:24px!important;align-items:stretch!important}
+.bd-site.bd-final08 .bd-tip{position:relative!important;padding:18px 20px 18px 70px!important;height:100%!important;display:flex!important;flex-direction:column!important}
+.bd-site.bd-final08 .bd-tip-pin{position:absolute!important;left:14px!important;top:18px!important;width:44px!important;height:44px!important;display:grid!important;place-items:center!important}
+.bd-site.bd-final08 .bd-tip .guide-access-media{order:-1!important;display:block!important;width:100%!important;margin:0 0 14px!important;padding:0!important;border:0!important}
+.bd-site.bd-final08 .bd-tip .guide-access-media-empty{display:none!important}
+.bd-site.bd-final08 .bd-tip .guide-access-media img{width:100%!important;aspect-ratio:16/9!important;object-fit:cover!important;display:block!important;border-radius:12px!important}
+
 .bd-site.bd-final08 .bd-step{position:relative!important;padding-left:64px!important}
 .bd-site.bd-final08 .bd-step .bd-step-no{position:absolute!important;left:0!important;top:2px!important;width:46px!important;text-align:center!important}
 .bd-site.bd-final08 #guide [class*="media"]:not(:has(img)),.bd-site.bd-final08 .bd-step [class*="media"]:not(:has(img)){display:none!important}
