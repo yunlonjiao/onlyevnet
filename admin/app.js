@@ -333,7 +333,7 @@ async function restoreCloudProjects(){
    added.push({id:item.id,name:item.name||config.eventName||'未命名活动',templateId:item.templateId,status:item.visitorSiteUrl?'published':'draft',siteUrl:item.visitorSiteUrl||'',updatedAt:item.updatedAt,cloudProjectId:item.id});
   }catch(e){}
  }));
- if(added.length){writeProjects([...projects,...added]);renderProjects($('#projectSearch').value)}
+ if(added.length){writeProjects([...projects,...added]);renderProjects($('#projectSearch').value);try{const active=document.querySelector('[data-admin-page].active')?.dataset.adminPage;if(active&&active!=='projects')showPage(active)}catch(e){}}
  if(eb)eb.textContent='还没有活动项目';if(epP)epP.textContent='还没有活动，先去模板库挑一个模板。';
 }
 function migrateLegacyProject(){
