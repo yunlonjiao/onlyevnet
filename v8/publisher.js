@@ -85,6 +85,7 @@ export function setCloudProjectId(templateId,projectId,cloudProjectId){
   try{localStorage.setItem(cloudProjectKey(templateId,projectId),cloudProjectId)}catch{}
 }
 export async function ensureCloudProjectFor({templateId,projectId,name,known=''}){
+ if(/^prj_/.test(String(projectId||'')))return projectId;
   const id=await ensureCloudProject({cloudProjectId:known||getCloudProjectId(templateId,projectId),name,localProjectId:projectId,templateId});
   setCloudProjectId(templateId,projectId,id);
   return id;
@@ -94,6 +95,9 @@ export async function getCloudSite(projectId){
   const {sites=[]}=await api('/api/sites',{projectId});
   return sites[0]||null;
 }
+export async function listProjectMembers(projectId){return api('/api/projects/'+encodeURIComponent(projectId)+'/members',{projectId})}
+export async function addProjectMember(projectId,username){return api('/api/projects/'+encodeURIComponent(projectId)+'/members',{method:'POST',projectId,body:{username}})}
+export async function removeProjectMember(projectId,userId){return api('/api/projects/'+encodeURIComponent(projectId)+'/members/'+encodeURIComponent(userId),{method:'DELETE',projectId})}
 export async function listCloudTrash(){return (await api('/api/projects?trash=1')).projects||[]}
 export async function listCloudProjects(){
   return (await api('/api/projects')).projects||[];

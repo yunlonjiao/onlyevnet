@@ -4,7 +4,7 @@ import {mountCost} from '/admin/cost.js?v=8.139.0';
 import {mountDeadlines} from '/admin/deadlines.js?v=8.139.0';
 import {loadAsk} from '/admin/ask.js?v=8.139.0';
 import {loadSignups} from '/admin/signups.js?v=8.139.0';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,listCloudTrash,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.139.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,listCloudTrash,listProjectMembers,addProjectMember,removeProjectMember,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.139.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -435,6 +435,23 @@ async function loadOverview(){
   if(!readCloudSession())return;
   try{overviewCloud=await getOverview();renderOverview()}catch{}
 }
+async function manageCollaborators(project){
+ if(!readCloudSession()){alert('请先登录主办方账号。');return}
+ const cid=project.cloudProjectId||getCloudProjectId(project.templateId||DEFAULT_TEMPLATE_ID,project.id)||project.id;
+ let data=null;try{data=await listProjectMembers(cid)}catch(err){alert(err&&err.message||'加载协作者失败');return}
+ const lines=[data.owner?('创建者：'+data.owner.username):'创建者：—',...(data.members||[]).map(m=>'· '+m.username)];
+ const name=prompt('协作者\n'+lines.join('\n')+'\n\n输入要添加的主办方名称（留空则不添加）：','');
+ if(name===null)return;
+ const trimmed=name.trim();
+ if(trimmed){try{await addProjectMember(cid,trimmed);alert('已添加：'+trimmed)}catch(err){alert(err&&err.message||'添加失败')}return}
+ if(!data.isOwner||!(data.members||[]).length)return;
+ const rm=prompt('输入要移除的协作者完整名称（留空取消）：','');
+ if(rm&&rm.trim()){
+  const m=(data.members||[]).find(x=>x.username===rm.trim());
+  if(!m){alert('没有这个协作者');return}
+  try{await removeProjectMember(cid,m.id);alert('已移除：'+m.username)}catch(err){alert(err&&err.message||'移除失败')}
+ }
+}
 function renderProjects(filter=''){
   const term=filter.trim().toLocaleLowerCase(),grid=$('#projectGrid'),empty=$('#emptyProjects');
   grid.innerHTML='';
@@ -452,6 +469,7 @@ function renderProjects(filter=''){
     pick.hidden=!selectMode;pickInput.checked=selected.has(project.id);
     pickInput.onchange=()=>{pickInput.checked?selected.add(project.id):selected.delete(project.id);card.classList.toggle('is-selected',pickInput.checked);updateSelectBar()};
     card.querySelector('.duplicate-project').onclick=async()=>{await duplicateProjects([project])};
+     const collabBtn=card.querySelector('.collab-project');if(collabBtn)collabBtn.onclick=()=>manageCollaborators(project);
     card.querySelector('.project-card-title b').textContent=project.name||'未命名活动';
     card.querySelector('.project-card-title span').textContent=project.siteUrl||'尚未发布游客网站';
     card.querySelector('.project-template').textContent=getTemplate(project.templateId)?.label||project.templateId||'模板';

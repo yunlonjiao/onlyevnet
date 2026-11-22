@@ -40,6 +40,17 @@ CREATE INDEX IF NOT EXISTS idx_projects_user ON projects(user_id);
 CREATE INDEX IF NOT EXISTS idx_projects_updated ON projects(user_id,updated_at);
 CREATE INDEX IF NOT EXISTS idx_projects_local ON projects(user_id,local_project_id);
 
+CREATE TABLE IF NOT EXISTS project_members (
+  project_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'editor',
+  created_at TEXT NOT NULL,
+  PRIMARY KEY(project_id,user_id),
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_members_user ON project_members(user_id);
+
 CREATE TABLE IF NOT EXISTS sites (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL,
