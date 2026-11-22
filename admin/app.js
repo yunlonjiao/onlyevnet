@@ -160,6 +160,8 @@ function renderBin(){
     const frag=$('#binCardTemplate').content.cloneNode(true),card=frag.querySelector('.bin-card');
     card.dataset.projectId=project.id;
     card.querySelector('.project-card-title b').textContent=project.name||'未命名活动';
+     if(project.shared){const sb=document.createElement('span');sb.className='shared-badge';sb.textContent='共享';card.querySelector('.project-card-title b').after(sb)}
+     if(project.shared){const sb=document.createElement('span');sb.className='shared-badge';sb.textContent='共享';card.querySelector('.project-card-title b').after(sb)}
     card.querySelector('.project-card-title span').textContent='还剩 '+daysLeft(project)+' 天自动清除';
     card.querySelector('.project-template').textContent=getTemplate(project.templateId)?.label||project.templateId||'模板';
     card.querySelector('.project-time').textContent='删除于 '+formatTime(project.deletedAt);
@@ -435,22 +437,63 @@ async function loadOverview(){
   if(!readCloudSession())return;
   try{overviewCloud=await getOverview();renderOverview()}catch{}
 }
+let collabProject=null;
 async function manageCollaborators(project){
  if(!readCloudSession()){alert('请先登录主办方账号。');return}
- const cid=project.cloudProjectId||getCloudProjectId(project.templateId||DEFAULT_TEMPLATE_ID,project.id)||project.id;
- let data=null;try{data=await listProjectMembers(cid)}catch(err){alert(err&&err.message||'加载协作者失败');return}
- const lines=[data.owner?('创建者：'+data.owner.username):'创建者：—',...(data.members||[]).map(m=>'· '+m.username)];
- const name=prompt('协作者\n'+lines.join('\n')+'\n\n输入要添加的主办方名称（留空则不添加）：','');
- if(name===null)return;
- const trimmed=name.trim();
- if(trimmed){try{await addProjectMember(cid,trimmed);alert('已添加：'+trimmed)}catch(err){alert(err&&err.message||'添加失败')}return}
- if(!data.isOwner||!(data.members||[]).length)return;
- const rm=prompt('输入要移除的协作者完整名称（留空取消）：','');
- if(rm&&rm.trim()){
-  const m=(data.members||[]).find(x=>x.username===rm.trim());
-  if(!m){alert('没有这个协作者');return}
-  try{await removeProjectMember(cid,m.id);alert('已移除：'+m.username)}catch(err){alert(err&&err.message||'移除失败')}
+ let cid=project.cloudProjectId||getCloudProjectId(project.templateId||DEFAULT_TEMPLATE_ID,project.id)||'';
+ if(!/^prj_/.test(String(cid))){
+  try{
+   cid=await ensureCloudProjectFor({templateId:project.templateId||DEFAULT_TEMPLATE_ID,projectId:project.id,name:project.name});
+   const arr=readProjects(),i=arr.findIndex(p=>p.id===project.id);
+   if(i>=0){arr[i]={...arr[i],cloudProjectId:cid};writeProjects(arr)}
+   project.cloudProjectId=cid;
+  }catch(err){alert('这个活动还没有同步到云端，请先打开编辑器保存一次再试。');return}
  }
+ collabProject={project,cid};
+ const dlg=$('#collabDialog');if(!dlg)return;
+ if(!dlg.dataset.bound){
+  dlg.dataset.bound='1';
+  $('#collabClose').onclick=()=>dlg.close();
+  $('#collabDone').onclick=()=>dlg.close();
+  $('#collabAdd').onclick=()=>addCollabMember();
+  $('#collabName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addCollabMember()}});
+ }
+ $('#collabTitle').textContent=(project.name||'未命名活动')+' · 协作者';
+ $('#collabMessage').textContent='';
+ $('#collabName').value='';
+ await refreshCollabDialog();
+ if(!dlg.open)dlg.showModal();
+}
+async function refreshCollabDialog(){
+ const ctx=collabProject;if(!ctx)return;
+ const box=$('#collabMembers');
+ let data=null;try{data=await listProjectMembers(ctx.cid)}catch(err){$('#collabOwner').textContent='加载失败：'+(err&&err.message||'请稍后再试');box.innerHTML='';return}
+ $('#collabOwner').textContent=data.owner?('创建者：'+data.owner.username):'创建者：—';
+ box.innerHTML='';
+ const ownerRow=document.createElement('div');ownerRow.className='collab-row';
+ const ob=document.createElement('b');ob.textContent=data.owner?data.owner.username:'—';
+ const orole=document.createElement('span');orole.className='collab-role';orole.textContent='创建者';
+ ownerRow.appendChild(ob);ownerRow.appendChild(orole);box.appendChild(ownerRow);
+ for(const m of data.members||[]){
+  const row=document.createElement('div');row.className='collab-row';
+  const mb=document.createElement('b');mb.textContent=m.username;
+  const role=document.createElement('span');role.className='collab-role';role.textContent='协作者';
+  row.appendChild(mb);row.appendChild(role);
+  if(data.isOwner){
+   const rm=document.createElement('button');rm.type='button';rm.className='quiet danger-link';rm.textContent='移除';
+   rm.onclick=async()=>{rm.disabled=true;try{await removeProjectMember(ctx.cid,m.id);$('#collabMessage').textContent='已移除：'+m.username;await refreshCollabDialog()}catch(err){$('#collabMessage').textContent=err&&err.message||'移除失败';rm.disabled=false}};
+   row.appendChild(rm);
+  }
+  box.appendChild(row);
+ }
+ const addRow=$('#collabName')?.closest('label');if(addRow)addRow.hidden=!data.isOwner;
+}
+async function addCollabMember(){
+ const ctx=collabProject;if(!ctx)return;
+ const name=String($('#collabName').value||'').trim(),msg=$('#collabMessage');
+ if(!name){msg.textContent='请输入对方的主办方名称。';return}
+ try{await addProjectMember(ctx.cid,name);msg.textContent='已添加：'+name;$('#collabName').value='';await refreshCollabDialog()}
+ catch(err){msg.textContent=err&&err.message||'添加失败'}
 }
 function renderProjects(filter=''){
   const term=filter.trim().toLocaleLowerCase(),grid=$('#projectGrid'),empty=$('#emptyProjects');

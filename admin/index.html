@@ -447,7 +447,25 @@
     </form>
   </dialog>
 
-  <template id="projectCardTemplate">
+  <dialog class="create-dialog" id="collabDialog">
+     <div class="create-shell">
+       <div class="dialog-head">
+         <div><span class="eyebrow">协作</span><b id="collabTitle">协作者</b></div>
+         <button type="button" id="collabClose" aria-label="关闭">×</button>
+       </div>
+       <div class="dialog-body">
+         <div class="dialog-note" id="collabOwner"></div>
+         <div class="collab-members" id="collabMembers"></div>
+         <label class="collab-add-row"><span>添加协作者（对方的主办方名称）</span>
+           <input id="collabName" maxlength="32" placeholder="输入对方注册的主办方名称">
+           <button type="button" class="quiet" id="collabAdd">添加</button>
+         </label>
+         <p class="auth-message" id="collabMessage"></p>
+       </div>
+       <div class="dialog-foot"><button type="button" class="primary" id="collabDone">完成</button></div>
+     </div>
+   </dialog>
+   <template id="projectCardTemplate">
     <article class="project-card">
       <label class="card-select" hidden><input type="checkbox" class="select-project" aria-label="选择这个活动"><span></span></label>
       <div class="project-cover">
@@ -494,6 +512,6 @@
     </article>
   </template>
 
-  <script type="module" src="/admin/app.js?v=8.366.0"></script>
+  <script type="module" src="/admin/app.js?v=8.367.0"></script>
 </body>
 </html>

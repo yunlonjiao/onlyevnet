@@ -367,3 +367,12 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 .help-body summary{cursor:pointer;font-weight:800;padding:13px 0;font-size:14px}
 .help-body details p,.help-body details ol{margin:0 0 14px;color:#4d4d58;font-size:14px;line-height:1.8}
 .help-body details ol{padding-left:20px}
+
+.collab-members{display:flex;flex-direction:column;gap:8px;margin:10px 0 14px}
+.collab-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e7e4ef;border-radius:12px;background:#faf9fc}
+.collab-row b{font-size:14px;color:#2f2a3d}
+.collab-role{font-size:12px;color:#8b8698;background:#f1eef7;border-radius:999px;padding:2px 8px}
+.collab-row button{margin-left:auto}
+.collab-add-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.collab-add-row input{flex:1;min-width:180px}
+.shared-badge{display:inline-block;margin-left:8px;font-size:11px;color:#7b5cff;background:#efeaff;border-radius:999px;padding:2px 8px;vertical-align:middle}
