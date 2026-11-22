@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.342.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.342.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.343.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.343.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.342.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.342.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.342.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.342.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.343.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.343.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.343.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.343.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -259,7 +259,7 @@ function openPublishDialog(){
  renamingSite=false;renderPublishDialog();publishDialog.showModal();if(!hasLiveSite(publishRecord))setTimeout(()=>publishSlug.select(),0);
 }
 function setPublishBusy(busy,text=''){
- publishPrimary.disabled=busy;$('#publishDownload').disabled=busy;publishSlug.disabled=busy||(hasLiveSite(publishRecord)&&!renamingSite);
+ publishPrimary.disabled=busy;const __dl=$('#publishDownload');if(__dl)__dl.disabled=busy;publishSlug.disabled=busy||(hasLiveSite(publishRecord)&&!renamingSite);
  $('#publishRename').disabled=busy;
  if(text)publishStatus.textContent=text;
 }
@@ -1023,7 +1023,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.342.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.343.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1197,7 +1197,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.342.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.343.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1911,7 +1911,7 @@ publishPrimary.onclick=()=>{
  if(revealStages().length){setPublishBusy(true,'正在生成各批页面…');exportStagedSite();return}
  pendingStages=publishRecord?.staged?[]:null;send({type:'OE_EXPORT_HTML'});
 };
-$('#publishDownload').onclick=()=>{publishIntent='download';send({type:'OE_EXPORT_HTML'})};
+const __dlBtn=$('#publishDownload');if(__dlBtn)__dlBtn.onclick=()=>{publishIntent='download';send({type:'OE_EXPORT_HTML'})};
 $('#publishOpen').onclick=()=>{if(publishRecord?.url)window.open(publishRecord.url,'_blank','noopener')};
 $('#shareBtn').onclick=openShareDialog;$('#shareClose').onclick=()=>shareDialog.close();$('#publishShare').onclick=()=>{publishDialog.close?.();openShareDialog()};
 $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navigator.clipboard.writeText(publishRecord.url);toast('链接已复制')}catch{toast('复制失败')}};
