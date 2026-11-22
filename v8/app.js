@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.333.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.333.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.336.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.336.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.333.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.333.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.333.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.333.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.336.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.336.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages} from '/v8/publisher.js?v=8.336.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.336.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -362,6 +362,7 @@ async function storeCroppedImage(blob){
  return blobToDataUrl(blob);
 }
 const studioHistory=createStudioHistory({limit:80,onChange:()=>syncHistory()});
+ let lastCollection='',lastItemIndex=-1;
 function checkpoint(){studioHistory.checkpoint(state)}
 function syncHistory(){$('#undoBtn').disabled=!studioHistory.canUndo;$('#redoBtn').disabled=!studioHistory.canRedo}
 function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a.length-1;i++)o=o[/^\d+$/.test(a[i])?Number(a[i]):a[i]];const k=a.at(-1);o[/^\d+$/.test(k)?Number(k):k]=value;save()}
@@ -951,6 +952,8 @@ function presetEntriesFor(collection){
 }
 
 function openCollectionManager(collection,selectedIndex=-1){
+  lastCollection=collection;if(selectedIndex>=0)lastItemIndex=selectedIndex;
+  if(selectedIndex<0){const m=contentManagerMeta[collection];if(m)try{setInspector('内容',m.title,'<div class="inspector-note">选择左侧条目开始编辑</div>')}catch(e){}}
  if(collection==='explore'&&state.templateId==='04-creator-catalogue')return;
  const meta=contentManagerMeta[collection],arr=collectionArray(collection),panel=$('#contentListPanel');if(!meta||!Array.isArray(arr)||!panel)return;
  document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.toggle('active',x.dataset.contentManager===collection));
@@ -1020,7 +1023,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.333.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.336.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1194,7 +1197,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.333.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.336.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1472,6 +1475,7 @@ function participationInspectorFields(item){
  return map[preset]||[common.title,common.text,common.detail,common.mode,common.requirements,common.rules,common.url,common.setlist];
 }
 function openItemInspector(collection,index){
+  lastCollection=collection;lastItemIndex=index;
  const meta=collectionMeta[collection],arr=collectionArray(collection),item=arr?.[index];if(!meta||!item)return;
  const count=arr.length;
  const isLong=k=>['text','gift','note','detail','rules','requirements','intro','works','appearance','setlist'].includes(k);
@@ -1892,7 +1896,9 @@ function reconcilePageAfterHistory(){
  if(String(currentPage).startsWith('custom-')&&!customPageByKey(currentPage)){setStudioPage('home');return}
  if(String(currentPage).startsWith('custom-'))renderPageContentNav(currentPage,{openDefault:false});
 }
-$('#undoBtn').onclick=()=>{const next=studioHistory.undo(state);if(!next)return;state=next;renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
+$('#undoBtn').onclick=()=>{const next=studioHistory.undo(state);if(!next)return;state=next;renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()
+  try{const rows=collectionArray(lastCollection);if(lastCollection&&Array.isArray(rows)){if(lastItemIndex>=0&&lastItemIndex<rows.length){openCollectionManager(lastCollection,lastItemIndex);openItemInspector(lastCollection,lastItemIndex)}else{openCollectionManager(lastCollection)}}}catch(e){}
+};
 $('#redoBtn').onclick=()=>{const next=studioHistory.redo(state);if(!next)return;state=next;renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});save();syncHistory();syncContentCounts();reconcilePageAfterHistory()};
 $('#backAdminBtn')?.addEventListener('click',()=>{location.href='/admin/'});
 $('#publishBtn').onclick=openPublishDialog;
