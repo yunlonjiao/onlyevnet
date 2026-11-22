@@ -313,7 +313,7 @@ async function restoreCloudProjects(){
  const candidates=remote.filter(item=>item.templateId&&templateIds.has(item.templateId)&&!known.has(item.id)&&!projects.some(p=>p.id===item.id));
  await Promise.all(candidates.map(async item=>{
   try{
-   const config=await loadCloudConfig(item.id);
+   const config=item.config||await loadCloudConfig(item.id);
    if(!config||typeof config!=='object')return;
    localStorage.setItem('onlyevent-studio-v8:'+item.templateId+':'+item.id+':iframe',JSON.stringify({...config,projectId:item.id,templateId:item.templateId}));
    setCloudProjectId(item.templateId,item.id,item.id);
