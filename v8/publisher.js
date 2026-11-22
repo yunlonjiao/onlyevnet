@@ -72,7 +72,7 @@ export async function ensureCloudProject({cloudProjectId,name,localProjectId=''}
     const {projects=[]}=await api('/api/projects');
     if(projects.some(p=>p.id===cloudProjectId))return cloudProjectId;
   }
-  const data=await api('/api/projects',{method:'POST',body:{name:String(name||'OnlyEvent').slice(0,160),template:'blank',localProjectId:String(localProjectId||'')}});
+  const data=await api('/api/projects',{method:'POST',body:{name:String(name||'OnlyEvent').slice(0,160),template:String(templateId||'blank'),localProjectId:String(localProjectId||'')}});
   return data.project.id;
 }
 
@@ -85,7 +85,7 @@ export function setCloudProjectId(templateId,projectId,cloudProjectId){
   try{localStorage.setItem(cloudProjectKey(templateId,projectId),cloudProjectId)}catch{}
 }
 export async function ensureCloudProjectFor({templateId,projectId,name,known=''}){
-  const id=await ensureCloudProject({cloudProjectId:known||getCloudProjectId(templateId,projectId),name,localProjectId:projectId});
+  const id=await ensureCloudProject({cloudProjectId:known||getCloudProjectId(templateId,projectId),name,localProjectId:projectId,templateId});
   setCloudProjectId(templateId,projectId,id);
   return id;
 }
