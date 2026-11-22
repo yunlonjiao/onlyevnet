@@ -2,13 +2,12 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.331.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.333.0';
 
 const style=`
-html[data-oe-template="08-birthday"] #activities .bd-step{grid-template-columns:52px 110px minmax(0,1fr)!important}
-html[data-oe-template="08-birthday"] #activities .bd-step-no{grid-column:1!important}
-html[data-oe-template="08-birthday"] #activities .bd-step-time{grid-column:2!important;white-space:nowrap!important}
-html[data-oe-template="08-birthday"] #activities .bd-step-body{grid-column:3!important;width:auto!important;max-width:none!important;min-width:0!important}
+@media(min-width:761px){html[data-oe-template="08-birthday"] #activities .bd-step{grid-template-columns:52px 110px minmax(0,1fr)!important}html[data-oe-template="08-birthday"] #activities .bd-step-no{grid-column:1!important}html[data-oe-template="08-birthday"] #activities .bd-step-time{grid-column:2!important;white-space:nowrap!important}html[data-oe-template="08-birthday"] #activities .bd-step-body{grid-column:3!important;width:auto!important;max-width:none!important;min-width:0!important}}
+@media(max-width:760px){html[data-oe-template="08-birthday"] #activities article.bd-step{display:grid!important;grid-template-columns:56px minmax(0,1fr)!important;grid-template-areas:"no time" "body body"!important;gap:10px 12px!important;align-items:center!important}html[data-oe-template="08-birthday"] #activities .bd-step-no{grid-area:no!important;position:static!important}html[data-oe-template="08-birthday"] #activities .bd-step-time{grid-area:time!important;white-space:nowrap!important;justify-self:start!important}html[data-oe-template="08-birthday"] #activities .bd-step-body{grid-area:body!important;width:100%!important;max-width:none!important;min-width:0!important}}
+
 
 html[data-oe-template="08-birthday"] #activities .bd-step{grid-template-columns:52px 110px minmax(0,1fr)!important;gap:16px!important;align-items:start!important}
 html[data-oe-template="08-birthday"] #activities .bd-step-time{white-space:nowrap!important}
