@@ -2,9 +2,13 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.306.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.307.0';
 
 const style=`
+.bd-site.bd-final08 .oe-page-view .head{text-align:center!important;padding:0 0 20px!important}
+.bd-site.bd-final08 .oe-page-view .head>div{width:100%!important;text-align:center!important}
+.bd-site.bd-final08 .oe-page-view .head h2,.bd-site.bd-final08 .oe-page-view .head .ey{text-align:center!important}
+
 .bd-site.bd-final08 .nav .brand{display:inline-flex!important;align-items:center!important;gap:8px!important}
 .bd-site.bd-final08 .nav .brand::before{margin-right:0!important;transform:none!important}
 
