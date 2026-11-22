@@ -2,9 +2,12 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.310.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.312.0';
 
 const style=`
+.bd-site.bd-final08 #map-home .map-static-placeholder{width:100%!important;height:100%!important;display:grid!important;place-content:center!important;aspect-ratio:auto!important}
+.bd-site.bd-final08 #map-home .bd-map-box img{width:100%!important;height:100%!important;aspect-ratio:16/9!important;object-fit:cover!important}
+
 .bd-site.bd-final08 .guide-detail-content{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:24px!important;align-items:stretch!important}
 .bd-site.bd-final08 .bd-tip{position:relative!important;padding:18px 20px 18px 70px!important;height:100%!important;display:flex!important;flex-direction:column!important}
 .bd-site.bd-final08 .bd-tip-pin{position:absolute!important;left:14px!important;top:18px!important;width:44px!important;height:44px!important;display:grid!important;place-items:center!important}
@@ -26,8 +29,8 @@ const style=`
 .bd-site.bd-final08 .oe-page-view .head{position:relative!important;padding:0 150px 18px 0!important;height:auto!important}
 .bd-site.bd-final08 .oe-page-view .head h2{font-size:clamp(30px,3.4vw,52px)!important;line-height:1.05!important}
 .bd-site.bd-final08 .oe-page-view .head .section-back{position:absolute!important;right:0!important;top:12px!important;left:auto!important;transform:none!important}
-.bd-site.bd-final08 #map-home .bd-map{display:flex!important;flex-direction:column!important}
-.bd-site.bd-final08 #map-home .bd-map-box{order:-1!important;width:100%!important;min-height:260px!important}
+.bd-site.bd-final08 #map-home .bd-map{display:block!important;width:100%!important}
+.bd-site.bd-final08 #map-home .bd-map-box{order:-1!important;width:100%!important;min-height:0!important;aspect-ratio:16/9!important;display:grid!important;place-items:center!important}
 .bd-site.bd-final08 #map-home .map-static-placeholder{display:grid!important}
 .bd-site.bd-final08 #map-home .bd-map-box img{width:100%!important;aspect-ratio:16/9!important;object-fit:cover!important;display:block!important}
 
