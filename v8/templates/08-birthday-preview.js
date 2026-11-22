@@ -2,9 +2,17 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.303.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.304.0';
 
 const style=`
+.bd-site.bd-final08 .oe-page-view .head{position:relative!important;padding:0 150px 18px 0!important;height:auto!important}
+.bd-site.bd-final08 .oe-page-view .head h2{font-size:clamp(30px,3.4vw,52px)!important;line-height:1.05!important}
+.bd-site.bd-final08 .oe-page-view .head .section-back{position:absolute!important;right:0!important;top:12px!important;left:auto!important;transform:none!important}
+.bd-site.bd-final08 #map-home .bd-map{display:flex!important;flex-direction:column!important}
+.bd-site.bd-final08 #map-home .bd-map-box{order:-1!important;width:100%!important;min-height:0!important}
+.bd-site.bd-final08 #map-home .map-static-placeholder{display:none!important}
+.bd-site.bd-final08 #map-home .bd-map-box img{width:100%!important;aspect-ratio:16/9!important;object-fit:cover!important;display:block!important}
+
 .bd-site.bd-final08 .nav .brand::before{content:"🎂 "!important;font-size:1em!important}
 
 .bd-site.bd-final08 a.bd-route,.bd-site.bd-final08 .bd-route{display:none!important}
