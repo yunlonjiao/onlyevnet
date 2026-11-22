@@ -67,12 +67,12 @@ export async function logoutAccount(){
 }
 
 /* Reuse the cloud project recorded for this local project, or create one. */
-export async function ensureCloudProject({cloudProjectId,name}){
+export async function ensureCloudProject({cloudProjectId,name,localProjectId=''}){
   if(cloudProjectId){
     const {projects=[]}=await api('/api/projects');
     if(projects.some(p=>p.id===cloudProjectId))return cloudProjectId;
   }
-  const data=await api('/api/projects',{method:'POST',body:{name:String(name||'OnlyEvent').slice(0,160),template:'blank'}});
+  const data=await api('/api/projects',{method:'POST',body:{name:String(name||'OnlyEvent').slice(0,160),template:'blank',localProjectId:String(localProjectId||'')}});
   return data.project.id;
 }
 
@@ -85,7 +85,7 @@ export function setCloudProjectId(templateId,projectId,cloudProjectId){
   try{localStorage.setItem(cloudProjectKey(templateId,projectId),cloudProjectId)}catch{}
 }
 export async function ensureCloudProjectFor({templateId,projectId,name,known=''}){
-  const id=await ensureCloudProject({cloudProjectId:known||getCloudProjectId(templateId,projectId),name});
+  const id=await ensureCloudProject({cloudProjectId:known||getCloudProjectId(templateId,projectId),name,localProjectId:projectId});
   setCloudProjectId(templateId,projectId,id);
   return id;
 }

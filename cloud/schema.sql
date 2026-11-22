@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS projects (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL,
   name TEXT NOT NULL,
+  local_project_id TEXT,
   config_json TEXT NOT NULL,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
@@ -37,6 +38,7 @@ CREATE TABLE IF NOT EXISTS projects (
 );
 CREATE INDEX IF NOT EXISTS idx_projects_user ON projects(user_id);
 CREATE INDEX IF NOT EXISTS idx_projects_updated ON projects(user_id,updated_at);
+CREATE INDEX IF NOT EXISTS idx_projects_local ON projects(user_id,local_project_id);
 
 CREATE TABLE IF NOT EXISTS sites (
   id TEXT PRIMARY KEY,
