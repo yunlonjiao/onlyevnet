@@ -2,7 +2,7 @@
    anime cafe and tea-party event pages (Animate Cafe collaborations, "お茶会" invitations).
    The home page answers what happens, and when, before anything else. Hooks follow Template 01;
    everything visual is scoped to .tp-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.287.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.289.0';
 
 const style=`
 .tp-site{overflow-x:clip;--primary:#f08fa8;--secondary:#8fd3bb;--tp-cream:#fff6ec;--tp-paper:#fffdf8;--tp-pink:var(--primary);--tp-rose:#fadbe3;--tp-mint:#bfe6d6;--tp-lav:#dccffa;--tp-brown:#5a3d3a;--tp-soft:#8c6f6a;--tp-gold:#d9a441;--tp-line:#ecd5cc;
@@ -314,6 +314,6 @@ ${ownSponsorsSection('tp',{ey:'THANKS',title:'合作支持'})}
 </div></main>
 
 <nav class="mobile-dock"><a href="#top" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav>
-<footer class="footer"><div class="wrap footer-grid"><div class="footer-brand"></div><div class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
-</div>v class="footer-participate"></div><div class="footer-visit"></div><div class="footer-social"></div></div></footer>
+
+
 </div>`;
