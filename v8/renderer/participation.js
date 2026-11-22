@@ -1,4 +1,4 @@
-import {activityMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.300.0';
+import {activityMarkup} from '/v8/renderer/ip-only-component-adapters.js?v=8.303.0';
 export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send}){
   const mount=(name,fallback)=>document.querySelector('[data-oe-mount="'+name+'"]')||(fallback?$(fallback):null);
   const externalHref=value=>{const raw=String(value||'').trim();if(!raw)return '';if(/^https?:\/\//i.test(raw))return raw;if(/^www\./i.test(raw)||/^[\w.-]+\.[a-z]{2,}(?:[\/:?#]|$)/i.test(raw))return 'https://'+raw;return ''};
@@ -14,9 +14,9 @@ export function createParticipation({qs:$,escapeHtml:esc,getState,getMode,send})
 
     const home=mount('featured-activities','#participation .featured-activity-grid');
     if(home){
-      const slots=Array.isArray(state.featuredActivities)?state.featuredActivities.slice(0,3):[];
+      const slots=Array.isArray(state.featuredActivities)?state.featuredActivities.slice(0,String(state.templateId)==='08-birthday'?12:3):[];
       const fallback=items.slice(0,3).map((x,i)=>({id:'fa'+(i+1),participationId:x.id}));
-      const allPicks=(slots.length===3?slots:fallback).map((slot,slotIndex)=>({
+      const allPicks=(slots.length?slots:fallback).map((slot,slotIndex)=>({
         slot,slotIndex,x:items.find(a=>a.id===slot.participationId)
       }));
       const picks=getMode()==='edit'?allPicks:allPicks.filter(({x})=>!!x);
