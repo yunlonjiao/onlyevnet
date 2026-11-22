@@ -125,7 +125,10 @@ async function duplicateProjects(list){
   const made=[];
   for(const project of list){
     const templateId=project.templateId||DEFAULT_TEMPLATE_ID,id=uid();
-    const name=(String(project.name||'未命名活动')+' 副本').slice(0,80);
+    const baseName=String(project.name||'未命名活动').replace(/(\s*副本(\s*\d+)?)+$/,'').trim()||'未命名活动';
+     const used=new Set([...projects,...trash].map(p=>String(p.name||'')));
+     let name=baseName+' 副本',n=2;while(used.has(name)){name=baseName+' 副本 '+n;n++}
+     name=name.slice(0,80);
     let state=null;try{state=JSON.parse(localStorage.getItem(projectStorageKey(project))||'null')}catch{}
     if(state&&typeof state==='object'){
       state={...state,projectId:id,templateId,eventName:name};
