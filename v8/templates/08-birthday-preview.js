@@ -2,9 +2,14 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.326.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.328.0';
 
 const style=`
+@media(max-width:1279px){html[data-oe-template="08-birthday"] #guide .guide-detail-content .bd-tip{flex:0 0 100%!important;max-width:100%!important;width:100%!important}}
+@media(max-width:760px){html[data-oe-template="08-birthday"] #guide .guide-detail-content .bd-tip{flex:0 0 100%!important;max-width:100%!important;width:100%!important}html[data-oe-template="08-birthday"] #guide .guide-detail-content{display:block!important}html[data-oe-template="08-birthday"] #guide .bd-tip{width:100%!important}}
+html[data-oe-template="08-birthday"] .mobile-dock{display:flex!important;width:100%!important}
+html[data-oe-template="08-birthday"] .mobile-dock a{flex:1 1 0!important;text-align:center!important;justify-content:center!important}
+
 html[data-oe-template="08-birthday"] #guide article.bd-tip{display:flex!important;flex-direction:column!important;height:auto!important;min-height:0!important}
 html[data-oe-template="08-birthday"] #guide article.bd-tip>button.guide-access-media{order:-1!important;flex:0 0 auto!important}
 html[data-oe-template="08-birthday"] #guide article.bd-tip>span.bd-tip-pin{order:-2!important;flex:0 0 auto!important}
