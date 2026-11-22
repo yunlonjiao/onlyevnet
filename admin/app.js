@@ -27,7 +27,7 @@ function projectOptionLabel(p){
  const parts=[String(p?.name||'未命名活动').trim()];
  const date=String(p?.eventDate||'').trim();if(date)parts.push(date);
  const slug=String(p?.siteUrl||'').replace(/^https?:\/\//,'').split('.onlyevent.cn')[0];if(slug)parts.push(slug);
- const cloud=p?.localProjectId||'';if(!slug&&cloud)parts.push(String(cloud));
+ const ref=p?.cloudProjectId||p?.id||'';if(!slug&&ref)parts.push(String(ref).replace(/^prj_/,'').slice(0,8));
  return parts.join(' · ');
 }
 function studioUrl(project){
