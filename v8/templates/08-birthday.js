@@ -1,12 +1,12 @@
-import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.329.0';
+import {makeIpOnlyTemplate} from '/v8/templates/ip-only-template-factory.js?v=8.330.0';
 /* Template 08 runs on the shared IP ONLY core; the birthday-card art and the support-first home differ. */
 export const template08=makeIpOnlyTemplate({
  id:'08-birthday',name:'08 · 生日应援',label:'生日应援',studioName:'生日应援',
  description:'生日贺卡风格：首页先讲应援内容、赠品和领取方式，适合角色生日、生咖应援和小型主题布置。',
  structureProfile:'invitation',artDirection:'birthday-card',motionProfile:'gentle',
  theme:'#ff8fb8',heroTitleColor:'#4a3358',heroTitleAccentColor:'#ff8fb8',
- presentationProfile:{mobileDock:true},
- studioPages:{hidden:['booths'],hiddenContent:['ribbonItems','explore','socialLinks'],customPages:false},
+ presentationProfile:{entryAnimation:false,mobileDock:true},
+ studioPages:{hidden:['booths','animation'],hiddenContent:['ribbonItems','explore','socialLinks'],customPages:false},
  group:'small',
  design:{hero:'saturated-block+polaroid',motif:'confetti-scallop'}
 });
