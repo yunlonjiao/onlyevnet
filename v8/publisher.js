@@ -94,6 +94,7 @@ export async function getCloudSite(projectId){
   const {sites=[]}=await api('/api/sites',{projectId});
   return sites[0]||null;
 }
+export async function listCloudTrash(){return (await api('/api/projects?trash=1')).projects||[]}
 export async function listCloudProjects(){
   return (await api('/api/projects')).projects||[];
 }

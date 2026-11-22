@@ -4,7 +4,7 @@ import {mountCost} from '/admin/cost.js?v=8.139.0';
 import {mountDeadlines} from '/admin/deadlines.js?v=8.139.0';
 import {loadAsk} from '/admin/ask.js?v=8.139.0';
 import {loadSignups} from '/admin/signups.js?v=8.139.0';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.139.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,listCloudTrash,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.139.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -293,6 +293,15 @@ function renderSettings(){
   $('#newRecoveryBox').hidden=true;authSetMessage('changePasswordMessage','');authSetMessage('rotateRecoveryMessage','');
 }
 /* Projects saved in the cloud on another device appear here after signing in. */
+async function syncCloudTrash(){
+ if(!readCloudSession())return;
+ let remote=[];try{remote=await listCloudTrash()}catch{return}
+ if(!remote.length)return;
+ const known=new Set(trash.map(p=>p.cloudProjectId||p.id));
+ const templateIds=new Set(listTemplates().map(t=>t.id));
+ const added=remote.filter(p=>!known.has(p.id)&&p.templateId&&templateIds.has(p.templateId)).map(p=>({id:p.id,name:p.name,templateId:p.templateId,status:'draft',siteUrl:'',updatedAt:p.updatedAt,cloudProjectId:p.id,deletedAt:p.deletedAt||new Date().toISOString()}));
+ if(added.length){writeTrash([...trash,...added]);renderBinBadge();try{renderBin()}catch(e){}}
+}
 async function restoreCloudProjects(){
  loadOverview();
  if(!readCloudSession())return;
@@ -685,7 +694,7 @@ $('#authLoginForm')?.addEventListener('submit',async e=>{
   const btn=e.submitter;btn.disabled=true;
   try{
     const session=await loginAccount({username:authNormalizeName($('#authLoginAccount').value),password:$('#authLoginPassword').value});
-    authShowAdmin(session);restoreCloudProjects();
+    authShowAdmin(session);restoreCloudProjects();syncCloudTrash();
   }catch(err){authSetMessage('authLoginMessage',authNetworkMessage(err),'error')}
   finally{btn.disabled=false}
 });
@@ -768,3 +777,6 @@ $('#feedbackForm').onsubmit=async e=>{
 /* ---- help ---- */
 $('#helpBtn').onclick=()=>$('#helpDialog').showModal();
 $('#helpClose').onclick=()=>$('#helpDialog').close();
+
+const __syncBinOnOpen=e=>{if(!e.target.closest?.('[data-admin-page="bin"]'))return;setTimeout(()=>{try{syncCloudTrash()}catch(err){}},60)};
+try{document.addEventListener('click',__syncBinOnOpen,true)}catch(e){}
