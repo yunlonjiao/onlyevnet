@@ -2,9 +2,25 @@
    bunting, balloons and a polaroid photo; the home page leads with what is set up, what can be
    taken home and when. The accent follows the template colour, so each character can have their
    own. Hooks follow Template 01; everything visual is scoped to .bd-site. */
-import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.316.0';
+import {coreStyle,coreSection,head,ownMapSection,ownCommunitySection,ownSponsorsSection} from '/v8/templates/shared-sections.js?v=8.324.0';
 
 const style=`
+html[data-oe-template="08-birthday"] #guide .guide-grid{display:block!important;width:100%!important}
+html[data-oe-template="08-birthday"] #guide .guide-detail-content{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:24px!important;width:100%!important;max-width:none!important;align-items:flex-start!important}
+html[data-oe-template="08-birthday"] #guide .bd-tip{flex:0 0 calc(50% - 12px)!important;max-width:calc(50% - 12px)!important;display:block!important;position:relative!important;height:auto!important;margin:0!important;padding:20px 22px 22px!important}
+html[data-oe-template="08-birthday"] #guide .bd-tip-pin{position:static!important;display:inline-grid!important;place-items:center!important;width:42px!important;height:42px!important;margin:0 0 10px!important}
+html[data-oe-template="08-birthday"] #guide .guide-access-media{position:relative!important;display:block!important;width:100%!important;aspect-ratio:16/9!important;max-height:280px!important;overflow:hidden!important;margin:0 0 12px!important;padding:0!important;border:0!important;border-radius:12px!important}
+html[data-oe-template="08-birthday"] #guide .guide-access-media img{position:static!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}
+
+.bd-site.bd-final08 .bd-guide-stack .guide-grid{display:block!important;width:100%!important}
+.bd-site.bd-final08 .bd-guide-stack .guide-detail-content{width:100%!important;max-width:none!important;min-width:0!important}
+
+.bd-site.bd-final08 .bd-guide-stack .guide-detail-content{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:24px!important;align-items:flex-start!important;columns:auto!important}
+.bd-site.bd-final08 .bd-guide-stack .bd-tip{display:block!important;position:relative!important;height:auto!important;min-height:0!important;margin:0!important;flex:0 0 calc(50% - 16px)!important;max-width:calc(50% - 16px)!important;padding:20px 22px 22px!important;overflow:visible!important;break-inside:auto!important}
+.bd-site.bd-final08 .bd-guide-stack .bd-tip-pin{position:static!important;display:inline-grid!important;place-items:center!important;width:42px!important;height:42px!important;margin:0 0 10px!important}
+.bd-site.bd-final08 .bd-guide-stack .bd-tip .guide-access-media{position:relative!important;display:block!important;width:100%!important;aspect-ratio:16/9!important;max-height:280px!important;overflow:hidden!important;margin:0 0 12px!important;padding:0!important;border:0!important;border-radius:12px!important;background:#f3f0f2!important}
+.bd-site.bd-final08 .bd-guide-stack .bd-tip .guide-access-media img{position:static!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}
+
 .bd-site.bd-final08 .bd-guide-stack .guide-detail-content{display:block!important;columns:auto!important}
 .bd-site.bd-final08 .bd-guide-stack .bd-tip{display:block!important;position:relative!important;height:auto!important;min-height:0!important;margin:0 0 26px!important;padding:56px 22px 22px!important;overflow:visible!important;break-inside:avoid!important}
 .bd-site.bd-final08 .bd-guide-stack .bd-tip .guide-access-media{position:relative!important;display:block!important;width:100%!important;aspect-ratio:16/9!important;max-height:300px!important;overflow:hidden!important;margin:0 0 14px!important;padding:0!important;border:0!important;border-radius:12px!important;background:#f3f0f2!important}
