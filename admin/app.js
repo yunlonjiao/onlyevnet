@@ -313,14 +313,12 @@ async function syncCloudTrash(){
  if(added.length){writeTrash([...trash,...added]);renderBinBadge();try{renderBin()}catch(e){}}
 }
 async function runCloudImport(){
- const __t0=performance.now(),__lap=l=>console.info("[import] "+l+" "+(performance.now()-__t0).toFixed(0)+"ms");
  loadOverview();
  if(!readCloudSession())return;
  cloudImporting=true;
  const ep=$('#emptyProjects'),eb=ep?.querySelector('b'),epP=ep?.querySelector('p');
  if(!projects.length&&ep){ep.hidden=false;if(eb)eb.textContent='正在同步账号里的活动…';if(epP)epP.textContent='稍等，正在从云端拉取活动。'}
  let remote=[];try{remote=await listCloudProjects()}catch{cloudImporting=false;cloudImportDone=true;return}
- __lap('projects-fetched');
  const known=new Set([...projects,...trash].map(p=>p.cloudProjectId||getCloudProjectId(p.templateId||DEFAULT_TEMPLATE_ID,p.id)).filter(Boolean));
  const templateIds=new Set(listTemplates().map(t=>t.id));
  const added=[];
@@ -333,7 +331,6 @@ async function runCloudImport(){
  };
  const knownHits=remote.filter(item=>known.has(item.id)||projects.some(p=>p.id===item.id));
  await Promise.all(knownHits.map(restorePublication));
- __lap('known-hits');
  const candidates=remote.filter(item=>item.templateId&&templateIds.has(item.templateId)&&!known.has(item.id)&&!projects.some(p=>p.id===item.id));
  await Promise.all(candidates.map(async item=>{
   try{
@@ -345,8 +342,7 @@ async function runCloudImport(){
    added.push({id:item.id,name:item.name||config.eventName||'未命名活动',templateId:item.templateId,status:item.visitorSiteUrl?'published':'draft',siteUrl:item.visitorSiteUrl||'',updatedAt:item.updatedAt,cloudProjectId:item.id});
   }catch(e){}
  }));
- __lap('candidates');
- if(added.length){writeProjects([...projects,...added]);__lap('written');renderProjects($('#projectSearch').value);try{const active=document.querySelector('[data-admin-page].active')?.dataset.adminPage;if(active&&active!=='projects')showPage(active)}catch(e){}}
+ if(added.length){writeProjects([...projects,...added]);renderProjects($('#projectSearch').value);try{const active=document.querySelector('[data-admin-page].active')?.dataset.adminPage;if(active&&active!=='projects')showPage(active)}catch(e){}}
  cloudImporting=false;cloudImportDone=true;
  if(eb)eb.textContent='还没有活动项目';if(epP)epP.textContent='还没有活动，先去模板库挑一个模板。';cloudImporting=false;cloudImportDone=true;cloudImportDone=true;
 }
