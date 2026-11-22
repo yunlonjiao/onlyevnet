@@ -327,6 +327,7 @@ async function restoreCloudProjects(){
   if(!item.visitorSiteUrl||!templateIds.has(item.templateId))return;
   const key='onlyevent-studio-publish:'+item.templateId+':'+(projects.find(p=>(p.cloudProjectId||getCloudProjectId(p.templateId||DEFAULT_TEMPLATE_ID,p.id))===item.id)?.id||item.id)+':iframe';
   try{if(JSON.parse(localStorage.getItem(key)||'{}').siteId)return}catch{}
+  if(item.siteId){try{localStorage.setItem(key,JSON.stringify({siteId:item.siteId,cloudProjectId:item.id,slug:(String(item.visitorSiteUrl||'').replace(/^https?:\/\//,'').split('.onlyevent.cn')[0])||'',url:item.visitorSiteUrl,publishedAt:item.updatedAt}))}catch{};return}
   try{const site=await getCloudSite(item.id);if(site)localStorage.setItem(key,JSON.stringify({siteId:site.id,cloudProjectId:item.id,slug:site.slug,url:site.url,publishedAt:site.updated_at}))}catch{}
  };
  const knownHits=remote.filter(item=>known.has(item.id)||projects.some(p=>p.id===item.id));
