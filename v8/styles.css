@@ -1533,3 +1533,5 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 @media(pointer:coarse) and (max-height:560px){body.previewing .studio-topbar #previewBtn{display:inline-flex!important}}
 
 @media(pointer:coarse) and (max-height:560px){body.previewing .mobile-editor-dock{display:none!important}}
+
+@media(pointer:coarse){.back-admin-btn{width:44px!important;height:44px!important}}
