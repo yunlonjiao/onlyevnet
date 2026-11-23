@@ -403,3 +403,11 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
   #collabDialog button,.create-dialog button{min-height:44px}
   #collabClose,.create-dialog button[aria-label="关闭"]{width:44px;height:44px;min-height:44px}
 }
+
+/* coarse pointers: 44px admin controls */
+@media(pointer:coarse){
+  #authLogoutBtn{min-height:44px}
+  main button,.app-main button,.page button{min-height:44px!important}
+  .auth-form input{height:44px;font-size:16px}
+  a.brand-zone{min-height:44px}
+}
