@@ -2020,3 +2020,14 @@ try{
   __dock.addEventListener('click',e=>{const b=e.target.closest('[data-dock]');if(!b)return;const sel=map[b.dataset.dock];const t=sel&&document.querySelector(sel);if(t)t.click()});
  }
 }catch(e){}
+
+try{
+ if(innerWidth<=820){
+  const done=document.createElement('button');done.id='mobileKeyboardDone';done.type='button';done.textContent='完成';
+  document.body.appendChild(done);
+  const syncDone=()=>{const kb=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--kb-inset'))||0;done.hidden=kb<80};
+  const vv=window.visualViewport;if(vv){vv.addEventListener('resize',syncDone);vv.addEventListener('scroll',syncDone)}
+  syncDone();
+  done.addEventListener('click',()=>{try{document.activeElement&&document.activeElement.blur()}catch(e){};try{window.frames[0].postMessage({type:'OE_BLUR'},'*')}catch(e){};try{send({type:'OE_BLUR'})}catch(e){}});
+ }
+}catch(e){}

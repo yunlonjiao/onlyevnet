@@ -306,6 +306,7 @@ async function handleMessage(m){
   if(m.type==='OE_HIDE_ENTRY_PREVIEW')hideEntryPreview();
   if(m.type==='OE_SHOW_PAGE'){router.showPage(m.page||'home');requestAnimationFrame(setupHomeMotion)}
   if(m.type==='OE_EXPORT_HTML')send({type:'OE_EXPORT_HTML_RESULT',html:buildStandaloneHtml()});
+ if(m.type==='OE_BLUR'){try{document.activeElement&&document.activeElement.blur()}catch(e){}}
 }
 // Synchronize native browser Back/Forward with the in-page router.
 window.addEventListener('popstate',()=>{
