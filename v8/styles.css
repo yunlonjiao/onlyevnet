@@ -1462,3 +1462,9 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
   .share-head button{width:44px;height:44px}
   .mobile-sheet-close{width:44px;height:44px}
 }
+
+/* coarse pointers get 44px toolbar targets */
+@media(pointer:coarse){
+  .studio-topbar .action-group button,.studio-topbar .icon-button{min-height:44px;min-width:44px}
+  .studio-topbar #publishBtn.primary{min-height:44px!important;height:44px!important}
+}
