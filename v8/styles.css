@@ -1397,3 +1397,10 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 
 /* single device: editor matches viewport, no manual desktop/mobile canvas switch */
 .device-group{display:none!important}
+
+/* mobile sheet close + keyboard inset */
+@media(max-width:820px){
+  .inspector{bottom:var(--kb-inset,0)!important}
+  .mobile-sheet-close{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid #dedee5;border-radius:10px;background:#fff;font-size:18px;color:#5c5c66;margin-left:auto;flex:none}
+}
+@media(min-width:821px){.mobile-sheet-close{display:none!important}}

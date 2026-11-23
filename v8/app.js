@@ -1951,6 +1951,7 @@ syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleContro
 
 /* Shared mobile drawers, identical across every template. */
 const mobilePanels=bindStudioMobilePanels();
+ try{const ih=document.querySelector('.inspector-header');if(ih&&!document.querySelector('#mobileInspectorClose')){const cb=document.createElement('button');cb.type='button';cb.id='mobileInspectorClose';cb.className='mobile-sheet-close';cb.setAttribute('aria-label','关闭属性面板');cb.textContent='×';cb.onclick=()=>mobilePanels.close();ih.appendChild(cb)}}catch(e){}
 restorePublishFromCloud();
 
 
@@ -1997,3 +1998,5 @@ try{document.addEventListener('input',__stageRowRefresh);document.addEventListen
 
 const __stageAddRefresh=e=>{if(!e.target.closest?.('#stageAdd')&&!e.target.closest?.('.stage-remove'))return;setTimeout(()=>{try{refreshPublishChecks()}catch(err){}},0)};
 try{document.addEventListener('click',__stageAddRefresh,true)}catch(e){}
+
+try{const __vv=window.visualViewport;if(__vv){const __syncKb=()=>{const kb=Math.max(0,window.innerHeight-__vv.height-(__vv.offsetTop||0));document.documentElement.style.setProperty('--kb-inset',kb+'px')};__vv.addEventListener('resize',__syncKb);__vv.addEventListener('scroll',__syncKb);__syncKb()}}catch(e){}
