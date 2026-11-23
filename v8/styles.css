@@ -1527,3 +1527,7 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
   .studio-topbar .mobile-edit-group{display:none!important}
   .studio-topbar #previewBtn{display:none!important}
 }
+
+/* preview mode needs an exit control on phones */
+@media(max-width:820px){body.previewing .studio-topbar #previewBtn{display:inline-flex!important}}
+@media(pointer:coarse) and (max-height:560px){body.previewing .studio-topbar #previewBtn{display:inline-flex!important}}
