@@ -416,3 +416,8 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 @media(max-width:680px),(pointer:coarse){
   input,textarea,select{font-size:16px!important}
 }
+
+/* admin mobile nav scroll hint */
+@media(max-width:680px){
+  .admin-sidebar nav{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 18px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 18px),transparent);padding-right:18px}
+}
