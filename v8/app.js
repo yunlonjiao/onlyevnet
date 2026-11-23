@@ -2000,3 +2000,15 @@ const __stageAddRefresh=e=>{if(!e.target.closest?.('#stageAdd')&&!e.target.close
 try{document.addEventListener('click',__stageAddRefresh,true)}catch(e){}
 
 try{const __vv=window.visualViewport;if(__vv){const __syncKb=()=>{const kb=Math.max(0,window.innerHeight-__vv.height-(__vv.offsetTop||0));document.documentElement.style.setProperty('--kb-inset',kb+'px')};__vv.addEventListener('resize',__syncKb);__vv.addEventListener('scroll',__syncKb);__syncKb()}}catch(e){}
+
+try{
+ const __ensureSheetClose=()=>{
+  if(innerWidth>820)return;
+  const ih=document.querySelector('.inspector-header');if(!ih)return;
+  let cb=document.querySelector('#mobileInspectorClose');
+  if(!cb){cb=document.createElement('button');cb.type='button';cb.id='mobileInspectorClose';cb.className='mobile-sheet-close';cb.setAttribute('aria-label','关闭属性面板');cb.textContent='×';cb.onclick=()=>{try{mobilePanels.close()}catch(e){}}}
+  if(cb.parentElement!==ih)ih.appendChild(cb);
+ };
+ new MutationObserver(__ensureSheetClose).observe(document.body,{childList:true,subtree:true});
+ __ensureSheetClose();
+}catch(e){}
