@@ -307,6 +307,8 @@ async function handleMessage(m){
   if(m.type==='OE_SHOW_PAGE'){router.showPage(m.page||'home');requestAnimationFrame(setupHomeMotion)}
   if(m.type==='OE_EXPORT_HTML')send({type:'OE_EXPORT_HTML_RESULT',html:buildStandaloneHtml()});
  if(m.type==='OE_BLUR'){try{document.activeElement&&document.activeElement.blur()}catch(e){}}
+ if(m.type==='OE_SAVE_SELECTION'){try{const s=getSelection();if(s&&s.rangeCount&&!s.isCollapsed){window.__oeSel=s.getRangeAt(0).cloneRange()}}catch(e){}}
+ if(m.type==='OE_RESTORE_SELECTION'){try{const r=window.__oeSel;if(!r)return;const host=r.commonAncestorContainer.nodeType===1?r.commonAncestorContainer:r.commonAncestorContainer.parentElement;const ed=host&&host.closest&&host.closest('[contenteditable="true"]');if(ed)ed.focus({preventScroll:true});const s=getSelection();s.removeAllRanges();s.addRange(r)}catch(e){}}
 }
 // Synchronize native browser Back/Forward with the in-page router.
 window.addEventListener('popstate',()=>{

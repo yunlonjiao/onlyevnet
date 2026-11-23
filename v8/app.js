@@ -1951,6 +1951,7 @@ syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleContro
 
 /* Shared mobile drawers, identical across every template. */
 const mobilePanels=bindStudioMobilePanels();
+ try{const __origOpen=mobilePanels.open,__origClose=mobilePanels.close;mobilePanels.open=k=>{try{send({type:'OE_SAVE_SELECTION'})}catch(e){};return __origOpen(k)};mobilePanels.close=()=>{const r=__origClose();try{send({type:'OE_RESTORE_SELECTION'})}catch(e){};return r}}catch(e){}
  try{const ih=document.querySelector('.inspector-header');if(ih&&!document.querySelector('#mobileInspectorClose')){const cb=document.createElement('button');cb.type='button';cb.id='mobileInspectorClose';cb.className='mobile-sheet-close';cb.setAttribute('aria-label','关闭属性面板');cb.textContent='×';cb.onclick=()=>mobilePanels.close();ih.appendChild(cb)}}catch(e){}
 restorePublishFromCloud();
 
