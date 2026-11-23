@@ -1325,3 +1325,13 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
   .studio-topbar .mobile-edit-group button{padding:0 6px}
   .canvas-wrap{padding:8px!important}
 }
+
+/* landscape/tablet layout: base 3-column rule loads after the 1180 media query, so re-assert it here */
+@media(max-width:1180px) and (min-width:821px){
+  .studio-shell{grid-template-columns:190px minmax(0,1fr)!important}
+  .canvas-wrap{padding-right:314px}
+  .inspector{position:fixed!important;right:10px;top:74px;width:286px;height:calc(100vh - 84px)!important;z-index:90}
+}
+@media(max-height:520px) and (min-width:821px){
+  .canvas{min-height:380px;height:calc(100vh - 110px)}
+}
