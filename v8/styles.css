@@ -1538,3 +1538,14 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 
 @media(max-width:820px){.page-inline-switch{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}}
 @media(pointer:coarse) and (max-height:560px){.page-inline-switch{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}}
+
+@media(max-width:820px){
+  body.previewing .studio-topbar #shareBtn{display:none!important}
+  body.previewing .studio-topbar #previewBtn{display:inline-flex!important;margin-left:auto;min-width:104px;padding:0 12px;gap:8px}
+  body.previewing .studio-topbar #previewBtn span:last-child{display:inline!important;font-size:12px}
+}
+@media(pointer:coarse) and (max-height:560px){
+  body.previewing .studio-topbar #shareBtn{display:none!important}
+  body.previewing .studio-topbar #previewBtn{display:inline-flex!important;margin-left:auto;min-width:104px;padding:0 12px}
+  body.previewing .studio-topbar #previewBtn span:last-child{display:inline!important;font-size:12px}
+}
