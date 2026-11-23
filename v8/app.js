@@ -1902,7 +1902,7 @@ $('#imageInput').addEventListener('change',async e=>{
 function setDevice(mode){setStudioDevice(mode,{canvas})}
 $('#deviceDesktopBtn').onclick=()=>setDevice('desktop');
 $('#deviceMobileBtn').onclick=()=>setDevice('mobile');
- const syncStudioDevice=()=>{try{setDevice(innerWidth<=820?'mobile':'desktop')}catch(e){}};
+ const syncStudioDevice=()=>{const coarse=matchMedia('(pointer:coarse)').matches;const shortLandscape=coarse&&innerHeight<=560;try{setDevice(innerWidth<=820||shortLandscape?'mobile':'desktop')}catch(e){}};
  syncStudioDevice();
  let __deviceTimer=null;
  window.addEventListener('resize',()=>{clearTimeout(__deviceTimer);__deviceTimer=setTimeout(syncStudioDevice,150)});
