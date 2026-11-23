@@ -1501,6 +1501,7 @@ function participationInspectorFields(item){
 function openItemInspector(collection,index){
   lastCollection=collection;lastItemIndex=index;
  const meta=collectionMeta[collection],arr=collectionArray(collection),item=arr?.[index];if(!meta||!item)return;
+ if(innerWidth<=820){try{mobilePanels&&mobilePanels.open('inspector')}catch(e){}}
  const count=arr.length;
  const isLong=k=>['text','gift','note','detail','rules','requirements','intro','works','appearance','setlist'].includes(k);
  const inspectorFields=collection==='participation'?participationInspectorFields(item):meta.fields;
@@ -1945,7 +1946,7 @@ if(projectId!=='default'&&!hasSavedProject){localStorage.setItem(STORAGE,JSON.st
 syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();bindStageRows();bindRecapDialog();$('#recapClose').onclick=()=>recapDialog.close();mountFrame();syncHistory();setStudioPage('home');
 
 /* Shared mobile drawers, identical across every template. */
-bindStudioMobilePanels();
+const mobilePanels=bindStudioMobilePanels();
 restorePublishFromCloud();
 
 
