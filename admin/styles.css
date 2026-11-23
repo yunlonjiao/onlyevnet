@@ -411,3 +411,8 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
   .auth-form input{height:44px;font-size:16px}
   a.brand-zone{min-height:44px}
 }
+
+/* admin mobile inputs: 16px to avoid iOS zoom */
+@media(max-width:680px),(pointer:coarse){
+  input,textarea,select{font-size:16px!important}
+}
