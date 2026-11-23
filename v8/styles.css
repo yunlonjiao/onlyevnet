@@ -1430,3 +1430,6 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
   #mobileKeyboardDone{display:block;position:fixed;right:10px;bottom:calc(var(--kb-inset,0px) + 14px);z-index:140;height:40px;padding:0 16px;border:0;border-radius:999px;background:#18181d;color:#fff;font-size:13px;font-weight:800;box-shadow:0 8px 20px rgba(18,18,24,.28)}
   #mobileKeyboardDone[hidden]{display:none}
 }
+
+/* disabled toolbar buttons stay legible */
+.action-group button:disabled{opacity:.55;color:#7a7a85}
