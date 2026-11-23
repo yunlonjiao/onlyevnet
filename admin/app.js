@@ -529,6 +529,7 @@ function renderProjects(filter=''){
      const collabBtn=card.querySelector('.collab-project');if(collabBtn)collabBtn.onclick=()=>manageCollaborators(project);
     card.querySelector('.project-card-title b').textContent=project.name||'未命名活动';
     card.querySelector('.project-card-title span').textContent=project.siteUrl||'尚未发布游客网站';
+     if(project.shared){const sb=document.createElement('span');sb.className='shared-badge';sb.textContent='共享';card.querySelector('.project-card-title b').after(sb)}
     card.querySelector('.project-template').textContent=getTemplate(project.templateId)?.label||project.templateId||'模板';
     const timeEl=card.querySelector('.project-time');timeEl.textContent='更新 '+formatTime(project.updatedAt);
     
