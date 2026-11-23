@@ -1510,3 +1510,5 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
   .mobile-panel-backdrop{display:block!important;position:fixed;inset:64px 0 0;z-index:120;border:0;background:rgba(20,20,28,.28)}
   .mobile-panel-backdrop[hidden]{display:none!important}
 }
+
+@media(pointer:coarse) and (max-height:560px){.mobile-sheet-close{display:inline-flex!important;align-items:center;justify-content:center;width:44px;height:44px}}
