@@ -1501,7 +1501,7 @@ function participationInspectorFields(item){
 function openItemInspector(collection,index){
   lastCollection=collection;lastItemIndex=index;
  const meta=collectionMeta[collection],arr=collectionArray(collection),item=arr?.[index];if(!meta||!item)return;
- if(innerWidth<=820){try{mobilePanels&&mobilePanels.open('inspector')}catch(e){}}
+ if(innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560)){try{mobilePanels&&mobilePanels.open('inspector')}catch(e){}}
  const count=arr.length;
  const isLong=k=>['text','gift','note','detail','rules','requirements','intro','works','appearance','setlist'].includes(k);
  const inspectorFields=collection==='participation'?participationInspectorFields(item):meta.fields;
@@ -2004,7 +2004,7 @@ try{const __vv=window.visualViewport;if(__vv){const __syncKb=()=>{const kb=Math.
 
 try{
  const __ensureSheetClose=()=>{
-  if(innerWidth>820)return;
+  if(!(innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560)))return;
   const ih=document.querySelector('.inspector-header');if(!ih)return;
   let cb=document.querySelector('#mobileInspectorClose');
   if(!cb){cb=document.createElement('button');cb.type='button';cb.id='mobileInspectorClose';cb.className='mobile-sheet-close';cb.setAttribute('aria-label','关闭属性面板');cb.textContent='×';cb.onclick=()=>{try{mobilePanels.close()}catch(e){}}}
