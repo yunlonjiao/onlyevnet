@@ -388,3 +388,10 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
   .auth-check span{font-size:12px}
   .auth-text-btn{min-height:44px;font-size:12px;padding:0 8px}
 }
+
+/* mobile admin: 44px controls everywhere */
+@media(max-width:680px){
+  .auth-form .auth-submit{height:44px!important;min-height:44px!important;font-size:14px!important}
+  #authLogoutBtn{min-height:44px}
+  main button,.app-main button,.page button{min-height:44px}
+}
