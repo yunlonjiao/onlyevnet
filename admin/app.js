@@ -345,7 +345,7 @@ async function runCloudImport(){
    localStorage.setItem('onlyevent-studio-v8:'+item.templateId+':'+item.id+':iframe',JSON.stringify({...config,projectId:item.id,templateId:item.templateId}));
    setCloudProjectId(item.templateId,item.id,item.id);
    await restorePublication(item);
-   added.push({id:item.id,name:item.name||config.eventName||'未命名活动',templateId:item.templateId,status:item.visitorSiteUrl?'published':'draft',siteUrl:item.visitorSiteUrl||'',updatedAt:item.updatedAt,cloudProjectId:item.id});
+   added.push({id:item.id,name:item.name||config.eventName||'未命名活动',templateId:item.templateId,status:item.visitorSiteUrl?'published':'draft',siteUrl:item.visitorSiteUrl||'',updatedAt:item.updatedAt,cloudProjectId:item.id,shared:!!item.shared});
   }catch(e){}
  }));
  if(added.length){writeProjects([...projects,...added]);renderProjects($('#projectSearch').value);try{const active=document.querySelector('[data-admin-page].active')?.dataset.adminPage;if(active&&active!=='projects')showPage(active)}catch(e){}}
