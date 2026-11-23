@@ -2012,3 +2012,11 @@ try{
  new MutationObserver(__ensureSheetClose).observe(document.body,{childList:true,subtree:true});
  __ensureSheetClose();
 }catch(e){}
+
+try{
+ const __dock=document.querySelector('#mobileEditorDock');
+ if(__dock){
+  const map={pages:'#mobilePagesBtn',inspector:'#mobileInspectorBtn',preview:'#previewBtn',publish:'#publishBtn'};
+  __dock.addEventListener('click',e=>{const b=e.target.closest('[data-dock]');if(!b)return;const sel=map[b.dataset.dock];const t=sel&&document.querySelector(sel);if(t)t.click()});
+ }
+}catch(e){}

@@ -1404,3 +1404,21 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
   .mobile-sheet-close{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid #dedee5;border-radius:10px;background:#fff;font-size:18px;color:#5c5c66;margin-left:auto;flex:none}
 }
 @media(min-width:821px){.mobile-sheet-close{display:none!important}}
+
+/* desktop topbar alignment: actions and publish stay together on the right */
+@media(min-width:821px){
+  .studio-topbar .top-actions{flex:1 1 auto;justify-content:flex-end}
+  .studio-topbar #publishBtn{margin-left:8px}
+}
+
+/* mobile bottom dock */
+.mobile-editor-dock{display:none}
+@media(max-width:820px){
+  .mobile-editor-dock{display:flex;position:fixed;left:0;right:0;bottom:var(--kb-inset,0);z-index:110;background:rgba(252,252,254,.96);backdrop-filter:blur(16px);border-top:1px solid #e4e4ea;padding:6px 8px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px rgba(20,20,30,.08)}
+  .mobile-editor-dock button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:48px;border:0;background:transparent;color:#6d6d78;font:inherit;font-size:11px;font-weight:700;border-radius:12px}
+  .mobile-editor-dock button span{font-size:17px;line-height:1}
+  .mobile-editor-dock button b{font-weight:800;font-size:10px}
+  .mobile-editor-dock button:active{background:#eeeef4}
+  body.previewing .mobile-editor-dock{display:none}
+  .canvas-wrap{padding-bottom:86px!important}
+}

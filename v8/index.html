@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OnlyEvent Studio v8</title>
-  <link rel="stylesheet" href="/v8/styles.css?v=8.386.0">
+  <link rel="stylesheet" href="/v8/styles.css?v=8.387.0">
 </head>
 <body>
   <dialog class="share-dialog" id="recapDialog">
@@ -55,6 +55,12 @@
     </div>
       <button id="publishBtn" class="primary" type="button"><span id="publishBtnLabel">发布网站</span><span class="publish-arrow">↗</span></button>
   </header>
+  <nav class="mobile-editor-dock" id="mobileEditorDock" aria-label="手机编辑快捷操作">
+    <button type="button" data-dock="pages"><span>☰</span><b>页面</b></button>
+    <button type="button" data-dock="inspector"><span>✎</span><b>属性</b></button>
+    <button type="button" data-dock="preview"><span>◉</span><b>预览</b></button>
+    <button type="button" data-dock="publish"><span>⇧</span><b>发布</b></button>
+  </nav>
 
   <main class="studio-shell">
     <aside class="sidebar" id="studioSidebar">
