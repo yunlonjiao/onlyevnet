@@ -395,3 +395,5 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
   #authLogoutBtn{min-height:44px}
   main button,.app-main button,.page button{min-height:44px!important}
 }
+
+@media(max-width:680px){a.brand-zone{min-height:44px}}
