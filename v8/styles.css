@@ -1335,3 +1335,10 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 @media(max-height:520px) and (min-width:821px){
   .canvas{min-height:380px;height:calc(100vh - 110px)}
 }
+
+/* publish dialog: keep the footer reachable on short screens */
+.publish-dialog{max-height:calc(100dvh - 12px);overflow:hidden;display:grid}
+.publish-shell{height:100%;max-height:calc(100dvh - 12px)}
+.publish-body{overflow:auto;min-height:0}
+.publish-head,.publish-foot{background:#fff}
+.publish-foot{position:relative;z-index:2}
