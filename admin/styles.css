@@ -419,9 +419,14 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 
 /* admin mobile nav scroll hint */
 @media(max-width:680px){
-  .admin-sidebar nav{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 18px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 18px),transparent);padding-right:18px}
+  .admin-sidebar nav{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);padding-right:28px}
 }
 
 @media(max-width:680px){.admin-sidebar nav button b{font-size:11px}}
 
 @media(max-width:680px){.auth-message{font-size:12px;min-height:16px;line-height:1.5}}
+
+@media(max-width:680px){
+  .admin-shell{padding-bottom:84px!important}
+  .admin-sidebar nav p{display:none}
+}
