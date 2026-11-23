@@ -321,6 +321,9 @@ async function runCloudImport(){
  const ep=$('#emptyProjects'),eb=ep?.querySelector('b'),epP=ep?.querySelector('p');
  if(!projects.length&&ep){ep.hidden=false;if(eb)eb.textContent='正在同步账号里的活动…';if(epP)epP.textContent='稍等，正在从云端拉取活动。'}
  let remote=[];try{remote=await listCloudProjects()}catch{cloudImporting=false;cloudImportDone=true;return}
+ const remoteIds=new Set(remote.map(p=>p.id));
+ const staleShared=projects.filter(p=>p.shared&&!remoteIds.has(p.cloudProjectId||p.id));
+ if(staleShared.length)writeProjects(projects.filter(p=>!staleShared.includes(p)));
  const known=new Set([...projects,...trash].map(p=>p.cloudProjectId||getCloudProjectId(p.templateId||DEFAULT_TEMPLATE_ID,p.id)).filter(Boolean));
  const templateIds=new Set(listTemplates().map(t=>t.id));
  const added=[];
