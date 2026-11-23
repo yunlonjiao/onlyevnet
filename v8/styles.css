@@ -1535,3 +1535,6 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 @media(pointer:coarse) and (max-height:560px){body.previewing .mobile-editor-dock{display:none!important}}
 
 @media(pointer:coarse){.back-admin-btn{width:44px!important;height:44px!important}}
+
+@media(max-width:820px){.page-inline-switch{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}}
+@media(pointer:coarse) and (max-height:560px){.page-inline-switch{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}}
