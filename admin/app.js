@@ -323,7 +323,7 @@ async function runCloudImport(){
  let remote=[];try{remote=await listCloudProjects()}catch{cloudImporting=false;cloudImportDone=true;return}
  const remoteIds=new Set(remote.map(p=>p.id));
  const staleShared=projects.filter(p=>p.shared&&!remoteIds.has(p.cloudProjectId||p.id));
- if(staleShared.length)writeProjects(projects.filter(p=>!staleShared.includes(p)));
+ if(staleShared.length){writeProjects(projects.filter(p=>!staleShared.includes(p)));try{renderProjects($('#projectSearch').value)}catch(e){}}
  const known=new Set([...projects,...trash].map(p=>p.cloudProjectId||getCloudProjectId(p.templateId||DEFAULT_TEMPLATE_ID,p.id)).filter(Boolean));
  const templateIds=new Set(listTemplates().map(t=>t.id));
  const added=[];
