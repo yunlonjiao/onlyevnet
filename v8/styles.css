@@ -1310,3 +1310,15 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 
 /* final inspector surface: pinned to the measured baseline */
 .inspector{background:#f4f2f7!important;border:0!important;border-left:0!important}
+
+/* mobile editor toolbar: keep publish reachable, drop non-essential actions */
+@media(max-width:520px){
+  .studio-topbar{gap:6px}
+  .studio-topbar .brand-zone{min-width:0;gap:0}
+  .studio-topbar .top-actions{flex:1 1 auto;min-width:0;gap:4px;justify-content:flex-end;overflow:visible}
+  .studio-topbar #shareBtn,.studio-topbar #previewBtn{display:none!important}
+  .studio-topbar .icon-button{width:34px;height:34px;min-width:34px;padding:0}
+  .studio-topbar #publishBtn{padding:0 10px;font-size:13px;height:34px;min-height:34px}
+  .studio-topbar .mobile-edit-group button{padding:0 6px}
+  .canvas-wrap{padding:8px!important}
+}
