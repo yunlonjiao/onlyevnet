@@ -449,6 +449,16 @@ async function manageCollaborators(project){
    project.cloudProjectId=cid;
   }catch(err){alert('这个活动还没有同步到云端，请先打开编辑器保存一次再试。');return}
  }
+ // Make sure a project that has never been opened still carries its template and current content before sharing.
+ try{
+  const cfg=await loadCloudConfig(cid);
+  if(cfg&&!cfg.templateId){
+   let st=null;try{st=JSON.parse(localStorage.getItem(projectStorageKey(project))||'null')}catch{}
+   const tpl=project.templateId||DEFAULT_TEMPLATE_ID;
+   const config=st&&typeof st==='object'?{...st,templateId:tpl}:{templateId:tpl,eventName:project.name||''};
+   await saveCloudConfig({projectId:cid,config});
+  }
+ }catch(e){}
  collabProject={project,cid};
  const dlg=$('#collabDialog');if(!dlg)return;
  if(!dlg.dataset.bound){
