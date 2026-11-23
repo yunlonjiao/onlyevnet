@@ -331,13 +331,17 @@ async function runCloudImport(){
   if(item.siteId){try{localStorage.setItem(key,JSON.stringify({siteId:item.siteId,cloudProjectId:item.id,slug:(String(item.visitorSiteUrl||'').replace(/^https?:\/\//,'').split('.onlyevent.cn')[0])||'',url:item.visitorSiteUrl,publishedAt:item.updatedAt}))}catch{};return}
   try{const site=await getCloudSite(item.id);if(site)localStorage.setItem(key,JSON.stringify({siteId:site.id,cloudProjectId:item.id,slug:site.slug,url:site.url,publishedAt:site.updated_at}))}catch{}
  };
- const knownHits=remote.filter(item=>known.has(item.id)||projects.some(p=>p.id===item.id));
+ const localTemplateByCloud=new Map(),localTemplateByLocalId=new Map();
+ for(const p of [...projects,...trash]){const cid=p.cloudProjectId||getCloudProjectId(p.templateId||DEFAULT_TEMPLATE_ID,p.id);if(cid)localTemplateByCloud.set(cid,p.templateId||'');if(p.localProjectId)localTemplateByLocalId.set(p.localProjectId,p.templateId||'')}
+ const remoteResolved=remote.map(item=>{let tpl=item.templateId;if(!tpl){tpl=localTemplateByCloud.get(item.id)||localTemplateByLocalId.get(item.localProjectId)||''}return {...item,templateId:tpl,_backfill:!!tpl&&!item.templateId}});
+ const knownHits=remoteResolved.filter(item=>known.has(item.id)||projects.some(p=>p.id===item.id));
  await Promise.all(knownHits.map(restorePublication));
- const candidates=remote.filter(item=>item.templateId&&templateIds.has(item.templateId)&&!known.has(item.id)&&!projects.some(p=>p.id===item.id));
+ const candidates=remoteResolved.filter(item=>item.templateId&&templateIds.has(item.templateId)&&!known.has(item.id)&&!projects.some(p=>p.id===item.id));
  await Promise.all(candidates.map(async item=>{
   try{
-   const config=item.config||await loadCloudConfig(item.id);
+   let config=item.config||await loadCloudConfig(item.id);
    if(!config||typeof config!=='object')return;
+   if(item._backfill&&!config.templateId){config={...config,templateId:item.templateId};try{await saveCloudConfig({projectId:item.id,config})}catch(e){}}
    localStorage.setItem('onlyevent-studio-v8:'+item.templateId+':'+item.id+':iframe',JSON.stringify({...config,projectId:item.id,templateId:item.templateId}));
    setCloudProjectId(item.templateId,item.id,item.id);
    await restorePublication(item);
