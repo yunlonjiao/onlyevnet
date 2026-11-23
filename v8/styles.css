@@ -1457,3 +1457,8 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
   .publish-head>button{width:44px;height:44px}
   .publish-body button,.publish-foot button{min-height:44px}
 }
+
+@media(max-width:820px){
+  .share-head button{width:44px;height:44px}
+  .mobile-sheet-close{width:44px;height:44px}
+}
