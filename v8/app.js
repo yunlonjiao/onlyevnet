@@ -268,7 +268,7 @@ function renderPublishDialog(){
  $('#publishSlugHint').textContent=renamingSite?'改网址后，旧网址会自动跳到新网址。':'发布后得到一个游客网址，再次发布会更新同一个网站。';
  $('#publishHost').textContent='.onlyevent.cn';
  publishPrimary.textContent=hasSite?(renamingSite?'保存新网址并更新':'更新网站'):'发布网站';
- publishStatus.textContent=hasSite?'已发布。点「更新网站」把最新修改发上去。':'先填一个网站地址。';
+ publishStatus.textContent=hasSite?'已发布。点「更新网站」把最新修改发上去。':(publishSlug.value?'确认信息后点「发布网站」上线。':'先填一个网站地址。');
  const checks=publishChecks(state,{hasBoothPage:!(activeTemplate.studioPages?.hidden||[]).includes('booths')}),list=$('#publishChecks');
  list.innerHTML=checks.map(t=>'<li></li>').join('');checks.forEach((t,i)=>{list.children[i].textContent=t});
  list.hidden=!checks.length;$('#publishChecksTitle').hidden=!checks.length;
