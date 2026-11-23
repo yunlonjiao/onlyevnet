@@ -15,7 +15,7 @@ html[data-oe-template="08-birthday"] #activities .bd-step-body{width:auto!import
 
 @media(max-width:1279px){html[data-oe-template="08-birthday"] #guide .guide-detail-content .bd-tip{flex:0 0 100%!important;max-width:100%!important;width:100%!important}}
 @media(max-width:760px){html[data-oe-template="08-birthday"] #guide .guide-detail-content .bd-tip{flex:0 0 100%!important;max-width:100%!important;width:100%!important}html[data-oe-template="08-birthday"] #guide .guide-detail-content{display:block!important}html[data-oe-template="08-birthday"] #guide .bd-tip{width:100%!important}}
-@media(max-width:760px){html[data-oe-template="08-birthday"] .mobile-dock{display:flex!important;width:100%!important}html[data-oe-template="08-birthday"] .mobile-dock a{flex:1 1 0!important;text-align:center!important;justify-content:center!important}}
+@media(max-width:760px){html[data-oe-template="08-birthday"] .mobile-dock{display:flex!important;left:0!important;right:0!important;width:auto!important}html[data-oe-template="08-birthday"] .mobile-dock a{flex:1 1 0!important;min-width:0!important;text-align:center!important;justify-content:center!important;padding:11px 4px!important}}
 
 html[data-oe-template="08-birthday"] #guide article.bd-tip{display:flex!important;flex-direction:column!important;height:auto!important;min-height:0!important}
 html[data-oe-template="08-birthday"] #guide article.bd-tip>button.guide-access-media{order:-1!important;flex:0 0 auto!important}
