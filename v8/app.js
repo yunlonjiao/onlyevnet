@@ -1902,6 +1902,10 @@ $('#imageInput').addEventListener('change',async e=>{
 function setDevice(mode){setStudioDevice(mode,{canvas})}
 $('#deviceDesktopBtn').onclick=()=>setDevice('desktop');
 $('#deviceMobileBtn').onclick=()=>setDevice('mobile');
+ const syncStudioDevice=()=>{try{setDevice(innerWidth<=820?'mobile':'desktop')}catch(e){}};
+ syncStudioDevice();
+ let __deviceTimer=null;
+ window.addEventListener('resize',()=>{clearTimeout(__deviceTimer);__deviceTimer=setTimeout(syncStudioDevice,150)});
 function setPreview(next){
  preview=!!next;setStudioPreviewChrome(preview);
  // The renderer handles the entry state in OE_SET_MODE (and OE_INIT_STATE on a slow boot).
