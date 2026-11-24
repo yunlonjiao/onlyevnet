@@ -8,7 +8,7 @@ export function setStudioDevice(mode,{canvas,documentRoot=document}={}){
 }
 export function setStudioPreviewChrome(enabled,{documentRoot=document}={}){
  const root=documentRoot.body;
- root.classList.toggle('previewing',!!enabled);
+ root.classList.toggle('previewing-safe',!!enabled);
  const label=documentRoot.querySelector('#previewLabel');
  if(label)label.textContent=enabled?'退出预览':'预览';
  documentRoot.querySelector('#previewBtn')?.classList.toggle('active',!!enabled);
