@@ -296,7 +296,10 @@ const featuredShape=`
 .tp-site #participation .featured-activity-card .featured-activity-media.is-empty span{display:none}
 .tp-site #participation .featured-activity-copy{padding:0!important}
 `;
-export const previewStyle=coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+menuStyle+featuredShape;
+const mobileAuditStyle = `
+@media(max-width:720px){.mobile-dock a{min-width:44px!important}}
+`;
+export const previewStyle=mobileAuditStyle+coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+menuStyle+featuredShape;
 export const previewBody=`<div class="tp-site tp-nav-final tp-nav-clean tp-inner-clean tp-breathe tp-nav-last tp-nav-last2 tp-nav-wide tp-nav-tall tp-tight-nav">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">BILIBILI ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav></div></header>
 <main id="top"><div class="tp-menu">

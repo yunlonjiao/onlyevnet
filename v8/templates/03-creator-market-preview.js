@@ -686,6 +686,13 @@ const overrideStyle=`
 `;
 const mobileAuditStyle = `
 @media(max-width:720px){
+ .cm-site .cm-social-avatar:not(:has(img)){font-size:0!important}
+ .cm-site .cm-social-avatar:not(:has(img))::after{content:"＋";font-size:20px;line-height:1}
+ .cm-site .pill.venue-nav{min-height:44px!important}
+ .cm-site .cm-street-row{min-height:44px!important}
+}
+
+@media(max-width:720px){
   .cm-site .cm-feed-link{height:auto!important;min-height:44px}
   .cm-site .pill.venue-nav{min-height:44px}
   .cm-site .cm-social-avatar{font-size:9px!important;line-height:1.1;white-space:normal!important;text-align:center;padding:2px}
