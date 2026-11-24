@@ -113,6 +113,7 @@
       if (event.target.closest('[data-sidebar-content-add]')) { fromManager = true; setTimeout(() => show('fields'), 160); }
     });
 
+    window.__mnDebug={screens,show,get screen(){return screen},get fromManager(){return fromManager}};
     app.querySelector('[data-mn-preview]').addEventListener('click', () => document.querySelector('#previewBtn')?.click());
     app.querySelector('[data-mn-publish]').addEventListener('click', () => document.querySelector('#publishBtn')?.click());
 
