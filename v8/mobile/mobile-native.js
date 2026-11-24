@@ -52,6 +52,7 @@
     function syncTitle() {
       if (screen === 'pages') { titleEl.textContent = '编辑内容'; subEl.textContent = '选择页面'; }
       else if (screen === 'contents') {
+        localizeContentLabels();
         titleEl.textContent = (document.querySelector('#pageContentTitle')?.textContent || '页面内容').trim();
         subEl.textContent = '选择要改的内容';
       } else if (screen === 'items') {
@@ -62,6 +63,13 @@
         subEl.textContent = '属性';
         localizeFields();
       }
+    }
+    function localizeContentLabels() {
+      screens.contents.querySelectorAll('#pageContentNav button').forEach((btn) => {
+        const old = btn.textContent;
+        const next = old.replace(/桌面 KV/g, '电脑端主图').replace(/手机 KV/g, '手机端主图').replace(/封面 KV/g, '封面图').replace(/\bKV\b/g, '主图');
+        if (next !== old) btn.textContent = next;
+      });
     }
     function localizeFields() {
       screens.fields.querySelectorAll('.inspector-body span,.inspector-body label,.inspector-body p').forEach((el) => {
