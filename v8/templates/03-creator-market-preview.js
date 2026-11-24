@@ -688,7 +688,7 @@ const mobileAuditStyle = `
 @media(max-width:720px){
  .cm-site .cm-social-avatar:not(:has(img)){font-size:0!important}
  .cm-site .cm-social-avatar:not(:has(img))::after{content:"＋";font-size:20px;line-height:1}
- .cm-site .pill.venue-nav{min-height:44px!important}
+ .cm-site .pill.venue-nav{min-height:44px!important;height:44px!important;display:inline-flex!important;align-items:center!important}
  .cm-site .cm-street-row{min-height:44px!important}
 }
 
