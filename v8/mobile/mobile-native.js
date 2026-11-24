@@ -1,6 +1,4 @@
-/* Mobile-native editor shell.
-   This does not restyle the desktop sidebar: it moves the page list, content list and
-   property form into a dedicated three-screen mobile app with its own navigation. */
+/* Mobile-native editor shell: 64% live site + 36% swipeable editor drawer. */
 (function () {
   const isPhone = () => innerWidth <= 820 || (matchMedia('(pointer:coarse)').matches && innerHeight <= 560);
   if (!isPhone()) return;
@@ -15,21 +13,28 @@
     app.id = 'mNativeApp';
     app.hidden = true;
     app.innerHTML = `
+      <div class="mn-grab" aria-hidden="true"></div>
       <header class="mn-head">
         <button type="button" class="mn-back" data-mn-back aria-label="返回">←</button>
-        <div class="mn-title"><b data-mn-title>编辑内容</b><span data-mn-sub>页面</span></div>
-        <span class="mn-save">已保存</span>
+        <div class="mn-title"><b data-mn-title>编辑内容</b></div>
+        <div class="mn-actions">
+          <button type="button" data-mn-preview>预览</button>
+          <button type="button" class="primary" data-mn-publish>发布</button>
+        </div>
       </header>
+      <nav class="mn-tabs">
+        <button type="button" data-mn-tab="pages" class="active">页面</button>
+        <button type="button" data-mn-tab="contents">内容</button>
+        <button type="button" data-mn-tab="fields">属性</button>
+      </nav>
       <main class="mn-main">
-        <section class="mn-screen" data-mn-screen="pages"></section>
-        <section class="mn-screen" data-mn-screen="contents"></section>
-        <section class="mn-screen" data-mn-screen="items"></section>
-        <section class="mn-screen" data-mn-screen="fields"></section>
-      </main>
-      <footer class="mn-foot">
-        <button type="button" data-mn-preview>预览</button>
-        <button type="button" class="primary" data-mn-publish>发布</button>
-      </footer>`;
+        <div class="mn-track">
+          <section class="mn-screen" data-mn-screen="pages"></section>
+          <section class="mn-screen" data-mn-screen="contents"></section>
+          <section class="mn-screen" data-mn-screen="items"></section>
+          <section class="mn-screen" data-mn-screen="fields"></section>
+        </div>
+      </main>`;
     document.body.appendChild(app);
 
     const screens = {
@@ -44,23 +49,23 @@
     screens.items.appendChild(contentBlock.querySelector('#contentListPanel'));
 
     const titleEl = app.querySelector('[data-mn-title]');
-    const subEl = app.querySelector('[data-mn-sub]');
-    const backBtn = app.querySelector('[data-mn-back]');
+    const track = app.querySelector('.mn-track');
     let screen = 'pages';
     let fromManager = false;
+    const order = ['pages', 'contents', 'items', 'fields'];
 
+    function tabFor(next) {
+      if (next === 'items') return 'contents';
+      return next;
+    }
     function syncTitle() {
-      if (screen === 'pages') { titleEl.textContent = '编辑内容'; subEl.textContent = '选择页面'; }
+      if (screen === 'pages') titleEl.textContent = '编辑内容';
       else if (screen === 'contents') {
         localizeContentLabels();
         titleEl.textContent = (document.querySelector('#pageContentTitle')?.textContent || '页面内容').trim();
-        subEl.textContent = '选择要改的内容';
-      } else if (screen === 'items') {
-        titleEl.textContent = '选择要改的条目';
-        subEl.textContent = '内容';
-      } else {
+      } else if (screen === 'items') titleEl.textContent = '选择要改的条目';
+      else {
         titleEl.textContent = (inspector.querySelector('.inspector-header b')?.textContent || '编辑').trim();
-        subEl.textContent = '属性';
         localizeFields();
       }
     }
@@ -111,33 +116,35 @@
     function show(next) {
       screen = next;
       app.hidden = false;
-      document.body.classList.add('m-native-open');
-      Object.entries(screens).forEach(([name, el]) => { el.hidden = name !== next; });
-      app.querySelector('.mn-foot').hidden = next === 'fields' || next === 'items';
+      document.body.classList.add('m-native-open', 'm-native-split');
+      const idx = Math.max(0, order.indexOf(next));
+      track.style.transform = 'translateX(' + (-idx * 100) + '%)';
+      app.querySelectorAll('[data-mn-tab]').forEach((btn) => btn.classList.toggle('active', btn.dataset.mnTab === tabFor(next)));
       syncTitle();
-      if (next === 'contents') {
-        decorateContentGrid();
-        const block = screens.contents.querySelector('.page-content-block');
-        block.querySelector('#pageContentNav')?.scrollIntoView({ block: 'start' });
-      }
+      if (next === 'contents') decorateContentGrid();
+      app.classList.toggle('is-fields', next === 'fields');
+      document.body.classList.toggle('m-native-fields', next === 'fields');
     }
     function hide() {
       app.hidden = true;
-      document.body.classList.remove('m-native-open');
+      document.body.classList.remove('m-native-open', 'm-native-split', 'm-native-fields');
     }
 
-    backBtn.addEventListener('click', () => {
-      if (screen === 'fields') { show(fromManager ? 'items' : 'contents'); }
-      else if (screen === 'items') { show('contents'); }
+    app.querySelector('[data-mn-back]').addEventListener('click', () => {
+      if (screen === 'fields') show(fromManager ? 'items' : 'contents');
+      else if (screen === 'items') show('contents');
       else if (screen === 'contents') show('pages');
       else hide();
     });
+    app.querySelectorAll('[data-mn-tab]').forEach((btn) => btn.addEventListener('click', () => {
+      if (btn.dataset.mnTab === 'pages') show('pages');
+      if (btn.dataset.mnTab === 'contents') show('contents');
+      if (btn.dataset.mnTab === 'fields') show('fields');
+    }));
 
     screens.pages.addEventListener('click', (event) => {
-      if (event.target.closest('[data-mn-back]')) return;
       if (event.target.closest('[data-page]')) setTimeout(() => show('contents'), 0);
     });
-
     screens.contents.addEventListener('click', (event) => {
       const manager = event.target.closest('[data-page-content-manager]');
       if (event.target.closest('[data-page-tool]')) {
@@ -148,17 +155,30 @@
         setTimeout(() => show('items'), 80);
       }
     });
-
     screens.items.addEventListener('click', (event) => {
       if (event.target.closest('[data-open-item]')) { fromManager = true; setTimeout(() => show('fields'), 100); }
       if (event.target.closest('[data-sidebar-content-add]')) { fromManager = true; setTimeout(() => show('fields'), 160); }
     });
 
-    window.__mnDebug={screens,show,get screen(){return screen},get fromManager(){return fromManager}};
     app.querySelector('[data-mn-preview]').addEventListener('click', () => document.querySelector('#previewBtn')?.click());
     app.querySelector('[data-mn-publish]').addEventListener('click', () => document.querySelector('#publishBtn')?.click());
 
-    // Opening the old mobile dock buttons now enters the native shell.
+    // Swipe the editor drawer left/right between page → content → field.
+    let sx = 0, sy = 0, swiping = false;
+    app.querySelector('.mn-main').addEventListener('touchstart', (event) => {
+      if (event.target.closest('input,textarea,select')) return;
+      const t = event.touches[0]; sx = t.clientX; sy = t.clientY; swiping = true;
+    }, { passive: true });
+    app.querySelector('.mn-main').addEventListener('touchend', (event) => {
+      if (!swiping) return;
+      swiping = false;
+      const t = event.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+      if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.4) return;
+      const idx = Math.max(0, order.indexOf(screen));
+      const next = dx < 0 ? Math.min(order.length - 1, idx + 1) : Math.max(0, idx - 1);
+      if (next !== idx) show(order[next]);
+    }, { passive: true });
+
     document.addEventListener('click', (event) => {
       if (!isPhone()) return;
       if (event.target.closest('#mobilePagesBtn')) {
@@ -172,7 +192,6 @@
       }
     }, true);
 
-    // Desktop breakpoints must not be affected.
     addEventListener('resize', () => {
       if (!isPhone() && !app.hidden) hide();
     });
