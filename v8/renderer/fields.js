@@ -3,8 +3,9 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
   const fieldMap={
     eventName:()=>liveField('eventName'),
     tagline:()=> $('[data-oe-field="tagline"]') || $('.hero-copy p'),
-    date:()=>liveField('date'),
-    location:()=>liveField('location'),
+    date:()=>liveField('date')||$('.hero .meta .pill:first-child'),
+    city:()=>liveField('city')||$('.hero .meta .pill:nth-child(2)'),
+    location:()=>liveField('location')||$('.hero .meta .venue-nav'),
     edition:()=>liveField('edition'),
     heroTitle1:()=>$('.hero-title-1'),
     heroTitle2:()=>$('.hero-title-2'),
