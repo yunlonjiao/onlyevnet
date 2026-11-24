@@ -223,7 +223,7 @@ const referenceStyle=`
 const menuStyle=`
 /* skeleton: one paper menu lying on the table. The courses (sections) are numbered and separated by dotted rules, never by full-width bands */
 .tp-site main{display:block;padding:0 0 10px}
-.tp-menu{counter-reset:course;position:relative;width:min(960px,calc(100% - 8px));margin:30px auto 0;background:var(--tp-paper);border:3px solid var(--tp-brown);border-radius:30px;box-shadow:0 0 0 7px #fff,0 0 0 10px var(--tp-pink),0 30px 60px #5a3d3a26;overflow:hidden}
+.tp-menu{outline:0!important;counter-reset:course;position:relative;width:min(960px,calc(100% - 8px));margin:30px auto 0;background:var(--tp-paper);border:3px solid var(--tp-brown);border-radius:30px;box-shadow:0 0 0 7px #fff,0 0 0 10px var(--tp-pink),0 30px 60px #5a3d3a26;overflow:hidden}
 .tp-menu:before{content:"";position:absolute;inset:12px;border:2px dashed #f0bfcb;border-radius:20px;pointer-events:none;z-index:0}
 .tp-menu>*{position:relative;z-index:1}
 .tp-menu .hero{padding:44px 44px 30px}
