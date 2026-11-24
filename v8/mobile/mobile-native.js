@@ -23,6 +23,7 @@
       <main class="mn-main">
         <section class="mn-screen" data-mn-screen="pages"></section>
         <section class="mn-screen" data-mn-screen="contents"></section>
+        <section class="mn-screen" data-mn-screen="items"></section>
         <section class="mn-screen" data-mn-screen="fields"></section>
       </main>
       <footer class="mn-foot">
@@ -34,33 +35,47 @@
     const screens = {
       pages: app.querySelector('[data-mn-screen="pages"]'),
       contents: app.querySelector('[data-mn-screen="contents"]'),
+      items: app.querySelector('[data-mn-screen="items"]'),
       fields: app.querySelector('[data-mn-screen="fields"]')
     };
     screens.pages.appendChild(pageNav);
     screens.contents.appendChild(contentBlock);
     screens.fields.appendChild(inspector);
+    screens.items.appendChild(contentBlock.querySelector('#contentListPanel'));
 
     const titleEl = app.querySelector('[data-mn-title]');
     const subEl = app.querySelector('[data-mn-sub]');
     const backBtn = app.querySelector('[data-mn-back]');
     let screen = 'pages';
+    let fromManager = false;
 
     function syncTitle() {
       if (screen === 'pages') { titleEl.textContent = '编辑内容'; subEl.textContent = '选择页面'; }
+      else if (screen === 'items') { show('contents'); }
       else if (screen === 'contents') {
         titleEl.textContent = (document.querySelector('#pageContentTitle')?.textContent || '页面内容').trim();
         subEl.textContent = '选择要改的内容';
+      } else if (screen === 'items') {
+        titleEl.textContent = '选择要改的条目';
+        subEl.textContent = '内容';
       } else {
         titleEl.textContent = (inspector.querySelector('.inspector-header b')?.textContent || '编辑').trim();
         subEl.textContent = '属性';
+        localizeFields();
       }
+    }
+    function localizeFields() {
+      screens.fields.querySelectorAll('.inspector-body span,.inspector-body label,.inspector-body p').forEach((el) => {
+        if (!el.textContent || el.children.length) return;
+        el.textContent = el.textContent.replace(/桌面 KV/g, '电脑端主图').replace(/手机 KV/g, '手机端主图').replace(/封面 KV/g, '封面图').replace(/\bKV\b/g, '主图');
+      });
     }
     function show(next) {
       screen = next;
       app.hidden = false;
       document.body.classList.add('m-native-open');
       Object.entries(screens).forEach(([name, el]) => { el.hidden = name !== next; });
-      app.querySelector('.mn-foot').hidden = next === 'fields';
+      app.querySelector('.mn-foot').hidden = next === 'fields' || next === 'items';
       syncTitle();
       if (next === 'contents') {
         const block = screens.contents.querySelector('.page-content-block');
@@ -73,11 +88,7 @@
     }
 
     backBtn.addEventListener('click', () => {
-      if (screen === 'fields') {
-        const hasManagerList = screens.contents.querySelector('#contentListPanel [data-open-item]');
-        show('contents');
-        if (hasManagerList) screens.contents.querySelector('#contentListPanel')?.scrollIntoView({ block: 'start' });
-      } else if (screen === 'contents') show('pages');
+      if (screen === 'fields') { show(fromManager ? 'items' : 'contents'); } else if (screen === 'contents') show('pages');
       else hide();
     });
 
@@ -87,18 +98,19 @@
     });
 
     screens.contents.addEventListener('click', (event) => {
+      const manager = event.target.closest('[data-page-content-manager]');
       if (event.target.closest('[data-page-tool]')) {
+        fromManager = false;
         setTimeout(() => show('fields'), 80);
+      } else if (manager) {
+        fromManager = true;
+        setTimeout(() => show('items'), 80);
       }
-      if (event.target.closest('[data-page-content-manager]')) {
-        setTimeout(() => screens.contents.querySelector('#contentListPanel')?.scrollIntoView({block:'start'}), 80);
-      }
-      if (event.target.closest('[data-open-item]')) {
-        setTimeout(() => show('fields'), 120);
-      }
-      if (event.target.closest('[data-sidebar-content-add]')) {
-        setTimeout(() => show('fields'), 160);
-      }
+    });
+
+    screens.items.addEventListener('click', (event) => {
+      if (event.target.closest('[data-open-item]')) { fromManager = true; setTimeout(() => show('fields'), 100); }
+      if (event.target.closest('[data-sidebar-content-add]')) { fromManager = true; setTimeout(() => show('fields'), 160); }
     });
 
     app.querySelector('[data-mn-preview]').addEventListener('click', () => document.querySelector('#previewBtn')?.click());
