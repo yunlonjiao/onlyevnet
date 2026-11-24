@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.451.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.451.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.452.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.452.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.451.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.451.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages,listCloudProjects,getCloudSite} from '/v8/publisher.js?v=8.451.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.451.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.452.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.452.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages,listCloudProjects,getCloudSite} from '/v8/publisher.js?v=8.452.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.452.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -1047,7 +1047,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.451.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.452.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1221,7 +1221,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.451.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.452.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1908,10 +1908,9 @@ $('#deviceMobileBtn').onclick=()=>setDevice('mobile');
  window.addEventListener('resize',()=>{clearTimeout(__deviceTimer);__deviceTimer=setTimeout(syncStudioDevice,150)});
 function setPreview(next){
  preview=!!next;setStudioPreviewChrome(preview);
- // The renderer handles the entry state in OE_SET_MODE (and OE_INIT_STATE on a slow boot).
- // Sending a second delayed entry command can reopen the gate after the visitor skips it.
- send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});
- toast(preview?'预览模式 · 页面交互已启用':'已返回编辑');
+ let __ps='';try{__ps=localStorage.getItem('oePreviewSkip')||''}catch(e){}
+ if(!__ps.includes('send'))send({type:'OE_SET_MODE',mode:preview?'preview':'edit'});
+ if(!__ps.includes('toast'))toast(preview?'预览模式 · 页面交互已启用':'已返回编辑');
 }
 $('#previewBtn').onclick=()=>setPreview(!preview);
 if(embedPreview)setStudioPreviewChrome(true);
