@@ -2078,7 +2078,7 @@ function initMobileQuickNav(){
   strip.innerHTML='';
   groups.forEach(g=>{
    const b=document.createElement('button');b.type='button';b.className='m-content-card'+(g.classList.contains('active')?' active':'');b.textContent=g.textContent.trim();
-   b.onclick=()=>{g.click();openSidebar();setTimeout(()=>document.querySelector('#contentListPanel')?.scrollIntoView({block:'center',behavior:'smooth'}),250)};
+   b.onclick=()=>{g.click();if(g.dataset.pageTool){setTimeout(openInspector,220)}else{openSidebar();setTimeout(()=>document.querySelector('#contentListPanel')?.scrollIntoView({block:'center',behavior:'smooth'}),250)}};
    strip.append(b);
   });
   const more=document.createElement('button');more.type='button';more.className='m-content-card';more.textContent='更多 ›';more.onclick=()=>{openSidebar();setTimeout(()=>document.querySelector('.page-content-block')?.scrollIntoView({block:'start',behavior:'smooth'}),200)};strip.append(more);
