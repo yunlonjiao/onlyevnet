@@ -71,7 +71,19 @@
         if (next !== old) btn.textContent = next;
       });
     }
+    function simplifyForPhone() {
+      if (!isPhone()) return;
+      const body = screens.fields.querySelector('.inspector-body');
+      if (!body) return;
+      body.querySelectorAll('label').forEach((el) => { if (/手机/.test(el.textContent || '')) el.remove(); });
+      body.querySelectorAll('.item-media').forEach((el) => { if (/手机/.test(el.textContent || '')) el.remove(); });
+      body.querySelectorAll('p,.inspector-note').forEach((el) => { if (/手机/.test(el.textContent || '')) el.remove(); });
+      body.querySelectorAll('span,label').forEach((el) => {
+        if (!el.children.length) el.textContent = el.textContent.replace(/桌面焦点/g, '焦点');
+      });
+    }
     function localizeFields() {
+      simplifyForPhone();
       if (isPhone()) {
         screens.fields.querySelectorAll('.inspector-body label').forEach((label) => {
           if (/手机主图|手机 KV/.test(label.textContent || '')) label.remove();
