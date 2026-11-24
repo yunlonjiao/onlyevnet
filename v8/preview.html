@@ -36,6 +36,8 @@
     clearTimeout(timer);
     let state = {};
     try { state = JSON.parse(localStorage.getItem(stateKey) || '{}') || {}; } catch (e) {}
+    state.templateId = state.templateId || template;
+    state.projectId = state.projectId || project;
     frame.contentWindow.postMessage({ type: 'OE_INIT_STATE', state, page: 'home', mode: 'preview' }, location.origin);
   });
 </script>
