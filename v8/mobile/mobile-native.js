@@ -71,6 +71,9 @@
         if (next !== old) btn.textContent = next;
       });
     }
+    function showAllFields() {
+      screens.fields.querySelectorAll('.m-field-hidden').forEach((el) => el.classList.remove('m-field-hidden'));
+    }
     function simplifyForPhone() {
       if (!isPhone()) return;
       const body = screens.fields.querySelector('.inspector-body');
@@ -83,6 +86,7 @@
       });
     }
     function localizeFields() {
+      showAllFields();
       simplifyForPhone();
       if (isPhone()) {
         screens.fields.querySelectorAll('.inspector-body label').forEach((label) => {

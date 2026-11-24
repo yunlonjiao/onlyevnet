@@ -64,3 +64,8 @@ body.m-native-open .mobile-page-pills,body.m-native-open .mobile-content-strip,b
 #mNativeApp .inspector-body{padding-top:12px!important}
 #mNativeApp .inspector-kicker,#mNativeApp .inspector-status,#mNativeApp .inspector-path{display:none!important}
 @media(max-width:820px){html,body{overscroll-behavior:none}body:not(.m-native-open){overflow:hidden!important}.studio-shell{height:100dvh!important;overflow:hidden!important}.canvas-wrap,.canvas-stage{overflow:hidden!important}}
+
+/* all fields on native field screen */
+#mNativeApp #mobileFieldBar{display:none!important}
+#mNativeApp .inspector-body label.m-field-hidden{display:block!important}
+#mNativeApp .inspector-body{padding-bottom:calc(28px + env(safe-area-inset-bottom))!important}
