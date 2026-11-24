@@ -430,3 +430,6 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
   .admin-shell{padding-bottom:84px!important}
   .admin-sidebar nav p{display:none}
 }
+
+/* admin mobile: no double-tap zoom */
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}

@@ -1060,7 +1060,7 @@ window.addEventListener('message',e=>{
    setWorkspace('pages');syncStudioPageUI(page,{openContent:true});showInspectorEmpty();
    return
  }
- if(m.type==='OE_SELECT_FIELD'){document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.remove('active'));syncCanvasSelection(m.path);focusCheckpointTaken=false;openFieldInspector(m.path);return}
+ if(m.type==='OE_SELECT_FIELD'){document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.remove('active'));syncCanvasSelection(m.path);focusCheckpointTaken=false;openFieldInspector(m.path);openInspectorSheetOnPhone();return}
  if(m.type==='OE_FIELD_FOCUS'){if(!focusCheckpointTaken){checkpoint();focusCheckpointTaken=true}return}
  if(m.type==='OE_FIELD_CHANGE'){
  setDeep(m.path,m.value);
@@ -2033,7 +2033,7 @@ try{
  }
 }catch(e){}
 
-try{const __vv=window.visualViewport;if(__vv){const __syncSafari=()=>{const docH=document.documentElement.clientHeight||window.innerHeight;const extra=Math.max(0,docH-__vv.height,window.innerHeight-(__vv.height+(__vv.offsetTop||0)));document.documentElement.style.setProperty('--safari-inset',extra+'px')};__vv.addEventListener('resize',__syncSafari);__vv.addEventListener('scroll',__syncSafari);window.addEventListener('orientationchange',()=>setTimeout(__syncSafari,300));__syncSafari()}}catch(e){}
+try{const __vv=window.visualViewport;if(__vv){const __syncSafari=()=>{const docH=document.documentElement.clientHeight||window.innerHeight;const extra=Math.min(140,Math.max(0,docH-__vv.height,window.innerHeight-(__vv.height+(__vv.offsetTop||0))));document.documentElement.style.setProperty('--safari-inset',extra+'px')};__vv.addEventListener('resize',__syncSafari);__vv.addEventListener('scroll',__syncSafari);window.addEventListener('orientationchange',()=>setTimeout(__syncSafari,300));__syncSafari()}}catch(e){}
 
 try{
  const __ensureSidebarClose=()=>{
@@ -2046,3 +2046,6 @@ try{
  new MutationObserver(__ensureSidebarClose).observe(document.body,{childList:true,subtree:true});
  __ensureSidebarClose();
 }catch(e){}
+
+function openInspectorSheetOnPhone(){try{const phone=innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560);if(phone)mobilesheetOpen()}catch(e){}}
+function mobilesheetOpen(){try{if(typeof mobilePanels!=='undefined'&&mobilePanels&&mobilePanels.open)mobilePanels.open('inspector')}catch(e){}}
