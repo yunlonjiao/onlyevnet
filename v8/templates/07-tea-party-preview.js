@@ -301,7 +301,8 @@ body .mobile-dock a{min-width:44px!important}
 
 @media(max-width:720px){.mobile-dock a{min-width:44px!important}}
 `;
-export const previewStyle=mobileAuditStyle+coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+menuStyle+featuredShape;
+const navMobileFix=`@media(max-width:820px){.tp-site .nav{height:auto!important;padding:14px 0 0!important;background:#fffdf8!important;border-bottom:3px solid var(--tp-brown)!important}.tp-site .nav .wrap{flex-wrap:wrap!important;align-items:center!important;justify-content:space-between!important;gap:8px 18px!important;height:auto!important}.tp-site .nav .brand{flex:0 0 auto!important;max-width:72%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}.tp-site .nav .links{order:3!important;flex:1 1 100%!important;display:flex!important;justify-content:center!important;gap:0!important;margin:0!important;white-space:normal!important;overflow:auto!important;border-top:1px solid var(--tp-line)!important;padding:0!important}.tp-site .nav .links a{padding:12px 16px!important;font-size:12px!important}}`;
+export const previewStyle=mobileAuditStyle+coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+menuStyle+featuredShape+navMobileFix;
 export const previewBody=`<div class="tp-site tp-nav-final tp-nav-clean tp-inner-clean tp-breathe tp-nav-last tp-nav-last2 tp-nav-wide tp-nav-tall tp-tight-nav">
 <header class="nav"><div class="wrap"><a class="brand" href="#top" data-oe-field="eventName">BILIBILI ONLY</a><nav class="links" data-oe-mount="nav-links"><a href="#top" data-page-link="home">首页</a><a href="#activities" data-target-mode="page" data-page-link="activities">当天流程</a><a href="#guests" data-target-mode="page" data-page-link="guests">同席的人</a><a href="#guide" data-target-mode="page" data-page-link="guide">须知</a></nav></div></header>
 <main id="top"><div class="tp-menu">
