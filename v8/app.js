@@ -2141,3 +2141,5 @@ function initMobileSheetUX(){
  const wrap=document.querySelector('.canvas-wrap');let x0=0,y1=0;
  if(wrap){wrap.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y1=e.touches[0].clientY},{passive:true});wrap.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y1;if(Math.abs(dx)<60||Math.abs(dy)>40)return;const pills=[...document.querySelectorAll('#mobilePagePills .m-page-pill[data-page]')];const cur=pills.findIndex(p=>p.classList.contains('active'));if(cur<0)return;const next=pills[cur+(dx<0?1:-1)];if(next)next.click()},{passive:true})}
 }
+
+try{const __closePanelsOnPreview=()=>{if(document.body.classList.contains('previewing')){document.body.classList.remove('mobile-sidebar-open','mobile-inspector-open');const bd=document.querySelector('#mobilePanelBackdrop');if(bd)bd.hidden=true}};new MutationObserver(__closePanelsOnPreview).observe(document.body,{attributes:true,attributeFilter:['class']});}catch(e){}
