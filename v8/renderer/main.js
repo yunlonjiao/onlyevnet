@@ -330,3 +330,13 @@ document.addEventListener('click',(e)=>{
  document.querySelectorAll('#activities .activity-day-tabs [data-activity-day]').forEach(x=>x.classList.toggle('active',x===tab));
  document.querySelectorAll('#activities [data-activity-day]:not(.activity-day-tabs [data-activity-day])').forEach(r=>{r.hidden=!!day&&r.dataset.activityDay!==day});
 },true);
+
+try{
+ const __fixTouchTargets=()=>{
+  if(!(innerWidth<=820||matchMedia('(pointer:coarse)').matches))return;
+  document.querySelectorAll('.pill.venue-nav').forEach(a=>{if(a.getBoundingClientRect().height<44)a.style.setProperty('min-height','44px','important');});
+  document.querySelectorAll('.mobile-dock a').forEach(a=>{if(a.getBoundingClientRect().width<44)a.style.setProperty('min-width','44px','important');});
+ };
+ new MutationObserver(__fixTouchTargets).observe(document.body,{childList:true,subtree:true});
+ setTimeout(__fixTouchTargets,400);setTimeout(__fixTouchTargets,1500);
+}catch(e){}
