@@ -2130,7 +2130,7 @@ function initMobileSheetUX(){
  };
  ensureTabs();
  new MutationObserver(()=>{ensureTabs()}).observe(document.body,{childList:true,subtree:true});
- new MutationObserver(()=>{fieldIdx=0;clearTimeout(window.__mfbTimer);window.__mfbTimer=setTimeout(applyFields,80)}).observe(document.querySelector('.inspector-body')||document.body,{childList:true,subtree:true});
+ new MutationObserver(ms=>{if(ms.every(m=>m.target.closest?.('#mobileFieldBar,.m-sheet-tabs')))return;fieldIdx=0;clearTimeout(window.__mfbTimer);window.__mfbTimer=setTimeout(applyFields,80)}).observe(document.querySelector('.inspector')||document.body,{childList:true,subtree:true});
  setTimeout(applyFields,600);
  // swipe down to close sheets
  const swipeClose=(el,closeSel)=>{if(!el)return;let y0=0;el.addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});el.addEventListener('touchend',e=>{const dy=e.changedTouches[0].clientY-y0;if(dy>70)document.querySelector(closeSel)?.click()},{passive:true})};
