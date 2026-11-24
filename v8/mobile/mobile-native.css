@@ -100,3 +100,14 @@ body.m-native-open .mobile-page-pills,body.m-native-open .mobile-content-strip,b
 #mNativeApp .mn-foot{background:#fff!important;border-top:1px solid #ededf0!important;padding:8px 16px calc(8px + env(safe-area-inset-bottom))!important}
 #mNativeApp .mn-foot button{border-radius:10px!important;min-height:48px!important;font-size:16px!important;font-weight:600!important}
 #mNativeApp .mn-foot button.primary{background:#07c160!important;border-color:#07c160!important;color:#fff!important}
+
+/* content icon grid */
+#mNativeApp .mn-screen[data-mn-screen="contents"]{padding:12px 12px calc(84px + env(safe-area-inset-bottom))!important}
+#mNativeApp .page-content-nav{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;background:transparent!important;border-radius:0!important;overflow:visible!important;padding:0!important}
+#mNativeApp .page-content-nav button{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:7px!important;height:98px!important;min-height:98px!important;padding:8px 4px!important;border:0!important;border-bottom:0!important;border-radius:14px!important;background:#fff!important;font-size:11px!important;font-weight:500!important;color:#2b2b31!important;text-align:center!important;line-height:1.25!important}
+#mNativeApp .page-content-nav button:before{content:attr(data-mn-icon);font-size:25px!important;line-height:1!important;color:#16161a!important;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif!important;font-weight:400!important}
+#mNativeApp .page-content-nav button:after{display:none!important}
+#mNativeApp .page-content-nav button:last-child{border-bottom:0!important}
+#mNativeApp .page-content-nav button b{position:absolute!important;top:7px!important;right:8px!important;background:#f2f2f5!important;color:#8a8a94!important;font-size:10px!important;font-weight:600!important;border-radius:999px!important;padding:1px 5px!important}
+#mNativeApp .page-content-nav button.active{background:#eef8f1!important;color:#07a854!important}
+#mNativeApp .page-content-nav button.active:before{color:#07a854!important}

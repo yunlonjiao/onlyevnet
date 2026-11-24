@@ -71,6 +71,14 @@
         if (next !== old) btn.textContent = next;
       });
     }
+    function decorateContentGrid() {
+      const icons = {basic:'✎',lifecycle:'◷',hero:'▣',cover:'▣',banner:'▤',memo:'✎',intro:'¶',seo:'⌕',recap:'◉',entryAnimation:'▶',updates:'✉',tickets:'◫',map:'⌖',streets:'⌁',traffic:'➜',guide:'ℹ',booths:'☷',socialLinks:'◎',sponsors:'◆',community:'◎'};
+      screens.contents.querySelectorAll('#pageContentNav button').forEach((btn) => {
+        const key = btn.dataset.pageTool || btn.dataset.pageContentManager || '';
+        btn.dataset.mnIcon = icons[key] || '•';
+        btn.dataset.mnKey = key;
+      });
+    }
     function showAllFields() {
       screens.fields.querySelectorAll('.m-field-hidden').forEach((el) => el.classList.remove('m-field-hidden'));
     }
@@ -106,6 +114,7 @@
       app.querySelector('.mn-foot').hidden = next === 'fields' || next === 'items';
       syncTitle();
       if (next === 'contents') {
+        decorateContentGrid();
         const block = screens.contents.querySelector('.page-content-block');
         block.querySelector('#pageContentNav')?.scrollIntoView({ block: 'start' });
       }
