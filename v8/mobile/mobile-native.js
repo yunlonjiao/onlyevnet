@@ -1,0 +1,127 @@
+/* Mobile-native editor shell.
+   This does not restyle the desktop sidebar: it moves the page list, content list and
+   property form into a dedicated three-screen mobile app with its own navigation. */
+(function () {
+  const isPhone = () => innerWidth <= 820 || (matchMedia('(pointer:coarse)').matches && innerHeight <= 560);
+  if (!isPhone()) return;
+
+  const ready = () => {
+    const pageNav = document.querySelector('.sidebar .page-nav');
+    const contentBlock = document.querySelector('.sidebar .page-content-block');
+    const inspector = document.querySelector('.inspector');
+    if (!pageNav || !contentBlock || !inspector) return false;
+
+    const app = document.createElement('div');
+    app.id = 'mNativeApp';
+    app.hidden = true;
+    app.innerHTML = `
+      <header class="mn-head">
+        <button type="button" class="mn-back" data-mn-back aria-label="返回">←</button>
+        <div class="mn-title"><b data-mn-title>编辑内容</b><span data-mn-sub>页面</span></div>
+        <span class="mn-save">已保存</span>
+      </header>
+      <main class="mn-main">
+        <section class="mn-screen" data-mn-screen="pages"></section>
+        <section class="mn-screen" data-mn-screen="contents"></section>
+        <section class="mn-screen" data-mn-screen="fields"></section>
+      </main>
+      <footer class="mn-foot">
+        <button type="button" data-mn-preview>预览</button>
+        <button type="button" class="primary" data-mn-publish>发布</button>
+      </footer>`;
+    document.body.appendChild(app);
+
+    const screens = {
+      pages: app.querySelector('[data-mn-screen="pages"]'),
+      contents: app.querySelector('[data-mn-screen="contents"]'),
+      fields: app.querySelector('[data-mn-screen="fields"]')
+    };
+    screens.pages.appendChild(pageNav);
+    screens.contents.appendChild(contentBlock);
+    screens.fields.appendChild(inspector);
+
+    const titleEl = app.querySelector('[data-mn-title]');
+    const subEl = app.querySelector('[data-mn-sub]');
+    const backBtn = app.querySelector('[data-mn-back]');
+    let screen = 'pages';
+
+    function syncTitle() {
+      if (screen === 'pages') { titleEl.textContent = '编辑内容'; subEl.textContent = '选择页面'; }
+      else if (screen === 'contents') {
+        titleEl.textContent = (document.querySelector('#pageContentTitle')?.textContent || '页面内容').trim();
+        subEl.textContent = '选择要改的内容';
+      } else {
+        titleEl.textContent = (inspector.querySelector('.inspector-header b')?.textContent || '编辑').trim();
+        subEl.textContent = '属性';
+      }
+    }
+    function show(next) {
+      screen = next;
+      app.hidden = false;
+      document.body.classList.add('m-native-open');
+      Object.entries(screens).forEach(([name, el]) => { el.hidden = name !== next; });
+      app.querySelector('.mn-foot').hidden = next === 'fields';
+      syncTitle();
+      if (next === 'contents') {
+        const block = screens.contents.querySelector('.page-content-block');
+        block.querySelector('#pageContentNav')?.scrollIntoView({ block: 'start' });
+      }
+    }
+    function hide() {
+      app.hidden = true;
+      document.body.classList.remove('m-native-open');
+    }
+
+    backBtn.addEventListener('click', () => {
+      if (screen === 'fields') {
+        const hasManagerList = screens.contents.querySelector('#contentListPanel [data-open-item]');
+        show('contents');
+        if (hasManagerList) screens.contents.querySelector('#contentListPanel')?.scrollIntoView({ block: 'start' });
+      } else if (screen === 'contents') show('pages');
+      else hide();
+    });
+
+    screens.pages.addEventListener('click', (event) => {
+      if (event.target.closest('[data-mn-back]')) return;
+      if (event.target.closest('[data-page]')) setTimeout(() => show('contents'), 0);
+    });
+
+    screens.contents.addEventListener('click', (event) => {
+      if (event.target.closest('[data-page-tool],[data-page-content-manager]')) {
+        setTimeout(() => show('fields'), 80);
+      }
+      if (event.target.closest('[data-open-item]')) {
+        setTimeout(() => show('fields'), 120);
+      }
+    });
+
+    app.querySelector('[data-mn-preview]').addEventListener('click', () => document.querySelector('#previewBtn')?.click());
+    app.querySelector('[data-mn-publish]').addEventListener('click', () => document.querySelector('#publishBtn')?.click());
+
+    // Opening the old mobile dock buttons now enters the native shell.
+    document.addEventListener('click', (event) => {
+      if (!isPhone()) return;
+      if (event.target.closest('#mobilePagesBtn')) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        show('pages');
+      } else if (event.target.closest('#mobileInspectorBtn')) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        show('fields');
+      }
+    }, true);
+
+    // Desktop breakpoints must not be affected.
+    addEventListener('resize', () => {
+      if (!isPhone() && !app.hidden) hide();
+    });
+    return true;
+  };
+
+  let tries = 0;
+  const timer = setInterval(() => {
+    tries += 1;
+    if (ready() || tries > 60) clearInterval(timer);
+  }, 100);
+})();
