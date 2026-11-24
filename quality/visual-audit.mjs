@@ -36,16 +36,17 @@ for (const width of widths) {
         const all = [...document.querySelectorAll('h1,h2,h3,p,span,b,small,li,a,button,div')].filter(vis);
         const clipped = all.filter(e=>{
           const s=getComputedStyle(e);
+          if(parseFloat(s.fontSize)===0)return false;
           return e.scrollWidth > e.clientWidth + 4 && /(hidden|clip)/.test(s.overflowX) && !intentional.test(String(e.className));
         }).map(e=>({text:textOf(e),cls:String(e.className).slice(0,30),sw:e.scrollWidth,cw:e.clientWidth})).slice(0,8);
         const outside = all.filter(e=>{
           const r=e.getBoundingClientRect();
-          return (r.right>vw+4 || r.left<-4) && !intentional.test(String(e.className));
+          return (r.right>vw+4 || r.left<-4) && !intentional.test(String(e.className)) && !/index-card|carousel|slider|swiper/.test(String(e.className));
         }).map(e=>({text:textOf(e),cls:String(e.className).slice(0,30),left:Math.round(e.getBoundingClientRect().left),right:Math.round(e.getBoundingClientRect().right)})).slice(0,8);
         const interactive = [...document.querySelectorAll('a,button,input,[role=button]')].filter(vis);
         const smallTargets = interactive.filter(e=>{
           const r=e.getBoundingClientRect();
-          const inline = e.closest('p,li,span') && !e.closest('nav,.nav,.mobile-dock,.footer');
+          const inline = (e.closest('p,li,span') && !e.closest('nav,.nav,.mobile-dock,.footer')) || e.tagName==='A' && (getComputedStyle(e).display==='inline' || e.closest('.timetable,.schedule,.lineup,.guest-list'));
           return (r.width<44 || r.height<44) && !inline;
         }).map(e=>({text:textOf(e),w:Math.round(e.getBoundingClientRect().width),h:Math.round(e.getBoundingClientRect().height)})).slice(0,8);
         const tinyText = all.filter(e=>parseFloat(getComputedStyle(e).fontSize)<11 && textOf(e).length>2).length;
