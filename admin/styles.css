@@ -433,3 +433,11 @@ button.primary,.primary{border:0;border-radius:10px;background:#18181d;color:#ff
 
 /* admin mobile: no double-tap zoom */
 html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+
+/* platform feedback inbox */
+.feedback-list{display:grid;gap:12px}
+.feedback-item{padding:14px 16px;border:1px solid #e4e4ea;border-radius:14px;background:#fff}
+.feedback-item header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.feedback-item b{font-size:13px}
+.feedback-item time{font-size:11px;color:#8a8a94}
+.feedback-item p{margin:0;font-size:13px;line-height:1.7;color:#3f3f46;white-space:pre-wrap;word-break:break-word}

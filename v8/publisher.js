@@ -151,6 +151,9 @@ export async function deleteQuestion(cloudProjectId,questionId){
 export async function sendFeedback(message){
   return api('/api/feedback',{method:'POST',body:{message}});
 }
+export async function listFeedback(){
+  return api('/api/feedback');
+}
 export async function getOverview(){
   return api('/api/overview');
 }

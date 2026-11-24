@@ -4,7 +4,7 @@ import {mountCost} from '/admin/cost.js?v=8.139.0';
 import {mountDeadlines} from '/admin/deadlines.js?v=8.139.0';
 import {loadAsk} from '/admin/ask.js?v=8.139.0';
 import {loadSignups} from '/admin/signups.js?v=8.139.0';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,listCloudTrash,listProjectMembers,addProjectMember,removeProjectMember,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.139.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,listCloudTrash,listProjectMembers,addProjectMember,removeProjectMember,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,listFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.441.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
@@ -563,6 +563,7 @@ function showPage(name){
   if(name==='stats'){renderStatsProjects();loadStats()}
   if(name==='collect'){renderCollectProjects();loadCollect()}
   if(name==='settings')renderSettings();
+  if(name==='feedback')renderFeedbackPage();
   if(name==='cost')loadCost();
   if(name==='ask'){renderAskProjects();loadAskPage()}
   if(name==='signup'){renderSignupProjects();loadSignupPage()}
@@ -746,6 +747,7 @@ function authShowAdmin(session){
   $('#adminShell').hidden=false;
   $('#authAccountActions').hidden=false;
   $('#authCurrentUser').textContent=session?.username||'主办方';
+  const fbBtn=$('#feedbackInboxBtn');if(fbBtn)fbBtn.hidden=String(session?.username||'').toLowerCase()!=='admin';
   document.body.classList.add('auth-signed-in');
 }
 function authShowGate(){
@@ -878,3 +880,21 @@ $('#helpClose').onclick=()=>$('#helpDialog').close();
 
 const __syncBinOnOpen=e=>{if(!e.target.closest?.('[data-admin-page="bin"]'))return;setTimeout(()=>{try{syncCloudTrash()}catch(err){}},60)};
 try{document.addEventListener('click',__syncBinOnOpen,true)}catch(e){}
+
+async function renderFeedbackPage(){
+  const box=$('#feedbackList');if(!box)return;
+  box.textContent='加载中…';
+  try{
+    const data=await listFeedback();
+    const items=Array.isArray(data?.items)?data.items:[];
+    box.textContent='';
+    if(!items.length){const p=document.createElement('p');p.className='auth-message';p.textContent='还没有反馈。';box.append(p);return}
+    for(const item of items){
+      const art=document.createElement('article');art.className='feedback-item';
+      const head=document.createElement('header');const b=document.createElement('b');b.textContent=item.username||'主办方';const t=document.createElement('time');t.textContent=formatTime(item.created_at);head.append(b,t);
+      const p=document.createElement('p');p.textContent=item.message||'';
+      art.append(head,p);box.append(art);
+    }
+  }catch(e){box.textContent=(e&&e.message)||'加载失败';}
+}
+$('#feedbackRefresh')?.addEventListener('click',()=>renderFeedbackPage());

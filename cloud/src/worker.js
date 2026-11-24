@@ -504,6 +504,13 @@ async function projectStats(req,env,pid){
 }
 
 /* ---- overview numbers for the organizer's start page ---- */
+async function listFeedback(req,env){
+  const u=await requireUser(req,env);
+  const admins=String(env.PLATFORM_ADMINS||env.PLATFORM_ADMIN||'admin').toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
+  if(!admins.includes(String(u.username||'').toLowerCase()))return json({ok:false,error:'只有平台管理员可以查看反馈。'},403);
+  const rows=await env.DB.prepare('SELECT id,username,message,created_at FROM feedback ORDER BY created_at DESC LIMIT 200').all();
+  return json({ok:true,items:rows.results||[]});
+}
 async function sendFeedback(req,env){
   const u=await requireUser(req,env);await rateLimit(env,'feedback:'+u.id,10,86400);
   const message=cleanText((await bodyJson(req)).message,2000);
@@ -536,6 +543,7 @@ async function handleApi(req,env,path){
   if(path==='/api/projects/trash'&&req.method==='GET')return listProjects(req,env);
   if(path==='/api/overview'&&req.method==='GET')return accountOverview(req,env);
   if(path==='/api/feedback'&&req.method==='POST')return sendFeedback(req,env);
+  if(path==='/api/feedback'&&req.method==='GET')return listFeedback(req,env);
   let m=path.match(/^\/api\/projects\/([^/]+)\/stats$/);
   if(m&&req.method==='GET')return projectStats(req,env,decodeURIComponent(m[1]));
   m=path.match(/^\/api\/signup\/([a-f0-9]+)$/);
