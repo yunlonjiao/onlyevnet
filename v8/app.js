@@ -2058,24 +2058,22 @@ function initMobileQuickNav(){
  const strip=document.querySelector('#mobileContentStrip');
  if(!pills||!strip)return;
  const openSidebar=()=>{if(!document.body.classList.contains('mobile-sidebar-open'))document.querySelector('#mobilePagesBtn')?.click()};
+ const cleanLabel=t=>t.replace(/^[^\p{L}\p{N}]+/u,'').trim();
  const syncPages=()=>{
-  const rows=[...document.querySelectorAll('.page-nav [data-page]')];
-  [...pills.querySelectorAll('[data-page]')].forEach(p=>{const row=rows.find(r=>r.dataset.page===p.dataset.page);p.classList.toggle('active',!!row&&row.classList.contains('active'))});
+  const rows=[...document.querySelectorAll('.sidebar [data-page]')];
+  pills.querySelectorAll('[data-page]').forEach(p=>{const row=rows.find(r=>r.dataset.page===p.dataset.page);p.classList.toggle('active',!!row&&row.classList.contains('active'))});
  };
  const build=()=>{
   if(!phone())return;
-  const rows=[...document.querySelectorAll('.page-nav [data-page]')].filter(b=>b.closest('.page-tree-row')?.getBoundingClientRect().width>0||b.closest('#customPageRows'));
-  pills.querySelectorAll('.m-page-pill').forEach(x=>{if(!x.classList.contains('m-page-add'))x.remove()});
-  const addBtn=pills.querySelector('.m-page-add')||document.createElement('button');
+  pills.querySelectorAll('.m-page-pill:not(.m-page-add)').forEach(x=>x.remove());
+  let addBtn=pills.querySelector('.m-page-add');
+  if(!addBtn){addBtn=document.createElement('button');addBtn.type='button';addBtn.className='m-page-pill m-page-add';addBtn.textContent='＋';addBtn.setAttribute('aria-label','新建自定义页面');addBtn.onclick=()=>{openSidebar();setTimeout(()=>document.querySelector('#createCustomPageBtn')?.scrollIntoView({block:'center',behavior:'smooth'}),250)};pills.append(addBtn)}
+  const rows=[...document.querySelectorAll('.sidebar .page-tree-row [data-page], .sidebar #customPageRows [data-page]')];
   rows.forEach(row=>{
-   if(row.dataset.page==='home'||row.dataset.page==='activities'||row.dataset.page==='guests'||row.dataset.page==='guide'||row.closest('#customPageRows')){
-    const btn=document.createElement('button');btn.type='button';btn.className='m-page-pill'+(row.classList.contains('active')?' active':'');btn.dataset.page=row.dataset.page;btn.textContent=row.textContent.trim().replace(/^[^\p{L}\p{N}]+/u,'').trim()||row.dataset.page;
-    btn.onclick=()=>{row.click();syncPages();};
-    pills.insertBefore(btn,addBtn);
-   }
+   const btn=document.createElement('button');btn.type='button';btn.className='m-page-pill'+(row.classList.contains('active')?' active':'');btn.dataset.page=row.dataset.page;btn.textContent=cleanLabel(row.textContent)||row.dataset.page;
+   btn.onclick=()=>{row.click();setTimeout(syncPages,0)};
+   pills.insertBefore(btn,addBtn);
   });
-  if(!addBtn.isConnected){addBtn.type='button';addBtn.className='m-page-pill m-page-add';addBtn.textContent='＋';addBtn.setAttribute('aria-label','新建自定义页面');addBtn.onclick=()=>{openSidebar();setTimeout(()=>document.querySelector('#createCustomPageBtn')?.scrollIntoView({block:'center',behavior:'smooth'}),250)};pills.append(addBtn)}
-  // content strip
   const groups=[...document.querySelectorAll('#pageContentNav [data-page-content-manager]')];
   strip.innerHTML='';
   groups.forEach(g=>{
@@ -2088,7 +2086,9 @@ function initMobileQuickNav(){
  };
  build();
  const debounce=()=>{clearTimeout(window.__mqnTimer);window.__mqnTimer=setTimeout(build,220)};
- new MutationObserver(debounce).observe(document.querySelector('.page-nav')||document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
- new MutationObserver(debounce).observe(document.querySelector('#pageContentNav')||document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+ const nav=document.querySelector('.sidebar .page-nav')||document.querySelector('.sidebar')||document.body;
+ new MutationObserver(debounce).observe(nav,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+ const nav2=document.querySelector('#pageContentNav')||document.body;
+ new MutationObserver(debounce).observe(nav2,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
  window.addEventListener('resize',debounce);
 }
