@@ -2128,9 +2128,7 @@ function initMobileSheetUX(){
   const side=document.querySelector('.sidebar');const insp=document.querySelector('.inspector');
   if(side&&!side.querySelector('.m-sheet-tabs')){const t=document.createElement('div');t.className='m-sheet-tabs';t.innerHTML=tabsHTML('页面');t.onclick=e=>{const b=e.target.closest('[data-mtab]');if(!b)return;const n=b.dataset.mtab;if(n==='属性')openInspector();else{openSidebar();scrollTo(n==='内容'?'.page-content-block':'.sidebar-head')}};side.prepend(t)}
   if(insp&&!insp.querySelector('.m-sheet-tabs')){const t=document.createElement('div');t.className='m-sheet-tabs';t.innerHTML=tabsHTML('属性');t.onclick=e=>{const b=e.target.closest('[data-mtab]');if(!b)return;const n=b.dataset.mtab;if(n==='页面'){openSidebar();scrollTo('.sidebar-head')}else if(n==='内容'){openSidebar();scrollTo('.page-content-block')}};insp.prepend(t)}
- };
- ensureTabs();
- new MutationObserver(()=>{ensureTabs()}).observe(document.body,{childList:true,subtree:true});
+ }; /* sheet tabs removed: dock + content strip are the single entry points */
  new MutationObserver(ms=>{if(ms.every(m=>m.target.closest?.('#mobileFieldBar,.m-sheet-tabs')))return;fieldIdx=0;clearTimeout(window.__mfbTimer);window.__mfbTimer=setTimeout(applyFields,80)}).observe(document.querySelector('.inspector')||document.body,{childList:true,subtree:true});
  setTimeout(applyFields,600);
  // swipe down to close sheets
