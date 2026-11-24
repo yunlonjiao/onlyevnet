@@ -2032,3 +2032,17 @@ try{
   done.addEventListener('click',()=>{try{document.activeElement&&document.activeElement.blur()}catch(e){};try{window.frames[0].postMessage({type:'OE_BLUR'},'*')}catch(e){};try{send({type:'OE_BLUR'})}catch(e){}});
  }
 }catch(e){}
+
+try{const __vv=window.visualViewport;if(__vv){const __syncSafari=()=>{const docH=document.documentElement.clientHeight||window.innerHeight;const extra=Math.max(0,docH-__vv.height,window.innerHeight-(__vv.height+(__vv.offsetTop||0)));document.documentElement.style.setProperty('--safari-inset',extra+'px')};__vv.addEventListener('resize',__syncSafari);__vv.addEventListener('scroll',__syncSafari);window.addEventListener('orientationchange',()=>setTimeout(__syncSafari,300));__syncSafari()}}catch(e){}
+
+try{
+ const __ensureSidebarClose=()=>{
+  if(!(innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560)))return;
+  const head=document.querySelector('.sidebar-head');if(!head)return;
+  let cb=document.querySelector('#mobileSidebarClose');
+  if(!cb){cb=document.createElement('button');cb.type='button';cb.id='mobileSidebarClose';cb.className='mobile-sheet-close';cb.setAttribute('aria-label','关闭页面面板');cb.textContent='×';cb.onclick=()=>{try{mobilePanels.close()}catch(e){}}}
+  if(cb.parentElement!==head)head.appendChild(cb);
+ };
+ new MutationObserver(__ensureSidebarClose).observe(document.body,{childList:true,subtree:true});
+ __ensureSidebarClose();
+}catch(e){}

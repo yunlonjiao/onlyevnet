@@ -1552,3 +1552,23 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 
 @media(max-width:820px){body.previewing .studio-topbar .top-actions{justify-content:flex-end!important}}
 @media(pointer:coarse) and (max-height:560px){body.previewing .studio-topbar .top-actions{justify-content:flex-end!important}}
+
+/* phone: page drawer becomes a bottom sheet, dock sits above Safari toolbar */
+@media(max-width:820px){
+  .studio-topbar .top-actions{scrollbar-width:none}
+  .mobile-editor-dock{bottom:var(--safari-inset,0)!important;padding-bottom:calc(6px + env(safe-area-inset-bottom))}
+  .sidebar{
+    left:0!important;right:0!important;top:auto!important;bottom:calc(var(--safari-inset,0px) + 60px)!important;
+    width:100%!important;height:min(66vh,560px)!important;max-height:66vh;
+    border-radius:18px 18px 0 0!important;border:1px solid #e3e3e9!important;
+    transform:translateY(105%)!important;box-shadow:0 -18px 50px rgba(20,20,30,.24)!important;
+    overflow:auto!important;padding-bottom:calc(18px + env(safe-area-inset-bottom))!important;
+  }
+  body.mobile-sidebar-open .sidebar{transform:none!important}
+  .sidebar::before{content:"";display:block;width:44px;height:4px;margin:8px auto 4px;border-radius:999px;background:#d6d2e2;flex:none}
+  #mobileSidebarClose{position:sticky;top:8px;margin-left:auto;z-index:3}
+  .sidebar-head{position:sticky;top:0;background:#fbfbfd;z-index:2;padding-top:2px}
+  .inspector{bottom:calc(var(--safari-inset,0px))!important}
+  .canvas-wrap{padding-bottom:calc(84px + var(--safari-inset,0px))!important}
+  .mobile-panel-backdrop{inset:64px 0 0}
+}
