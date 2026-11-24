@@ -2070,11 +2070,11 @@ function initMobileQuickNav(){
   if(!addBtn){addBtn=document.createElement('button');addBtn.type='button';addBtn.className='m-page-pill m-page-add';addBtn.textContent='＋';addBtn.setAttribute('aria-label','新建自定义页面');addBtn.onclick=()=>{openSidebar();setTimeout(()=>document.querySelector('#createCustomPageBtn')?.scrollIntoView({block:'center',behavior:'smooth'}),250)};pills.append(addBtn)}
   const rows=[...document.querySelectorAll('.sidebar .page-tree-row [data-page], .sidebar #customPageRows [data-page]')];
   rows.forEach(row=>{
-   const btn=document.createElement('button');btn.type='button';btn.className='m-page-pill'+(row.classList.contains('active')?' active':'');btn.dataset.page=row.dataset.page;btn.textContent=cleanLabel(row.textContent)||row.dataset.page;
+   const btn=document.createElement('button');btn.type='button';btn.className='m-page-pill'+(row.classList.contains('active')?' active':'');btn.dataset.page=row.dataset.page;btn.textContent=cleanLabel(row.querySelector('span:last-child')?.textContent||row.textContent)||row.dataset.page;
    btn.onclick=()=>{row.click();setTimeout(syncPages,0)};
    pills.insertBefore(btn,addBtn);
   });
-  const groups=[...document.querySelectorAll('#pageContentNav [data-page-content-manager]')];
+  const groups=[...document.querySelectorAll('#pageContentNav button')];
   strip.innerHTML='';
   groups.forEach(g=>{
    const b=document.createElement('button');b.type='button';b.className='m-content-card'+(g.classList.contains('active')?' active':'');b.textContent=g.textContent.trim();
