@@ -385,7 +385,12 @@ html{background:#e3d4b8}
 .cc-site .cb-kind-cover .cb-cover::after{content:'点击翻开 · CLICK TO OPEN';position:absolute;top:58px;left:32px;font-size:11px;font-weight:800;letter-spacing:.22em;opacity:.72;white-space:nowrap}
 .cc-site .loader.cc-entry{display:none!important}
 `;
-export const previewStyle=coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle+listStyle+bookPagesStyle+paperStyle+fullBookStyle;
+const mobileAuditStyle = `
+@media(max-width:720px){
+  .cb-jump{height:44px!important;min-height:44px;font-size:16px!important}
+}
+`;
+export const previewStyle=mobileAuditStyle+coreStyle+catalogueStyle+shapeStyle+heroStyle+referenceStyle+listStyle+bookPagesStyle+paperStyle+fullBookStyle;
 
 const loader=`<div class="loader cc-entry" id="loader"><div class="gate cc-entry-gate" role="button" tabindex="0" aria-label="点击翻开电子场刊"><div class="cc-entry-book"><div class="cc-entry-page"><span class="cc-entry-kicker">WELCOME!</span><b class="entry-ticket-title">BILIBILI ONLY</b><span class="entry-ticket-subtitle"></span><div class="cc-entry-meta"><span class="entry-ticket-date-wrap"><b class="entry-ticket-date"></b></span><span class="entry-ticket-time-wrap"><b class="entry-ticket-time"></b></span><span class="entry-ticket-location-wrap"><b class="entry-ticket-location"></b></span></div><span class="cc-entry-hint">欢迎光临 ✦</span></div><div class="cc-entry-cover"><div class="entry-photo cc-entry-photo" aria-label="活动KV"></div><span class="cc-entry-cover-title">WEB CATALOGUE</span><span class="cc-entry-tap">TAP TO OPEN ✦</span></div></div><span class="entry-ticket-label" hidden></span><span class="stub-barcode" hidden></span><span class="stub-code" hidden><span class="entry-serial"></span></span></div><button class="skip" id="skip">跳过 →</button></div>`;
 
