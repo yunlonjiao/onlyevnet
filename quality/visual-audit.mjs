@@ -74,8 +74,9 @@ for (const width of widths) {
           const mismatch = hMax-hMin>4 || new Set(aligns).size>1 || new Set(pads).size>1;
           return mismatch ? {cls:cls.slice(0,40), count:els.length, hMin:Math.round(hMin), hMax:Math.round(hMax), aligns:[...new Set(aligns)], pads:[...new Set(pads)].slice(0,2)} : null;
         }).filter(Boolean).slice(0,10);
+        const navEl=document.querySelector('.nav');let navOverlap=null;if(navEl){const a=navEl.querySelector('.brand'),b=navEl.querySelector('.links');if(a&&b){const ra=a.getBoundingClientRect(),rb=b.getBoundingClientRect();if(ra.width&&rb.width){const ox=Math.min(ra.right,rb.right)-Math.max(ra.left,rb.left),oy=Math.min(ra.bottom,rb.bottom)-Math.max(ra.top,rb.top);if(ox>2&&oy>2)navOverlap={brand:[Math.round(ra.left),Math.round(ra.top),Math.round(ra.width),Math.round(ra.height)],links:[Math.round(rb.left),Math.round(rb.top),Math.round(rb.width),Math.round(rb.height)],ox:Math.round(ox),oy:Math.round(oy)}}}}
         return {
-          vw, scrollW:document.documentElement.scrollWidth, overflow:document.documentElement.scrollWidth>vw+4,
+          vw,navOverlap, scrollW:document.documentElement.scrollWidth, overflow:document.documentElement.scrollWidth>vw+4,
           clipped, outside, smallTargets, tinyText, dates, samples, inconsistent,
           nav: navRect ? {height:Math.round(navRect.height), padBottom:navPad} : null
         };
