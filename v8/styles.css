@@ -1656,5 +1656,5 @@ body.previewing-safe .top-actions{width:auto!important}
 
 /* hide editor chrome while full-screen sheet is open */
 @media(max-width:820px){
- body.mobile-sidebar-open .studio-topbar,body.mobile-inspector-open .studio-topbar,body.mobile-sidebar-open .mobile-page-pills,body.mobile-inspector-open .mobile-page-pills,body.mobile-sidebar-open .mobile-content-strip,body.mobile-inspector-open .mobile-content-strip,body.mobile-sidebar-open .mobile-editor-dock,body.mobile-inspector-open .mobile-editor-dock,body.mobile-sidebar-open .studio-shell,body.mobile-inspector-open .studio-shell{display:none!important}
+ body.mobile-sidebar-open .studio-topbar,body.mobile-inspector-open .studio-topbar,body.mobile-sidebar-open .mobile-page-pills,body.mobile-inspector-open .mobile-page-pills,body.mobile-sidebar-open .mobile-content-strip,body.mobile-inspector-open .mobile-content-strip,body.mobile-sidebar-open .mobile-editor-dock,body.mobile-inspector-open .mobile-editor-dock{display:none!important}
 }
