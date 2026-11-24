@@ -14,7 +14,8 @@ const toConfig=p=>({title:p.title,intro:p.intro,fields:p.fields.map(([label,requ
 
 export function exportCsv(form,entries){
   const labels=form.config.fields.map(f=>f.label);
-  const rows=[['提交时间',...labels,'状态'],...entries.map(e=>[e.createdAt,...labels.map((l,i)=>(e.answers[i]&&e.answers[i].value)||''),STATUS[e.status]||e.status])];
+  const textColumns=labels.map(l=>/联系|QQ|微信|手机|电话|账号|ID/i.test(l));
+  const rows=[['提交时间',...labels,'状态'],...entries.map(e=>[e.createdAt,...labels.map((l,i)=>{const v=(e.answers[i]&&e.answers[i].value)||'';return textColumns[i]&&v!==''?'\t'+v:v}),STATUS[e.status]||e.status])];
   return '﻿'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n');
 }
 

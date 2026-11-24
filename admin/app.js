@@ -1,9 +1,9 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
-import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.139.0';
+import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.442.0';
 import {mountCost} from '/admin/cost.js?v=8.139.0';
 import {mountDeadlines} from '/admin/deadlines.js?v=8.139.0';
 import {loadAsk} from '/admin/ask.js?v=8.139.0';
-import {loadSignups} from '/admin/signups.js?v=8.139.0';
+import {loadSignups} from '/admin/signups.js?v=8.442.0';
 import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,listCloudTrash,listProjectMembers,addProjectMember,removeProjectMember,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,listFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.441.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
@@ -274,10 +274,11 @@ function exportCollect(){
   const noByName=new Map(booths.map(b=>[b.name,b.no]));
   const label={pending:'待审核',approved:'已通过',rejected:'未通过'};
   const cell=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+  const contactText=v=>v===''||v==null? '': '\t'+v;
   const rows=[['摊位号','社团名称','类型','介绍','联系方式','制品','状态','提交时间']];
   [...collectEntries].sort((a,b)=>(a.status==='approved'?0:1)-(b.status==='approved'?0:1)||String(a.createdAt).localeCompare(String(b.createdAt))).forEach(e=>{
     const d=e.data||{};
-    rows.push([noByName.get(d.name)||'',d.name,d.type,d.intro,d.contact,(d.products||[]).map(p=>p.name+(p.price?' '+p.price:'')).join('；'),label[e.status]||e.status,formatTime(e.createdAt)]);
+    rows.push([noByName.get(d.name)||'',d.name,d.type,d.intro,contactText(d.contact),(d.products||[]).map(p=>p.name+(p.price?' '+p.price:'')).join('；'),label[e.status]||e.status,formatTime(e.createdAt)]);
   });
   const blob=new Blob(['﻿'+rows.map(r=>r.map(cell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(project.name||'活动')+'-社团名单.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
