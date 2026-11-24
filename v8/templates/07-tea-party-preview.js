@@ -297,6 +297,8 @@ const featuredShape=`
 .tp-site #participation .featured-activity-copy{padding:0!important}
 `;
 const mobileAuditStyle = `
+body .mobile-dock a{min-width:44px!important}
+
 @media(max-width:720px){.mobile-dock a{min-width:44px!important}}
 `;
 export const previewStyle=mobileAuditStyle+coreStyle+style+heroStyle+referenceStyle+ownStyle+featuredFix+menuStyle+featuredShape;

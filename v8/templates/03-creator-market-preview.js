@@ -685,6 +685,8 @@ const overrideStyle=`
 }
 `;
 const mobileAuditStyle = `
+body .pill.venue-nav{min-height:44px!important;height:44px!important;display:inline-flex!important;align-items:center!important;padding-top:0!important;padding-bottom:0!important}
+
 @media(max-width:720px){
  .cm-site .cm-social-avatar:not(:has(img)){font-size:0!important}
  .cm-site .cm-social-avatar:not(:has(img))::after{content:"＋";font-size:20px;line-height:1}
