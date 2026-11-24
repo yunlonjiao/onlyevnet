@@ -1618,6 +1618,7 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
   .m-sheet-tabs button.active{background:#18181d;color:#fff;border-color:#18181d}
   .m-field-hidden{display:none!important}
   #mobileFieldBar{display:flex;gap:6px;padding:8px 12px;background:#fff;border-top:1px solid #ececf0;position:sticky;bottom:0;z-index:6}
+  #mobileFieldBar .m-field-name{flex:1;min-width:0;align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:800;color:#404049;padding:0 4px}
   #mobileFieldBar button{min-height:40px;padding:0 10px;border:1px solid #e4e4ea;border-radius:10px;background:#fff;font:inherit;font-size:12px;font-weight:800;color:#404049}
   #mobileFieldBar button[disabled]{opacity:.35}
   #mobileFieldBar .m-count{margin:0 auto;align-self:center;font-size:12px;color:#777781;font-weight:750}
