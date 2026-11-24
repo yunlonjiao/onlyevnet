@@ -2092,3 +2092,51 @@ function initMobileQuickNav(){
  new MutationObserver(debounce).observe(nav2,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
  window.addEventListener('resize',debounce);
 }
+
+try{initMobileSheetUX()}catch(e){}
+function initMobileSheetUX(){
+ const phone=()=>innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560);
+ if(!phone())return;
+ const body=document.body;
+ const openSidebar=()=>{if(!body.classList.contains('mobile-sidebar-open'))document.querySelector('#mobilePagesBtn')?.click()};
+ const openInspector=()=>{if(!body.classList.contains('mobile-inspector-open'))document.querySelector('#mobileInspectorBtn')?.click()};
+ const scrollTo=sel=>setTimeout(()=>document.querySelector(sel)?.scrollIntoView({block:'start',behavior:'smooth'}),200);
+ let fieldIdx=0;
+ const getFields=()=>[...document.querySelectorAll('.inspector .inspector-body label')].filter(l=>l.querySelector('input:not([type=checkbox]):not([type=radio]),textarea,select'));
+ const applyFields=()=>{
+  const fields=getFields();
+  if(!fields.length){document.querySelector('#mobileFieldBar')?.remove();return}
+  if(fieldIdx>=fields.length)fieldIdx=0;
+  fields.forEach((f,i)=>f.classList.toggle('m-field-hidden',i!==fieldIdx));
+  let bar=document.querySelector('#mobileFieldBar');
+  if(!bar){bar=document.createElement('div');bar.id='mobileFieldBar';document.querySelector('.inspector')?.append(bar)}
+  bar.innerHTML='';
+  const prev=document.createElement('button');prev.type='button';prev.textContent='‹ 上一项';prev.disabled=fields.length<2;prev.onclick=()=>{fieldIdx=(fieldIdx-1+fields.length)%fields.length;applyFields()};
+  const count=document.createElement('span');count.className='m-count';count.textContent=(fieldIdx+1)+' / '+fields.length;
+  const next=document.createElement('button');next.type='button';next.textContent='下一项 ›';next.disabled=fields.length<2;next.onclick=()=>{fieldIdx=(fieldIdx+1)%fields.length;applyFields()};
+  bar.append(prev,count,next);
+  const up=[...document.querySelectorAll('.inspector button')].find(b=>/^↑/.test(b.textContent.trim()));
+  const down=[...document.querySelectorAll('.inspector button')].find(b=>/^↓/.test(b.textContent.trim()));
+  const del=[...document.querySelectorAll('.inspector button')].find(b=>/删除/.test(b.textContent.trim()));
+  if(up){const b=document.createElement('button');b.type='button';b.textContent='上移';b.onclick=()=>up.click();bar.append(b)}
+  if(down){const b=document.createElement('button');b.type='button';b.textContent='下移';b.onclick=()=>down.click();bar.append(b)}
+  if(del){const b=document.createElement('button');b.type='button';b.textContent='删除';b.onclick=()=>{if(confirm('确认删除这一项？'))del.click()};bar.append(b)}
+ };
+ const tabsHTML=active=>['页面','内容','属性'].map(n=>'<button type="button" data-mtab="'+n+'" class="'+(n===active?'active':'')+'">'+n+'</button>').join('');
+ const ensureTabs=()=>{
+  const side=document.querySelector('.sidebar');const insp=document.querySelector('.inspector');
+  if(side&&!side.querySelector('.m-sheet-tabs')){const t=document.createElement('div');t.className='m-sheet-tabs';t.innerHTML=tabsHTML('页面');t.onclick=e=>{const b=e.target.closest('[data-mtab]');if(!b)return;const n=b.dataset.mtab;if(n==='属性')openInspector();else{openSidebar();scrollTo(n==='内容'?'.page-content-block':'.sidebar-head')}};side.prepend(t)}
+  if(insp&&!insp.querySelector('.m-sheet-tabs')){const t=document.createElement('div');t.className='m-sheet-tabs';t.innerHTML=tabsHTML('属性');t.onclick=e=>{const b=e.target.closest('[data-mtab]');if(!b)return;const n=b.dataset.mtab;if(n==='页面'){openSidebar();scrollTo('.sidebar-head')}else if(n==='内容'){openSidebar();scrollTo('.page-content-block')}};insp.prepend(t)}
+ };
+ ensureTabs();
+ new MutationObserver(()=>{ensureTabs()}).observe(document.body,{childList:true,subtree:true});
+ new MutationObserver(()=>{fieldIdx=0;clearTimeout(window.__mfbTimer);window.__mfbTimer=setTimeout(applyFields,80)}).observe(document.querySelector('.inspector-body')||document.body,{childList:true,subtree:true});
+ setTimeout(applyFields,600);
+ // swipe down to close sheets
+ const swipeClose=(el,closeSel)=>{if(!el)return;let y0=0;el.addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});el.addEventListener('touchend',e=>{const dy=e.changedTouches[0].clientY-y0;if(dy>70)document.querySelector(closeSel)?.click()},{passive:true})};
+ swipeClose(document.querySelector('.sidebar-head'),'#mobileSidebarClose');
+ swipeClose(document.querySelector('.inspector-header'),'#mobileInspectorClose');
+ // canvas horizontal swipe = page switch
+ const wrap=document.querySelector('.canvas-wrap');let x0=0,y1=0;
+ if(wrap){wrap.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y1=e.touches[0].clientY},{passive:true});wrap.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y1;if(Math.abs(dx)<60||Math.abs(dy)>40)return;const pills=[...document.querySelectorAll('#mobilePagePills .m-page-pill[data-page]')];const cur=pills.findIndex(p=>p.classList.contains('active'));if(cur<0)return;const next=pills[cur+(dx<0?1:-1)];if(next)next.click()},{passive:true})}
+}
