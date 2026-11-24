@@ -51,7 +51,6 @@
 
     function syncTitle() {
       if (screen === 'pages') { titleEl.textContent = '编辑内容'; subEl.textContent = '选择页面'; }
-      else if (screen === 'items') { show('contents'); }
       else if (screen === 'contents') {
         titleEl.textContent = (document.querySelector('#pageContentTitle')?.textContent || '页面内容').trim();
         subEl.textContent = '选择要改的内容';
@@ -88,7 +87,9 @@
     }
 
     backBtn.addEventListener('click', () => {
-      if (screen === 'fields') { show(fromManager ? 'items' : 'contents'); } else if (screen === 'contents') show('pages');
+      if (screen === 'fields') { show(fromManager ? 'items' : 'contents'); }
+      else if (screen === 'items') { show('contents'); }
+      else if (screen === 'contents') show('pages');
       else hide();
     });
 
