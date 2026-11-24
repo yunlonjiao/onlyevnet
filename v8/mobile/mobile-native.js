@@ -87,8 +87,11 @@
     });
 
     screens.contents.addEventListener('click', (event) => {
-      if (event.target.closest('[data-page-tool],[data-page-content-manager]')) {
+      if (event.target.closest('[data-page-tool]')) {
         setTimeout(() => show('fields'), 80);
+      }
+      if (event.target.closest('[data-page-content-manager]')) {
+        setTimeout(() => screens.contents.querySelector('#contentListPanel')?.scrollIntoView({block:'start'}), 80);
       }
       if (event.target.closest('[data-open-item]')) {
         setTimeout(() => show('fields'), 120);
