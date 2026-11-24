@@ -96,6 +96,9 @@
       if (event.target.closest('[data-open-item]')) {
         setTimeout(() => show('fields'), 120);
       }
+      if (event.target.closest('[data-sidebar-content-add]')) {
+        setTimeout(() => show('fields'), 160);
+      }
     });
 
     app.querySelector('[data-mn-preview]').addEventListener('click', () => document.querySelector('#previewBtn')?.click());
