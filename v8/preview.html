@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>预览 · OnlyEvent</title>
+<style>
+  html,body{margin:0;height:100%;background:#fff;overflow:hidden}
+  #previewFrame{display:block;width:100%;height:100%;border:0}
+  .fail{font:14px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:#555;padding:24px;display:none}
+</style>
+</head>
+<body>
+<iframe id="previewFrame" title="活动网站预览" allow="clipboard-write"></iframe>
+<p class="fail" id="previewFail">预览加载失败。请关闭本页，回到编辑器重新点「预览」。</p>
+<script type="module">
+  const query = new URLSearchParams(location.search);
+  const template = query.get('template') || '08-birthday';
+  const project = query.get('project') || 'default';
+  const frame = document.getElementById('previewFrame');
+  const fail = document.getElementById('previewFail');
+  const stateKey = 'oe-preview-state:' + template + ':' + project;
+
+  let sent = false;
+  let timer = setTimeout(() => {
+    if (!sent) { fail.style.display = 'block'; }
+  }, 12000);
+
+  frame.src = '/v8/render.html?template=' + encodeURIComponent(template) + '&project=' + encodeURIComponent(project);
+
+  window.addEventListener('message', (event) => {
+    if (event.source !== frame.contentWindow) return;
+    const m = event.data || {};
+    if (m.type !== 'OE_READY' || sent) return;
+    sent = true;
+    clearTimeout(timer);
+    let state = {};
+    try { state = JSON.parse(localStorage.getItem(stateKey) || '{}') || {}; } catch (e) {}
+    frame.contentWindow.postMessage({ type: 'OE_INIT_STATE', state, page: 'home', mode: 'preview' }, location.origin);
+  });
+</script>
+</body>
+</html>
