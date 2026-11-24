@@ -75,7 +75,9 @@
       const icons = {basic:'✎',lifecycle:'◷',hero:'▣',cover:'▣',banner:'▤',memo:'✎',intro:'¶',seo:'⌕',recap:'◉',entryAnimation:'▶',updates:'✉',tickets:'◫',map:'⌖',streets:'⌁',traffic:'➜',guide:'ℹ',booths:'☷',socialLinks:'◎',sponsors:'◆',community:'◎'};
       screens.contents.querySelectorAll('#pageContentNav button').forEach((btn) => {
         const key = btn.dataset.pageTool || btn.dataset.pageContentManager || '';
-        btn.dataset.mnIcon = icons[key] || '•';
+        let icon = icons[key];
+        if (!icon) { const t = btn.textContent || ''; icon = /公告|更新/.test(t) ? '✉' : /精选|探索/.test(t) ? '✦' : /票/.test(t) ? '◫' : /地图/.test(t) ? '⌖' : /社群/.test(t) ? '◎' : /赞助/.test(t) ? '◆' : '▢'; }
+        btn.dataset.mnIcon = icon;
         btn.dataset.mnKey = key;
       });
     }
