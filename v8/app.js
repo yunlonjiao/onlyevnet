@@ -783,7 +783,7 @@ function syncCanvasSelection(path){
 function openEntryAnimationInspector(){
   if(state.templateId==='04-creator-catalogue'){
     const v=String(state.heroImage||'').trim();
-    setInspector('入场动画','封面 KV',
+    setInspector('入场动画','封面图',
       '<div class="entry-animation-inspector"><div class="item-media"><span>封面 KV（贴合书页 5:7）</span><div class="item-media-row">'+(v?'<img src="'+esc(v)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-cover-kv>选择 / 裁剪</button>'+(v?'<button type="button" class="ghost" data-cover-kv-remove>移除</button>':'')+'</div></div></div><div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button></div><p class="inspector-note">封面 KV 会铺在合上的书页上，比例贴合书本；不需要再区分桌面和手机。</p></div>');
     inspector.querySelector('[data-cover-kv]')?.addEventListener('click',()=>{const input=$('#imageInput');input.dataset.path='heroImage';input.click()});
     inspector.querySelector('[data-cover-kv-remove]')?.addEventListener('click',()=>{checkpoint();state.heroImage='';save();send({type:'OE_PATCH_FIELD',path:'heroImage',value:''});openEntryAnimationInspector()});
@@ -793,7 +793,7 @@ function openEntryAnimationInspector(){
 
   const heroMedia=(key,label)=>{const v=String(((state.entryAnimation||{})[key])||'').trim();return '<div class="item-media"><span>'+label+'</span><div class="item-media-row">'+(v?'<img src="'+esc(v)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-kv-image="'+key+'">选择 / 裁剪</button></div></div></div>';};
   setInspector('入场动画','开屏设置',
-    '<div class="entry-animation-inspector">'+heroMedia('kvDesktop','桌面 KV')+heroMedia('kvMobile','手机 KV（可选，留空用桌面 KV）')+
+    '<div class="entry-animation-inspector">'+heroMedia('kvDesktop','主图')+heroMedia('kvMobile','手机 KV（可选，留空用桌面 KV）')+
     '<div class="entry-animation-actions"><button type="button" id="previewEntryAnimation">▶ 播放动画</button></div>'+
     '<p class="inspector-note">开屏动画单独使用这两张图，与首页横幅互不影响；手机 KV 留空时沿用桌面 KV。</p></div>');
   inspector.querySelectorAll('[data-kv-image]').forEach(btn=>btn.addEventListener('click',()=>{
@@ -909,7 +909,7 @@ function renderPageContentNav(page,{openDefault=true}={}){
    (PAGE_CONTENT_CONFIG[page]||[]).filter(x=>!(activeTemplate.studioPages?.hiddenContent||[]).includes(x.collection||x.tool));
  if(page==='home'&&/^0[56]/.test(state.templateId)){items.push({collection:'participation',label:'现场活动'},{collection:'guests',label:'出演阵容'},{collection:'guide',label:'观演秩序'},{collection:'schedule',label:'活动日程'})}
  const list03=[{tool:'basic',label:'基本信息'},{tool:'banner',label:'横幅'},{tool:'lifecycle',label:'活动状态'},{tool:'traffic',label:'交通到达'},{collection:'guide',label:'规则与须知'},...items.filter(x=>x.tool!=='hero'&&x.collection!=='explore'&&x.tool!=='basic'&&x.tool!=='lifecycle'&&x.collection!=='guide')];
- const list04=[{tool:'basic',label:'基本信息'},{tool:'cover',label:'封面 KV'},{tool:'lifecycle',label:'活动状态'},{collection:'updates',label:'最新公告'},{collection:'tickets',label:'入场票'},{tool:'map',label:'场地图'},{collection:'booths',label:'参展社团与制品'},{tool:'streets',label:'街道'},{tool:'traffic',label:'交通到达'},{collection:'guide',label:'入场与须知'},{collection:'socialLinks',label:'社群'},{collection:'sponsors',label:'赞助'}];
+ const list04=[{tool:'basic',label:'基本信息'},{tool:'cover',label:'封面图'},{tool:'lifecycle',label:'活动状态'},{collection:'updates',label:'最新公告'},{collection:'tickets',label:'入场票'},{tool:'map',label:'场地图'},{collection:'booths',label:'参展社团与制品'},{tool:'streets',label:'街道'},{tool:'traffic',label:'交通到达'},{collection:'guide',label:'入场与须知'},{collection:'socialLinks',label:'社群'},{collection:'sponsors',label:'赞助'}];
  const visibleItems=page!=='home'?items:state.templateId==='03-creator-market'?list03:state.templateId==='04-creator-catalogue'?list04:items;
  nav.innerHTML=visibleItems.map(x=>x.collection
    ?'<button type="button" data-page-content-manager="'+x.collection+'"><span>'+esc(x.label)+'</span><b data-content-count="'+x.collection+'">0</b></button>'
@@ -1117,17 +1117,17 @@ function openHeroTitleInspector(){
  const desktop=String(state.heroImage||'').trim(),mobile=String(state.mobileHeroImage||'').trim();
  const media=(path,label,src,emptyLabel)=>'<div class="item-media hero-media-field"><span>'+label+'</span><div class="item-media-row"><button type="button" class="item-media-thumb '+(src?'':'empty')+'" data-hero-image="'+path+'" aria-label="上传'+label+'">'+(src?'<img src="'+esc(src)+'" alt="">':'<b>'+emptyLabel+'</b>')+'</button>'+(src?'<button type="button" class="item-media-remove" data-hero-image-remove="'+path+'">移除</button>':'')+'</div></div>';
  const isTravel=state.templateId==='02-scrapbook';
- setInspector('主视觉',isTravel?'KV 图片与裁切':'标题、图片与裁切',
+ setInspector('主视觉',isTravel?'主图与裁切':'标题、图片与裁切',
   '<div class="item-fields">'+
   '<label><span>第一行</span><input data-sync-path="heroTitle1" value="'+esc(state.heroTitle1||'')+'"></label>'+
   '<label><span>第二行</span><input data-sync-path="heroTitle2" value="'+esc(state.heroTitle2||'')+'"></label>'+
   '<label><span>第三行</span><input data-sync-path="heroTitle3" value="'+esc(state.heroTitle3||'')+'"></label>'+
   '</div>'+
-  media('heroImage','桌面 KV',desktop,'＋')+media('mobileHeroImage','手机 KV（可选）',mobile,'＋')+
+  media('heroImage','主图',desktop,'＋')+media('mobileHeroImage','手机主图（可选）',mobile,'＋')+
   '<div class="item-fields hero-focal-fields">'+
   '<label><span>桌面焦点</span><input data-sync-path="heroFocalDesktop" value="'+esc(state.heroFocalDesktop||'50% 50%')+'" placeholder="50% 50%"></label>'+
   '<label><span>手机焦点</span><input data-sync-path="heroFocalMobile" value="'+esc(state.heroFocalMobile||'50% 50%')+'" placeholder="50% 50%"></label>'+
-  '</div><p class="inspector-note">手机 KV 留空时自动使用桌面 KV。焦点格式示例：50% 30%，分别表示水平与垂直位置。</p>');
+  '</div><p class="inspector-note">手机主图留空时自动使用主图。焦点格式示例：50% 30%，分别表示水平与垂直位置。</p>');
  inspector.querySelectorAll('[data-sync-path]').forEach(input=>bindInspectorStateInput(input,input.dataset.syncPath,{clean:input.type!=='color'}));
  inspector.querySelectorAll('[data-hero-image]').forEach(btn=>btn.addEventListener('click',()=>{$('#imageInput').dataset.path=btn.dataset.heroImage;$('#imageInput').click()}));
  inspector.querySelectorAll('[data-hero-image-remove]').forEach(btn=>btn.addEventListener('click',()=>{checkpoint();setDeep(btn.dataset.heroImageRemove,'');save();send({type:'OE_PATCH_FIELD',path:btn.dataset.heroImageRemove,value:''})}));
@@ -1663,7 +1663,7 @@ function imageSlotConfig(path){
  if(path==='heroImage'&&state.templateId==='06-band-live')return {label:'首屏主视觉',ratio:4/5,ratioLabel:'首屏主视觉 · 4:5（竖版）',width:1000,height:1250,fixed:true};
  if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾形象图',ratio:3/4,ratioLabel:'嘉宾形象图 · 比例 3:4',width:900,height:1200,fixed:true};
  if(path==='heroImage'&&state.templateId==='02-scrapbook')return {label:'首页全屏 KV',ratio:16/9,ratioLabel:'桌面端全屏主视觉 · 1920 × 1080',width:1920,height:1080,fixed:true};
- if(path==='heroImage'&&state.templateId==='04-creator-catalogue')return {label:'封面 KV',ratio:5/7,ratioLabel:'封面 KV · 比例 5:7（贴合书页）',width:1000,height:1400,fixed:true};
+ if(path==='heroImage'&&state.templateId==='04-creator-catalogue')return {label:'封面图',ratio:5/7,ratioLabel:'封面 KV · 比例 5:7（贴合书页）',width:1000,height:1400,fixed:true};
  if(path==='heroImage'&&state.templateId==='03-creator-market')return {label:'首页横幅',ratio:5/2,ratioLabel:'首页横幅 · 比例 5:2（宽幅）',width:1800,height:720,fixed:true};
  if(path==='heroImage')return {label:'桌面主视觉 KV',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1400,height:1400,fixed:true};
  if(path==='mobileHeroImage'&&state.templateId==='03-creator-market')return {label:'手机横幅',ratio:3/2,ratioLabel:'手机横幅 · 比例 3:2',width:1200,height:800,fixed:true};

@@ -67,14 +67,19 @@
     function localizeContentLabels() {
       screens.contents.querySelectorAll('#pageContentNav button').forEach((btn) => {
         const old = btn.textContent;
-        const next = old.replace(/桌面 KV/g, '电脑端主图').replace(/手机 KV/g, '手机端主图').replace(/封面 KV/g, '封面图').replace(/\bKV\b/g, '主图');
+        const next = old.replace(/桌面 KV/g, '主图').replace(/手机 KV/g, '主图').replace(/封面 KV/g, '封面图').replace(/\bKV\b/g, '主图');
         if (next !== old) btn.textContent = next;
       });
     }
     function localizeFields() {
+      if (isPhone()) {
+        screens.fields.querySelectorAll('.inspector-body label').forEach((label) => {
+          if (/手机主图|手机 KV/.test(label.textContent || '')) label.remove();
+        });
+      }
       screens.fields.querySelectorAll('.inspector-body span,.inspector-body label,.inspector-body p').forEach((el) => {
         if (!el.textContent || el.children.length) return;
-        el.textContent = el.textContent.replace(/桌面 KV/g, '电脑端主图').replace(/手机 KV/g, '手机端主图').replace(/封面 KV/g, '封面图').replace(/\bKV\b/g, '主图');
+        el.textContent = el.textContent.replace(/手机主图（可选）/g, '主图').replace(/桌面 KV/g, '主图').replace(/手机 KV/g, '主图').replace(/封面 KV/g, '封面图').replace(/\bKV\b/g, '主图');
       });
     }
     function show(next) {
