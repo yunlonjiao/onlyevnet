@@ -2,36 +2,36 @@
 /* 不同活动类型用不同的“指南”叫法 */
 (function(){const qs=new URLSearchParams(location.search);const tpl=(document.documentElement.dataset.oeTemplate||qs.get('template')||'');const label=tpl.startsWith('03')||tpl.startsWith('04')?'创作展指南':tpl.startsWith('05')||tpl.startsWith('06')?'观演秩序':tpl.startsWith('07')||tpl.startsWith('08')?'活动须知':'观展指南';document.documentElement.dataset.oeGuideLabel=label})();
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {renderRecap} from '/v8/renderer/recap.js?v=8.467.0';
-import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.467.0';
+import {renderRecap} from '/v8/renderer/recap.js?v=8.468.0';
+import {DEFAULT_TEMPLATE_ID} from '/v8/templates/registry.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {getTemplatePreview,loadTemplatePreview} from '/v8/templates/preview-registry.js?v=8.467.0';
+import {getTemplatePreview,loadTemplatePreview} from '/v8/templates/preview-registry.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.467.0';
+import {qs as $,qsa as qa,escapeHtml as esc,getByPath,setByPath} from '/v8/renderer/utils.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.467.0';
+import {runtimeExtraStyle} from '/v8/renderer/runtime-style.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.467.0';
+import {activityLayoutFixStyle} from '/v8/renderer/activity-layout-fix.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createCollections} from '/v8/renderer/collections.js?v=8.467.0';
+import {createCollections} from '/v8/renderer/collections.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createParticipation} from '/v8/renderer/participation.js?v=8.467.0';
+import {createParticipation} from '/v8/renderer/participation.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRouter} from '/v8/renderer/router.js?v=8.467.0';
+import {createRouter} from '/v8/renderer/router.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createFields} from '/v8/renderer/fields.js?v=8.467.0';
+import {createFields} from '/v8/renderer/fields.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createRuntime} from '/v8/renderer/runtime.js?v=8.467.0';
+import {createRuntime} from '/v8/renderer/runtime.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.467.0';
+import {bindEditorEvents} from '/v8/renderer/editor-events.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.467.0';
+import {createStandaloneExporter} from '/v8/renderer/export.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {validateRendererContext} from '/v8/renderer/context.js?v=8.467.0';
+import {validateRendererContext} from '/v8/renderer/context.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {mapCarouselStyle} from '/v8/renderer/map-carousel.js?v=8.467.0';
+import {mapCarouselStyle} from '/v8/renderer/map-carousel.js?v=8.468.0';
 // @ts-ignore -- browser cache-busted absolute ESM URL
-import {catalogueBookStyle} from '/v8/renderer/catalogue-book.js?v=8.467.0';
+import {catalogueBookStyle} from '/v8/renderer/catalogue-book.js?v=8.468.0';
 
 const OE_MOBILE_CSS="@media(max-width:720px){#booths .booth-directory-grid,#booths .booth-grid,#booths .lineup-grid,#booths .product-directory-grid,.booth-directory-grid,.product-directory-grid,.lineup-grid,.guest-grid,.sponsor-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}@media(max-width:820px){.tp-site .nav{height:auto!important;padding:14px 0 0!important;background:#fffdf8!important;border-bottom:3px solid var(--tp-brown)!important}.tp-site .nav .wrap{display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:space-between!important;gap:8px 18px!important;height:auto!important}.tp-site .nav .brand{flex:0 0 auto!important;max-width:72%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}.tp-site .nav .links{position:static!important;left:auto!important;transform:none!important;order:3!important;flex:1 1 100%!important;width:100%!important;display:flex!important;justify-content:center!important;gap:0!important;margin:0!important;white-space:normal!important;overflow:auto!important;border-top:1px solid var(--tp-line)!important;border-radius:0!important;padding:0!important}.tp-site .nav .links a{padding:12px 16px!important;font-size:12px!important}}";
 
