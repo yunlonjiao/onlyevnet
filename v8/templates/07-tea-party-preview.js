@@ -12,7 +12,7 @@ const style=`
 .tp-site a{color:inherit}
 .tp-site .tp-serif,.tp-site h1,.tp-site .head h2,.tp-site .tp-ticket h3{font-family:"Noto Serif SC","Songti SC",serif}
 /* header */
-.tp-site .nav{position:sticky;top:0;z-index:40;height:64px;background:#fff6ece6;border:0;border-bottom:2px dotted var(--tp-line);box-shadow:none;backdrop-filter:blur(8px)}
+.tp-site .nav{position:sticky;top:0;z-index:40;height:64px;background:#fff6ece6;border:0;border-bottom:2px dotted var(--tp-line);box-shadow:none;backdrop-filter:none}
 .tp-site .nav .wrap{height:100%;display:flex;align-items:center;gap:20px}
 .tp-site .brand{font-family:"Noto Serif SC",serif;font-size:19px;font-weight:900;color:var(--tp-brown);border:0;background:none;padding:0;box-shadow:none}
 .tp-site .brand:before{content:"✿ ";color:var(--tp-pink)}
@@ -133,7 +133,7 @@ const style=`
 .tp-site .guide-grid article{background:var(--tp-paper);border:2px solid var(--tp-line);border-radius:22px;box-shadow:0 10px 22px #5a3d3a12;color:var(--tp-brown);padding:20px}
 .tp-site .footer{margin-top:60px;padding:42px 0 96px;background:#fbe4e9;color:var(--tp-brown);border-top:2px dotted #e3b9c4}
 .tp-site .footer h2,.tp-site .footer b{color:var(--tp-brown)}.tp-site .footer a{color:#b0405e}
-.tp-site .mobile-dock{background:#fff6ecf2;border-top:2px dotted var(--tp-line);backdrop-filter:blur(8px)}.tp-site .mobile-dock a{color:var(--tp-brown);font-weight:800}
+.tp-site .mobile-dock{background:#fff6ecf2;border-top:2px dotted var(--tp-line);backdrop-filter:none}.tp-site .mobile-dock a{color:var(--tp-brown);font-weight:800}
 .tp-site .hero-art{min-height:0!important;height:auto!important}
 .tp-site #participation .featured-activity-card,.tp-site #participation .featured-activity-card.reveal,.tp-site #participation .featured-activity-card:first-child{display:flex!important;flex-direction:column!important;grid-row:auto!important;grid-column:auto!important;min-height:0!important;height:auto!important}
 .tp-site #participation .featured-activity-copy{position:static!important;inset:auto!important;transform:none!important;background:none!important;width:auto!important}
