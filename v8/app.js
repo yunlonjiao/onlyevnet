@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.538.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.538.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.539.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.539.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.538.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.538.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages,listCloudProjects,getCloudSite} from '/v8/publisher.js?v=8.538.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.538.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.539.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.539.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages,listCloudProjects,getCloudSite} from '/v8/publisher.js?v=8.539.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.539.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -1045,7 +1045,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.538.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.539.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1216,7 +1216,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.538.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.539.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -2037,6 +2037,7 @@ try{const __vv=window.visualViewport;if(__vv){const __syncKb=()=>{const kb=Math.
 
 try{
  const __ensureSheetClose=()=>{
+  if(document.querySelector('#mNativeApp'))return;
   if(!(innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560)))return;
   const ih=document.querySelector('.inspector-header');if(!ih)return;
   let cb=document.querySelector('#mobileInspectorClose');
@@ -2063,6 +2064,7 @@ try{const __vv=window.visualViewport;if(__vv){const __syncSafari=()=>{const docH
 
 try{
  const __ensureSidebarClose=()=>{
+  if(document.querySelector('#mNativeApp'))return;
   if(!(innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560)))return;
   const head=document.querySelector('.sidebar-head');if(!head)return;
   let cb=document.querySelector('#mobileSidebarClose');
@@ -2097,6 +2099,7 @@ function initMobileSheetUX(){
  let fieldIdx=0;
  const getFields=()=>[...document.querySelectorAll('.inspector .inspector-body label')].filter(l=>l.querySelector('input:not([type=checkbox]):not([type=radio]),textarea,select'));
  const applyFields=()=>{
+  if(document.querySelector('#mNativeApp'))return;
   const fields=getFields();
   if(!fields.length){document.querySelector('#mobileFieldBar')?.remove();return}
   if(fieldIdx>=fields.length)fieldIdx=0;
@@ -2124,7 +2127,7 @@ function initMobileSheetUX(){
   if(side&&!side.querySelector('.m-sheet-tabs')){const t=document.createElement('div');t.className='m-sheet-tabs';t.innerHTML=tabsHTML('页面');t.onclick=e=>{const b=e.target.closest('[data-mtab]');if(!b)return;const n=b.dataset.mtab;if(n==='属性')openInspector();else{openSidebar();scrollTo(n==='内容'?'.page-content-block':'.sidebar-head')}};side.prepend(t)}
   if(insp&&!insp.querySelector('.m-sheet-tabs')){const t=document.createElement('div');t.className='m-sheet-tabs';t.innerHTML=tabsHTML('属性');t.onclick=e=>{const b=e.target.closest('[data-mtab]');if(!b)return;const n=b.dataset.mtab;if(n==='页面'){openSidebar();scrollTo('.sidebar-head')}else if(n==='内容'){openSidebar();scrollTo('.page-content-block')}};insp.prepend(t)}
  }; /* sheet tabs removed: dock + content strip are the single entry points */
- new MutationObserver(ms=>{if(ms.every(m=>m.target.closest?.('#mobileFieldBar,.m-sheet-tabs')))return;fieldIdx=0;clearTimeout(window.__mfbTimer);window.__mfbTimer=setTimeout(applyFields,80)}).observe(document.querySelector('.inspector')||document.body,{childList:true,subtree:true});
+ new MutationObserver(ms=>{if(document.querySelector('#mNativeApp'))return;if(ms.every(m=>m.target.closest?.('#mobileFieldBar,.m-sheet-tabs')))return;fieldIdx=0;clearTimeout(window.__mfbTimer);window.__mfbTimer=setTimeout(applyFields,80)}).observe(document.querySelector('.inspector')||document.body,{childList:true,subtree:true});
  setTimeout(applyFields,600);
  // swipe down to close sheets
  const swipeClose=(el,closeSel)=>{if(!el)return;let y0=0;el.addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});el.addEventListener('touchend',e=>{const dy=e.changedTouches[0].clientY-y0;if(dy>70)document.querySelector(closeSel)?.click()},{passive:true})};
