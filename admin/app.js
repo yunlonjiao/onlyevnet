@@ -1,10 +1,10 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
-import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.547.0';
-import {mountCost} from '/admin/cost.js?v=8.547.0';
-import {mountDeadlines} from '/admin/deadlines.js?v=8.547.0';
-import {loadAsk} from '/admin/ask.js?v=8.547.0';
-import {loadSignups} from '/admin/signups.js?v=8.547.0';
-import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,listCloudTrash,listProjectMembers,addProjectMember,removeProjectMember,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,listFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.547.0';
+import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.548.0';
+import {mountCost} from '/admin/cost.js?v=8.548.0';
+import {mountDeadlines} from '/admin/deadlines.js?v=8.548.0';
+import {loadAsk} from '/admin/ask.js?v=8.548.0';
+import {loadSignups} from '/admin/signups.js?v=8.548.0';
+import {deleteSite,readCloudSession,loginAccount,registerAccount,recoverAccount,fetchAccount,logoutAccount,listCloudProjects,listCloudTrash,listProjectMembers,addProjectMember,removeProjectMember,loadCloudConfig,deleteCloudProject,restoreCloudProject,purgeCloudProject,getCloudProjectId,setCloudProjectId,getCloudSite,ensureCloudProjectFor,saveCloudConfig,changeAccountPassword,rotateRecoveryCode,deleteAccount,getOverview,sendFeedback,listFeedback,channelLabel,uploadCloudImage,getProjectStats,getCollect,manageCollect,setCollectEntryStatus,deleteCollectEntry,collectLink,cloudMediaUrl} from '/v8/publisher.js?v=8.548.0';
 
 const $=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
