@@ -441,3 +441,6 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .feedback-item b{font-size:13px}
 .feedback-item time{font-size:11px;color:#8a8a94}
 .feedback-item p{margin:0;font-size:13px;line-height:1.7;color:#3f3f46;white-space:pre-wrap;word-break:break-word}
+
+/* admin mobile toolbar row */
+@media(max-width:760px){.project-toolbar{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;gap:8px!important;align-items:center!important}.project-stats{grid-column:1!important}.project-search{grid-column:2!important;width:100%!important;min-width:0!important;height:36px!important}#selectModeBtn{grid-column:3!important;height:36px!important;padding:0 12px!important;white-space:nowrap!important;font-size:11px!important}.project-backup-actions{grid-column:1/-1!important}.cost-row{align-items:center!important}.cost-row .quiet{width:40px!important;height:40px!important;min-width:40px!important;padding:0!important;display:grid!important;place-items:center!important;line-height:1!important;font-size:18px!important}}

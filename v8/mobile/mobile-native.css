@@ -326,3 +326,12 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 /* global image plus buttons */
 #mNativeApp .inspector-body [data-media-path],#mNativeApp .inspector-body [data-custom-item-image]{width:44px!important;height:44px!important;min-width:44px!important;border:1px solid #e3e3e9!important;border-radius:10px!important;background:#fff!important;color:transparent!important;font-size:0!important;line-height:0!important;padding:0!important;display:grid!important;place-items:center!important;position:relative!important;text-indent:-9999px!important;overflow:hidden!important}
 #mNativeApp .inspector-body [data-media-path]:after,#mNativeApp .inspector-body [data-custom-item-image]:after{content:'＋';font-size:22px!important;line-height:1!important;color:#576b95!important;font-weight:500!important;text-indent:0!important;display:block!important}
+
+/* mobile view bar: only back and edit */
+body.m-native-view .studio-topbar{display:none!important}
+body.m-native-view .canvas-wrap{position:fixed!important;inset:48px 0 0 0!important;height:auto!important;visibility:visible!important;display:block!important;padding:0!important}
+body.m-native-view .canvas-stage,body.m-native-view .canvas{height:100%!important;margin:0!important;border-radius:0!important;border:0!important;box-shadow:none!important}
+#mnViewBar{position:fixed;top:0;left:0;right:0;height:48px;z-index:700;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid #ededf0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+#mnViewBar[hidden]{display:none!important}
+#mnViewBar [data-view-back]{border:0;background:transparent;font-size:24px;line-height:1;color:#111;width:36px;height:36px;text-align:left;padding:0}
+#mnViewBar [data-view-edit]{border:0;background:#07c160;color:#fff;border-radius:999px;height:32px;padding:0 16px;font-size:13px;font-weight:700}

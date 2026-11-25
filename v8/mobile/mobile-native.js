@@ -124,6 +124,8 @@
     function show(next) {
       screen = next;
       app.hidden = false;
+      document.body.classList.remove('m-native-view');
+      if (mnViewBar) mnViewBar.hidden = true;
       if (mnEditFab) mnEditFab.hidden = true;
       document.documentElement.classList.remove('m-phone-pending');
       document.body.classList.add('m-native-open', 'm-native-split');
@@ -173,6 +175,7 @@
       }
     }
 
+    let mnViewBar = null;
     let mnEditFab = null;
     function ensureEditFab() {
       if (mnEditFab) return mnEditFab;
@@ -184,9 +187,21 @@
       document.body.appendChild(mnEditFab);
       return mnEditFab;
     }
+    function ensureViewBar() {
+      if (mnViewBar) return mnViewBar;
+      mnViewBar = document.createElement('header');
+      mnViewBar.id = 'mnViewBar';
+      mnViewBar.innerHTML = '<button type="button" data-view-back aria-label="返回">←</button><button type="button" data-view-edit>编辑</button>';
+      mnViewBar.querySelector('[data-view-back]').addEventListener('click', () => show('pages'));
+      mnViewBar.querySelector('[data-view-edit]').addEventListener('click', () => show('pages'));
+      document.body.appendChild(mnViewBar);
+      return mnViewBar;
+    }
     function hide() {
       app.hidden = true;
-      ensureEditFab().hidden = false;
+      document.body.classList.add('m-native-view');
+      ensureViewBar().hidden = false;
+      if (mnEditFab) mnEditFab.hidden = true;
       document.body.classList.remove('m-native-open', 'm-native-split', 'm-native-fields');
     }
 
