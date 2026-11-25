@@ -134,7 +134,7 @@
       if (screen === 'fields') show(fromManager ? 'items' : 'contents');
       else if (screen === 'items') show('contents');
       else if (screen === 'contents') show('pages');
-      else hide();
+      else show('pages');
     });
     app.querySelectorAll('[data-mn-tab]').forEach((btn) => btn.addEventListener('click', () => {
       if (btn.dataset.mnTab === 'pages') show('pages');
@@ -178,6 +178,10 @@
       const next = dx < 0 ? Math.min(order.length - 1, idx + 1) : Math.max(0, idx - 1);
       if (next !== idx) show(order[next]);
     }, { passive: true });
+
+    ['mobilePagePills','mobileContentStrip','mobileEditorDock'].forEach((id) => document.getElementById(id)?.remove());
+    function startSplitEditor(){ if (!app.hidden) return; show('pages'); }
+    startSplitEditor();
 
     document.addEventListener('click', (event) => {
       if (!isPhone()) return;
