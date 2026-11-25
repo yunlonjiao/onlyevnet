@@ -22,11 +22,6 @@
           <button type="button" class="primary" data-mn-publish>发布</button>
         </div>
       </header>
-      <nav class="mn-tabs">
-        <button type="button" data-mn-tab="pages" class="active">页面</button>
-        <button type="button" data-mn-tab="contents">内容</button>
-        <button type="button" data-mn-tab="fields">属性</button>
-      </nav>
       <main class="mn-main">
         <div class="mn-track">
           <section class="mn-screen" data-mn-screen="pages"></section>
@@ -53,11 +48,6 @@
     let screen = 'pages';
     let fromManager = false;
     const order = ['pages', 'contents', 'items', 'fields'];
-
-    function tabFor(next) {
-      if (next === 'items') return 'contents';
-      return next;
-    }
     function syncTitle() {
       if (screen === 'pages') titleEl.textContent = '编辑内容';
       else if (screen === 'contents') {
@@ -119,11 +109,10 @@
       document.body.classList.add('m-native-open', 'm-native-split');
       const idx = Math.max(0, order.indexOf(next));
       track.style.transform = 'translateX(' + (-idx * 100) + '%)';
-      app.querySelectorAll('[data-mn-tab]').forEach((btn) => btn.classList.toggle('active', btn.dataset.mnTab === tabFor(next)));
+      document.body.classList.toggle('m-native-fields', next === 'fields');
       syncTitle();
       if (next === 'contents') decorateContentGrid();
       app.classList.toggle('is-fields', next === 'fields');
-      document.body.classList.toggle('m-native-fields', next === 'fields');
     }
     function hide() {
       app.hidden = true;
@@ -136,11 +125,6 @@
       else if (screen === 'contents') show('pages');
       else show('pages');
     });
-    app.querySelectorAll('[data-mn-tab]').forEach((btn) => btn.addEventListener('click', () => {
-      if (btn.dataset.mnTab === 'pages') show('pages');
-      if (btn.dataset.mnTab === 'contents') show('contents');
-      if (btn.dataset.mnTab === 'fields') show('fields');
-    }));
 
     screens.pages.addEventListener('click', (event) => {
       if (event.target.closest('[data-page]')) setTimeout(() => show('contents'), 0);

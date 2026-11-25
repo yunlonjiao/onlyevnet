@@ -14,7 +14,7 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     sticker3:()=>qa('.sticker .editable-copy')[2],
     heroImage:()=>$('.kv')
   };
-  const extraStatePaths=['heroDisplayMode','heroTitleSize','heroTitleColor','heroTitleAccentColor','heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile','navigationUrl','ticketUrl','ticketLinkLabel'];
+  const extraStatePaths=['heroDisplayMode','heroTitleSize','heroTitleColor','heroTitleAccentColor','heroImage','mobileHeroImage','navigationUrl','ticketUrl','ticketLinkLabel'];
 
   function safeExternalUrl(value){
     const v=String(value||'').trim();
@@ -26,12 +26,10 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
     const state=getState?.()||{};
     const desktop=String(state.heroImage||'').trim();
     const mobile=String(state.mobileHeroImage||'').trim()||desktop;
-    hero.style.setProperty('--oe-hero-focal-mobile',String(state.mobileHeroFocal||state.heroFocalMobile||'50% 50%'));
     const safeUrl=src=>src?'url("'+src.replace(/"/g,'%22')+'")':'none';
     hero.style.setProperty('--oe-hero-image-desktop',safeUrl(desktop));
     hero.style.setProperty('--oe-hero-image-mobile',safeUrl(mobile));
-    hero.style.setProperty('--oe-hero-focal-desktop',String(state.heroFocalDesktop||'50% 50%'));
-    hero.style.setProperty('--oe-hero-focal-mobile',String(state.heroFocalMobile||'50% 50%'));
+
     kv.classList.toggle('empty',!desktop&&!mobile);
     // Let the browser decode the KV once for its CSS background.
     // The previous eager Image() probe decoded large base64 artwork a second time.
@@ -69,7 +67,7 @@ export function createFields({qs:$,qsa:qa,getMode,setModeState,setDeep,renderTic
       $('.hero')?.style.setProperty('--oe-hero-title-accent',String(value||'#ff5f91'));
       return;
     }
-    if(['heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile'].includes(path)){
+    if(['heroImage','mobileHeroImage'].includes(path)){
       applyHeroMedia();
       return;
     }

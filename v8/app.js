@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.486.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.486.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.490.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.490.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.486.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.486.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages,listCloudProjects,getCloudSite} from '/v8/publisher.js?v=8.486.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.486.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.490.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.490.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages,listCloudProjects,getCloudSite} from '/v8/publisher.js?v=8.490.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.490.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -51,8 +51,6 @@ if(state.heroImage===undefined)state.heroImage=activeTemplate.defaults.heroImage
 if(state.templateId==='02-scrapbook')state.heroDisplayMode='wide';
 else if(state.heroDisplayMode===undefined)state.heroDisplayMode='poster';
 if(state.mobileHeroImage===undefined)state.mobileHeroImage=activeTemplate.defaults.mobileHeroImage||'';
-if(state.heroFocalDesktop===undefined)state.heroFocalDesktop=activeTemplate.defaults.heroFocalDesktop||'50% 50%';
-if(state.heroFocalMobile===undefined)state.heroFocalMobile=activeTemplate.defaults.heroFocalMobile||'50% 50%';
 state.seo={...structuredClone(activeTemplate.defaults.seo||{}),...(state.seo||{})};
 if(!state.entryAnimation)state.entryAnimation=structuredClone(activeTemplate.defaults.entryAnimation||{enabled:true,showSkip:true,style:'ticket-tear',title:'',subtitle:'SPECIAL EVENT PASS',ticketLabel:'SPECIAL PASS',accent:'#ff5f91',duration:1800});
 state.entryAnimation={...structuredClone(activeTemplate.defaults.entryAnimation||{}),...state.entryAnimation};
@@ -761,7 +759,7 @@ function setPageContentActive({tool='',collection=''}={}){
  });
 }
 function syncCanvasSelection(path){
- if(/^heroTitle|^(?:heroImage|mobileHeroImage|heroFocalDesktop|heroFocalMobile)$|^tagline$|^sticker\d+$/.test(path)){syncStudioPageUI('home',{openContent:false});setPageContentActive({tool:'hero'});return}
+ if(/^heroTitle|^(?:heroImage|mobileHeroImage)$|^tagline$|^sticker\d+$/.test(path)){syncStudioPageUI('home',{openContent:false});setPageContentActive({tool:'hero'});return}
  if(/^ribbonItems\./.test(path)){syncStudioPageUI('home',{openContent:false});setPageContentActive({collection:'ribbonItems'});return}
  if(/^guide\..+\.image$/.test(path))return {label:'指南配图',ratio:16/9,ratioLabel:'指南配图 · 比例 16:9',width:1600,height:900,fixed:true};
  if(path==='venueMap.image'){syncStudioPageUI('home',{openContent:false});setPageContentActive({tool:'map'});return}
@@ -1047,7 +1045,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.486.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.490.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1124,10 +1122,7 @@ function openHeroTitleInspector(){
   '<label><span>第三行</span><input data-sync-path="heroTitle3" value="'+esc(state.heroTitle3||'')+'"></label>'+
   '</div>'+
   media('heroImage','主图',desktop,'＋')+media('mobileHeroImage','手机主图（可选）',mobile,'＋')+
-  '<div class="item-fields hero-focal-fields">'+
-  '<label><span>桌面焦点</span><input data-sync-path="heroFocalDesktop" value="'+esc(state.heroFocalDesktop||'50% 50%')+'" placeholder="50% 50%"></label>'+
-  '<label><span>手机焦点</span><input data-sync-path="heroFocalMobile" value="'+esc(state.heroFocalMobile||'50% 50%')+'" placeholder="50% 50%"></label>'+
-  '</div><p class="inspector-note">手机主图留空时自动使用主图。焦点格式示例：50% 30%，分别表示水平与垂直位置。</p>');
+  '<p class="inspector-note">手机主图留空时自动使用主图。</p>');
  inspector.querySelectorAll('[data-sync-path]').forEach(input=>bindInspectorStateInput(input,input.dataset.syncPath,{clean:input.type!=='color'}));
  inspector.querySelectorAll('[data-hero-image]').forEach(btn=>btn.addEventListener('click',()=>{$('#imageInput').dataset.path=btn.dataset.heroImage;$('#imageInput').click()}));
  inspector.querySelectorAll('[data-hero-image-remove]').forEach(btn=>btn.addEventListener('click',()=>{checkpoint();setDeep(btn.dataset.heroImageRemove,'');save();send({type:'OE_PATCH_FIELD',path:btn.dataset.heroImageRemove,value:''})}));
@@ -1221,7 +1216,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.486.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.490.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1292,7 +1287,7 @@ function openFieldInspector(path){
    input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep('tagline',e.target.value);send({type:'OE_PATCH_FIELD',path:'tagline',value:e.target.value});fitTextarea(e.target)});
    input.addEventListener('blur',()=>save());return;
  }
- if(path.startsWith('heroTitle')||['heroImage','mobileHeroImage','heroFocalDesktop','heroFocalMobile'].includes(path)){openHeroTitleInspector();return}
+ if(path.startsWith('heroTitle')||['heroImage','mobileHeroImage'].includes(path)){openHeroTitleInspector();return}
  const value=getDeep(path);
  setInspector('内容','编辑文字','<label>内容<textarea id="fieldInput" data-path="'+esc(path)+'">'+esc(value)+'</textarea></label>');
  const input=$('#fieldInput');let started=false;fitTextarea(input);
