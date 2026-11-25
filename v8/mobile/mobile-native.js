@@ -30,6 +30,8 @@
           <section class="mn-screen" data-mn-screen="fields"></section>
         </div>
       </main>`;
+    const removeLegacyBackdrop = () => { const bd = document.querySelector('#mobilePanelBackdrop'); if (bd) bd.remove(); };
+    removeLegacyBackdrop();
     document.body.appendChild(app);
 
     const screens = {
