@@ -30,7 +30,7 @@ body.embed .pv-bar{display:none}
 <iframe id="previewFrame" title="活动网站预览" allow="clipboard-write"></iframe>
 <p class="fail" id="previewFail">预览加载失败。请点右上角「返回编辑」，重新点「预览」。</p>
 <script type="module">
-  import {getTemplate} from '/v8/templates/registry.js?v=8.558.0';
+  import {getTemplate} from '/v8/templates/registry.js?v=8.559.0';
   const query = new URLSearchParams(location.search);
   if (query.get('embed') === '1') document.body.classList.add('embed');
   const template = query.get('template') || '08-birthday';
@@ -61,16 +61,21 @@ body.embed .pv-bar{display:none}
   let sent = false;
   const timer = setTimeout(() => { if (!sent) fail.style.display = 'block'; }, 12000);
 
-  frame.src = '/v8/render.html?template=' + encodeURIComponent(template) + '&project=' + encodeURIComponent(project);
+  const sendState = () => {
+    if (sent) return;
+    sent = true;
+    clearTimeout(timer);
+    try { frame.contentWindow.postMessage({ type: 'OE_INIT_STATE', state, page: 'home', mode: 'preview' }, location.origin); } catch (e) {}
+  };
 
   window.addEventListener('message', (event) => {
     if (event.source !== frame.contentWindow) return;
     const m = event.data || {};
-    if (m.type !== 'OE_READY' || sent) return;
-    sent = true;
-    clearTimeout(timer);
-    frame.contentWindow.postMessage({ type: 'OE_INIT_STATE', state, page: 'home', mode: 'preview' }, location.origin);
+    if (m.type !== 'OE_READY') return;
+    sendState();
   });
+  frame.addEventListener('load', () => setTimeout(sendState, 400), { once: true });
+  frame.src = '/v8/render.html?template=' + encodeURIComponent(template) + '&project=' + encodeURIComponent(project);
 </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 /* Shared image-crop operations used by Studio's IP ONLY and creator editors. */
 let cropperPromise;
 export function loadStudioCropper(){
- if(!cropperPromise)cropperPromise=import('/v8/vendor/cropperjs.js?v=8.558.0').catch(()=>import('https://cdn.jsdelivr.net/npm/cropperjs@2.2.0/+esm')).catch(error=>{cropperPromise=null;throw error});
+ if(!cropperPromise)cropperPromise=import('/v8/vendor/cropperjs.js?v=8.559.0').catch(()=>import('https://cdn.jsdelivr.net/npm/cropperjs@2.2.0/+esm')).catch(error=>{cropperPromise=null;throw error});
  return cropperPromise;
 }
 export async function cropSelectionToDataUrl(selection,{width,height,ratio,maxSize=1600,quality=.86}={}){
