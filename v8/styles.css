@@ -1950,3 +1950,9 @@ body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{
 #mNativeApp [data-remove-media],#mNativeApp [data-custom-item-image-remove],#mNativeApp #removeImage{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:0!important;height:44px!important;padding:0 12px!important;margin-left:0!important;border:0!important;background:transparent!important;color:#c2374e!important;font-size:13px!important;font-weight:600!important;white-space:nowrap!important}
 #mNativeApp .mn-screen:has(.reference-panel) .item-tools{margin-right:0!important;padding-right:0!important}
 
+
+/* hide editor chrome in native view, otherwise its backdrop-filter blurs the site */
+body.m-native-view .sidebar,
+body.m-native-view .inspector,
+body.m-native-view .canvas-toolbar,
+body.m-native-view #mobilePanelBackdrop{display:none!important}
