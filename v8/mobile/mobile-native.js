@@ -110,6 +110,8 @@
       app.hidden = false;
       document.body.classList.add('m-native-open', 'm-native-split');
       const idx = Math.max(0, order.indexOf(next));
+      const main = app.querySelector('.mn-main');
+      if (main) main.scrollLeft = 0;
       track.style.transform = 'translateX(' + (-idx * 100) + '%)';
       document.body.classList.toggle('m-native-fields', next === 'fields');
       syncTitle();

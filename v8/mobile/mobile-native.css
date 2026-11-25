@@ -202,3 +202,7 @@ body.m-native-open #mobilePanelBackdrop{display:none!important}
 #mNativeApp .create-custom-page{height:84px!important;min-height:84px!important;border:0!important;border-radius:0!important;background:transparent!important;font-size:11px!important;color:#8a8a94!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:5px!important;padding:2px 0 0!important}
 #mNativeApp .create-custom-page span:first-child{font-size:24px!important;line-height:1!important}
 #mNativeApp .create-custom-page span:last-child{font-size:11px!important}
+
+/* prevent main scroll shifting the whole track */
+#mNativeApp .mn-main{overflow:clip!important;overflow-clip-margin:0!important}
+#mNativeApp .mn-track{transform-origin:left top!important}
