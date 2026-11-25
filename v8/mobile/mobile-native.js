@@ -66,7 +66,10 @@
       else if (screen === 'contents') {
         localizeContentLabels();
         titleEl.textContent = (document.querySelector('#pageContentTitle')?.textContent || '页面内容').trim();
-      } else if (screen === 'items') titleEl.textContent = '选择要改的条目';
+      } else if (screen === 'items') {
+        const t = document.querySelector('#contentListPanel .sidebar-content-head b')?.textContent || '条目';
+        titleEl.textContent = t;
+      }
       else {
         titleEl.textContent = (inspector.querySelector('.inspector-header b')?.textContent || '编辑').trim();
         localizeFields();

@@ -290,3 +290,11 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 #mNativeApp .product-manager-entry{display:flex!important;align-items:center!important;width:100%!important;min-height:56px!important;padding:0 14px!important;background:#fff!important;border:0!important;border-radius:12px!important}
 #mNativeApp .product-manager-entry .sidebar-content-copy{flex:1 1 auto!important;width:auto!important;min-width:0!important;display:block!important}
 #mNativeApp .product-manager-entry .sidebar-content-copy b{white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;font-size:15px!important;line-height:1.2!important}
+
+/* items list clean layout */
+#mNativeApp .sidebar-content-list{margin:0!important;padding:0!important;display:flex!important;flex-direction:column!important;gap:0!important}
+#mNativeApp .sidebar-content-head{display:flex!important;align-items:center!important;justify-content:space-between!important;min-height:22px!important;height:auto!important;margin:0 0 8px!important;padding:0 2px!important;font-size:12px!important}
+#mNativeApp .sidebar-content-head b{font-size:13px!important;font-weight:700!important;color:#222!important}
+#mNativeApp .sidebar-content-head span{font-size:11px!important;color:#9a9aa4!important}
+#mNativeApp .sidebar-content-add{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-height:44px!important;height:44px!important;margin:0 0 8px!important;padding:0!important;border:1px dashed #d7d7de!important;border-radius:12px!important;background:#fff!important;color:#576b95!important;font-size:13px!important;position:static!important;float:none!important}
+#mNativeApp .sidebar-content-rows{display:flex!important;flex-direction:column!important;gap:8px!important;margin:0!important;padding:0!important}
