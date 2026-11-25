@@ -234,7 +234,17 @@
       if (event.target.closest('[data-sidebar-content-add]')) { fromManager = true; setTimeout(() => show('fields'), 160); }
     });
 
-    app.querySelector('[data-mn-preview]').addEventListener('click', () => document.querySelector('#previewBtn')?.click());
+    function openMobilePreview() {
+      const q = new URLSearchParams(location.search);
+      const tpl = q.get('template') || '';
+      const project = q.get('project') || 'default';
+      try {
+        const raw = localStorage.getItem('onlyevent-studio-v8:' + tpl + ':' + project + ':iframe') || localStorage.getItem('onlyevent-studio-v8:' + tpl + ':default:iframe') || '{}';
+        localStorage.setItem('oe-preview-state:' + tpl + ':' + project, raw);
+      } catch (error) {}
+      window.open('/v8/preview.html?template=' + encodeURIComponent(tpl) + '&project=' + encodeURIComponent(project), '_blank', 'noopener');
+    }
+    app.querySelector('[data-mn-preview]').addEventListener('click', openMobilePreview);
     app.querySelector('[data-mn-publish]').addEventListener('click', () => document.querySelector('#publishBtn')?.click());
 
     // Swipe the editor drawer left/right between page → content → field.
