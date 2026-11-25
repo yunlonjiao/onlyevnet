@@ -312,7 +312,6 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 #mNativeApp .sidebar-content-head span{margin-left:auto!important;white-space:nowrap!important}
 #mNativeApp .inspector-body .item-media{display:flex!important;align-items:center!important;gap:12px!important;min-height:64px!important}
 #mNativeApp .inspector-body .item-media button{border:0!important;background:#fff!important;color:#576b95!important;font-weight:600!important;font-size:13px!important;min-height:32px!important;padding:0!important;box-shadow:none!important}
-#mNativeApp .inspector-body .item-media .item-media-empty{width:44px!important;height:44px!important;border-radius:10px!important;background:#fff!important;border:1px solid #ededf0!important;display:grid!important;place-items:center!important;color:#9a9aa4!important}
 
 /* batch fixes 538 */
 #mnEditFab{position:fixed;right:16px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:600;border:0;border-radius:999px;background:#07c160;color:#fff;font:700 14px/1 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;padding:0 20px;height:44px;box-shadow:0 8px 24px rgba(7,193,96,.32)}
@@ -375,3 +374,9 @@ body.m-native-view .canvas-stage,body.m-native-view .canvas{height:100%!importan
 #mNativeApp .inspector-body .reference-panel{padding:12px 0!important}
 #mNativeApp .inspector-body .reference-panel>b{margin:0 0 8px!important}
 #mNativeApp .inspector-body .item-actions{padding-top:0!important;margin-top:0!important}
+
+/* featured media cleanup */
+#mNativeApp .item-media-empty{display:none!important}
+#mNativeApp .item-fields:empty{display:none!important}
+#mNativeApp .featured-slot-panel .item-media{display:block!important}
+#mNativeApp .featured-slot-panel .item-media>small{display:block!important;margin-top:8px!important;text-align:left!important;white-space:normal!important}
