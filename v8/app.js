@@ -1834,7 +1834,7 @@ async function openImageCropper(src,path,returnCollection='',returnIndex='',owne
    const selection=activeCropper.getCropperSelection?.();
    if(selection){
      if(cfg.fixed&&Number.isFinite(cfg.ratio)){selection.aspectRatio=cfg.ratio;selection.initialAspectRatio=cfg.ratio}
-     selection.addEventListener('change',e=>{keepCropSelectionInsideImage(e);if(!e.defaultPrevented)scheduleCropPreview()});
+     selection.addEventListener('change',e=>{keepCropSelectionInsideImage(e);if(cfg.fixed&&Number.isFinite(cfg.ratio)){const w=Number(selection.width||0),h=Number(selection.height||0);if(w>1&&h>1){const fit=w/cfg.ratio;if(Math.abs(h-fit)>0.6)selection.height=fit}}if(!e.defaultPrevented)scheduleCropPreview()});
    }
    requestAnimationFrame(()=>{activeCropper?.reset?.();fitCropSelectionToImage();scheduleCropPreview();setTimeout(()=>{fitCropSelectionToImage();scheduleCropPreview()},120)});
  }catch(err){

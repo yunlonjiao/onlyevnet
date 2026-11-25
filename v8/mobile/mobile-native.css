@@ -191,3 +191,14 @@ body.m-native-open #mobilePanelBackdrop{display:none!important}
 #mNativeApp .inspector-body label input,#mNativeApp .inspector-body label select{flex:1 1 auto!important;width:auto!important;min-width:0!important;height:30px!important;min-height:30px!important;padding:0!important;border:0!important;background:transparent!important;text-align:right!important;font-size:15px!important}
 #mNativeApp .inspector-body label:has(textarea){height:auto!important;max-height:none!important;flex-wrap:wrap!important;padding-top:8px!important;padding-bottom:8px!important}
 #mNativeApp .inspector-body label textarea{flex:1 1 100%!important;width:100%!important;min-height:64px!important;margin:6px 0 0!important}
+
+/* page switch size fix */
+#mNativeApp .page-nav{gap:8px!important}
+#mNativeApp .page-tree-row{height:84px!important;min-height:84px!important}
+#mNativeApp .page-inline-switch{width:34px!important;height:20px!important;transform:none!important;margin:2px 0 0!important}
+#mNativeApp .page-inline-switch i{width:30px!important;height:17px!important}
+#mNativeApp .page-inline-switch i:after{width:13px!important;height:13px!important;left:2px!important;top:2px!important}
+#mNativeApp .page-inline-switch input:checked+i:after{transform:translateX(13px)!important}
+#mNativeApp .create-custom-page{height:84px!important;min-height:84px!important;border:0!important;border-radius:0!important;background:transparent!important;font-size:11px!important;color:#8a8a94!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:5px!important;padding:2px 0 0!important}
+#mNativeApp .create-custom-page span:first-child{font-size:24px!important;line-height:1!important}
+#mNativeApp .create-custom-page span:last-child{font-size:11px!important}

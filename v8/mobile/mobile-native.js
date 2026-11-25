@@ -39,6 +39,8 @@
       fields: app.querySelector('[data-mn-screen="fields"]')
     };
     screens.pages.appendChild(pageNav);
+    const createPageBtn=pageNav.querySelector('#createCustomPageBtn');
+    if(createPageBtn){const sp=createPageBtn.querySelectorAll('span');if(sp[1])sp[1].textContent='新建页面'}
     screens.contents.appendChild(contentBlock);
     screens.fields.appendChild(inspector);
     screens.items.appendChild(contentBlock.querySelector('#contentListPanel'));
