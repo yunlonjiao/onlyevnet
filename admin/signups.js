@@ -1,5 +1,5 @@
 /* 报名管理: COS, photographer, volunteer or custom sign-up forms with one public link each. */
-import {listSignups,createSignup,updateSignup,deleteSignup,listSignupEntries,setSignupEntryStatus,deleteSignupEntry,signupLink} from '/v8/publisher.js?v=8.515.0';
+import {listSignups,createSignup,updateSignup,deleteSignup,listSignupEntries,setSignupEntryStatus,deleteSignupEntry,signupLink} from '/v8/publisher.js?v=8.516.0';
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const SIGNUP_PRESETS={
