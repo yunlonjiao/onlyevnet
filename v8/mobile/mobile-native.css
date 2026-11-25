@@ -176,3 +176,9 @@ body.m-native-open.m-native-fields .canvas-wrap{bottom:30dvh!important}
 #mNativeApp .inspector-body input,#mNativeApp .inspector-body select{text-align:right!important;border:0!important;background:transparent!important;padding:0!important;min-height:30px!important;font-size:15px!important;box-shadow:none!important}
 #mNativeApp .inspector-body textarea{grid-column:1/-1!important;text-align:left!important;border:0!important;background:#fafafa!important;border-radius:8px!important;font-size:15px!important;margin:6px 0!important}
 #mNativeApp .inspector-body .item-media{background:#fff!important;border:0!important;border-radius:14px!important;padding:10px 14px!important;margin:0 0 8px!important}
+
+/* green page switches */
+#mNativeApp .page-inline-switch i{background:#e3e3e9!important;width:24px!important;height:14px!important}
+#mNativeApp .page-inline-switch input:checked+i{background:#07c160!important}
+#mNativeApp .page-inline-switch i:after{width:11px!important;height:11px!important;left:1.5px!important;top:1.5px!important}
+#mNativeApp .page-inline-switch input:checked+i:after{transform:translateX(10px)!important}

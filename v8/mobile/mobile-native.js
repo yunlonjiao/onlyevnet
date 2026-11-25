@@ -49,7 +49,7 @@
     let fromManager = false;
     const order = ['pages', 'contents', 'items', 'fields'];
     function syncTitle() {
-      if (screen === 'pages') titleEl.textContent = '编辑内容';
+      if (screen === 'pages') titleEl.textContent = '页面';
       else if (screen === 'contents') {
         localizeContentLabels();
         titleEl.textContent = (document.querySelector('#pageContentTitle')?.textContent || '页面内容').trim();
