@@ -276,3 +276,9 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 #mNativeApp .mn-screen .inspector{height:100%!important;max-height:none!important}
 #mNativeApp .inspector-body{flex:1 1 auto!important;height:auto!important;max-height:none!important;min-height:0!important}
 #mNativeApp .m-field-hidden{display:flex!important;visibility:visible!important;height:auto!important;max-height:none!important}
+
+/* transparent all field backgrounds */
+#mNativeApp .inspector-body *{background-color:transparent!important;box-shadow:none!important}
+#mNativeApp .inspector-body label,#mNativeApp .inspector-body .item-media{background-color:#fff!important}
+#mNativeApp .inspector-body textarea{background-color:#fff!important;border:0!important}
+#mNativeApp .inspector-body button{background-color:#fff!important}
