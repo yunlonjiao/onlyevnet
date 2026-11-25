@@ -1,7 +1,7 @@
-import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js?v=8.566.0';
-import {mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js?v=8.566.0';
-import {bindMapCarousels} from '/v8/renderer/map-carousel.js?v=8.566.0';
-import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js?v=8.566.0';
+import {spotlightItems,mountProductSpotlight} from '/v8/renderer/product-spotlight.js';
+import {mountStreetCard,mountStreetLegend,mountProductTiles,mountStreetBanners} from '/v8/renderer/street-spotlight.js';
+import {bindMapCarousels} from '/v8/renderer/map-carousel.js';
+import {catalogueBookData,mountCatalogueBook} from '/v8/renderer/catalogue-book.js';
 export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyle='',escapeHtml:esc}){
   return function buildStandaloneHtml(){
     const state=getState(),clone=document.body.cloneNode(true);

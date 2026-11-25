@@ -615,7 +615,7 @@ export default {
       if(path==='/')return redirect('/admin/');
       if(path==='/admin')return redirect('/admin/');
       const assetResponse=await env.ASSETS.fetch(req);
-      if(path.startsWith('/v8/')||path==='/robots.txt'){
+      if(path.startsWith('/v8/')||path.startsWith('/admin/')||path==='/robots.txt'){
         // The editor loads same-origin module graphs: keep them revalidated and un-framable from other sites.
         const headers=new Headers(assetResponse.headers);
         headers.set('x-content-type-options','nosniff');headers.set('referrer-policy','strict-origin-when-cross-origin');headers.set('x-frame-options','SAMEORIGIN');headers.set('cache-control','no-store, max-age=0');
