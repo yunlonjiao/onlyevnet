@@ -124,6 +124,7 @@
     function show(next) {
       screen = next;
       app.hidden = false;
+      document.documentElement.classList.remove('m-phone-pending');
       document.body.classList.add('m-native-open', 'm-native-split');
       const idx = Math.max(0, order.indexOf(next));
       const main = app.querySelector('.mn-main');
