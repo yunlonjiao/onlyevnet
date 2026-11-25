@@ -181,7 +181,13 @@
 
     ['mobilePagePills','mobileContentStrip','mobileEditorDock'].forEach((id) => document.getElementById(id)?.remove());
     function startSplitEditor(){ if (!app.hidden) return; show('pages'); }
-    startSplitEditor();
+    const waitForCanvas=()=>{
+      const frame=document.querySelector('.canvas iframe,.canvas-stage iframe,#canvas iframe');
+      if(frame){ setTimeout(startSplitEditor, 400); return; }
+      if ((waitForCanvas.tries = (waitForCanvas.tries || 0) + 1) < 40) setTimeout(waitForCanvas, 250);
+      else startSplitEditor();
+    };
+    setTimeout(waitForCanvas, 600);
 
     document.addEventListener('click', (event) => {
       if (!isPhone()) return;
