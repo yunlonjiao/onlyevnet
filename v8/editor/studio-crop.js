@@ -22,7 +22,7 @@ export async function createStudioCropper({image,stage,ratio,coverage=.72}={}){
  stage.querySelectorAll('cropper-canvas').forEach(node=>node.remove());
  try{await image.decode()}catch{}
  const ratioAttr=Number.isFinite(ratio)&&ratio>0?' aspect-ratio="'+ratio+'" initial-aspect-ratio="'+ratio+'"':'';
- const handles='<cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle>';
- const template='<cropper-canvas background><cropper-image initial-center-size="contain" rotatable></cropper-image><cropper-shade hidden></cropper-shade><cropper-selection initial-coverage="'+coverage+'"'+ratioAttr+' movable resizable outlined><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair><cropper-handle action="move" theme-color="rgba(255,255,255,.32)"></cropper-handle>'+handles+'</cropper-selection></cropper-canvas>';
+ 
+ const template='<cropper-canvas background><cropper-image initial-center-size="cover" rotatable></cropper-image><cropper-shade hidden></cropper-shade><cropper-selection initial-coverage="'+coverage+'"'+ratioAttr+' outlined><cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair></cropper-selection></cropper-canvas>';
  return new Cropper(image,{container:stage,template});
 }
