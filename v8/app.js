@@ -1652,7 +1652,31 @@ function mutateItem(collection,index,op){
  }
  save();send({type:'OE_REPLACE_STATE',state});syncContentCounts();openCollectionManager(collection,index);openItemInspector(collection,index);
 }
+function liveImageFrameRatio(path){
+ try{
+  const doc=iframe?.contentDocument;if(!doc)return 0;
+  let el=null,loader=null,oldDisplay='',wasHidden=false;
+  if(/^entryAnimation\.kv/.test(path)){
+   loader=doc.querySelector('#loader');
+   if(loader){oldDisplay=loader.style.display;wasHidden=loader.classList.contains('hide');loader.style.display='grid';loader.classList.remove('hide')}
+   el=doc.querySelector('.loader .entry-photo')||doc.querySelector('.entry-photo');
+  }else if(path==='heroImage'||path==='mobileHeroImage'){
+   el=doc.querySelector('.kv');
+  }else{
+   el=doc.querySelector('[data-oe-field="'+path+'"]');
+  }
+  if(!el)return 0;
+  const r=el.getBoundingClientRect(),ratio=r.width/r.height;
+  if(loader){loader.style.display=oldDisplay;if(wasHidden)loader.classList.add('hide')}
+  if(!Number.isFinite(ratio)||ratio<0.25||ratio>4)return 0;
+  return ratio;
+ }catch{return 0}
+}
 function imageSlotConfig(path){
+ const measured=liveImageFrameRatio(path);
+ if(/^entryAnimation\.kv/.test(path)&&measured){
+  return {label:path.endsWith('Mobile')?'开屏手机 KV':'开屏桌面 KV',ratio:measured,ratioLabel:'与开屏照片框实际比例一致',width:1600,height:Math.round(1600/measured),fixed:true};
+ }
  if(path==='heroImage'&&state.templateId==='01-ip-only')return {label:'首页主视觉',ratio:812/500,ratioLabel:'首页主视觉 · 812×500（与 01 首屏框体一致）',width:1624,height:1000,fixed:true};
  if(path==='heroImage'&&state.templateId==='05-live-poster')return {label:'舞台主视觉',ratio:3/5,ratioLabel:'舞台主视觉 · 3:5（与右侧竖版框体一致）',width:900,height:1500,fixed:true};
  if(path==='heroImage'&&state.templateId==='06-band-live')return {label:'首屏主视觉',ratio:4/5,ratioLabel:'首屏主视觉 · 4:5（竖版）',width:1000,height:1250,fixed:true};
