@@ -30,7 +30,7 @@ body.embed .pv-bar{display:none}
 <iframe id="previewFrame" title="活动网站预览" allow="clipboard-write"></iframe>
 <p class="fail" id="previewFail">预览加载失败。请点右上角「返回编辑」，重新点「预览」。</p>
 <script type="module">
-  import {getTemplate} from '/v8/templates/registry.js?v=8.542.0';
+  import {getTemplate} from '/v8/templates/registry.js?v=8.543.0';
   const query = new URLSearchParams(location.search);
   if (query.get('embed') === '1') document.body.classList.add('embed');
   const template = query.get('template') || '08-birthday';
@@ -45,6 +45,7 @@ body.embed .pv-bar{display:none}
   try { saved = JSON.parse(localStorage.getItem(stateKey) || '{}') || {}; } catch (e) {}
   const tpl = getTemplate(template);
   const state = { ...(structuredClone(tpl?.defaults || {})), ...saved, templateId: template, projectId: project };
+  if (query.get('embed') === '1') state.entryAnimation = { ...(state.entryAnimation || {}), enabled: false };
   const eventName = String(state.eventName || state.name || '').trim();
   nameEl.textContent = eventName || '活动网站预览';
 
