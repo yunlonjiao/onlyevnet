@@ -285,3 +285,8 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 
 /* keep add button above the item rows */
 #mNativeApp .sidebar-content-add{order:-1!important;margin:0 0 8px!important;width:100%!important;min-height:40px!important;border-radius:10px!important;background:#fff!important}
+
+/* product manager entry no wrap */
+#mNativeApp .product-manager-entry{display:flex!important;align-items:center!important;width:100%!important;min-height:56px!important;padding:0 14px!important;background:#fff!important;border:0!important;border-radius:12px!important}
+#mNativeApp .product-manager-entry .sidebar-content-copy{flex:1 1 auto!important;width:auto!important;min-width:0!important;display:block!important}
+#mNativeApp .product-manager-entry .sidebar-content-copy b{white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;font-size:15px!important;line-height:1.2!important}
