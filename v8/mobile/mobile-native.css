@@ -313,3 +313,12 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 #mNativeApp .inspector-body .item-media{display:flex!important;align-items:center!important;gap:12px!important;min-height:64px!important}
 #mNativeApp .inspector-body .item-media button{border:0!important;background:#fff!important;color:#576b95!important;font-weight:600!important;font-size:13px!important;min-height:32px!important;padding:0!important;box-shadow:none!important}
 #mNativeApp .inspector-body .item-media .item-media-empty{width:44px!important;height:44px!important;border-radius:10px!important;background:#fff!important;border:1px solid #ededf0!important;display:grid!important;place-items:center!important;color:#9a9aa4!important}
+
+/* batch fixes 538 */
+#mnEditFab{position:fixed;right:16px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:600;border:0;border-radius:999px;background:#07c160;color:#fff;font:700 14px/1 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;padding:0 20px;height:44px;box-shadow:0 8px 24px rgba(7,193,96,.32)}
+#mNativeApp .inspector-body .reference-panel,#mNativeApp .inspector-body .featured-slot-panel,#mNativeApp .inspector-body .item-fields,#mNativeApp .inspector-body .custom-page-preset-grid{width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important}
+#mNativeApp .sidebar-content-list,#mNativeApp .sidebar-content-rows{overflow:visible!important;height:auto!important;max-height:none!important}
+#mNativeApp .item-media-empty{display:none!important}
+#mNativeApp .item-media-row button[data-media-path],#mNativeApp .item-media-row button[data-custom-item-image]{width:44px!important;height:44px!important;min-width:44px!important;border:1px solid #e3e3e9!important;border-radius:10px!important;background:#fff!important;color:transparent!important;font-size:0!important;line-height:0!important;padding:0!important;display:grid!important;place-items:center!important;position:relative!important}
+#mNativeApp .item-media-row button[data-media-path]:after,#mNativeApp .item-media-row button[data-custom-item-image]:after{content:'＋';font-size:22px!important;line-height:1!important;color:#576b95!important;font-weight:500!important}
+#mNativeApp [data-remove-media],#mNativeApp [data-custom-item-image-remove]{display:none!important}

@@ -124,6 +124,7 @@
     function show(next) {
       screen = next;
       app.hidden = false;
+      if (mnEditFab) mnEditFab.hidden = true;
       document.documentElement.classList.remove('m-phone-pending');
       document.body.classList.add('m-native-open', 'm-native-split');
       const idx = Math.max(0, order.indexOf(next));
@@ -172,8 +173,20 @@
       }
     }
 
+    let mnEditFab = null;
+    function ensureEditFab() {
+      if (mnEditFab) return mnEditFab;
+      mnEditFab = document.createElement('button');
+      mnEditFab.type = 'button';
+      mnEditFab.id = 'mnEditFab';
+      mnEditFab.textContent = '编辑';
+      mnEditFab.addEventListener('click', () => show('pages'));
+      document.body.appendChild(mnEditFab);
+      return mnEditFab;
+    }
     function hide() {
       app.hidden = true;
+      ensureEditFab().hidden = false;
       document.body.classList.remove('m-native-open', 'm-native-split', 'm-native-fields');
     }
 
@@ -182,7 +195,7 @@
       if (screen === 'fields') { const p = lastEditPath || lastSection; show(fromManager ? 'items' : 'contents'); [80, 350, 800, 1500].forEach((d) => setTimeout(() => scrollPreviewToPath(p), d)); return; }
       else if (screen === 'items') { show('contents'); [80, 350, 800].forEach((d) => setTimeout(() => scrollPreviewToPath(lastSection), d)); }
       else if (screen === 'contents') show('pages');
-      else show('pages');
+      else hide();
     });
 
     screens.pages.addEventListener('click', (event) => {
@@ -201,7 +214,6 @@
         setTimeout(() => show('items'), 80);
       }
     });
-    new MutationObserver(() => pinItemsAddButton()).observe(screens.items, { childList: true, subtree: true });
     screens.items.addEventListener('click', (event) => {
       if (event.target.closest('[data-open-item]')) { fromManager = true; setTimeout(() => show('fields'), 100); }
       if (event.target.closest('[data-sidebar-content-add]')) { fromManager = true; setTimeout(() => show('fields'), 160); }
@@ -236,6 +248,7 @@
 
     document.addEventListener('click', (event) => {
       if (!isPhone()) return;
+      if (event.target.closest('[data-custom-page-preset]')) { setTimeout(() => show('pages'), 350); return; }
       if (event.target.closest('#createCustomPageBtn')) { fromCreatePreset = true; setTimeout(() => show('fields'), 80); return; }
       if (event.target.closest('#mobilePagesBtn')) {
         event.preventDefault();
