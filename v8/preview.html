@@ -18,6 +18,12 @@
   @media(min-width:821px){.pv-bar{padding-left:20px;padding-right:20px}.pv-name{font-size:14px}}
 body.embed .pv-bar{display:none}
   body.embed #previewFrame{top:0;height:100%}
+  .pv-loading{position:fixed;left:0;right:0;bottom:0;top:calc(52px + env(safe-area-inset-top));z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#fff;color:#555;font:600 13px/1.4 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;text-align:center;padding:24px}
+  body.embed .pv-loading{top:0}
+  .pv-loading[hidden]{display:none}
+  .pv-spinner{width:28px;height:28px;border:3px solid #ececf1;border-top-color:#17171c;border-radius:50%;animation:pvspin .8s linear infinite}
+  .pv-loading small{font-weight:500;color:#9a9aa4;font-size:12px}
+  @keyframes pvspin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -28,6 +34,7 @@ body.embed .pv-bar{display:none}
   <button type="button" class="pv-back" id="pvBack">返回编辑</button>
 </header>
 <iframe id="previewFrame" title="活动网站预览" allow="clipboard-write"></iframe>
+<div class="pv-loading" id="pvLoading" role="status" aria-live="polite"><i class="pv-spinner" aria-hidden="true"></i><b>正在加载模板预览…</b><small>首次打开可能需要几秒</small></div>
 <p class="fail" id="previewFail">预览加载失败。请点右上角「返回编辑」，重新点「预览」。</p>
 <script type="module">
   import {getTemplate} from '/v8/templates/registry.js';
@@ -58,8 +65,21 @@ body.embed .pv-bar{display:none}
     }, 180);
   });
 
+  const loadingEl = document.getElementById('pvLoading');
+  let loadingTimer = 0;
+  const hideLoading = () => { if (loadingEl) loadingEl.hidden = true; if (loadingTimer) clearInterval(loadingTimer); };
+  const checkLoading = () => {
+    try {
+      const doc = frame.contentDocument;
+      const text = (doc?.body?.innerText || '').trim();
+      if (doc && text.length > 20 && !/Loading preview/.test(text)) hideLoading();
+    } catch (e) {}
+  };
+  loadingTimer = setInterval(checkLoading, 250);
+  setTimeout(() => { const small = loadingEl?.querySelector('small'); if (small && loadingEl && !loadingEl.hidden) small.textContent = '模板较大，仍在加载…'; }, 3000);
+
   let sent = false;
-  const timer = setTimeout(() => { if (!sent) fail.style.display = 'block'; }, 12000);
+  const timer = setTimeout(() => { if (!sent) { hideLoading(); fail.style.display = 'block'; } }, 12000);
 
   const sendState = () => {
     if (sent) return;
