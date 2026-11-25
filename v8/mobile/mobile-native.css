@@ -311,3 +311,6 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 /* label must stack vertically, never wrap into a second column */
 #mNativeApp .inspector-body label{flex-wrap:nowrap!important;flex-direction:column!important;align-items:stretch!important;height:auto!important;max-height:none!important}
 #mNativeApp .inspector-body label textarea{width:100%!important;max-width:100%!important;margin:4px 0 0!important;display:block!important;float:none!important;resize:none!important}
+
+/* textarea label no wrap override */
+#mNativeApp .inspector-body label:has(textarea){flex-wrap:nowrap!important;flex-direction:column!important;display:flex!important;align-items:stretch!important;height:auto!important;max-height:none!important}
