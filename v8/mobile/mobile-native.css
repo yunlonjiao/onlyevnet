@@ -303,3 +303,7 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 #mNativeApp .inspector-body,#mNativeApp .inspector-body *{background:transparent!important;background-image:none!important;box-shadow:none!important}
 #mNativeApp .inspector-body label,#mNativeApp .inspector-body .item-media,#mNativeApp .inspector-body input,#mNativeApp .inspector-body textarea,#mNativeApp .inspector-body select,#mNativeApp .inspector-body button{background:#fff!important}
 #mNativeApp .inspector-body textarea{border:0!important;border-radius:0!important;padding:0!important;min-height:64px!important}
+
+/* textarea inside label white */
+#mNativeApp .inspector-body label textarea,#mNativeApp .inspector-body label input,#mNativeApp .inspector-body label select{background:#fff!important;background-image:none!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important;min-height:0!important}
+#mNativeApp .inspector-body label textarea{min-height:64px!important}
