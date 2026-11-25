@@ -341,3 +341,13 @@ body.m-native-view .canvas-stage,body.m-native-view .canvas{height:100%!importan
 #mNativeApp .sidebar-content-head>div{display:flex!important;align-items:baseline!important;gap:8px!important;width:100%!important;min-width:0!important}
 #mNativeApp .sidebar-content-head b{flex:0 0 auto!important;font-size:14px!important;font-weight:700!important;color:#222!important;white-space:nowrap!important}
 #mNativeApp .sidebar-content-head span{margin-left:auto!important;flex:0 0 auto!important;font-size:11px!important;color:#9a9aa4!important;white-space:nowrap!important}
+
+/* uniform property gutter */
+#mNativeApp .mn-screen{padding-left:12px!important;padding-right:12px!important;box-sizing:border-box!important;scrollbar-width:none!important}
+#mNativeApp .mn-screen::-webkit-scrollbar{width:0!important;height:0!important;display:none!important}
+#mNativeApp .inspector{width:100%!important;padding:0!important;box-sizing:border-box!important}
+#mNativeApp .inspector-body{width:100%!important;padding:6px 0 8px!important;box-sizing:border-box!important;scrollbar-width:none!important}
+#mNativeApp .inspector-body::-webkit-scrollbar{width:0!important;height:0!important;display:none!important}
+#mNativeApp .item-inspector-head,#mNativeApp .inspector-header{width:100%!important;padding:0 0 8px!important;margin:0!important;box-sizing:border-box!important}
+#mNativeApp .item-inspector-head .item-tools,#mNativeApp .inspector-header .item-tools{margin-left:auto!important;padding-right:0!important}
+#mNativeApp .item-fields,#mNativeApp .reference-panel,#mNativeApp .sidebar-content-list{width:100%!important;margin-left:0!important;margin-right:0!important;box-sizing:border-box!important}
