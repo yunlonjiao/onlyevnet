@@ -1669,3 +1669,6 @@ body.previewing-safe .top-actions{width:auto!important}
 /* white crop stage */
 #cropStage,#cropStage cropper-canvas,cropper-canvas{background:#fff!important}
 #cropStage .cropper-shade,cropper-shade{background:rgba(16,16,20,.34)!important}
+
+/* hide crop shade so the white stage shows */
+#cropStage cropper-shade,cropper-shade{display:none!important;background:transparent!important}
