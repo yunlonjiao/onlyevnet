@@ -163,7 +163,7 @@
     function pinItemsAddButton() {
       const add = screens.items.querySelector('.sidebar-content-add, [data-add-custom-item]');
       const rows = screens.items.querySelector('.sidebar-content-rows');
-      if (add && rows && add.parentElement === rows.parentElement) {
+      if (add && rows && add.parentElement === rows.parentElement && rows.previousElementSibling !== add) {
         add.parentElement.insertBefore(add, rows);
       }
     }
