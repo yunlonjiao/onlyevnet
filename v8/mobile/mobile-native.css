@@ -245,3 +245,7 @@ body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{
 /* fixed split 60 / 40 */
 #mNativeApp,#mNativeApp.is-fields{height:40dvh!important}
 body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{bottom:40dvh!important;height:auto!important}
+
+/* fixed split 65 / 35 */
+#mNativeApp,#mNativeApp.is-fields{height:35dvh!important}
+body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{bottom:35dvh!important;height:auto!important}
