@@ -1494,7 +1494,6 @@ function participationInspectorFields(item){
 function openItemInspector(collection,index){
   lastCollection=collection;lastItemIndex=index;
  const meta=collectionMeta[collection],arr=collectionArray(collection),item=arr?.[index];if(!meta||!item)return;
- if(innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560)){try{mobilePanels&&mobilePanels.open('inspector')}catch(e){}}
  const count=arr.length;
  const isLong=k=>['text','gift','note','detail','rules','requirements','intro','works','appearance','setlist'].includes(k);
  const inspectorFields=collection==='participation'?participationInspectorFields(item):meta.fields;
