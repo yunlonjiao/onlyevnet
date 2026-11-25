@@ -227,3 +227,10 @@ body.m-native-open #mobilePanelBackdrop{display:none!important}
 /* switch knob z */
 #mNativeApp .page-inline-switch i:after{left:2px!important;right:auto!important;top:2px!important;width:12px!important;height:12px!important;background:#fff!important;z-index:5!important;transform:none!important;border-radius:50%!important}
 #mNativeApp .page-inline-switch input:checked+i:after{left:16px!important;right:auto!important;transform:none!important}
+
+/* switch rebuilt: track + knob on the label itself */
+#mNativeApp .page-inline-switch{width:30px!important;height:16px!important;border-radius:999px!important;background:#d4d4dc!important;position:relative!important;display:block!important;overflow:hidden!important;margin-top:2px!important;transform:none!important}
+#mNativeApp .page-inline-switch i{display:none!important}
+#mNativeApp .page-inline-switch:after{content:""!important;position:absolute!important;left:2px!important;top:2px!important;width:12px!important;height:12px!important;border-radius:50%!important;background:#fff!important;z-index:2!important;transition:left .16s!important;box-shadow:0 1px 2px rgba(0,0,0,.16)!important}
+#mNativeApp .page-inline-switch:has(input:checked){background:#07c160!important}
+#mNativeApp .page-inline-switch:has(input:checked):after{left:16px!important}
