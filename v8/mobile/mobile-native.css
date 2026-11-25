@@ -282,3 +282,6 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 #mNativeApp .inspector-body label,#mNativeApp .inspector-body .item-media{background-color:#fff!important}
 #mNativeApp .inspector-body textarea{background-color:#fff!important;border:0!important}
 #mNativeApp .inspector-body button{background-color:#fff!important}
+
+/* keep add button above the item rows */
+#mNativeApp .sidebar-content-add{order:-1!important;margin:0 0 8px!important;width:100%!important;min-height:40px!important;border-radius:10px!important;background:#fff!important}

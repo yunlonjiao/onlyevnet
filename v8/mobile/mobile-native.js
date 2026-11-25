@@ -128,6 +128,7 @@
       document.body.classList.toggle('m-native-fields', next === 'fields');
       syncTitle();
       if (next === 'contents') decorateContentGrid();
+      if (next === 'items') setTimeout(pinItemsAddButton, 60);
       app.classList.toggle('is-fields', next === 'fields');
     }
     function scrollPreviewToPath(path) {
@@ -158,6 +159,14 @@
         setTimeout(() => { el.style.outline = prev; el.style.outlineOffset = prevOffset; }, 1400);
       } catch (error) {}
     }
+    function pinItemsAddButton() {
+      const add = screens.items.querySelector('.sidebar-content-add, [data-add-custom-item]');
+      const rows = screens.items.querySelector('.sidebar-content-rows');
+      if (add && rows && add.parentElement === rows.parentElement) {
+        add.parentElement.insertBefore(add, rows);
+      }
+    }
+
     function hide() {
       app.hidden = true;
       document.body.classList.remove('m-native-open', 'm-native-split', 'm-native-fields');
@@ -185,6 +194,7 @@
         setTimeout(() => show('items'), 80);
       }
     });
+    new MutationObserver(() => pinItemsAddButton()).observe(screens.items, { childList: true, subtree: true });
     screens.items.addEventListener('click', (event) => {
       if (event.target.closest('[data-open-item]')) { fromManager = true; setTimeout(() => show('fields'), 100); }
       if (event.target.closest('[data-sidebar-content-add]')) { fromManager = true; setTimeout(() => show('fields'), 160); }
