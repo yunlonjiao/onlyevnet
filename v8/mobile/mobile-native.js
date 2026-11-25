@@ -193,7 +193,9 @@
       if (mnViewBar) return mnViewBar;
       mnViewBar = document.createElement('header');
       mnViewBar.id = 'mnViewBar';
-      mnViewBar.innerHTML = '<button type="button" data-view-back aria-label="返回">←</button><button type="button" data-view-edit>编辑</button>';
+      mnViewBar.setAttribute('role','navigation');
+      mnViewBar.setAttribute('aria-label','预览操作');
+      mnViewBar.innerHTML = '<button type="button" data-view-back aria-label="返回">←</button><button type="button" data-view-edit aria-label="编辑页面">编辑</button>';
       mnViewBar.querySelector('[data-view-back]').addEventListener('click', () => show('pages'));
       mnViewBar.querySelector('[data-view-edit]').addEventListener('click', () => show('pages'));
       document.body.appendChild(mnViewBar);
