@@ -618,7 +618,7 @@ export default {
       if(path.startsWith('/v8/')||path==='/robots.txt'){
         // The editor loads same-origin module graphs: keep them revalidated and un-framable from other sites.
         const headers=new Headers(assetResponse.headers);
-        headers.set('x-content-type-options','nosniff');headers.set('referrer-policy','strict-origin-when-cross-origin');headers.set('x-frame-options','SAMEORIGIN');
+        headers.set('x-content-type-options','nosniff');headers.set('referrer-policy','strict-origin-when-cross-origin');headers.set('x-frame-options','SAMEORIGIN');headers.set('cache-control','no-store, max-age=0');
         return new Response(assetResponse.body,{status:assetResponse.status,statusText:assetResponse.statusText,headers});
       }
       if(path.startsWith('/collect/')||path.startsWith('/signup/')){

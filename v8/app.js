@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.472.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.472.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.486.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.486.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.472.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.472.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages,listCloudProjects,getCloudSite} from '/v8/publisher.js?v=8.472.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.472.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.486.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.486.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages,listCloudProjects,getCloudSite} from '/v8/publisher.js?v=8.486.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.486.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -1047,7 +1047,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.472.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.486.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1221,7 +1221,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.472.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.486.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -2113,34 +2113,6 @@ try{
   if(btn){e.preventDefault();btn.click()}
  };
  document.addEventListener('click',__mediaTapOpenPicker,false);
-}catch(e){}
-try{
- const __mobileStackNav=()=>{
-  const body=document.body;
-  const closeClass=()=>body.classList.remove('mobile-content-view');
-  const origClose=mobilePanels.close;
-  mobilePanels.close=()=>{closeClass();const wl=document.querySelector('.workspace-label');if(wl)wl.textContent='工作区';return origClose()};
-  document.addEventListener('click',e=>{
-   const page=e.target.closest&&e.target.closest('.sidebar .page-nav [data-page]');
-   if(page&&innerWidth<=820){setTimeout(()=>{try{mobilePanels.open('sidebar')}catch(err){};body.classList.add('mobile-content-view');const label=([...page.querySelectorAll('span')].filter(s=>!s.classList.contains('nav-icon')).map(s=>s.textContent.trim()).filter(Boolean).pop())||'页面';const wl=document.querySelector('.workspace-label');if(wl)wl.textContent=label+'内容'},60)}
-   if(e.target.closest&&e.target.closest('#mobileSidebarClose')&&body.classList.contains('mobile-content-view')){
-    e.preventDefault();e.stopImmediatePropagation();closeClass();return;
-   }
-   if(e.target.closest&&e.target.closest('#mobileInspectorClose')&&body.classList.contains('mobile-content-view')){
-    e.preventDefault();e.stopImmediatePropagation();try{mobilePanels.open('sidebar')}catch(err){};return;
-   }
-  },true);
-  const sidebar=document.querySelector('.sidebar');
-  if(sidebar&&!sidebar.querySelector('.m-ws-actions')){
-   const bar=document.createElement('div');bar.className='m-ws-actions';
-   const pv=document.createElement('button');pv.type='button';pv.dataset.mwsPreview='';pv.textContent='预览';
-   const pb=document.createElement('button');pb.type='button';pb.dataset.mwsPublish='';pb.className='primary';pb.textContent='发布';
-   pv.onclick=()=>document.querySelector('#previewBtn')?.click();
-   pb.onclick=()=>document.querySelector('#publishBtn')?.click();
-   bar.append(pv,pb);sidebar.append(bar);
-  }
- };
- __mobileStackNav();
 }catch(e){}
 function initMobileSheetUX(){
  const phone=()=>innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560);
