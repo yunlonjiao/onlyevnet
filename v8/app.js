@@ -1678,9 +1678,9 @@ function imageSlotConfig(path){
  if(/^featuredActivities\.\d+\.image$/.test(path))return {label:'首页活动精选图片',ratio:16/9,ratioLabel:'裁剪框可移动 · 比例 16:9',width:1440,height:810,fixed:true};
  if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾宣传图',ratio:4/3,ratioLabel:'与嘉宾卡预览一致 · 裁剪框可移动 · 比例 4:3',width:1200,height:900,fixed:true};
  if(/^booths\.\d+\.products\.\d+\.image$/.test(path))return {label:'制品图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1000,height:1000,fixed:true};
- if(path==='venueMap.image'||/^venueMap\.more\.\d+\.image$/.test(path))return {label:'场地图',ratio:null,ratioLabel:'裁剪框自由比例',maxSize:2000,free:true};
+ if(path==='venueMap.image'||/^venueMap\.more\.\d+\.image$/.test(path))return {label:'场地图',ratio:16/9,ratioLabel:'场地图 · 与展示框比例一致',width:1600,height:900,fixed:true};
  if(/^guests\.\d+\.image$/.test(path))return {label:'嘉宾形象图',ratio:3/4,ratioLabel:'嘉宾形象图 · 比例 3:4',width:900,height:1200,fixed:true};
- if(/^guide\.items\.\d+\.image$/.test(path)){const i=Number(path.match(/^guide\.items\.(\d+)\.image$/)?.[1]||-1),item=state.guide?.items?.[i];return {label:item?.preset==='traffic'?'交通路线图 / 入口示意图':'指南图片',ratio:null,ratioLabel:'裁剪框自由比例',maxSize:1800,free:true}};
+ if(/^guide\.items\.\d+\.image$/.test(path)){const i=Number(path.match(/^guide\.items\.(\d+)\.image$/)?.[1]||-1),item=state.guide?.items?.[i];return {label:item?.preset==='traffic'?'交通路线图 / 入口示意图':'指南图片',ratio:16/9,ratioLabel:'与展示框比例一致',width:1600,height:900,fixed:true}};
  if(/^(freewalk|itasha)\.image$/.test(path))return {label:'活动图片',ratio:.8,ratioLabel:'裁剪框可移动 · 比例 4:5',width:960,height:1200,fixed:true};
  if(/^booths\.\d+\.logo$/.test(path))return {label:'社团 Logo',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:700,height:700,fixed:true};
  if(/^socialLinks\.\d+\.image$/.test(path))return {label:'二维码 / 社群图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:900,height:900,fixed:true};
