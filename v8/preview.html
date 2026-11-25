@@ -16,6 +16,8 @@
   #previewFrame{position:fixed;left:0;right:0;bottom:0;top:calc(52px + env(safe-area-inset-top));width:100%;height:calc(100% - 52px - env(safe-area-inset-top));border:0;display:block;background:#fff}
   .fail{position:fixed;top:calc(72px + env(safe-area-inset-top));left:0;right:0;font:14px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:#555;padding:24px;display:none;text-align:center}
   @media(min-width:821px){.pv-bar{padding-left:20px;padding-right:20px}.pv-name{font-size:14px}}
+body.embed .pv-bar{display:none}
+  body.embed #previewFrame{top:0;height:100%}
 </style>
 </head>
 <body>
@@ -29,6 +31,7 @@
 <p class="fail" id="previewFail">预览加载失败。请点右上角「返回编辑」，重新点「预览」。</p>
 <script type="module">
   const query = new URLSearchParams(location.search);
+  if (query.get('embed') === '1') document.body.classList.add('embed');
   const template = query.get('template') || '08-birthday';
   const project = query.get('project') || 'default';
   const frame = document.getElementById('previewFrame');
