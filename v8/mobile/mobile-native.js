@@ -224,8 +224,6 @@
       const next = dx < 0 ? Math.min(order.length - 1, idx + 1) : Math.max(0, idx - 1);
       if (next !== idx) show(order[next]);
     }, { passive: true });
-
-    ['mobilePagePills','mobileContentStrip','mobileEditorDock'].forEach((id) => document.getElementById(id)?.remove());
     function startSplitEditor(){ if (!app.hidden) return; show('pages'); }
     const waitForCanvas=()=>{
       const frame=document.querySelector('.canvas iframe,.canvas-stage iframe,#canvas iframe');

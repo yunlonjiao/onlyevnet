@@ -1411,33 +1411,6 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
   .studio-topbar #publishBtn{margin-left:8px}
 }
 
-/* mobile bottom dock */
-.mobile-editor-dock{display:none}
-@media(max-width:820px){
-  .mobile-editor-dock{display:flex;position:fixed;left:0;right:0;bottom:var(--kb-inset,0);z-index:110;background:rgba(252,252,254,.96);backdrop-filter:blur(16px);border-top:1px solid #e4e4ea;padding:6px 8px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px rgba(20,20,30,.08)}
-  .mobile-editor-dock button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:48px;border:0;background:transparent;color:#6d6d78;font:inherit;font-size:11px;font-weight:700;border-radius:12px}
-  .mobile-editor-dock button span{font-size:17px;line-height:1}
-  .mobile-editor-dock button b{font-weight:800;font-size:10px}
-  .mobile-editor-dock button:active{background:#eeeef4}
-  body.previewing .mobile-editor-dock{display:none}
-  .canvas-wrap{padding-bottom:86px!important}
-}
-
-/* keyboard-aware done button for inline editing on phones */
-#mobileKeyboardDone{display:none}
-@media(max-width:820px){
-  .action-group button:disabled{opacity:.52}
-  #mobileKeyboardDone{display:block;position:fixed;right:10px;bottom:calc(var(--kb-inset,0px) + 14px);z-index:140;height:40px;padding:0 16px;border:0;border-radius:999px;background:#18181d;color:#fff;font-size:13px;font-weight:800;box-shadow:0 8px 20px rgba(18,18,24,.28)}
-  #mobileKeyboardDone[hidden]{display:none}
-}
-
-/* disabled toolbar buttons stay legible */
-.action-group button:disabled{opacity:.55;color:#7a7a85}
-
-/* publish button height matches the action groups */
-#publishBtn.primary{min-height:34px;height:34px;font-size:11px;border-radius:9px}
-@media(max-width:820px){#publishBtn.primary{height:40px!important;min-height:40px!important;font-size:13px}}
-
 /* mobile audit fixes: responsive canvas, closed dialogs hidden */
 .publish-dialog:not([open]){display:none!important}
 @media(max-width:820px){
@@ -1588,26 +1561,6 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .inspector-header{gap:12px!important}
 .inspector-header>div{flex:1 1 auto!important;min-width:0!important}
 .inspector-header .inspector-status{margin-left:auto!important;flex:0 0 auto!important}
-
-/* mobile quick page pills + content strip */
-.mobile-page-pills,.mobile-content-strip{display:none}
-@media(max-width:820px){
-  .mobile-page-pills{display:flex;gap:8px;overflow-x:auto;padding:8px 10px;background:#f9f9fb;border-bottom:1px solid #e6e6ec;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-  .mobile-page-pills::-webkit-scrollbar{display:none}
-  .m-page-pill{flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #dedee5;background:#fff;color:#4f4f59;font:inherit;font-size:13px;font-weight:750}
-  .m-page-pill.active{background:#18181d;color:#fff;border-color:#18181d}
-  .m-page-add{min-width:40px;padding:0;font-size:17px}
-  .mobile-content-strip{display:flex;gap:8px;overflow-x:auto;padding:8px 10px;background:rgba(255,255,255,.97);border-top:1px solid #e4e4ea;position:fixed;left:0;right:0;bottom:calc(var(--safari-inset,0px) + 61px);z-index:109;scrollbar-width:none}
-  .mobile-content-strip::-webkit-scrollbar{display:none}
-  .m-content-card{flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:12px;border:1px solid #e4e4ea;background:#fff;color:#555560;font:inherit;font-size:12px;font-weight:750}
-  .m-content-card.active{background:#f1efff;border-color:#cdc4ff;color:#4c3bb8}
-  .canvas-wrap{padding-bottom:calc(140px + var(--safari-inset,0px))!important}
-}
-@media(pointer:coarse) and (max-height:560px){
-  .mobile-page-pills{display:flex;gap:8px;overflow-x:auto;padding:6px 8px;background:#f9f9fb;border-bottom:1px solid #e6e6ec}
-  .mobile-content-strip{display:flex;gap:8px;overflow-x:auto;padding:6px 8px;background:rgba(255,255,255,.97);border-top:1px solid #e4e4ea;position:fixed;left:0;right:0;bottom:calc(var(--safari-inset,0px) + 61px);z-index:109}
-  .m-page-pill,.m-content-card{min-height:36px;padding:0 12px;font-size:12px;border-radius:10px}
-}
 
 /* mobile merged sheet tabs + field bar */
 .m-sheet-tabs{display:none}

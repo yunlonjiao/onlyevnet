@@ -238,14 +238,6 @@ body.m-native-open #mobilePanelBackdrop{display:none!important}
 /* switch hard constraints */
 #mNativeApp .page-inline-switch{width:30px!important;min-width:30px!important;max-width:30px!important;height:16px!important;min-height:16px!important;max-height:16px!important;line-height:16px!important;padding:0!important;margin:2px 0 0!important;flex:none!important;border-radius:999px!important;overflow:hidden!important}
 
-/* fixed split 55 / 45 */
-#mNativeApp,#mNativeApp.is-fields{height:45dvh!important}
-body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{bottom:45dvh!important;height:auto!important}
-
-/* fixed split 60 / 40 */
-#mNativeApp,#mNativeApp.is-fields{height:40dvh!important}
-body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{bottom:40dvh!important;height:auto!important}
-
 /* fixed split 65 / 35 */
 #mNativeApp,#mNativeApp.is-fields{height:35dvh!important}
 body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{bottom:35dvh!important;height:auto!important}
