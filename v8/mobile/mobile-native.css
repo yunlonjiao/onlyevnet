@@ -409,3 +409,9 @@ body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{
 #mNativeApp{height:32dvh!important}
 #mNativeApp.is-fields{height:100dvh!important;border-radius:0!important}
 body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
+
+/* product name fill */
+#mNativeApp .product-manager-name-row{display:flex!important;align-items:center!important;width:100%!important;flex:1 1 auto!important;padding:0 14px!important;min-height:56px!important}
+#mNativeApp .product-manager-name-row .sidebar-content-copy{flex:1 1 auto!important;width:auto!important;max-width:none!important;min-width:0!important;display:block!important}
+#mNativeApp .product-manager-name-row b{display:block!important;width:100%!important;max-width:none!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+#mNativeApp .inspector-body label textarea{min-height:0!important;min-block-size:0!important;height:auto!important;padding:0!important;line-height:1.35!important}
