@@ -30,8 +30,6 @@
           <section class="mn-screen" data-mn-screen="fields"></section>
         </div>
       </main>`;
-    const removeLegacyBackdrop = () => { const bd = document.querySelector('#mobilePanelBackdrop'); if (bd) bd.remove(); };
-    removeLegacyBackdrop();
     document.body.appendChild(app);
 
     const screens = {
@@ -164,6 +162,7 @@
       if (next === 'items') setTimeout(pinItemsAddButton, 60);
       app.classList.toggle('is-fields', next === 'fields');
     }
+    document.addEventListener('oe-mobile-open-fields', () => show('fields'));
     function schedulePreviewScroll(path) {
       const token = scrollToken;
       [80, 350, 800, 1500].forEach((delay) => setTimeout(() => scrollPreviewToPath(path, token), delay));
@@ -297,15 +296,6 @@
       if (!isPhone()) return;
       if (event.target.closest('[data-custom-page-preset]')) { setTimeout(() => show('pages'), 350); return; }
       if (event.target.closest('#createCustomPageBtn')) { fromCreatePreset = true; setTimeout(() => show('fields'), 80); return; }
-      if (event.target.closest('#mobilePagesBtn')) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        show('pages');
-      } else if (event.target.closest('#mobileInspectorBtn')) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        show('fields');
-      }
     }, true);
 
     addEventListener('resize', () => {

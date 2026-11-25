@@ -1,4 +1,4 @@
-import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
+import {setStudioDevice,setStudioPreviewChrome} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
 import {publishChecks} from '/v8/editor/publish-checks.js';
@@ -1981,9 +1981,6 @@ if(projectId!=='default'&&!hasSavedProject){localStorage.setItem(STORAGE,JSON.st
 syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();bindStageRows();bindRecapDialog();$('#recapClose').onclick=()=>recapDialog.close();mountFrame();syncHistory();setStudioPage('home');
 
 /* Shared mobile drawers, identical across every template. */
-const mobilePanels=bindStudioMobilePanels();
- try{const __origOpen=mobilePanels.open,__origClose=mobilePanels.close;mobilePanels.open=k=>{try{send({type:'OE_SAVE_SELECTION'})}catch(e){};return __origOpen(k)};mobilePanels.close=()=>{const r=__origClose();try{send({type:'OE_RESTORE_SELECTION'})}catch(e){};return r}}catch(e){}
- try{const ih=document.querySelector('.inspector-header');if(ih&&!document.querySelector('#mobileInspectorClose')){const cb=document.createElement('button');cb.type='button';cb.id='mobileInspectorClose';cb.className='mobile-sheet-close';cb.setAttribute('aria-label','返回');cb.textContent='←';cb.onclick=()=>mobilePanels.close();ih.appendChild(cb)}}catch(e){}
 restorePublishFromCloud();
 
 
@@ -2033,18 +2030,6 @@ try{document.addEventListener('click',__stageAddRefresh,true)}catch(e){}
 
 try{const __vv=window.visualViewport;if(__vv){const __syncKb=()=>{const kb=Math.max(0,window.innerHeight-__vv.height-(__vv.offsetTop||0));document.documentElement.style.setProperty('--kb-inset',kb+'px')};__vv.addEventListener('resize',__syncKb);__vv.addEventListener('scroll',__syncKb);__syncKb()}}catch(e){}
 
-try{
- const __ensureSheetClose=()=>{
-  if(document.querySelector('#mNativeApp'))return;
-  if(!(innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560)))return;
-  const ih=document.querySelector('.inspector-header');if(!ih)return;
-  let cb=document.querySelector('#mobileInspectorClose');
-  if(!cb){cb=document.createElement('button');cb.type='button';cb.id='mobileInspectorClose';cb.className='mobile-sheet-close';cb.setAttribute('aria-label','关闭属性面板');cb.textContent='←';cb.onclick=()=>{try{mobilePanels.close()}catch(e){}}}
-  if(cb.parentElement!==ih)ih.appendChild(cb);
- };
- new MutationObserver(__ensureSheetClose).observe(document.body,{childList:true,subtree:true});
- __ensureSheetClose();
-}catch(e){}
 
 
 try{
@@ -2060,21 +2045,8 @@ try{
 
 try{const __vv=window.visualViewport;if(__vv){const __syncSafari=()=>{const docH=document.documentElement.clientHeight||window.innerHeight;const extra=Math.min(140,Math.max(0,docH-__vv.height,window.innerHeight-(__vv.height+(__vv.offsetTop||0))));document.documentElement.style.setProperty('--safari-inset',extra+'px')};__vv.addEventListener('resize',__syncSafari);__vv.addEventListener('scroll',__syncSafari);window.addEventListener('orientationchange',()=>setTimeout(__syncSafari,300));__syncSafari()}}catch(e){}
 
-try{
- const __ensureSidebarClose=()=>{
-  if(document.querySelector('#mNativeApp'))return;
-  if(!(innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560)))return;
-  const head=document.querySelector('.sidebar-head');if(!head)return;
-  let cb=document.querySelector('#mobileSidebarClose');
-  if(!cb){cb=document.createElement('button');cb.type='button';cb.id='mobileSidebarClose';cb.className='mobile-sheet-close';cb.setAttribute('aria-label','返回');cb.textContent='←';cb.onclick=()=>{try{mobilePanels.close()}catch(e){}}}
-  if(cb.parentElement!==head)head.appendChild(cb);
- };
- new MutationObserver(__ensureSidebarClose).observe(document.body,{childList:true,subtree:true});
- __ensureSidebarClose();
-}catch(e){}
 
-function openInspectorSheetOnPhone(){if(document.querySelector('#mNativeApp'))return;try{const phone=innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560);if(phone)mobilesheetOpen()}catch(e){}}
-function mobilesheetOpen(){try{if(typeof mobilePanels!=='undefined'&&mobilePanels&&mobilePanels.open)mobilePanels.open('inspector')}catch(e){}}
+function openInspectorSheetOnPhone(){if(document.querySelector('#mNativeApp'))document.dispatchEvent(new CustomEvent('oe-mobile-open-fields'))}
 try{
  const __mediaTapOpenPicker=e=>{
   const box=e.target.closest&&e.target.closest('.inspector .item-media,.inspector .item-media-empty');
@@ -2084,4 +2056,3 @@ try{
  };
  document.addEventListener('click',__mediaTapOpenPicker,false);
 }catch(e){}
-try{const __closePanelsOnPreview=()=>{if(document.body.classList.contains('previewing-safe')){document.body.classList.remove('mobile-sidebar-open','mobile-inspector-open');const bd=document.querySelector('#mobilePanelBackdrop');if(bd)bd.hidden=true}};new MutationObserver(__closePanelsOnPreview).observe(document.body,{attributes:true,attributeFilter:['class']});}catch(e){}
