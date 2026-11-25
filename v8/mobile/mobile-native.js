@@ -179,6 +179,7 @@
 
     document.addEventListener('click', (event) => {
       if (!isPhone()) return;
+      if (event.target.closest('#createCustomPageBtn')) { setTimeout(() => show('fields'), 80); return; }
       if (event.target.closest('#mobilePagesBtn')) {
         event.preventDefault();
         event.stopImmediatePropagation();

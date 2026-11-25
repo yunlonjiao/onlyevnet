@@ -1672,3 +1672,6 @@ body.previewing-safe .top-actions{width:auto!important}
 
 /* hide crop shade so the white stage shows */
 #cropStage cropper-shade,cropper-shade{display:none!important;background:transparent!important}
+
+/* checkerboard crop restore */
+#cropStage,#cropStage cropper-canvas,cropper-canvas{background:transparent!important}
