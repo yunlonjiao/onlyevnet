@@ -33,7 +33,7 @@ button{color:inherit}
   backdrop-filter:blur(22px) saturate(150%);
   -webkit-backdrop-filter:blur(22px) saturate(150%);
 }
-
+.brand-zone{display:flex;align-items:center;gap:11px;min-width:240px}
 .brand-mark{width:34px;height:34px;border-radius:10px;background:#18181d;display:grid;place-items:center;position:relative;box-shadow:inset 0 0 0 1px #000}
 .brand-mark span{position:absolute;width:13px;height:13px;border-radius:4px;transform:rotate(12deg)}
 .brand-mark span:first-child{background:var(--ui-accent);left:7px;top:7px}
@@ -203,7 +203,7 @@ background:#f4f2f7;border:0;border-left:0}
   color:#85858f;
   font-size:10px;
 }
-
+.save-status{display:flex;align-items:center;gap:7px;font-weight:720}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#24a66a;box-shadow:0 0 0 3px rgba(36,166,106,.10)}
 .canvas-title{display:flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #e2e2e8;background:rgba(255,255,255,.82);border-radius:999px;box-shadow:0 2px 8px rgba(30,30,40,.04)}
 .canvas-title b{font-size:10px;color:#4d4d56}
@@ -306,7 +306,7 @@ background:#f4f2f7;border:0;border-left:0}
   .sidebar{display:none}
   .canvas-wrap{padding:12px}
   .inspector{display:none}
-
+  .brand-zone{min-width:0}
   .project-meta{display:none}
   .top-actions{gap:4px}
   .action-group button span:last-child{display:none}
@@ -885,7 +885,7 @@ body.previewing .canvas-stage:before{display:none}
 }
 \n/* v8.34.48 admin return */\n.brand-zone{text-decoration:none;color:inherit}\n
 /* v8.34.53 explicit admin return */
-.brand-zone{display:flex;align-items:center;gap:11px;min-width:0;color:inherit;text-decoration:none}
+.brand-zone{color:inherit;text-decoration:none}
 .back-admin-btn{
   height:32px;padding:0 10px;border:1px solid #dfdfe6;border-radius:9px;background:#fff;
   color:#5f5f69;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap
@@ -1306,7 +1306,7 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 /* mobile editor toolbar: keep publish reachable, drop non-essential actions */
 @media(max-width:520px){
   .canvas-toolbar{min-height:26px;margin:0 auto 6px}
-.save-status{display:flex;align-items:center;gap:7px;font-weight:720;background:rgba(244,244,247,.92);border-radius:999px;padding:2px 8px;font-size:10px}
+  .save-status{background:rgba(244,244,247,.92);border-radius:999px;padding:2px 8px;font-size:10px}
   .canvas-hint{display:none}
   .studio-topbar{gap:6px}
   .studio-topbar .brand-zone{min-width:0;gap:0}
