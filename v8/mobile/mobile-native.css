@@ -206,3 +206,7 @@ body.m-native-open #mobilePanelBackdrop{display:none!important}
 /* prevent main scroll shifting the whole track */
 #mNativeApp .mn-main{overflow:clip!important;overflow-clip-margin:0!important}
 #mNativeApp .mn-track{transform-origin:left top!important}
+
+/* content four columns, vertical scroll */
+#mNativeApp .page-content-nav{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-template-rows:none!important;grid-auto-rows:72px!important;grid-auto-flow:row!important;gap:8px!important;overflow-x:hidden!important;overflow-y:auto!important;scroll-snap-type:none!important;padding:0 0 10px!important}
+#mNativeApp .page-content-nav button{width:100%!important;height:72px!important;min-height:72px!important;scroll-snap-align:none!important}
