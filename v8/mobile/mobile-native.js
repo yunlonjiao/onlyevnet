@@ -126,7 +126,6 @@
       app.hidden = false;
       document.body.classList.remove('m-native-view');
       if (mnViewBar) mnViewBar.hidden = true;
-      if (mnEditFab) mnEditFab.hidden = true;
       document.documentElement.classList.remove('m-phone-pending');
       document.body.classList.add('m-native-open', 'm-native-split');
       const idx = Math.max(0, order.indexOf(next));
@@ -176,17 +175,6 @@
     }
 
     let mnViewBar = null;
-    let mnEditFab = null;
-    function ensureEditFab() {
-      if (mnEditFab) return mnEditFab;
-      mnEditFab = document.createElement('button');
-      mnEditFab.type = 'button';
-      mnEditFab.id = 'mnEditFab';
-      mnEditFab.textContent = '编辑';
-      mnEditFab.addEventListener('click', () => show('pages'));
-      document.body.appendChild(mnEditFab);
-      return mnEditFab;
-    }
     function ensureViewBar() {
       if (mnViewBar) return mnViewBar;
       mnViewBar = document.createElement('header');
@@ -201,7 +189,6 @@
       app.hidden = true;
       document.body.classList.add('m-native-view');
       ensureViewBar().hidden = false;
-      if (mnEditFab) mnEditFab.hidden = true;
       document.body.classList.remove('m-native-open', 'm-native-split', 'm-native-fields');
     }
 
