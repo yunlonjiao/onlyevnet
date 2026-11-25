@@ -50,6 +50,15 @@
     let screen = 'pages';
     let fromManager = false;
     let fromCreatePreset = false;
+    let lastEditPath = '';
+    document.addEventListener('input', (event) => {
+      const el = event.target.closest && event.target.closest('[data-sync-path]');
+      if (el) lastEditPath = el.dataset.syncPath || '';
+    }, true);
+    document.addEventListener('change', (event) => {
+      const el = event.target.closest && event.target.closest('[data-sync-path]');
+      if (el) lastEditPath = el.dataset.syncPath || '';
+    }, true);
     const order = ['pages', 'contents', 'items', 'fields'];
     function syncTitle() {
       if (screen === 'pages') titleEl.textContent = '页面';
@@ -121,6 +130,34 @@
       if (next === 'contents') decorateContentGrid();
       app.classList.toggle('is-fields', next === 'fields');
     }
+    function scrollPreviewToPath(path) {
+      try {
+        const frame = document.querySelector('#liveFrame');
+        const doc = frame && frame.contentDocument;
+        if (!doc) return;
+        let el = null;
+        if (path) el = doc.querySelector('[data-oe-field="' + path + '"]') || doc.querySelector('[data-oe-image="' + path + '"]');
+        if (!el && path) {
+          const p = String(path);
+          if (/^hero|^sticker|^tagline$|^date$|^location$|^edition$/.test(p)) el = doc.querySelector('.hero');
+          else if (/^ribbon/.test(p)) el = doc.querySelector('.ribbon,#ribbon,.ribbon-track');
+          else if (/^ticket/.test(p)) el = doc.querySelector('#tickets,#ticket');
+          else if (/^venueMap|^map/.test(p)) el = doc.querySelector('#map-home,#map');
+          else if (/^booths|^streets/.test(p)) el = doc.querySelector('#booths');
+          else if (/^guests/.test(p)) el = doc.querySelector('#guests,#home-guests');
+          else if (/^guide/.test(p)) el = doc.querySelector('#guide,#home-guide');
+          else if (/^socialLinks|^community/.test(p)) el = doc.querySelector('#community');
+          else if (/^sponsors/.test(p)) el = doc.querySelector('#sponsors');
+          else if (/^updates/.test(p)) el = doc.querySelector('#updates');
+        }
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const prev = el.style.outline, prevOffset = el.style.outlineOffset;
+        el.style.outline = '3px solid #07c160';
+        el.style.outlineOffset = '3px';
+        setTimeout(() => { el.style.outline = prev; el.style.outlineOffset = prevOffset; }, 1400);
+      } catch (error) {}
+    }
     function hide() {
       app.hidden = true;
       document.body.classList.remove('m-native-open', 'm-native-split', 'm-native-fields');
@@ -128,7 +165,7 @@
 
     app.querySelector('[data-mn-back]').addEventListener('click', () => {
       if (screen === 'fields' && fromCreatePreset) { fromCreatePreset = false; show('pages'); return; }
-      if (screen === 'fields') show(fromManager ? 'items' : 'contents');
+      if (screen === 'fields') { const p = lastEditPath; show(fromManager ? 'items' : 'contents'); setTimeout(() => scrollPreviewToPath(p), 180); return; }
       else if (screen === 'items') show('contents');
       else if (screen === 'contents') show('pages');
       else show('pages');
