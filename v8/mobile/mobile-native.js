@@ -51,6 +51,7 @@
     let fromManager = false;
     let fromCreatePreset = false;
     let lastEditPath = '';
+    let lastSection = '';
     document.addEventListener('input', (event) => {
       const el = event.target.closest && event.target.closest('[data-sync-path]');
       if (el) lastEditPath = el.dataset.syncPath || '';
@@ -174,8 +175,8 @@
 
     app.querySelector('[data-mn-back]').addEventListener('click', () => {
       if (screen === 'fields' && fromCreatePreset) { fromCreatePreset = false; show('pages'); return; }
-      if (screen === 'fields') { const p = lastEditPath; show(fromManager ? 'items' : 'contents'); setTimeout(() => scrollPreviewToPath(p), 180); return; }
-      else if (screen === 'items') show('contents');
+      if (screen === 'fields') { const p = lastEditPath || lastSection; show(fromManager ? 'items' : 'contents'); [80, 350, 800, 1500].forEach((d) => setTimeout(() => scrollPreviewToPath(p), d)); return; }
+      else if (screen === 'items') { show('contents'); [80, 350, 800].forEach((d) => setTimeout(() => scrollPreviewToPath(lastSection), d)); }
       else if (screen === 'contents') show('pages');
       else show('pages');
     });
@@ -184,6 +185,8 @@
       if (event.target.closest('[data-page]')) setTimeout(() => show('contents'), 0);
     });
     screens.contents.addEventListener('click', (event) => {
+      const hit = event.target.closest('[data-page-tool],[data-page-content-manager]');
+      if (hit) lastSection = hit.dataset.pageTool || hit.dataset.pageContentManager || '';
       const manager = event.target.closest('[data-page-content-manager]');
       if (event.target.closest('[data-page-tool]')) {
         fromManager = false;
