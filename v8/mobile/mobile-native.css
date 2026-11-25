@@ -367,3 +367,11 @@ body.m-native-view .canvas-stage,body.m-native-view .canvas{height:100%!importan
 #mNativeApp .inspector-body{padding-right:12px!important}
 #mNativeApp .reference-panel,#mNativeApp .featured-slot-panel{padding-left:0!important;padding-right:0!important}
 #mNativeApp .mn-screen:has(.reference-panel) .item-tools{margin-right:0!important}
+
+/* uniform vertical rhythm */
+#mNativeApp .inspector-body{display:flex!important;flex-direction:column!important;gap:12px!important}
+#mNativeApp .inspector-body>.item-inspector-head,#mNativeApp .inspector-body>.item-fields,#mNativeApp .inspector-body>.reference-panel,#mNativeApp .inspector-body>.item-actions{margin:0!important;width:100%!important}
+#mNativeApp .inspector-body .item-fields label:last-child{margin-bottom:0!important}
+#mNativeApp .inspector-body .reference-panel{padding:12px 0!important}
+#mNativeApp .inspector-body .reference-panel>b{margin:0 0 8px!important}
+#mNativeApp .inspector-body .item-actions{padding-top:0!important;margin-top:0!important}
