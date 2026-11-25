@@ -307,3 +307,7 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 /* textarea inside label white */
 #mNativeApp .inspector-body label textarea,#mNativeApp .inspector-body label input,#mNativeApp .inspector-body label select{background:#fff!important;background-image:none!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important;min-height:0!important}
 #mNativeApp .inspector-body label textarea{min-height:64px!important}
+
+/* label must stack vertically, never wrap into a second column */
+#mNativeApp .inspector-body label{flex-wrap:nowrap!important;flex-direction:column!important;align-items:stretch!important;height:auto!important;max-height:none!important}
+#mNativeApp .inspector-body label textarea{width:100%!important;max-width:100%!important;margin:4px 0 0!important;display:block!important;float:none!important;resize:none!important}

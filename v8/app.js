@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.532.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.532.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.533.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.533.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.532.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.532.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages,listCloudProjects,getCloudSite} from '/v8/publisher.js?v=8.532.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.532.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.533.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.533.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages,listCloudProjects,getCloudSite} from '/v8/publisher.js?v=8.533.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.533.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -1045,7 +1045,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.532.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.533.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1216,7 +1216,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.532.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.533.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -2047,13 +2047,6 @@ try{
  __ensureSheetClose();
 }catch(e){}
 
-try{
- const __dock=document.querySelector('#mobileEditorDock');
- if(__dock){
-  const map={pages:'#mobilePagesBtn',inspector:'#mobileInspectorBtn',preview:'#previewBtn',publish:'#publishBtn'};
-  __dock.addEventListener('click',e=>{const b=e.target.closest('[data-dock]');if(!b)return;const sel=map[b.dataset.dock];const t=sel&&document.querySelector(sel);if(t)t.click()});
- }
-}catch(e){}
 
 try{
  if(innerWidth<=820){
@@ -2083,55 +2076,6 @@ try{
 function openInspectorSheetOnPhone(){try{const phone=innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560);if(phone)mobilesheetOpen()}catch(e){}}
 function mobilesheetOpen(){try{if(typeof mobilePanels!=='undefined'&&mobilePanels&&mobilePanels.open)mobilePanels.open('inspector')}catch(e){}}
 
-/* mobile quick nav: page pills + content strip */
-try{initMobileQuickNav()}catch(e){}
-function initMobileQuickNav(){
- const phone=()=>innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560);
- const pills=document.querySelector('#mobilePagePills');
- const strip=document.querySelector('#mobileContentStrip');
- if(!pills||!strip)return;
- const openSidebar=()=>{if(!document.body.classList.contains('mobile-sidebar-open'))document.querySelector('#mobilePagesBtn')?.click()};
- const cleanLabel=t=>t.replace(/^[^\p{L}\p{N}]+/u,'').trim();
- const syncPages=()=>{
-  const rows=[...document.querySelectorAll('.sidebar [data-page]')];
-  pills.querySelectorAll('[data-page]').forEach(p=>{const row=rows.find(r=>r.dataset.page===p.dataset.page);p.classList.toggle('active',!!row&&row.classList.contains('active'))});
- };
- const build=()=>{
-  if(document.body.classList.contains('previewing-safe')||document.body.classList.contains('previewing'))return;
-  if(!phone())return;
-  pills.querySelectorAll('.m-page-pill:not(.m-page-add)').forEach(x=>x.remove());
-  let addBtn=pills.querySelector('.m-page-add');
-  if(!addBtn){addBtn=document.createElement('button');addBtn.type='button';addBtn.className='m-page-pill m-page-add';addBtn.textContent='＋';addBtn.setAttribute('aria-label','新建自定义页面');addBtn.onclick=()=>{openSidebar();setTimeout(()=>document.querySelector('#createCustomPageBtn')?.scrollIntoView({block:'center',behavior:'smooth'}),250)};pills.append(addBtn)}
-  const rows=[...document.querySelectorAll('.sidebar .page-tree-row [data-page], .sidebar #customPageRows [data-page]')];
-  rows.forEach(row=>{
-   const btn=document.createElement('button');btn.type='button';btn.className='m-page-pill'+(row.classList.contains('active')?' active':'');btn.dataset.page=row.dataset.page;btn.textContent=cleanLabel(row.querySelector('span:last-child')?.textContent||row.textContent)||row.dataset.page;
-   btn.onclick=()=>{row.click();setTimeout(syncPages,0)};
-   pills.insertBefore(btn,addBtn);
-  });
-  const groups=[...document.querySelectorAll('#pageContentNav button')];
-  strip.innerHTML='';
-  groups.forEach(g=>{
-   const b=document.createElement('button');b.type='button';b.className='m-content-card'+(g.classList.contains('active')?' active':'');b.textContent=g.textContent.trim();
-   b.onclick=()=>{if(g.dataset.pageTool&&innerWidth<=820){openPageTool(g.dataset.pageTool);try{mobilePanels&&mobilePanels.open('inspector')}catch(e){}return}g.click();openSidebar();setTimeout(()=>document.querySelector('#contentListPanel')?.scrollIntoView({block:'center',behavior:'smooth'}),250)};
-   strip.append(b);
-  });
-  const more=document.createElement('button');more.type='button';more.className='m-content-card';more.textContent='更多 ›';more.onclick=()=>{openSidebar();setTimeout(()=>document.querySelector('.page-content-block')?.scrollIntoView({block:'start',behavior:'smooth'}),200)};strip.append(more);
-  syncPages();
- };
- build();
- const __previewNow=()=>document.body.classList.contains('previewing-safe')||document.body.classList.contains('previewing');
- const debounce=()=>{if(__previewNow())return;clearTimeout(window.__mqnTimer);window.__mqnTimer=setTimeout(()=>{if(!__previewNow())build()},220)};
- const nav=document.querySelector('.sidebar .page-nav')||document.querySelector('.sidebar')||document.body;
- new MutationObserver(debounce).observe(nav,{childList:true,subtree:true});
- const nav2=document.querySelector('#pageContentNav')||document.body;
- new MutationObserver(debounce).observe(nav2,{childList:true,subtree:true});
- window.addEventListener('resize',debounce);
-}
-
-try{
- const __panelToolAutoOpen=e=>{const b=e.target.closest&&e.target.closest('#pageContentNav [data-page-tool]');if(!b||innerWidth>820)return;requestAnimationFrame(()=>{try{mobilePanels&&mobilePanels.open('inspector')}catch(err){}})};
- document.addEventListener('click',__panelToolAutoOpen,false);
-}catch(e){}
 try{initMobileSheetUX()}catch(e){}
 try{
  const __mediaTapOpenPicker=e=>{
