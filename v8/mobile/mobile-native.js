@@ -48,6 +48,19 @@
     const titleEl = app.querySelector('[data-mn-title]');
     const track = app.querySelector('.mn-track');
     let mnViewBar = null;
+    let sidebarEl = null, sidebarHost = null, sidebarNext = null;
+    function detachSidebar() {
+      const sb = document.querySelector('.sidebar');
+      if (!sb || !sb.parentElement) return;
+      sidebarEl = sb; sidebarHost = sb.parentElement; sidebarNext = sb.nextSibling;
+      sb.remove();
+    }
+    function restoreSidebar() {
+      if (!sidebarEl || !sidebarHost) return;
+      if (sidebarNext && sidebarNext.parentNode === sidebarHost) sidebarHost.insertBefore(sidebarEl, sidebarNext);
+      else sidebarHost.appendChild(sidebarEl);
+      sidebarEl = null; sidebarHost = null; sidebarNext = null;
+    }
     let screen = 'pages';
     let fromManager = false;
     let fromCreatePreset = false;
@@ -131,6 +144,7 @@
       });
     }
     function show(next) {
+      restoreSidebar();
       screen = next;
       scrollToken += 1;
       app.hidden = false;
@@ -202,6 +216,7 @@
       return mnViewBar;
     }
     function hide() {
+      detachSidebar();
       app.hidden = true;
       document.body.classList.add('m-native-view');
       ensureViewBar().hidden = false;
@@ -293,6 +308,7 @@
 
     addEventListener('resize', () => {
       if (!isPhone()) {
+        restoreSidebar();
         hide();
         document.body.classList.remove('m-native-view');
         if (mnViewBar) mnViewBar.hidden = true;

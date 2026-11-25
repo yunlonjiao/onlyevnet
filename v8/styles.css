@@ -1951,8 +1951,3 @@ body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{
 #mNativeApp .mn-screen:has(.reference-panel) .item-tools{margin-right:0!important;padding-right:0!important}
 
 
-/* hide editor chrome in native view, otherwise its backdrop-filter blurs the site */
-body.m-native-view .sidebar,
-body.m-native-view .inspector,
-body.m-native-view .canvas-toolbar,
-body.m-native-view #mobilePanelBackdrop{display:none!important}
