@@ -306,3 +306,10 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 
 /* textarea label no wrap override */
 #mNativeApp .inspector-body label:has(textarea){flex-wrap:nowrap!important;flex-direction:column!important;display:flex!important;align-items:stretch!important;height:auto!important;max-height:none!important}
+
+/* visual audit polish */
+#mNativeApp .sidebar-content-head{width:100%!important;gap:8px!important}
+#mNativeApp .sidebar-content-head span{margin-left:auto!important;white-space:nowrap!important}
+#mNativeApp .inspector-body .item-media{display:flex!important;align-items:center!important;gap:12px!important;min-height:64px!important}
+#mNativeApp .inspector-body .item-media button{border:0!important;background:#fff!important;color:#576b95!important;font-weight:600!important;font-size:13px!important;min-height:32px!important;padding:0!important;box-shadow:none!important}
+#mNativeApp .inspector-body .item-media .item-media-empty{width:44px!important;height:44px!important;border-radius:10px!important;background:#fff!important;border:1px solid #ededf0!important;display:grid!important;place-items:center!important;color:#9a9aa4!important}
