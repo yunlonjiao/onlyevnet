@@ -1688,9 +1688,9 @@ function imageSlotConfig(path){
  if(path==='mobileHeroImage'&&state.templateId==='03-creator-market')return {label:'手机横幅',ratio:3/2,ratioLabel:'手机横幅 · 比例 3:2',width:1200,height:800,fixed:true};
  if(path==='mobileHeroImage'&&state.templateId==='02-scrapbook')return {label:'手机主视觉（可选）',ratio:3/4,ratioLabel:'标准海报 · 比例 3:4',width:1080,height:1440,fixed:true};
  if(path==='mobileHeroImage')return {label:'手机主视觉 KV',ratio:4/5,ratioLabel:'手机端独立主视觉 · 比例 4:5',width:1080,height:1350,fixed:true};
- if(path==='entryAnimation.kvDesktop'&&state.templateId==='01-ip-only')return {label:'开屏桌面 KV',ratio:5/3,ratioLabel:'纪念票照片 · 比例 5:3（与照片框一致）',width:1500,height:900,fixed:true};
+ if(path==='entryAnimation.kvDesktop'&&state.templateId==='01-ip-only')return {label:'开屏桌面 KV',ratio:1,ratioLabel:'纪念票照片 · 1:1（与照片框一致）',width:1200,height:1200,fixed:true};
  if(path==='entryAnimation.kvDesktop')return {label:'开屏桌面 KV',ratio:16/9,ratioLabel:'桌面开屏 · 比例 16:9',width:1920,height:1080,fixed:true};
- if(path==='entryAnimation.kvMobile'&&state.templateId==='01-ip-only')return {label:'开屏手机 KV',ratio:5/3,ratioLabel:'纪念票照片 · 比例 5:3（与照片框一致）',width:1500,height:900,fixed:true};
+ if(path==='entryAnimation.kvMobile'&&state.templateId==='01-ip-only')return {label:'开屏手机 KV',ratio:1,ratioLabel:'纪念票照片 · 1:1（与照片框一致）',width:1200,height:1200,fixed:true};
  if(path==='entryAnimation.kvMobile')return {label:'开屏手机 KV',ratio:9/16,ratioLabel:'手机开屏 · 比例 9:16',width:1080,height:1920,fixed:true};
  if(path==='venueMap.image')return {label:'场地图',ratio:16/9,ratioLabel:'场地图 · 比例 16:9',width:1600,height:900,fixed:true};
  if(path==='venueMap.transitImage')return {label:'交通路线图',ratio:16/9,ratioLabel:'交通路线图 · 比例 16:9',width:1600,height:900,fixed:true};
