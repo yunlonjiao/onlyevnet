@@ -1,15 +1,15 @@
 import {setStudioDevice,setStudioPreviewChrome,bindStudioMobilePanels} from '/v8/editor/studio-controls.js';
 import {renderStudioCollectionRows} from '/v8/editor/studio-collections.js';
 import {createStudioHistory} from '/v8/editor/studio-history.js';
-import {publishChecks} from '/v8/editor/publish-checks.js?v=8.521.0';
-import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.521.0';
+import {publishChecks} from '/v8/editor/publish-checks.js?v=8.522.0';
+import {downloadStudioHtml,publishStudioSite,hasLiveSite} from '/v8/editor/studio-publish.js?v=8.522.0';
 import {loadStudioCropper,createStudioCropper} from '/v8/editor/studio-crop.js';
 import {bindStudioField} from '/v8/editor/studio-field.js';
 import {renderInspector,syncStudioIdentity as renderStudioIdentity,migrateDemoEventName} from '/v8/editor/studio-chrome.js';
-import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.521.0';
-import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.521.0';
-import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages,listCloudProjects,getCloudSite} from '/v8/publisher.js?v=8.521.0';
-import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.521.0';
+import {streetGroups} from '/v8/renderer/street-spotlight.js?v=8.522.0';
+import {DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js?v=8.522.0';
+import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor,saveCloudConfig,uploadCloudImage,PROMO_CHANNELS,setSiteStages,listCloudProjects,getCloudSite} from '/v8/publisher.js?v=8.522.0';
+import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js?v=8.522.0';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -1045,7 +1045,7 @@ function bindModuleControls(){
  }));
 }
 
-function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.521.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
+function mountFrame(){canvas.innerHTML='<iframe id="liveFrame" class="live-frame" src="/v8/render.html?v=8.522.0" title="OnlyEvent live canvas"></iframe>';iframe=$('#liveFrame')}
 window.addEventListener('message',e=>{
  if(e.origin!==ORIGIN||e.source!==iframe?.contentWindow)return;
  const m=e.data||{};
@@ -1216,7 +1216,7 @@ function renderShareDialog(){
 // QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
 let qrLoader=null;
 function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.521.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
+ qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js?v=8.522.0';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
 function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -1663,7 +1663,7 @@ function liveImageFrameRatio(path){
   }else if(path==='heroImage'||path==='mobileHeroImage'){
    el=doc.querySelector('.kv');
   }else{
-   el=doc.querySelector('[data-oe-field="'+path+'"]');
+   el=doc.querySelector('[data-oe-field="'+path+'"]')||doc.querySelector('[data-oe-image="'+path+'"]');
   }
   if(!el)return 0;
   const r=el.getBoundingClientRect(),ratio=r.width/r.height;
@@ -1672,12 +1672,8 @@ function liveImageFrameRatio(path){
   return ratio;
  }catch{return 0}
 }
-function imageSlotConfig(path){
- const measured=liveImageFrameRatio(path);
- if(path==='heroImage'&&measured){return {label:'首页主视觉',ratio:measured,ratioLabel:'与首页主视觉框实际比例一致',width:1600,height:Math.round(1600/measured),fixed:true}}
- if(/^entryAnimation\.kv/.test(path)&&measured){
-  return {label:path.endsWith('Mobile')?'开屏手机 KV':'开屏桌面 KV',ratio:measured,ratioLabel:'与开屏照片框实际比例一致',width:1600,height:Math.round(1600/measured),fixed:true};
- }
+function imageSlotConfigBase(path){
+
  if(path==='heroImage'&&state.templateId==='01-ip-only')return {label:'首页主视觉',ratio:812/500,ratioLabel:'首页主视觉 · 812×500（与 01 首屏框体一致）',width:1624,height:1000,fixed:true};
  if(path==='heroImage'&&state.templateId==='05-live-poster')return {label:'舞台主视觉',ratio:3/5,ratioLabel:'舞台主视觉 · 3:5（与右侧竖版框体一致）',width:900,height:1500,fixed:true};
  if(path==='heroImage'&&state.templateId==='06-band-live')return {label:'首屏主视觉',ratio:4/5,ratioLabel:'首屏主视觉 · 4:5（竖版）',width:1000,height:1250,fixed:true};
@@ -1718,6 +1714,13 @@ function imageSlotConfig(path){
  return {label:'图片',ratio:1,ratioLabel:'裁剪框可移动 · 比例 1:1',width:1200,height:1200,fixed:true};
 }
 // Extra venue maps: with more than one map, visitors swipe between them on every template.
+function imageSlotConfig(path){
+ const cfg=imageSlotConfigBase(path);
+ const measured=liveImageFrameRatio(path);
+ if(measured&&!cfg.free){return {...cfg,ratio:measured,ratioLabel:(cfg.ratioLabel||'与展示框比例一致')+' · 按实际框计算',width:1600,height:Math.round(1600/measured),fixed:true}}
+ return cfg;
+}
+
 function moreMapsMarkup(){
  const more=state.venueMap?.more||[];
  return '<div class="item-media more-maps-editor"><span>更多场地图（多张时游客可左右滑动）</span>'+
