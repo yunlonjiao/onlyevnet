@@ -78,6 +78,8 @@
         btn.dataset.mnIcon = icon;
         btn.dataset.mnKey = key;
       });
+      const tpl=new URLSearchParams(location.search).get('template')||'';
+      if(tpl.startsWith('01')) screens.contents.querySelectorAll('[data-page-tool="streets"],[data-page-tool="traffic"]').forEach(b=>b.remove());
     }
     function showAllFields() {
       screens.fields.querySelectorAll('.m-field-hidden').forEach((el) => el.classList.remove('m-field-hidden'));

@@ -271,3 +271,8 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 /* remove gray frames inside fields */
 #mNativeApp .inspector-body div,#mNativeApp .inspector-body section,#mNativeApp .inspector-body article{background-color:transparent!important;border-color:transparent!important;box-shadow:none!important}
 #mNativeApp .inspector-body label{background:#fff!important}
+
+/* fill fields height and keep every field visible */
+#mNativeApp .mn-screen .inspector{height:100%!important;max-height:none!important}
+#mNativeApp .inspector-body{flex:1 1 auto!important;height:auto!important;max-height:none!important;min-height:0!important}
+#mNativeApp .m-field-hidden{display:flex!important;visibility:visible!important;height:auto!important;max-height:none!important}
