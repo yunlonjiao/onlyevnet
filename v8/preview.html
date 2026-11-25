@@ -30,7 +30,7 @@ body.embed .pv-bar{display:none}
 <iframe id="previewFrame" title="活动网站预览" allow="clipboard-write"></iframe>
 <p class="fail" id="previewFail">预览加载失败。请点右上角「返回编辑」，重新点「预览」。</p>
 <script type="module">
-  import {getTemplate} from '/v8/templates/registry.js?v=8.555.0';
+  import {getTemplate} from '/v8/templates/registry.js?v=8.556.0';
   const query = new URLSearchParams(location.search);
   if (query.get('embed') === '1') document.body.classList.add('embed');
   const template = query.get('template') || '08-birthday';

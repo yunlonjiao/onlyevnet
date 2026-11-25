@@ -400,3 +400,10 @@ body.m-native-view .canvas-stage,body.m-native-view .canvas{height:100%!importan
 /* fixed split 68 / 32 */
 #mNativeApp,#mNativeApp.is-fields{height:32dvh!important}
 body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{bottom:32dvh!important;height:auto!important}
+
+/* media layout final */
+#mNativeApp .item-media-row>div:not(.item-media-empty){display:flex!important}
+#mNativeApp .item-media-row>.item-media-empty{display:none!important}
+#mNativeApp .item-media>span{flex:0 0 96px!important;width:96px!important;max-width:96px!important;font-size:11px!important;line-height:1.25!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important}
+#mNativeApp .inspector-body textarea{min-height:40px!important;height:auto!important;overflow:hidden!important;resize:none!important;field-sizing:content!important}
+#mNativeApp .product-manager-entry .sidebar-content-copy b{white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;max-width:none!important}

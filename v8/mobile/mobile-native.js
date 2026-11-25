@@ -73,6 +73,7 @@
       else {
         titleEl.textContent = (inspector.querySelector('.inspector-header b')?.textContent || '编辑').trim();
         localizeFields();
+      setTimeout(autoGrowTextareas, 80);
       }
     }
     function localizeContentLabels() {
@@ -94,6 +95,16 @@
       const tpl=new URLSearchParams(location.search).get('template')||'';
       if(tpl.startsWith('01')) screens.contents.querySelectorAll('[data-page-tool="streets"],[data-page-tool="traffic"]').forEach(b=>b.remove());
     }
+    function autoGrowTextareas() {
+      screens.fields.querySelectorAll('textarea').forEach((ta) => {
+        ta.style.height = 'auto';
+        ta.style.height = Math.max(40, ta.scrollHeight) + 'px';
+      });
+    }
+    screens.fields.addEventListener('input', (event) => {
+      if (event.target.tagName === 'TEXTAREA') autoGrowTextareas();
+    });
+
     function showAllFields() {
       screens.fields.querySelectorAll('.m-field-hidden').forEach((el) => el.classList.remove('m-field-hidden'));
     }
