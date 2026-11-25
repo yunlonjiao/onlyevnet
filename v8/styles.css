@@ -898,8 +898,6 @@ body.previewing .canvas-stage:before{display:none}
 .entry-animation-inspector{display:grid;gap:12px}
 .toggle-field{grid-template-columns:1fr auto!important;align-items:center}
 .toggle-field input[type=checkbox]{width:36px!important;height:20px!important;accent-color:#7c5cff;margin:0!important}
-.entry-animation-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.entry-animation-actions button{min-height:36px}
 #previewEntryAnimation{background:#18181d;color:#fff;border-color:#18181d}
 
 
@@ -1005,12 +1003,6 @@ body.previewing .canvas-stage:before{display:none}
 .entry-animation-inspector .item-media-row button{
   min-height:32px;
   padding:7px 9px;
-  font-size:9px;
-}
-.entry-animation-inspector .entry-animation-actions{gap:6px}
-.entry-animation-inspector .entry-animation-actions button{
-  min-height:32px;
-  padding:7px 8px;
   font-size:9px;
 }
 .entry-animation-inspector .inspector-note{
