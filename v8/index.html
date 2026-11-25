@@ -6,8 +6,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>OnlyEvent Studio v8</title>
-  <link rel="stylesheet" href="/v8/styles.css?v=8.509.0">
-  <link rel="stylesheet" href="/v8/mobile/mobile-native.css?v=8.509.0">
+  <link rel="stylesheet" href="/v8/styles.css?v=8.510.0">
+  <link rel="stylesheet" href="/v8/mobile/mobile-native.css?v=8.510.0">
 </head>
 <body>
   <dialog class="share-dialog" id="recapDialog">
@@ -160,7 +160,9 @@
       </div>
       <div class="crop-foot">
         <div class="crop-tools">
-          <button id="cropRotateLeft" type="button">↶ 90°</button>
+          <button id="cropZoomOut" type="button">－ 缩小</button>
+        <button id="cropZoomIn" type="button">＋ 放大</button>
+        <button id="cropRotateLeft" type="button">↶ 90°</button>
           <button id="cropReset" type="button">重置</button>
         </div>
         <div class="crop-actions">
@@ -212,8 +214,8 @@
   </dialog>
 
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="/v8/editor/studio-entry.js?v=8.509.0"></script>
+  <script type="module" src="/v8/editor/studio-entry.js?v=8.510.0"></script>
 <!-- v8.33.9 preview trigger -->
-  <script type="module" src="/v8/mobile/mobile-native.js?v=8.509.0"></script>
+  <script type="module" src="/v8/mobile/mobile-native.js?v=8.510.0"></script>
 </body>
 </html>
