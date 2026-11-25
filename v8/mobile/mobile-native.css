@@ -241,3 +241,7 @@ body.m-native-open #mobilePanelBackdrop{display:none!important}
 /* fixed split 55 / 45 */
 #mNativeApp,#mNativeApp.is-fields{height:45dvh!important}
 body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{bottom:45dvh!important;height:auto!important}
+
+/* fixed split 60 / 40 */
+#mNativeApp,#mNativeApp.is-fields{height:40dvh!important}
+body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{bottom:40dvh!important;height:auto!important}
