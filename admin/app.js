@@ -637,7 +637,8 @@ $('#previewDialog').addEventListener('cancel',()=>{$('#previewFrame').src='about
 $('#previewUse').onclick=()=>{const id=previewTemplateId;closePreview();openCreate(id)};
 $('#createCancel').onclick=()=>$('#createDialog').close();
 $('#createForm').addEventListener('submit',e=>{e.preventDefault();createProject($('#createProjectName').value)});
-$('#projectSearch').addEventListener('input',e=>renderProjects(e.target.value));
+let projectSearchTimer=0;
+$('#projectSearch').addEventListener('input',e=>{const value=e.target.value;clearTimeout(projectSearchTimer);projectSearchTimer=setTimeout(()=>renderProjects(value),120)});
 
 $('#exportProjectBackupBtn').addEventListener('click',()=>{
  if(!projects.length){alert(cloudImporting?'正在从账号同步活动，请稍后再试。':'目前还没有活动项目可备份。');return}
