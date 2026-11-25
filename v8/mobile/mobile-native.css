@@ -259,3 +259,15 @@ body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{
 
 /* all field cards round */
 #mNativeApp .inspector-body label:first-of-type,#mNativeApp .inspector-body label:last-of-type,#mNativeApp .inspector-body label{border-radius:12px!important}
+
+/* inspector must be visible inside the native shell */
+#mNativeApp .inspector{visibility:visible!important;opacity:1!important;transform:none!important;display:flex!important;pointer-events:auto!important}
+/* fullscreen fields */
+#mNativeApp.is-fields{height:100dvh!important;border-radius:0!important}
+body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
+/* content grid three rows */
+#mNativeApp .page-content-nav{grid-auto-rows:62px!important;gap:6px!important}
+#mNativeApp .page-content-nav button{height:62px!important;min-height:62px!important}
+/* remove gray frames inside fields */
+#mNativeApp .inspector-body div,#mNativeApp .inspector-body section,#mNativeApp .inspector-body article{background-color:transparent!important;border-color:transparent!important;box-shadow:none!important}
+#mNativeApp .inspector-body label{background:#fff!important}

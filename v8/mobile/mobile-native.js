@@ -49,6 +49,7 @@
     const track = app.querySelector('.mn-track');
     let screen = 'pages';
     let fromManager = false;
+    let fromCreatePreset = false;
     const order = ['pages', 'contents', 'items', 'fields'];
     function syncTitle() {
       if (screen === 'pages') titleEl.textContent = '页面';
@@ -124,6 +125,7 @@
     }
 
     app.querySelector('[data-mn-back]').addEventListener('click', () => {
+      if (screen === 'fields' && fromCreatePreset) { fromCreatePreset = false; show('pages'); return; }
       if (screen === 'fields') show(fromManager ? 'items' : 'contents');
       else if (screen === 'items') show('contents');
       else if (screen === 'contents') show('pages');
@@ -137,6 +139,7 @@
       const manager = event.target.closest('[data-page-content-manager]');
       if (event.target.closest('[data-page-tool]')) {
         fromManager = false;
+        fromCreatePreset = false;
         setTimeout(() => show('fields'), 80);
       } else if (manager) {
         fromManager = true;
@@ -179,7 +182,7 @@
 
     document.addEventListener('click', (event) => {
       if (!isPhone()) return;
-      if (event.target.closest('#createCustomPageBtn')) { setTimeout(() => show('fields'), 80); return; }
+      if (event.target.closest('#createCustomPageBtn')) { fromCreatePreset = true; setTimeout(() => show('fields'), 80); return; }
       if (event.target.closest('#mobilePagesBtn')) {
         event.preventDefault();
         event.stopImmediatePropagation();
