@@ -984,7 +984,7 @@ function openCollectionManager(collection,selectedIndex=-1){
  const addLabel=collection==='guide'?'＋ 添加自定义指南':collection==='participation'?'＋ 添加自定义活动':'＋ 添加'+meta.title;
  const addButton=(collection==='featuredActivities'&&String(state.templateId)!=='08-birthday')?'':'<button type="button" class="sidebar-content-add" data-sidebar-content-add>'+addLabel+'</button>';
  panel.innerHTML='<div class="sidebar-content-head"><div><b>'+esc(meta.title)+'</b><span>'+arr.length+' 项</span></div>'+(arr.length>6?'<label class="sidebar-content-search"><span>⌕</span><input type="search" placeholder="'+esc(collection==='booths'?'搜索社团，或制品名称 / Tag':'搜索'+meta.title)+'" data-sidebar-content-search></label>':'')+'</div>'+guidePresets+activityPresets+'<div class="sidebar-content-rows">'+(rows||'<div class="sidebar-content-empty">'+esc(meta.empty)+'</div>')+'</div>'+addButton;
- panel.querySelectorAll('[data-open-item]').forEach(btn=>btn.onclick=()=>{const i=Number(btn.dataset.openItem);panel.querySelectorAll('[data-open-item]').forEach(x=>x.classList.toggle('active',x===btn));openItemInspector(collection,i);if(innerWidth<=820)setTimeout(()=>{try{mobilePanels&&mobilePanels.open('inspector')}catch(e){}},160)});
+ panel.querySelectorAll('[data-open-item]').forEach(btn=>btn.onclick=()=>{const i=Number(btn.dataset.openItem);panel.querySelectorAll('[data-open-item]').forEach(x=>x.classList.toggle('active',x===btn));openItemInspector(collection,i)});
  panel.querySelectorAll('[data-add-preset]').forEach(btn=>btn.onclick=()=>addPresetItem(collection,btn.dataset.addPreset));
  panel.querySelector('[data-sidebar-content-add]')?.addEventListener('click',()=>mutateItem(collection,arr.length-1,'add'));
  panel.querySelector('[data-sidebar-content-search]')?.addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();panel.querySelectorAll('[data-open-item]').forEach(row=>row.hidden=!!q&&!String(row.dataset.search||'').includes(q))});
@@ -2073,7 +2073,7 @@ try{
  __ensureSidebarClose();
 }catch(e){}
 
-function openInspectorSheetOnPhone(){try{const phone=innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560);if(phone)mobilesheetOpen()}catch(e){}}
+function openInspectorSheetOnPhone(){if(document.querySelector('#mNativeApp'))return;try{const phone=innerWidth<=820||(matchMedia('(pointer:coarse)').matches&&innerHeight<=560);if(phone)mobilesheetOpen()}catch(e){}}
 function mobilesheetOpen(){try{if(typeof mobilePanels!=='undefined'&&mobilePanels&&mobilePanels.open)mobilePanels.open('inspector')}catch(e){}}
 try{
  const __mediaTapOpenPicker=e=>{
