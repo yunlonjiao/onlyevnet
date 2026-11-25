@@ -1,4 +1,4 @@
-/* Mobile-native editor shell: 64% live site + 36% swipeable editor drawer. */
+/* Mobile-native editor shell: live site + swipeable editor drawer. */
 (function () {
   const isPhone = () => innerWidth <= 820 || (matchMedia('(pointer:coarse)').matches && innerHeight <= 560);
   if (!isPhone()) return;
@@ -47,11 +47,13 @@
 
     const titleEl = app.querySelector('[data-mn-title]');
     const track = app.querySelector('.mn-track');
+    let mnViewBar = null;
     let screen = 'pages';
     let fromManager = false;
     let fromCreatePreset = false;
     let lastEditPath = '';
     let lastSection = '';
+    let scrollToken = 0;
     document.addEventListener('input', (event) => {
       const el = event.target.closest && event.target.closest('[data-sync-path]');
       if (el) lastEditPath = el.dataset.syncPath || '';
@@ -92,7 +94,7 @@
         btn.dataset.mnIcon = icon;
         btn.dataset.mnKey = key;
       });
-      const tpl=new URLSearchParams(location.search).get('template')||'';
+      const tpl = document.documentElement.dataset.oeTemplate || new URLSearchParams(location.search).get('template') || '';
       if(tpl.startsWith('01')) screens.contents.querySelectorAll('[data-page-tool="streets"],[data-page-tool="traffic"]').forEach(b=>b.remove());
     }
     function autoGrowTextareas() {
@@ -112,12 +114,8 @@
       if (!isPhone()) return;
       const body = screens.fields.querySelector('.inspector-body');
       if (!body) return;
-      body.querySelectorAll('label').forEach((el) => { if (/手机/.test(el.textContent || '')) el.remove(); });
-      body.querySelectorAll('.item-media').forEach((el) => { if (/手机/.test(el.textContent || '')) el.remove(); });
-      body.querySelectorAll('p,.inspector-note').forEach((el) => { if (/手机/.test(el.textContent || '')) el.remove(); });
-      body.querySelectorAll('span,label').forEach((el) => {
-        if (!el.children.length) el.textContent = el.textContent.replace(/桌面焦点/g, '焦点');
-      });
+      const mobileOnly = /手机主图|手机 KV|手机焦点|手机端主图/;
+      body.querySelectorAll('label,.item-media,p,.inspector-note').forEach((el) => { if (mobileOnly.test(el.textContent || '')) el.remove(); });
     }
     function localizeFields() {
       showAllFields();
@@ -134,6 +132,7 @@
     }
     function show(next) {
       screen = next;
+      scrollToken += 1;
       app.hidden = false;
       document.body.classList.remove('m-native-view');
       if (mnViewBar) mnViewBar.hidden = true;
@@ -149,7 +148,12 @@
       if (next === 'items') setTimeout(pinItemsAddButton, 60);
       app.classList.toggle('is-fields', next === 'fields');
     }
-    function scrollPreviewToPath(path) {
+    function schedulePreviewScroll(path) {
+      const token = scrollToken;
+      [80, 350, 800, 1500].forEach((delay) => setTimeout(() => scrollPreviewToPath(path, token), delay));
+    }
+    function scrollPreviewToPath(path, token = scrollToken) {
+      if (token !== scrollToken) return;
       try {
         const frame = document.querySelector('#liveFrame');
         const doc = frame && frame.contentDocument;
@@ -174,7 +178,7 @@
         const prev = el.style.outline, prevOffset = el.style.outlineOffset;
         el.style.outline = '3px solid #07c160';
         el.style.outlineOffset = '3px';
-        setTimeout(() => { el.style.outline = prev; el.style.outlineOffset = prevOffset; }, 1400);
+        setTimeout(() => { if (token === scrollToken) { el.style.outline = prev; el.style.outlineOffset = prevOffset; } }, 1400);
       } catch (error) {}
     }
     function pinItemsAddButton() {
@@ -185,7 +189,6 @@
       }
     }
 
-    let mnViewBar = null;
     function ensureViewBar() {
       if (mnViewBar) return mnViewBar;
       mnViewBar = document.createElement('header');
@@ -205,8 +208,8 @@
 
     app.querySelector('[data-mn-back]').addEventListener('click', () => {
       if (screen === 'fields' && fromCreatePreset) { fromCreatePreset = false; show('pages'); return; }
-      if (screen === 'fields') { const p = lastEditPath || lastSection; show(fromManager ? 'items' : 'contents'); [80, 350, 800, 1500].forEach((d) => setTimeout(() => scrollPreviewToPath(p), d)); return; }
-      else if (screen === 'items') { show('contents'); [80, 350, 800].forEach((d) => setTimeout(() => scrollPreviewToPath(lastSection), d)); }
+      if (screen === 'fields') { const p = lastEditPath || lastSection; show(fromManager ? 'items' : 'contents'); schedulePreviewScroll(p); return; }
+      else if (screen === 'items') { show('contents'); schedulePreviewScroll(lastSection); }
       else if (screen === 'contents') show('pages');
       else hide();
     });
@@ -250,7 +253,7 @@
     // Swipe the editor drawer left/right between page → content → field.
     let sx = 0, sy = 0, swiping = false;
     app.querySelector('.mn-main').addEventListener('touchstart', (event) => {
-      if (event.target.closest('input,textarea,select')) return;
+      if (event.target.closest('input,textarea,select,a,button,[contenteditable="true"]')) return;
       const t = event.touches[0]; sx = t.clientX; sy = t.clientY; swiping = true;
     }, { passive: true });
     app.querySelector('.mn-main').addEventListener('touchend', (event) => {
@@ -287,7 +290,12 @@
     }, true);
 
     addEventListener('resize', () => {
-      if (!isPhone() && !app.hidden) hide();
+      if (!isPhone()) {
+        hide();
+        document.body.classList.remove('m-native-view');
+        if (mnViewBar) mnViewBar.hidden = true;
+        document.body.classList.remove('m-native-open', 'm-native-split', 'm-native-fields');
+      }
     });
     return true;
   };
