@@ -298,3 +298,8 @@ body.m-native-open.m-native-fields .canvas-wrap{display:none!important}
 #mNativeApp .sidebar-content-head span{font-size:11px!important;color:#9a9aa4!important}
 #mNativeApp .sidebar-content-add{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-height:44px!important;height:44px!important;margin:0 0 8px!important;padding:0!important;border:1px dashed #d7d7de!important;border-radius:12px!important;background:#fff!important;color:#576b95!important;font-size:13px!important;position:static!important;float:none!important}
 #mNativeApp .sidebar-content-rows{display:flex!important;flex-direction:column!important;gap:8px!important;margin:0!important;padding:0!important}
+
+/* force white field surfaces */
+#mNativeApp .inspector-body,#mNativeApp .inspector-body *{background:transparent!important;background-image:none!important;box-shadow:none!important}
+#mNativeApp .inspector-body label,#mNativeApp .inspector-body .item-media,#mNativeApp .inspector-body input,#mNativeApp .inspector-body textarea,#mNativeApp .inspector-body select,#mNativeApp .inspector-body button{background:#fff!important}
+#mNativeApp .inspector-body textarea{border:0!important;border-radius:0!important;padding:0!important;min-height:64px!important}
