@@ -296,7 +296,7 @@ async function handleMessage(m){
     fields.markEditable();
     router.applyModules();
     router.showPage(router.getCurrentPage(),false);
-    requestAnimationFrame(setupHomeMotion);
+    requestAnimationFrame(()=>{stripStrayBraceText();setupHomeMotion()});
   }
     if(m.type==='OE_CROP_ACTIVE'){
     document.getAnimations().forEach(animation=>{try{m.active?animation.pause():animation.play()}catch{}});
@@ -304,7 +304,7 @@ async function handleMessage(m){
   }
   if(m.type==='OE_PREVIEW_ENTRY')previewEntry({play:!!m.play});
   if(m.type==='OE_HIDE_ENTRY_PREVIEW')hideEntryPreview();
-  if(m.type==='OE_SHOW_PAGE'){router.showPage(m.page||'home');requestAnimationFrame(setupHomeMotion)}
+  if(m.type==='OE_SHOW_PAGE'){router.showPage(m.page||'home');requestAnimationFrame(()=>{stripStrayBraceText();setupHomeMotion()})}
   if(m.type==='OE_EXPORT_HTML')send({type:'OE_EXPORT_HTML_RESULT',html:buildStandaloneHtml()});
  if(m.type==='OE_BLUR'){try{document.activeElement&&document.activeElement.blur()}catch(e){}}
  if(m.type==='OE_SAVE_SELECTION'){try{const s=getSelection();if(s&&s.rangeCount&&!s.isCollapsed){window.__oeSel=s.getRangeAt(0).cloneRange()}}catch(e){}}

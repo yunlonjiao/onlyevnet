@@ -9,6 +9,7 @@ export const BACKUP_VERSION=1;
 const PROJECTS_KEY='onlyevent-admin-projects-v1';
 const prefix=templateId=>String(templateId||'');
 export const projectStateKey=(templateId,id)=>'onlyevent-studio-v8:'+prefix(templateId)+':'+id+':iframe';
+export const projectCostKey=id=>'onlyevent-cost-v1:'+String(id);
 export const projectPublishKey=(templateId,id)=>'onlyevent-studio-publish:'+prefix(templateId)+':'+id+':iframe';
 
 const object=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
@@ -35,6 +36,9 @@ export function makeProjectBackup(projects,storage,{includePublisherCredentials=
   const state=readJSON(storage,projectStateKey(project.templateId,project.id));
   if(state!==null&&!object(state))throw new Error('活动「'+project.name+'」的数据格式无效');
   const record={project,state};
+  const cost=readJSON(storage,projectCostKey(project.id));
+  if(cost!==null&&!object(cost))throw new Error('活动「'+project.name+'」的成本数据格式无效');
+  if(cost!==null)record.cost=cost;
   if(includePublisherCredentials){
    const raw=readJSON(storage,projectPublishKey(project.templateId,project.id));
    if(raw!==null){
@@ -63,6 +67,7 @@ export function validateProjectBackup(data,{allowedTemplateIds}={}){
   seen.add(project.id);
   if(row.state!=null&&!object(row.state))throw new Error('项目数据必须是对象');
   if(row.publication!=null&&!object(row.publication))throw new Error('发布管理记录格式无效');
+  if(row.cost!=null&&!object(row.cost))throw new Error('成本数据格式无效');
   const publication=object(row.publication)?{
    siteId:safeText(row.publication.siteId,240),
    cloudProjectId:safeText(row.publication.cloudProjectId,120),
@@ -70,7 +75,7 @@ export function validateProjectBackup(data,{allowedTemplateIds}={}){
    url:safeText(row.publication.url,1200),
    publishedAt:safeText(row.publication.publishedAt,60)
   }:null;
-  return {project,state:row.state??null,publication};
+  return {project,state:row.state??null,publication,cost:row.cost??null};
  });
 }
 export function restoreProjectBackup(data,storage,{existingProjects=[],allowedTemplateIds,makeId}={}){
@@ -88,6 +93,7 @@ export function restoreProjectBackup(data,storage,{existingProjects=[],allowedTe
   const project={...item.project,id};
   const state=item.state===null?null:{...item.state,projectId:id,templateId:project.templateId};
   if(state!==null)writes.push([projectStateKey(project.templateId,id),JSON.stringify(state)]);
+  if(item.cost!==null)writes.push([projectCostKey(id),JSON.stringify(item.cost)]);
   const pub=item.publication;
   // Sites without their cloud project record cannot be managed again, so they come back as drafts.
   if(pub?.siteId&&pub.cloudProjectId&&pub.url){
