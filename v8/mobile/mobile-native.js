@@ -204,6 +204,8 @@
       if (event.target.closest('[data-page]')) setTimeout(() => show('contents'), 0);
     });
     screens.contents.addEventListener('click', (event) => {
+      const customNav = event.target.closest('[data-custom-page-nav]');
+      if (customNav) { setTimeout(() => show(customNav.dataset.customPageNav === 'settings' ? 'fields' : 'items'), 80); }
       const hit = event.target.closest('[data-page-tool],[data-page-content-manager]');
       if (hit) lastSection = hit.dataset.pageTool || hit.dataset.pageContentManager || '';
       const manager = event.target.closest('[data-page-content-manager]');

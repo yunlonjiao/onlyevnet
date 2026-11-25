@@ -396,3 +396,7 @@ body.m-native-view .canvas-stage,body.m-native-view .canvas{height:100%!importan
 #mNativeApp .inspector-body [data-cover-kv]:after{content:'＋';font-size:22px!important;color:#576b95!important;text-indent:0!important}
 #mNativeApp .guide-media-hint{display:block!important;margin-top:6px!important;font-size:12px!important;color:#9a9aa4!important;text-align:left!important}
 #mNativeApp .product-manager-entry b,#mNativeApp .product-editor b,#mNativeApp .product-direct-head b{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+
+/* fixed split 68 / 32 */
+#mNativeApp,#mNativeApp.is-fields{height:32dvh!important}
+body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{bottom:32dvh!important;height:auto!important}
