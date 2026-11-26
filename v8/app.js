@@ -22,6 +22,7 @@ import {guideLabelFor} from '/v8/editor/studio-guide-label.js';
 import {stageRowsHtml} from '/v8/editor/studio-stage-html.js';
 import {contentThumb} from '/v8/editor/studio-content-thumb.js';
 import {renderPublishShare} from '/v8/editor/studio-publish-share.js';
+import {createStageUi} from '/v8/editor/studio-stage-ui.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -288,28 +289,10 @@ async function exportStagedSite(){
  pendingStages=stages.map((s,i)=>({at:new Date(s.at).toISOString(),html:htmls[i+1]}));
  publishGeneratedHtml(htmls[0]);
 }
-function renderStageRows(){
- const box=$('#stageRows');if(!box)return;
- const stages=state.reveal?.stages||[],mods=stageModuleList();
- $('#publishStages').hidden=!mods.length;
- box.innerHTML=stageRowsHtml(stages,mods,esc);
-}
-function __stageRowRefresh(e){const row=e.target.closest?.('.stage-row');if(!row)return;refreshStageHint(row);refreshPublishChecks()}
-function refreshStageHint(row){if(!row)return;const i=Number(row.dataset.i),s=(state.reveal?.stages||[])[i],hint=row.querySelector('.stage-hint');if(!hint)return;hint.hidden=!!(s&&s.at&&(s.modules||[]).length)}
-function refreshPublishChecks(){const ul=$('#publishChecks');if(!ul)return;const items=publishChecks(state);ul.innerHTML=items.map(t=>'<li>'+esc(t)+'</li>').join('');ul.hidden=!items.length;const t=$('#publishChecksTitle');if(t)t.hidden=!items.length}
-function bindStageRows(){
- const box=$('#stageRows');
- const touch=()=>{state.reveal??={stages:[]};save()};
- box.addEventListener('input',e=>{
-  const row=e.target.closest('.stage-row');if(!row)return;const s=(state.reveal.stages||[])[Number(row.dataset.i)];if(!s)return;
-  if(e.target.classList.contains('stage-label'))s.label=e.target.value;
-  else if(e.target.classList.contains('stage-at'))s.at=e.target.value;
-  else if(e.target.dataset.mod){s.modules=[...row.querySelectorAll('[data-mod]')].filter(i=>i.checked).map(i=>i.dataset.mod)}
-  save();
- });
- box.addEventListener('click',e=>{if(!e.target.closest('.stage-remove'))return;const i=Number(e.target.closest('.stage-row').dataset.i);state.reveal.stages.splice(i,1);save();renderStageRows()});
- $('#stageAdd').onclick=()=>{touch();state.reveal.stages??=[];if(state.reveal.stages.length>=6){toast('最多 6 批');return}state.reveal.stages.push({id:'st'+Date.now().toString(36),label:'',at:'',modules:[]});save();renderStageRows()};
-}
+const stageUi=createStageUi({$,getState:()=>state,stageModuleList,save,toast,publishChecks});
+const {renderStageRows,bindStageRows,refreshPublishChecks}=stageUi;
+function __stageRowRefresh(e){stageUi.handleRowEvent(e)}
+
 async function publishGeneratedHtml(html){
  const slug=cleanSlug(publishSlug.value);
  if(!isValidSlug(slug)){setPublishBusy(false,'地址需为 3–50 位小写字母、数字或连字符。');publishSlug.focus();return}
