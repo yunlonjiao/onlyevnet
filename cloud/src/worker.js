@@ -12,7 +12,7 @@ const MAX_SITE_HTML_BYTES=25*1024*1024;
 const MAX_PROJECT_CONFIG_BYTES=1900000;
 const CORS_ALLOW_HEADERS='content-type,authorization,x-onlyevent-project';
 const CORS_ALLOW_METHODS='GET,POST,PUT,DELETE,OPTIONS';
-const CONTENT_SECURITY_POLICY="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-src 'self' blob:; media-src 'self' blob: data: https:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'";
+const CONTENT_SECURITY_POLICY="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https: https://cloudflareinsights.com; frame-src 'self' blob:; media-src 'self' blob: data: https:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'";
 /* Offline support for visitor sites: the page and its images are kept after a first visit,
    so the site still opens at a venue with no signal. Online visits always fetch the newest version. */
 const VISITOR_SW=`const CACHE='oe-visitor-v1',HOME='/',MAX_IMAGES=200;
