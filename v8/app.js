@@ -18,6 +18,7 @@ import {createToast} from '/v8/editor/studio-toast.js';
 import {revealStages,stateAtStage} from '/v8/editor/studio-stage-state.js';
 import {loadPublishRecord,persistPublishRecord,clearPublishRecord} from '/v8/editor/studio-publish-record.js';
 import {setDeepState,getDeepState} from '/v8/editor/studio-state-paths.js';
+import {guideLabelFor} from '/v8/editor/studio-guide-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -573,7 +574,7 @@ function buildCustomPageStarterItems(presetKey){
  const rows=CUSTOM_PAGE_STARTERS[presetKey]||CUSTOM_PAGE_STARTERS.custom;
  return rows.map(([title,meta,text])=>({id:uid('ci'),title,meta,text,image:'',url:''}));
 }
-function guideLabelText(){const qs=new URLSearchParams(location.search);const id=qs.get('template')||(typeof activeTemplate!=='undefined'&&activeTemplate&&activeTemplate.id)||'';if(id.indexOf('03')===0||id.indexOf('04')===0)return '创作展指南';if(id.indexOf('05')===0||id.indexOf('06')===0)return '观演秩序';if(id.indexOf('07')===0||id.indexOf('08')===0)return '活动须知';return '观展指南'}
+function guideLabelText(){return guideLabelFor(activeTemplate?.id||'')}
 const PAGE_CONTENT_CONFIG={
  animation:[{tool:'entryAnimation',label:'入场动画'}],
  home:[
