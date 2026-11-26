@@ -67,6 +67,7 @@
     let lastEditPath = '';
     let lastSection = '';
     let scrollToken = 0;
+    let viewReturnScreen = 'pages';
     document.addEventListener('input', (event) => {
       const el = event.target.closest && event.target.closest('[data-sync-path]');
       if (el) lastEditPath = el.dataset.syncPath || '';
@@ -155,6 +156,7 @@
       const idx = Math.max(0, order.indexOf(next));
       const main = app.querySelector('.mn-main');
       if (main) main.scrollLeft = 0;
+      if (next === 'pages') { screens.pages.scrollTop = 0; screens.pages.scrollLeft = 0; }
       track.style.transform = 'translateX(' + (-idx * 100) + '%)';
       document.body.classList.toggle('m-native-fields', next === 'fields');
       syncTitle();
@@ -212,11 +214,12 @@
       mnViewBar.setAttribute('aria-label','预览操作');
       mnViewBar.innerHTML = '<button type="button" data-view-back aria-label="返回">←</button><button type="button" data-view-edit aria-label="编辑页面">编辑</button>';
       mnViewBar.querySelector('[data-view-back]').addEventListener('click', () => show('pages'));
-      mnViewBar.querySelector('[data-view-edit]').addEventListener('click', () => show('pages'));
+      mnViewBar.querySelector('[data-view-edit]').addEventListener('click', () => show(viewReturnScreen || 'pages'));
       document.body.appendChild(mnViewBar);
       return mnViewBar;
     }
     function hide() {
+      viewReturnScreen = screen;
       detachSidebar();
       app.hidden = true;
       document.body.classList.add('m-native-view');
