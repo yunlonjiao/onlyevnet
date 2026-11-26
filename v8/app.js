@@ -54,6 +54,7 @@ import {recapDialogHtml} from '/v8/editor/studio-recap-dialog-html.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
+import {boothProductsHtml} from '/v8/editor/studio-booth-products-html.js';
 import {canvasToBlob,downloadSvg} from '/v8/editor/studio-canvas-download.js';
 import {createContentCounts} from '/v8/editor/studio-content-counts.js';
 import {pageContentItems} from '/v8/editor/studio-page-nav.js';
@@ -904,12 +905,7 @@ function extraInspector(collection,index,item){return extraInspectorHtml(collect
 function openBoothProductManager(boothIndex){
  const booth=state.booths?.[boothIndex];if(!booth)return;
  const products=booth.products||[];
- setInspector('制品','制品管理 · '+(booth.no||booth.name||'摊位'),
-   '<div class="product-direct-head"><button type="button" class="ghost" data-booth-product-back>← 返回摊位编辑</button><span>'+esc((booth.no?booth.no+' · ':'')+(booth.name||'摊位'))+'</span></div>'+
-   '<div class="product-editor"><div class="product-editor-head"><b>共 '+products.length+' 件制品</b><button type="button" data-booth-product-add="'+boothIndex+'">＋ 添加制品</button></div>'+
-   '<div class="sidebar-content-rows">'+(products.length?products.map((p,j)=>
-      '<div class="product-manager-row"><button type="button" class="sidebar-content-row product-manager-name-row" data-booth-product-open="'+j+'"><span class="sidebar-content-copy"><b>'+esc(p.name||'未命名制品')+'</b></span></button><div class="product-manager-tools"><button type="button" data-booth-product-move="'+j+'" data-dir="-1" '+(j===0?'disabled':'')+' title="上移">↑</button><button type="button" data-booth-product-move="'+j+'" data-dir="1" '+(j===products.length-1?'disabled':'')+' title="下移">↓</button></div></div>'
-   ).join(''):'<p class="inspector-note">还没有制品，点击“添加制品”开始。</p>')+'</div></div>');
+ setInspector('制品','制品管理 · '+(booth.no||booth.name||'摊位'),boothProductsHtml(booth,boothIndex,esc));
  inspector.querySelector('[data-booth-product-back]')?.addEventListener('click',()=>openItemInspector('booths',boothIndex));
  inspector.querySelector('[data-booth-product-add]')?.addEventListener('click',()=>addBoothProduct(boothIndex));
  inspector.querySelectorAll('[data-booth-product-open]').forEach(btn=>btn.addEventListener('click',()=>openProductInspector(boothIndex,Number(btn.dataset.boothProductOpen))));
