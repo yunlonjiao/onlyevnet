@@ -42,6 +42,7 @@ import {extraInspectorHtml} from '/v8/editor/studio-extra-inspector.js';
 import {itemInspectorHeadHtml,itemFieldsHtml,isItemLongField,itemActionsHtml} from '/v8/editor/studio-item-inspector-html.js';
 import {itemMediaPanels} from '/v8/editor/studio-item-media-html.js';
 import {createModuleControls} from '/v8/editor/studio-module-controls.js';
+import {setPageContentActive} from '/v8/editor/studio-page-content-active.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -483,12 +484,6 @@ function openOptionalPageInspector(key){
  inspector.querySelectorAll('[data-optional-field]').forEach(input=>bindInspectorStateInput(input,key+'.'+input.dataset.optionalField,{clean:true}));
  inspector.querySelector('[data-optional-image]')?.addEventListener('click',()=>{$('#imageInput').dataset.path=key+'.image';$('#imageInput').click()});
  inspector.querySelector('[data-optional-image-remove]')?.addEventListener('click',()=>{checkpoint();setDeep(key+'.image','');send({type:'OE_REPLACE_STATE',state});openOptionalPageInspector(key)});
-}
-function setPageContentActive({tool='',collection=''}={}){
- document.querySelectorAll('[data-page-content-manager],[data-page-tool]').forEach(x=>{
-   const on=collection?x.dataset.pageContentManager===collection:tool?x.dataset.pageTool===tool:false;
-   x.classList.toggle('active',on);
- });
 }
 function syncCanvasSelection(path){
  if(/^heroTitle|^(?:heroImage|mobileHeroImage)$|^tagline$|^sticker\d+$/.test(path)){syncStudioPageUI('home',{openContent:false});setPageContentActive({tool:'hero'});return}
