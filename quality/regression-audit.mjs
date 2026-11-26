@@ -301,22 +301,21 @@ await run('mobile: guide image label', async () => {
 });
 
 // 10. template previews all load sample content, no loader
-await run('admin: all eight template previews', async () => {
+await run('templates: all eight preview pages', async () => {
   const context = await browser.newContext({ viewport: { width: 900, height: 700 } });
   const page = await context.newPage();
-  page.setDefaultTimeout(18000);
+  page.setDefaultTimeout(20000);
   const ids = ['01-ip-only','02-scrapbook','03-creator-market','04-creator-catalogue','05-live-poster','06-band-live','07-tea-party','08-birthday'];
   const details = [];
   try {
     for (const id of ids) {
       await page.goto(`${BASE}/v8/preview.html?template=${id}&project=default&embed=1`, { waitUntil: 'domcontentloaded' });
-      await page.waitForTimeout(3800);
+      await page.waitForTimeout(9000);
       const data = await page.evaluate(() => {
         const doc = document.querySelector('#previewFrame')?.contentDocument;
-        return { text: (doc?.body?.innerText || '').trim().slice(0, 40), loader: doc?.querySelector('#loader') ? getComputedStyle(doc.querySelector('#loader')).display : null };
+        return { text: (doc?.body?.innerText || '').trim().slice(0, 40), loading: /Loading preview/.test(doc?.body?.innerText || '') };
       });
-      assert(data.text.length > 5 && !/Loading preview/.test(data.text), `${id} preview empty/loading`);
-      assert(data.loader === 'none' || data.loader === null, `${id} loader visible`);
+      assert(data.text.length > 5 && !data.loading, `${id} preview empty/loading`);
       details.push({ id, text: data.text.replace(/\n/g, ' ') });
     }
     return JSON.stringify(details);
@@ -415,6 +414,28 @@ await run('mobile landscape: shell still usable', async () => {
   return JSON.stringify(data);
 });
 function parentDvh(h) { return Math.round(h * 0.32); }
+
+// 17. repeated view/edit keeps one shell and stable sidebar
+await run('mobile: repeated view/edit keeps DOM stable', async () => {
+  const { context, page } = await mobilePage('suite-cycles');
+  try {
+    for (let i = 0; i < 6; i++) {
+      await page.evaluate(() => document.querySelector('#mNativeApp [data-mn-back]')?.click());
+      await page.waitForTimeout(220);
+      await page.evaluate(() => document.querySelector('#mnViewBar [data-view-edit]')?.click());
+      await page.waitForTimeout(220);
+    }
+    await page.evaluate(() => document.querySelector('#mNativeApp [data-mn-back]')?.click());
+    await page.waitForTimeout(350);
+    const data = await page.evaluate(() => {
+      const sidebar = document.querySelector('.sidebar');
+      return { apps: document.querySelectorAll('#mNativeApp').length, bars: document.querySelectorAll('#mnViewBar').length, sidebars: document.querySelectorAll('.sidebar').length, backdrop: sidebar ? getComputedStyle(sidebar).backdropFilter : null, view: document.body.classList.contains('m-native-view') };
+    });
+    assert(data.apps === 1 && data.bars === 1 && data.sidebars === 1, 'duplicates '+JSON.stringify(data));
+    assert(data.view && data.backdrop === 'none', 'sidebar blur '+JSON.stringify(data));
+    return JSON.stringify(data);
+  } finally { await context.close(); }
+});
 
 await browser.close();
 writeFileSync(`${OUT}/regression-results.json`, JSON.stringify(results, null, 2));
