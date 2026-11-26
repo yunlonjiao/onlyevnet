@@ -4,6 +4,8 @@ import { JSON_HEADERS, HTML_HEADERS, CORS_ALLOW_HEADERS, CORS_ALLOW_METHODS, CON
 import { validUsername, cleanSlug, cleanText, bodyJson } from './core/validation.js';
 import { randomToken, sha256 } from './core/crypto.js';
 import { hashPassword, newSalt } from './auth/password.js';
+import { newRecoveryCode, formatRecoveryCode, recoveryCandidates } from './auth/recovery.js';
+import { clientIp, rateLimit } from './auth/rate-limit.js';
 import { parseCookies, authUser, requireUser, issueSession, logout } from './auth/session.js';
 
 const PROJECT_COOKIE='onlyevent_project';
@@ -43,22 +45,10 @@ function id(prefix='id'){return `${prefix}_${crypto.randomUUID().replace(/-/g,''
 function clone(v){return structuredClone(v)}
 // Recovery codes: 12 characters from an alphabet without 0/O/1/I, shown as XXXX-XXXX-XXXX (60 bits).
 // Codes issued before this change (24 characters, case-sensitive) still verify as typed.
-const RECOVERY_ALPHABET='23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
-function newRecoveryCode(){const b=new Uint8Array(12);crypto.getRandomValues(b);return [...b].map(x=>RECOVERY_ALPHABET[x&31]).join('')}
-function formatRecoveryCode(c){return c.replace(/(.{4})(?=.)/g,'$1-')}
-function recoveryCandidates(input){const raw=String(input||'').trim(),canonical=raw.replace(/[\s-]+/g,'').toUpperCase();return canonical&&canonical!==raw?[raw,canonical]:[raw]}
 function inactiveDays(env){const n=Number(env.INACTIVE_DAYS||60);return Number.isFinite(n)&&n>0?n:60}
 function publicUrl(env,slug,req){const u=new URL(req.url),base=baseDomain(env);if(base&&!base.includes('example.com'))return `https://${slug}.${base}`;return `${u.origin}/s/${slug}`}
 function getSlugFromHost(req,env){const host=new URL(req.url).hostname.toLowerCase(),base=baseDomain(env);if(!base||base.includes('example.com')||!host.endsWith('.'+base))return '';const sub=host.slice(0,-(base.length+1));if(!sub||sub.includes('.')||RESERVED_SUBDOMAINS.has(sub))return '';return cleanSlug(sub)}
 
-function clientIp(req){return req.headers.get('cf-connecting-ip')||String(req.headers.get('x-forwarded-for')||'').split(',')[0].trim()||'unknown'}
-// Fixed-window counters in D1: brute force and bulk abuse get a 429 before any expensive work.
-async function rateLimit(env,key,max,windowSec){
-  const t=Date.now(),row=await env.DB.prepare('SELECT window_start,count FROM rate_limits WHERE key=?').bind(key).first();
-  if(!row||t-Date.parse(row.window_start)>=windowSec*1000){await env.DB.prepare('INSERT INTO rate_limits(key,window_start,count) VALUES(?,?,1) ON CONFLICT(key) DO UPDATE SET window_start=excluded.window_start,count=1').bind(key,new Date(t).toISOString()).run();return}
-  if(row.count>=max){const minutes=Math.max(1,Math.ceil((Date.parse(row.window_start)+windowSec*1000-t)/60000));throw new ApiError(429, 'RATE_LIMITED', '尝试次数过多，请 '+minutes+' 分钟后再试')}
-  await env.DB.prepare('UPDATE rate_limits SET count=count+1 WHERE key=?').bind(key).run();
-}
 async function register(req,env){await rateLimit(env,'register:'+clientIp(req),5,3600);const b=await bodyJson(req),username=cleanText(b.username,32),password=String(b.password||'');if(!validUsername(username))return json({ok:false,error:'主办方名称需为 2–32 个字符，可使用中英文、数字、空格、_ 或 -'},400);if(password.length<6)return json({ok:false,error:'密码至少 6 位'},400);const exists=await env.DB.prepare('SELECT id FROM users WHERE username=? COLLATE NOCASE').bind(username).first();if(exists)return json({ok:false,error:'这个账号已经注册'},409);const salt=newSalt(),passwordHash=await hashPassword(password,salt),userId=id('usr'),recoveryCode=newRecoveryCode(),recoverySalt=newSalt(),recoveryHash=await hashPassword(recoveryCode,recoverySalt),created=now();await env.DB.batch([env.DB.prepare('INSERT INTO users(id,username,password_hash,password_salt,created_at) VALUES(?,?,?,?,?)').bind(userId,username,passwordHash,salt,created),env.DB.prepare('INSERT INTO account_recovery(user_id,code_hash,code_salt,updated_at) VALUES(?,?,?,?)').bind(userId,recoveryHash,recoverySalt,created)]);return issueSession(env,userId,username,201,{recoveryCode:formatRecoveryCode(recoveryCode)})}
 async function login(req,env){const b=await bodyJson(req),username=cleanText(b.username,32),password=String(b.password||'');await rateLimit(env,'login-ip:'+clientIp(req),30,900);await rateLimit(env,'login:'+username.toLowerCase(),10,900);const row=await env.DB.prepare('SELECT id,username,password_hash,password_salt FROM users WHERE username=? COLLATE NOCASE').bind(username).first();if(!row)return json({ok:false,error:'账号或密码不正确'},401);const got=await hashPassword(password,row.password_salt);if(got!==row.password_hash)return json({ok:false,error:'账号或密码不正确'},401);return issueSession(env,row.id,row.username)}
 async function recoverAccount(req,env){const b=await bodyJson(req);await rateLimit(env,'recover-ip:'+clientIp(req),20,3600);await rateLimit(env,'recover:'+cleanText(b.username,32).toLowerCase(),5,3600);const username=cleanText(b.username,32),recoveryCode=String(b.recoveryCode||'').trim(),newPassword=String(b.newPassword||'');if(!validUsername(username)||!recoveryCode)return json({ok:false,error:'请输入账号和恢复码'},400);if(newPassword.length<6)return json({ok:false,error:'新密码至少 6 位'},400);const row=await env.DB.prepare(`SELECT users.id,account_recovery.code_hash,account_recovery.code_salt FROM users LEFT JOIN account_recovery ON account_recovery.user_id=users.id WHERE users.username=? COLLATE NOCASE LIMIT 1`).bind(username).first();if(!row?.code_hash)return json({ok:false,error:'账号或恢复码不正确'},400);let matched=false;for(const candidate of recoveryCandidates(recoveryCode)){if(await hashPassword(candidate,row.code_salt)===row.code_hash){matched=true;break}}if(!matched)return json({ok:false,error:'账号或恢复码不正确'},400);const salt=newSalt(),passwordHash=await hashPassword(newPassword,salt);await env.DB.batch([env.DB.prepare('UPDATE users SET password_hash=?,password_salt=? WHERE id=?').bind(passwordHash,salt,row.id),env.DB.prepare('DELETE FROM sessions WHERE user_id=?').bind(row.id)]);return json({ok:true})}
