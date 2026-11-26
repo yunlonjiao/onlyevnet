@@ -16,7 +16,7 @@ check(source.includes('这个网站不属于当前活动项目'),'site ownership
 check(source.includes('site_versions')&&source.includes('rollbackSite'),'online version history / rollback');
 check(source.includes('site_aliases')&&source.includes('301'),'old slug redirect support');
 check(source.includes('rateLimit(env,'),'auth and publish endpoints are rate limited');
-check(worker.includes("path.startsWith('/admin/')")&&worker.includes('no-store'),'admin assets disable stale cache');
+check(source.includes("path.startsWith('/admin/')")&&source.includes('no-store'),'admin assets disable stale cache');
 check(/location\.hostname/.test(publisher)&&publisher.includes('onlyevent.cn'),'editor uses the same origin on onlyevent.cn');
 // The generated front end must be complete before anything is deployed.
 const web=p=>fs.existsSync(path.join(cloud,'web',p));
