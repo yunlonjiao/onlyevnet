@@ -54,6 +54,7 @@ import {taglineEditorHtml,fieldEditorHtml} from '/v8/editor/studio-field-inspect
 import {PALETTES} from '/v8/editor/studio-palettes.js';
 import {createRecapDialog} from '/v8/editor/studio-recap-dialog.js';
 import {createCustomPages} from '/v8/editor/studio-custom-pages.js';
+import {cleanupDeletedReferencesIn} from '/v8/editor/studio-reference-cleanup.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
@@ -944,22 +945,7 @@ function clearExploreItemRef(itemType,itemId){
    if(link.itemType===itemType&&String(link.itemId||'')===String(itemId||'')){link.itemType='page';link.itemId=''}
  });
 }
-function cleanupDeletedReferences(collection,item){
- const id=item?.id;if(!id)return;
- if(collection==='participation'){
-   (state.schedule||[]).forEach(row=>{if(row.participationId===id)row.participationId=''});
-   (state.featuredActivities||[]).forEach(slot=>{if(slot.participationId===id)slot.participationId=''});
-   clearExploreItemRef('participation',id);
- }
- if(collection==='schedule')clearExploreItemRef('schedule',id);
- if(collection==='guests'){
-   (state.participation||[]).forEach(row=>{row.guestIds=(row.guestIds||[]).filter(x=>x!==id)});
-   (state.schedule||[]).forEach(row=>{row.guestIds=(row.guestIds||[]).filter(x=>x!==id)});
-   clearExploreItemRef('guest',id);
- }
- if(collection==='booths')clearExploreItemRef('booth',id);
- if(collection==='guide')clearExploreItemRef('guide',id);
-}
+function cleanupDeletedReferences(collection,item){cleanupDeletedReferencesIn(state,collection,item,clearExploreItemRef)}
 function mutateItem(collection,index,op){
  const arr=collectionArray(collection);if(!Array.isArray(arr))return;checkpoint();
  if(op==='up'&&index>0){[arr[index-1],arr[index]]=[arr[index],arr[index-1]];index--}
