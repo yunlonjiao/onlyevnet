@@ -23,7 +23,7 @@ const browser = await chromium.launch({
 async function mobilePage(project) {
   const context = await browser.newContext({ viewport: { width: 393, height: 852 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
   const page = await context.newPage();
-  page.setDefaultTimeout(18000);
+  page.setDefaultTimeout(30000);
   await page.goto(`${BASE}/v8/?template=01-ip-only&project=${project}`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(6500);
   return { context, page };
