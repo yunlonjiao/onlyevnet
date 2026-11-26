@@ -37,6 +37,14 @@ test('CORS preflight allows the Pages CMS and rejects unknown origins',async()=>
   }
   const evil=await call(env,'/api/sites',{method:'OPTIONS',origin:'https://evil.example'});
   assert.equal(evil.headers.get('access-control-allow-origin'),null);
+})
+test('CSRF origin check rejects cross-site writes',async()=>{
+ const env=createEnv();
+ const r=await call(env,'/api/projects',{method:'POST',body:{name:'csrf'},origin:'https://evil.example'});
+ assert.equal(r.status,403);
+ assert.equal(r.data.code,'FORBIDDEN');
+ const ok=await call(env,'/api/projects',{method:'POST',body:{name:'ok'},origin:PAGES});
+ assert.notEqual(ok.status,403);
 });
 
 test('unauthenticated publish returns JSON 401 with CORS instead of error 1101',async()=>{

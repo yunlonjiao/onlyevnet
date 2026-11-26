@@ -16,3 +16,7 @@ export function errorPayload(error) {
   }
   return { status: 500, payload: { ok: false, code: 'INTERNAL_ERROR', message: '服务器暂时不可用，请稍后再试', error: '服务器暂时不可用，请稍后再试' } };
 }
+
+export function codeForStatus(status){
+  return ({400:'VALIDATION_ERROR',401:'AUTH_REQUIRED',403:'FORBIDDEN',404:'NOT_FOUND',409:'CONFLICT',413:'PAYLOAD_TOO_LARGE',429:'RATE_LIMITED',500:'INTERNAL_ERROR'})[status]||'REQUEST_FAILED';
+}

@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from './seed.js';
-import { ApiError, errorPayload } from './core/errors.js';
+import { ApiError, errorPayload, codeForStatus } from './core/errors.js';
 
 const JSON_HEADERS={"content-type":"application/json; charset=utf-8","cache-control":"no-store"};
 const HTML_HEADERS={"content-type":"text/html; charset=utf-8"};
@@ -57,7 +57,10 @@ function withCors(req,env,res){
   const h=new Headers(res.headers);h.set('access-control-allow-origin',origin);h.append('vary','Origin');
   return new Response(res.body,{status:res.status,statusText:res.statusText,headers:h});
 }
-function json(data,status=200,extra={}){return new Response(JSON.stringify(data),{status,headers:{...JSON_HEADERS,...extra}})}
+function json(data,status=200,extra={}){
+  if(data&&data.ok===false&&data.error&&!data.code)data={...data,code:codeForStatus(status),message:data.message||data.error};
+  return new Response(JSON.stringify(data),{status,headers:{...JSON_HEADERS,...extra}});
+}
 function html(body,status=200,extra={}){return new Response(body,{status,headers:{...HTML_HEADERS,...extra}})}
 function redirect(location,status=302,extra={}){return new Response(null,{status,headers:{location,...extra}})}
 function now(){return new Date().toISOString()}
