@@ -19,6 +19,7 @@ import {revealStages,stateAtStage} from '/v8/editor/studio-stage-state.js';
 import {loadPublishRecord,persistPublishRecord,clearPublishRecord} from '/v8/editor/studio-publish-record.js';
 import {setDeepState,getDeepState} from '/v8/editor/studio-state-paths.js';
 import {guideLabelFor} from '/v8/editor/studio-guide-label.js';
+import {contentThumb} from '/v8/editor/studio-content-thumb.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -384,18 +385,6 @@ function setWorkspace(name){
  const target=document.querySelector('[data-workspace-panel="'+name+'"]')?name:'pages';
  document.querySelectorAll('[data-workspace]').forEach(b=>b.classList.toggle('active',b.dataset.workspace===target));
  document.querySelectorAll('[data-workspace-panel]').forEach(p=>{const on=p.dataset.workspacePanel===target;p.hidden=!on;p.classList.toggle('active',on)});
-}
-function contentThumb(collection,item){
- let src='';
- if(collection==='booths')src=(item.products||[]).find(p=>p.image)?.image||'';
- if(collection==='guests')src=item.image||'';
- if(collection==='tickets')src=item.image||'';
- if(collection==='participation')src=item.image||'';
- if(collection==='featuredActivities')src=item.image||'';
- if(collection==='socialLinks')src=item.image||'';
- if(collection==='sponsors')src=item.logo||'';
- const fallback={ribbonItems:'告',tickets:'票',featuredActivities:'精',explore:'↗',participation:'参',booths:'摊',schedule:'时',guests:'嘉',guide:'指',updates:'更',socialLinks:'社',sponsors:'赞'}[collection]||'•';
- return '<span class="sidebar-content-thumb '+(src?'has-image':'')+'">'+(src?'<img src="'+esc(src)+'" alt="">':fallback)+'</span>';
 }
 
 const moduleLabels={booths:'摊位',activities:'活动',guests:'嘉宾',guide:guideLabelText()};
