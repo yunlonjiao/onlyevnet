@@ -1,4 +1,4 @@
-function renderPublishShare(){
+export function renderPublishShare(state){
  const seo=state.seo||{},custom=!!(seo.ogTitle||seo.ogDescription||seo.ogImage);
  const title=seo.ogTitle||seo.pageTitle||state.eventName||'活动网站',desc=seo.ogDescription||seo.metaDescription||state.tagline||'',img=seo.ogImage||state.heroImage||'';
  document.querySelector('#publishShareTitle').textContent=title;document.querySelector('#publishShareDesc').textContent=desc;
