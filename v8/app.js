@@ -23,6 +23,7 @@ import {stageRowsHtml} from '/v8/editor/studio-stage-html.js';
 import {contentThumb} from '/v8/editor/studio-content-thumb.js';
 import {renderPublishShare} from '/v8/editor/studio-publish-share.js';
 import {createStageUi} from '/v8/editor/studio-stage-ui.js';
+import {createPublishUi} from '/v8/editor/studio-publish-ui.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -251,31 +252,9 @@ $('#publishShareEdit').onclick=()=>openShareDialog();
 $('#publishShareReset').onclick=()=>{checkpoint();state.seo??={};state.seo.ogTitle='';state.seo.ogDescription='';state.seo.ogImage='';save();send({type:'OE_REPLACE_STATE',state});renderPublishShare()};
 $('#shareDialog').addEventListener('close',renderPublishShare);
 $('#publishRecap').onclick=()=>{publishDialog.close();openRecapDialog()};
-function renderPublishDialog(){
- renderStageRows();renderPublishShare();
- const hasSite=hasLiveSite(publishRecord),slug=cleanSlug(publishRecord?.slug||suggestSlug(state.eventName,state.date));
- if(!hasSite)renamingSite=false;
- publishSlug.value=slug;publishSlug.readOnly=hasSite&&!renamingSite;
- $('#publishRename').hidden=!hasSite||renamingSite;
- $('#publishSlugHint').textContent=renamingSite?'改网址后，旧网址会自动跳到新网址。':'发布后得到一个游客网址，再次发布会更新同一个网站。';
- $('#publishHost').textContent='.onlyevent.cn';
- publishPrimary.textContent=hasSite?(renamingSite?'保存新网址并更新':'更新网站'):'发布网站';
- publishStatus.textContent=hasSite?'已发布。点「更新网站」把最新修改发上去。':(publishSlug.value?'确认信息后点「发布网站」上线。':'先填一个网站地址。');
- const checks=publishChecks(state,{hasBoothPage:!(activeTemplate.studioPages?.hidden||[]).includes('booths')}),list=$('#publishChecks');
- list.innerHTML=checks.map(t=>'<li></li>').join('');checks.forEach((t,i)=>{list.children[i].textContent=t});
- list.hidden=!checks.length;$('#publishChecksTitle').hidden=!checks.length;
- publishResult.hidden=!publishRecord?.url;
- publishUrl.textContent=publishRecord?.url||'';
- $('#publishOpen').disabled=!publishRecord?.url;$('#publishCopy').disabled=!publishRecord?.url;
-}
-function openPublishDialog(){
- renamingSite=false;renderPublishDialog();publishDialog.showModal();if(!hasLiveSite(publishRecord))setTimeout(()=>publishSlug.select(),0);
-}
-function setPublishBusy(busy,text=''){
- publishPrimary.disabled=busy;const __dl=$('#publishDownload');if(__dl)__dl.disabled=busy;publishSlug.disabled=busy||(hasLiveSite(publishRecord)&&!renamingSite);
- $('#publishRename').disabled=busy;
- if(text)publishStatus.textContent=text;
-}
+function renderPublishDialog(){publishUi.render()}
+function openPublishDialog(){publishUi.open()}
+function setPublishBusy(busy,text=''){publishUi.setBusy(busy,text)}
 /* ---- staged reveal: later versions of the site that go live at set times ---- */
 const exportWaiters=[];
 let pendingStages=null;
@@ -291,6 +270,13 @@ async function exportStagedSite(){
 }
 const stageUi=createStageUi({$,getState:()=>state,stageModuleList,save,toast,publishChecks});
 const {renderStageRows,bindStageRows,refreshPublishChecks}=stageUi;
+const publishUi=createPublishUi({
+  $, getState:()=>state, getTemplate:()=>activeTemplate, getRecord:()=>publishRecord,
+  hasLiveSite, cleanSlug, suggestSlug, publishChecks,
+  renderStages:()=>renderStageRows(), renderShare:()=>renderPublishShare(state),
+  dialog:publishDialog, slugInput:publishSlug, primary:publishPrimary, status:publishStatus, result:publishResult, url:publishUrl,
+  isRenaming:()=>renamingSite, setRenaming:(v)=>{renamingSite=v}
+});
 function __stageRowRefresh(e){stageUi.handleRowEvent(e)}
 
 async function publishGeneratedHtml(html){
