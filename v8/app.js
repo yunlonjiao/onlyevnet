@@ -53,6 +53,7 @@ import {PALETTES} from '/v8/editor/studio-palettes.js';
 import {recapDialogHtml} from '/v8/editor/studio-recap-dialog-html.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
+import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
 import {canvasToBlob,downloadSvg} from '/v8/editor/studio-canvas-download.js';
 import {createContentCounts} from '/v8/editor/studio-content-counts.js';
 import {pageContentItems} from '/v8/editor/studio-page-nav.js';
@@ -1132,12 +1133,7 @@ function liveImageFrameRatio(path){
 }
 function imageSlotConfigBase(path){return imageSlotConfigBaseFor(path,{templateId:state.templateId,state,viewportWidth:window.innerWidth,presets:CUSTOM_PAGE_PRESETS})}
 // Extra venue maps: with more than one map, visitors swipe between them on every template.
-function imageSlotConfig(path){
- const cfg=imageSlotConfigBase(path);
- const measured=liveImageFrameRatio(path);
- if(measured&&!cfg.free){return {...cfg,ratio:measured,ratioLabel:'与当前展示框比例一致',width:1600,height:Math.round(1600/measured),fixed:true}}
- return cfg;
-}
+function imageSlotConfig(path){return resolveImageSlotConfig(imageSlotConfigBase(path),liveImageFrameRatio(path))}
 
 function moreMapsMarkup(){
  const more=state.venueMap?.more||[];
