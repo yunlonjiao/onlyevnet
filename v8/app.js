@@ -32,6 +32,7 @@ import {createContentManagerMeta} from '/v8/editor/studio-content-manager.js';
 import {GUIDE_PRESETS,PARTICIPATION_PRESETS,CUSTOM_PAGE_PRESETS,CUSTOM_PAGE_STARTERS} from '/v8/editor/studio-presets.js';
 import {PAGE_CONTENT_CONFIG,COLLECTION_PAGE,INLINE_HOME_COLLECTIONS} from '/v8/editor/studio-page-content.js';
 import {collectionStudioPageFor} from '/v8/editor/studio-collection-page.js';
+import {buildStarterItems,customPagePreset} from '/v8/editor/studio-custom-page.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -344,10 +345,7 @@ function customPageIndex(id){return pageIndexFor(state.customPages||[],id)}
 
 const contentManagerMeta=createContentManagerMeta({getState:()=>state,pageLabel,guideLabelText});
 
-function buildCustomPageStarterItems(presetKey){
- const rows=CUSTOM_PAGE_STARTERS[presetKey]||CUSTOM_PAGE_STARTERS.custom;
- return rows.map(([title,meta,text])=>({id:uid('ci'),title,meta,text,image:'',url:''}));
-}
+function buildCustomPageStarterItems(presetKey){return buildStarterItems(presetKey,uid)}
 function guideLabelText(){return guideLabelFor(activeTemplate?.id||'')}
 function collectionStudioPage(collection){return collectionStudioPageFor(collection,{currentPage,templateId:activeTemplate.id})}
 
@@ -382,10 +380,7 @@ function createCustomPage(presetKey){
  state.customPages??=[];state.customPages.push(page);save();renderCustomPageRows();send({type:'OE_REPLACE_STATE',state});
  setStudioPage(customPageKey(page.id));
 }
-function customPageFieldLabels(page){
- const preset=CUSTOM_PAGE_PRESETS[page?.preset]||CUSTOM_PAGE_PRESETS.custom;
- return preset;
-}
+function customPageFieldLabels(page){return customPagePreset(page)}
 function removeCustomPage(pageId){
  const i=customPageIndex(pageId),page=state.customPages?.[i];if(i<0||!page)return;
  checkpoint();
