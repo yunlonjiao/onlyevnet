@@ -41,6 +41,7 @@ import {collectionArrayFor,collectionPathFor} from '/v8/editor/studio-collection
 import {extraInspectorHtml} from '/v8/editor/studio-extra-inspector.js';
 import {itemInspectorHeadHtml,itemFieldsHtml,isItemLongField,itemActionsHtml} from '/v8/editor/studio-item-inspector-html.js';
 import {itemMediaPanels} from '/v8/editor/studio-item-media-html.js';
+import {createModuleControls} from '/v8/editor/studio-module-controls.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
