@@ -1933,3 +1933,6 @@ body.m-native-view .sidebar{backdrop-filter:none;-webkit-backdrop-filter:none;ba
 
 /* preset cards override generic inspector button on desktop too */
 .inspector-body .custom-page-preset{border-radius:12px}
+
+/* lifecycle card shape overrides generic inspector pill */
+.inspector-body .lifecycle-grid button{border-radius:11px}
