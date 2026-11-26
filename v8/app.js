@@ -39,6 +39,7 @@ import {pageNavHtml} from '/v8/editor/studio-page-nav-html.js';
 import {presetEntriesForState} from '/v8/editor/studio-preset-entries.js';
 import {collectionArrayFor,collectionPathFor} from '/v8/editor/studio-collection.js';
 import {extraInspectorHtml} from '/v8/editor/studio-extra-inspector.js';
+import {itemInspectorHeadHtml,itemFieldsHtml} from '/v8/editor/studio-item-inspector-html.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -1137,7 +1138,7 @@ function openItemInspector(collection,index){
    :'';
  const itemTitle=contentManagerMeta[collection]?.item?.(item,index)?.[0]||meta.title;
  const itemActions=collection==='featuredActivities'?'':'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>';
- setInspector('内容',meta.title+' · '+itemTitle,'<div class="item-inspector-head"><div><span>'+esc(meta.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</b></div><div class="item-tools"><button data-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-op="down" '+(index===count-1?'disabled':'')+'>↓</button></div></div><div class="item-fields">'+inspectorFields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+esc(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+esc(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('')+'</div>'+media+guideMedia+extraInspector(collection,index,item)+itemActions);
+ setInspector('内容',meta.title+' · '+itemTitle,itemInspectorHeadHtml(meta,index,count,esc)+'<div class="item-fields">'+itemFieldsHtml(inspectorFields,item,esc,isLong)+'</div>'+media+guideMedia+extraInspector(collection,index,item)+itemActions);
  inspector.querySelectorAll('textarea').forEach(fitTextarea);
  try{const h=inspector.querySelector('textarea[data-key="setlist"]');
   if(h&&!h.dataset.chips){h.dataset.chips='1';
