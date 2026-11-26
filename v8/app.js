@@ -41,6 +41,7 @@ import {productInspectorHtml} from '/v8/editor/studio-product-inspector-html.js'
 import {collectionMeta} from '/v8/editor/studio-collection-meta.js';
 import {shareDialogHtml} from '/v8/editor/studio-share-dialog-html.js';
 import {shareTextFor} from '/v8/editor/studio-share-text.js';
+import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {canvasToBlob,downloadSvg} from '/v8/editor/studio-canvas-download.js';
 import {createContentCounts} from '/v8/editor/studio-content-counts.js';
@@ -1296,9 +1297,7 @@ function fitCropSelectionToImage(){
 function keepCropSelectionInsideImage(event){
  const cropperCanvas=activeCropper?.getCropperCanvas?.(),cropperImage=activeCropper?.getCropperImage?.();
  if(!cropperCanvas||!cropperImage)return;
- const c=cropperCanvas.getBoundingClientRect(),r=cropperImage.getBoundingClientRect(),d=event.detail||{};
- const left=r.left-c.left,top=r.top-c.top,right=left+r.width,bottom=top+r.height,eps=.5;
- if(d.x<left-eps||d.y<top-eps||d.x+d.width>right+eps||d.y+d.height>bottom+eps)event.preventDefault();
+ if(!cropSelectionInside(cropperCanvas.getBoundingClientRect(),cropperImage.getBoundingClientRect(),event.detail||{}))event.preventDefault();
 }
 let cropPreviewFrame=0,cropPreviewSeq=0;
 function scheduleCropPreview(){
