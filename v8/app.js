@@ -21,6 +21,7 @@ import {setDeepState,getDeepState} from '/v8/editor/studio-state-paths.js';
 import {guideLabelFor} from '/v8/editor/studio-guide-label.js';
 import {stageRowsHtml} from '/v8/editor/studio-stage-html.js';
 import {contentThumb} from '/v8/editor/studio-content-thumb.js';
+import {renderPublishShare} from '/v8/editor/studio-publish-share.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -245,14 +246,6 @@ async function restorePublishFromCloud(){
 }
 let renamingSite=false;
 // Sharing starts from defaults (event name, intro, key visual); the organizer only decides whether to change them.
-function renderPublishShare(){
- const seo=state.seo||{},custom=!!(seo.ogTitle||seo.ogDescription||seo.ogImage);
- const title=seo.ogTitle||seo.pageTitle||state.eventName||'活动网站',desc=seo.ogDescription||seo.metaDescription||state.tagline||'',img=seo.ogImage||state.heroImage||'';
- $('#publishShareTitle').textContent=title;$('#publishShareDesc').textContent=desc;
- const box=$('#publishShareImg');box.innerHTML='';if(img){const el=document.createElement('img');el.alt='';el.src=img;box.appendChild(el)}
- $('#publishShareMode').textContent=custom?'已自定义转发时的标题、描述或封面。':'使用默认：活动名称、活动简介和主视觉。直接发布即可，也可以改。';
- $('#publishShareReset').hidden=!custom;
-}
 $('#publishShareEdit').onclick=()=>openShareDialog();
 $('#publishShareReset').onclick=()=>{checkpoint();state.seo??={};state.seo.ogTitle='';state.seo.ogDescription='';state.seo.ogImage='';save();send({type:'OE_REPLACE_STATE',state});renderPublishShare()};
 $('#shareDialog').addEventListener('close',renderPublishShare);
