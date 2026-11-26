@@ -1,0 +1,3 @@
+export function stageRowsHtml(stages,mods,escapeHtml){
+  return stages.map((s,i)=>'<div class="stage-row" data-i="'+i+'"><div class="stage-top"><input class="stage-label" maxlength="20" placeholder="例如：二宣" value="'+escapeHtml(s.label||'')+'"><input class="stage-at" type="datetime-local" value="'+escapeHtml(s.at||'')+'"><button type="button" class="stage-remove" aria-label="删除这一批">×</button></div><div class="stage-mods">'+mods.map(([k,l])=>'<label><input type="checkbox" data-mod="'+k+'"'+((s.modules||[]).includes(k)?' checked':'')+'> '+l+'</label>').join('')+'</div>'+(s.at&&(s.modules||[]).length?'':'<small class="stage-hint">未生效：选模块并填时间</small>')+'</div>').join('');
+}

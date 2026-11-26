@@ -19,6 +19,7 @@ import {revealStages,stateAtStage} from '/v8/editor/studio-stage-state.js';
 import {loadPublishRecord,persistPublishRecord,clearPublishRecord} from '/v8/editor/studio-publish-record.js';
 import {setDeepState,getDeepState} from '/v8/editor/studio-state-paths.js';
 import {guideLabelFor} from '/v8/editor/studio-guide-label.js';
+import {stageRowsHtml} from '/v8/editor/studio-stage-html.js';
 import {contentThumb} from '/v8/editor/studio-content-thumb.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
@@ -298,7 +299,7 @@ function renderStageRows(){
  const box=$('#stageRows');if(!box)return;
  const stages=state.reveal?.stages||[],mods=stageModuleList();
  $('#publishStages').hidden=!mods.length;
- box.innerHTML=stages.map((s,i)=>'<div class="stage-row" data-i="'+i+'"><div class="stage-top"><input class="stage-label" maxlength="20" placeholder="例如：二宣" value="'+esc(s.label||'')+'"><input class="stage-at" type="datetime-local" value="'+esc(s.at||'')+'"><button type="button" class="stage-remove" aria-label="删除这一批">×</button></div><div class="stage-mods">'+mods.map(([k,l])=>'<label><input type="checkbox" data-mod="'+k+'"'+((s.modules||[]).includes(k)?' checked':'')+'> '+l+'</label>').join('')+'</div>'+(s.at&&(s.modules||[]).length?'':'<small class="stage-hint">未生效：选模块并填时间</small>')+'</div>').join('');
+ box.innerHTML=stageRowsHtml(stages,mods,esc);
 }
 function __stageRowRefresh(e){const row=e.target.closest?.('.stage-row');if(!row)return;refreshStageHint(row);refreshPublishChecks()}
 function refreshStageHint(row){if(!row)return;const i=Number(row.dataset.i),s=(state.reveal?.stages||[])[i],hint=row.querySelector('.stage-hint');if(!hint)return;hint.hidden=!!(s&&s.at&&(s.modules||[]).length)}
