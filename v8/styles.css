@@ -1930,3 +1930,6 @@ body.m-native-view .sidebar{backdrop-filter:none;-webkit-backdrop-filter:none;ba
 
 /* custom page preset old shape */
 #mNativeApp .inspector-body .custom-page-preset{border-radius:12px}
+
+/* preset cards override generic inspector button on desktop too */
+.inspector-body .custom-page-preset{border-radius:12px}
