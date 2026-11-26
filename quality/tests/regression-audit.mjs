@@ -355,7 +355,7 @@ await run('mobile 320: page grid and fields fit', async () => {
   const context = await browser.newContext({ viewport: { width: 320, height: 568 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
   const page = await context.newPage();
   await page.goto(`${BASE}/v8/?template=01-ip-only&project=suite-320`, { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(6500);
+  await page.waitForFunction(() => (document.querySelector('#mNativeApp .page-tree-row')?.getBoundingClientRect().width || 0) > 60, null, { timeout: 20000 });
   const data = await page.evaluate(() => {
     const app = document.querySelector('#mNativeApp');
     const grid = document.querySelector('#mNativeApp .page-nav');
