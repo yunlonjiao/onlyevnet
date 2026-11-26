@@ -5,3 +5,9 @@ export function itemInspectorHeadHtml(meta,index,count,escapeHtml){
 export function itemFieldsHtml(fields,item,escapeHtml,isLong){
   return fields.map(([key,label])=>'<label><span>'+label+'</span>'+(isLong(key)?'<textarea data-key="'+key+'" rows="1">'+escapeHtml(item[key]||'')+'</textarea>':'<input data-key="'+key+'" value="'+escapeHtml(item[key]??'')+'" '+(key==='tone'?'type="color"':'')+'>')+'</label>').join('');
 }
+
+export function isItemLongField(key){return ['text','gift','note','detail','rules','requirements','intro','works','appearance','setlist'].includes(key);}
+
+export function itemActionsHtml(collection){
+  return collection==='featuredActivities'?'':'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>';
+}
