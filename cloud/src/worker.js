@@ -1,4 +1,3 @@
-import { DEFAULT_CONFIG } from './seed.js';
 import { ApiError, errorPayload, codeForStatus } from './core/errors.js';
 import { JSON_HEADERS, HTML_HEADERS, CORS_ALLOW_HEADERS, CORS_ALLOW_METHODS, CONTENT_SECURITY_POLICY, baseDomain, allowedOrigin, corsOrigin, withCors, json, html, redirect, cookie, cookieHeaders } from './core/http.js';
 import { validUsername, cleanSlug, cleanText, bodyJson } from './core/validation.js';
@@ -8,6 +7,7 @@ import { newRecoveryCode, formatRecoveryCode, recoveryCandidates } from './auth/
 import { clientIp, rateLimit } from './auth/rate-limit.js';
 import { parseCookies, authUser, requireUser, issueSession, logout } from './auth/session.js';
 import { PROJECT_COOKIE, currentProjectId, projectWithAccess, projectFor, projectCookie, emptyProjectCookie, ownedProject } from './projects/access.js';
+import { seedProject } from './projects/seed.js';
 
 const APP_VERSION='7.27.0';
 const MAX_SITE_HTML_BYTES=25*1024*1024;
@@ -42,7 +42,6 @@ const RESERVED_SUBDOMAINS=new Set(['www','publisher','api','admin','app']);
 
 function now(){return new Date().toISOString()}
 function id(prefix='id'){return `${prefix}_${crypto.randomUUID().replace(/-/g,'')}`}
-function clone(v){return structuredClone(v)}
 // Recovery codes: 12 characters from an alphabet without 0/O/1/I, shown as XXXX-XXXX-XXXX (60 bits).
 // Codes issued before this change (24 characters, case-sensitive) still verify as typed.
 function inactiveDays(env){const n=Number(env.INACTIVE_DAYS||60);return Number.isFinite(n)&&n>0?n:60}
@@ -83,14 +82,7 @@ async function deleteAccount(req,env){
   return json({ok:true});
 }
 
-function seedProject(name,date,location,template='blank'){
-  const c=clone(DEFAULT_CONFIG);
-  const key=["ip-only","event-portal","doujin-creative","game-immersive","live-stage","theme-visual","portal-global","immersive","doujin-directory","editorial","live-lineup","live-timetable","poster","split-story","cn-portal","exhibitor-search","game-release","acg-visual","blank","comprehensive","doujin","live","small"].includes(template)?template:'blank';
-  c.eventName=name||''; if(date)c.eventDate=date; if(location)c.eventLocation=location; c.visitorSiteUrl=''; c.eventTemplate=key;
-  const presets={"ip-only":{"guests":true,"booths":true,"schedule":true,"guide":true,"faq":true,"sponsors":true},"event-portal":{"guests":true,"booths":true,"schedule":true,"guide":true,"faq":true,"sponsors":true},"doujin-creative":{"guests":false,"booths":true,"schedule":false,"guide":true,"faq":true,"sponsors":true},"game-immersive":{"guests":true,"booths":false,"schedule":true,"guide":true,"faq":true,"sponsors":true},"live-stage":{"guests":true,"booths":false,"schedule":true,"guide":true,"faq":true,"sponsors":true},"theme-visual":{"guests":false,"booths":false,"schedule":true,"guide":true,"faq":true,"sponsors":false},"portal-global":{"guests":true,"booths":true,"schedule":true,"guide":true,"faq":true,"sponsors":true},"immersive":{"guests":true,"booths":false,"schedule":true,"guide":true,"faq":true,"sponsors":false},"doujin-directory":{"guests":false,"booths":true,"schedule":false,"guide":true,"faq":true,"sponsors":false},"editorial":{"guests":true,"booths":true,"schedule":false,"guide":true,"faq":true,"sponsors":true},"live-lineup":{"guests":true,"booths":false,"schedule":true,"guide":true,"faq":true,"sponsors":true},"live-timetable":{"guests":true,"booths":false,"schedule":true,"guide":true,"faq":true,"sponsors":true},"poster":{"guests":false,"booths":false,"schedule":true,"guide":true,"faq":true,"sponsors":false},"split-story":{"guests":true,"booths":false,"schedule":true,"guide":true,"faq":true,"sponsors":false},"cn-portal":{"guests":true,"booths":true,"schedule":true,"guide":true,"faq":true,"sponsors":true},"exhibitor-search":{"guests":false,"booths":true,"schedule":false,"guide":true,"faq":true,"sponsors":true},"game-release":{"guests":true,"booths":false,"schedule":true,"guide":true,"faq":true,"sponsors":true},"acg-visual":{"guests":true,"booths":true,"schedule":true,"guide":true,"faq":true,"sponsors":true},"blank":{"guests":false,"booths":false,"schedule":false,"guide":false,"faq":false,"sponsors":false},"comprehensive":{"guests":true,"booths":true,"schedule":true,"guide":true,"faq":true,"sponsors":true},"doujin":{"guests":false,"booths":true,"schedule":false,"guide":true,"faq":true,"sponsors":false},"live":{"guests":true,"booths":false,"schedule":true,"guide":true,"faq":true,"sponsors":false},"small":{"guests":false,"booths":false,"schedule":true,"guide":true,"faq":true,"sponsors":false}};
-  c.features=presets[key];
-  return c;
-}
+
 function mediaKeysFromValue(value,out=new Set()){
   if(Array.isArray(value)){for(const v of value)mediaKeysFromValue(v,out);return out}
   if(value&&typeof value==='object'){for(const v of Object.values(value))mediaKeysFromValue(v,out);return out}
