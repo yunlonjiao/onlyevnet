@@ -27,6 +27,7 @@ import {createPublishUi} from '/v8/editor/studio-publish-ui.js';
 import {createPublishFlow} from '/v8/editor/studio-publish-flow.js';
 import {createHistoryUi} from '/v8/editor/studio-history-ui.js';
 import {createCloudSync} from '/v8/editor/studio-cloud-sync.js';
+import {createCroppedImageStore} from '/v8/editor/studio-cropped-image.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -302,16 +303,12 @@ const cloudSync=createCloudSync({
   ensureCloudProjectFor, saveCloudConfig, syncAdminProject, saveStateEl:saveState
 });
 const {available:cloudSyncAvailable, schedule:scheduleCloudSync, sync:syncToCloud}=cloudSync;
+const storeCroppedImageImpl=createCroppedImageStore({
+  cloudAvailable:cloudSyncAvailable, getTemplateId:()=>activeTemplate.id, getProjectId:()=>projectId, getEventName:()=>state.eventName,
+  ensureCloudProjectFor, uploadCloudImage, toast, blobToDataUrl
+});
+async function storeCroppedImage(blob){return storeCroppedImageImpl(blob)}
 // Signed in, cropped images go to R2 instead of filling browser storage with data URLs.
-async function storeCroppedImage(blob){
- if(cloudSyncAvailable()){
-   try{
-     const cloudProjectId=await ensureCloudProjectFor({templateId:activeTemplate.id,projectId,name:state.eventName});
-     return await uploadCloudImage({blob,projectId:cloudProjectId});
-   }catch(err){console.warn('[OnlyEvent image upload]',err);toast('云端上传失败，图片已保存在本机')}
- }
- return blobToDataUrl(blob);
-}
 const studioHistory=createStudioHistory({limit:80,onChange:()=>syncHistory()});
  let lastCollection='',lastItemIndex=-1;
 const historyUi=createHistoryUi(studioHistory,$('#undoBtn'),$('#redoBtn'));
