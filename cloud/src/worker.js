@@ -7,8 +7,8 @@ import { hashPassword, newSalt } from './auth/password.js';
 import { newRecoveryCode, formatRecoveryCode, recoveryCandidates } from './auth/recovery.js';
 import { clientIp, rateLimit } from './auth/rate-limit.js';
 import { parseCookies, authUser, requireUser, issueSession, logout } from './auth/session.js';
+import { PROJECT_COOKIE, currentProjectId, projectWithAccess, projectFor, projectCookie, emptyProjectCookie, ownedProject } from './projects/access.js';
 
-const PROJECT_COOKIE='onlyevent_project';
 const APP_VERSION='7.27.0';
 const MAX_SITE_HTML_BYTES=25*1024*1024;
 // D1 rows are capped at 2,000,000 bytes; leave room for the other columns.
@@ -83,11 +83,6 @@ async function deleteAccount(req,env){
   return json({ok:true});
 }
 
-function currentProjectId(req){return cleanText(req.headers.get('x-onlyevent-project')||parseCookies(req)[PROJECT_COOKIE]||'',100)}
-async function projectWithAccess(env,u,pid){return env.DB.prepare('SELECT p.* FROM projects p LEFT JOIN project_members m ON m.project_id=p.id AND m.user_id=? WHERE p.id=? AND (p.user_id=? OR m.user_id IS NOT NULL)').bind(u.id,pid,u.id).first()}
- async function projectFor(req,env,u){const pid=currentProjectId(req);if(pid){const p=await projectWithAccess(env,u,pid);if(p)return p}return await env.DB.prepare('SELECT * FROM projects WHERE user_id=? ORDER BY updated_at DESC LIMIT 1').bind(u.id).first()}
-function projectCookie(pid){return cookie(PROJECT_COOKIE,pid,{maxAge:365*86400,httpOnly:true})}
-function emptyProjectCookie(){return cookie(PROJECT_COOKIE,'',{maxAge:0,httpOnly:true})}
 function seedProject(name,date,location,template='blank'){
   const c=clone(DEFAULT_CONFIG);
   const key=["ip-only","event-portal","doujin-creative","game-immersive","live-stage","theme-visual","portal-global","immersive","doujin-directory","editorial","live-lineup","live-timetable","poster","split-story","cn-portal","exhibitor-search","game-release","acg-visual","blank","comprehensive","doujin","live","small"].includes(template)?template:'blank';
@@ -105,6 +100,7 @@ function mediaKeysFromValue(value,out=new Set()){
   }
   return out;
 }
+
 async function ensureLegacyProjectSiteBinding(req,env,u,p){
   if(!p)return null;
   let row=await env.DB.prepare(`SELECT s.* FROM project_sites ps JOIN sites s ON s.id=ps.site_id WHERE ps.project_id=? AND ps.user_id=? LIMIT 1`).bind(p.id,u.id).first();
@@ -118,6 +114,7 @@ async function ensureLegacyProjectSiteBinding(req,env,u,p){
   const t=now();await env.DB.prepare(`INSERT INTO project_sites(project_id,site_id,user_id,created_at,updated_at) VALUES(?,?,?,?,?) ON CONFLICT(project_id) DO NOTHING`).bind(p.id,row.id,u.id,t,t).run();
   return row;
 }
+
 async function currentProjectSite(req,env,u,p=null){p=p||await projectFor(req,env,u);if(!p)return null;return await ensureLegacyProjectSiteBinding(req,env,u,p)}
 async function deleteSiteResources(env,site){
   if(!site)return;if(site.object_key)await env.SITES.delete(site.object_key);
@@ -210,7 +207,6 @@ async function systemLinks(req,env){const u=await requireUser(req,env),p=await p
 /* ---- circle collection: public form for circle leaders, review queue for the organizer ---- */
 const COLLECT_MAX_ENTRIES=300,COLLECT_MAX_PRODUCTS=8;
 function collectText(v,max){return String(v==null?'':v).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,'').trim().slice(0,max)}
-async function ownedProject(req,env,pid){const u=await requireUser(req,env),p=await env.DB.prepare('SELECT p.id,p.name FROM projects p LEFT JOIN project_state s ON s.project_id=p.id WHERE p.id=? AND p.user_id=? AND s.deleted_at IS NULL').bind(pid,u.id).first();if(!p)throw new ApiError(404, 'PROJECT_NOT_FOUND', '活动不存在');return p}
 function collectView(row){return row?{token:row.token,open:!!row.open}:null}
 async function collectOverview(req,env,pid){
   await ownedProject(req,env,pid);
