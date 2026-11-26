@@ -35,6 +35,7 @@ import {collectionStudioPageFor} from '/v8/editor/studio-collection-page.js';
 import {buildStarterItems,customPagePreset} from '/v8/editor/studio-custom-page.js';
 import {customPageRowsHtml} from '/v8/editor/studio-custom-page-rows.js';
 import {customPageItemInspectorHtml} from '/v8/editor/studio-custom-page-item-html.js';
+import {customPageSettingsHtml} from '/v8/editor/studio-custom-page-settings-html.js';
 import {createContentCounts} from '/v8/editor/studio-content-counts.js';
 import {pageContentItems} from '/v8/editor/studio-page-nav.js';
 import {pageNavHtml} from '/v8/editor/studio-page-nav-html.js';
@@ -406,13 +407,7 @@ function removeCustomPage(pageId){
 }
 function openCustomPageSettings(pageId){
  const i=customPageIndex(pageId),page=state.customPages?.[i];if(i<0||!page)return;
- setInspector('专题页面',page.title,
-   '<div class="item-fields">'+
-   '<label><span>页面标题</span><input data-custom-page-field="title" value="'+esc(page.title||'')+'"></label>'+
-   '<label><span>英文小标题</span><input data-custom-page-field="eyebrow" value="'+esc(page.eyebrow||'SPECIAL')+'"></label>'+
-   '<label><span>页面介绍</span><textarea data-custom-page-field="intro" rows="4">'+esc(page.intro||'')+'</textarea></label>'+
-   '</div><div class="reference-panel"><b>页面预设</b><p class="inspector-note">'+esc((CUSTOM_PAGE_PRESETS[page.preset]||CUSTOM_PAGE_PRESETS.custom).title)+' · 页面已按该内容类型配置展示结构。</p></div>'+
-   '<div class="custom-page-settings-actions"><button type="button" class="danger ghost" data-delete-custom-page>删除此页面</button></div>');
+ setInspector('专题页面',page.title,customPageSettingsHtml(page,(CUSTOM_PAGE_PRESETS[page.preset]||CUSTOM_PAGE_PRESETS.custom),esc));
  inspector.querySelectorAll('[data-custom-page-field]').forEach(input=>{
    let started=false;
    input.addEventListener('input',e=>{
