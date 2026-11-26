@@ -1247,7 +1247,7 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 .inspector-header>div{display:grid;gap:2px;display:grid!important;gap:3px!important;min-width:0!important}
 .inspector-kicker{font-size:9px;letter-spacing:.13em;color:#a1a1aa;font-weight:850;text-transform:uppercase;font-size:10px!important;line-height:1.2!important;font-weight:800!important;letter-spacing:.12em!important;color:#a1a1aa!important}
 .inspector-header b{font-size:12px;font-size:13px;letter-spacing:-.015em;font-size:12px;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px!important;line-height:1.25!important;font-weight:800!important;color:#17171c!important;max-width:none!important;overflow:visible!important;white-space:normal!important}
-.inspector label{display:grid;gap:6px;margin:0 0 14px;font-size:11px;font-weight:700;color:#3f3f46;letter-spacing:.01em;margin:10px 0 14px;
+.studio-desktop .inspector label{display:grid;gap:6px;margin:0 0 14px;font-size:11px;font-weight:700;color:#3f3f46;letter-spacing:.01em;margin:10px 0 14px;
   padding:12px;
   border:1px solid #e7e7ec;
   border-radius:13px;
