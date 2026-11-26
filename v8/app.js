@@ -41,6 +41,7 @@ import {productInspectorHtml} from '/v8/editor/studio-product-inspector-html.js'
 import {collectionMeta} from '/v8/editor/studio-collection-meta.js';
 import {shareDialogHtml} from '/v8/editor/studio-share-dialog-html.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
+import {canvasToBlob,downloadSvg} from '/v8/editor/studio-canvas-download.js';
 import {createContentCounts} from '/v8/editor/studio-content-counts.js';
 import {pageContentItems} from '/v8/editor/studio-page-nav.js';
 import {pageNavHtml} from '/v8/editor/studio-page-nav-html.js';
@@ -835,7 +836,6 @@ function qrSvg(text){
  qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
  return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
 }
-function downloadSvg(svg,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
 function openShareDialog(){renderShareDialog();if(!shareDialog.open)shareDialog.showModal()}
 function openSeoInspector(){shareDialog.open?renderShareDialog():openShareDialog()}
 
@@ -1252,9 +1252,6 @@ function openImageInspector(path){
 }
 let activeCropper=null,cropContext=null;
 const getCropperModule=loadStudioCropper;
-function canvasToBlob(canvas,type='image/webp',quality=.9){
- return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('图片编码失败')),type,quality));
-}
 function blobToDataUrl(blob){
  return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob)});
 }
