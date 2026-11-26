@@ -5,6 +5,7 @@ import { now, id } from './core/ids.js';
 import { mediaKeysFromValue } from './media/keys.js';
 import { extFromType, uploadImage, serveMedia } from './media/upload.js';
 import { deleteProjectMedia } from './media/cleanup.js';
+import { currentProjectSite } from './sites/access.js';
 import { deleteSiteResources, stageKeys } from './sites/resources.js';
 import { randomToken, sha256 } from './core/crypto.js';
 import { hashPassword, newSalt } from './auth/password.js';
@@ -14,6 +15,7 @@ import { parseCookies, authUser, requireUser, issueSession, logout } from './aut
 import { PROJECT_COOKIE, currentProjectId, projectWithAccess, projectFor, projectCookie, emptyProjectCookie, ownedProject } from './projects/access.js';
 import { seedProject } from './projects/seed.js';
 import { ensureProjectState, createProject, duplicateProject, openProject, deleteProject, restoreProject } from './projects/lifecycle.js';
+import { purgeProject } from './projects/purge.js';
 import { getConfig, putConfig, resetConfig } from './projects/config.js';
 
 const APP_VERSION='7.27.0';
@@ -87,24 +89,8 @@ async function deleteAccount(req,env){
 }
 
 
-async function ensureLegacyProjectSiteBinding(req,env,u,p){
-  if(!p)return null;
-  let row=await env.DB.prepare(`SELECT s.* FROM project_sites ps JOIN sites s ON s.id=ps.site_id WHERE ps.project_id=? AND ps.user_id=? LIMIT 1`).bind(p.id,u.id).first();
-  if(row)return row;
-  let cfg={};try{cfg=JSON.parse(p.config_json||'{}')}catch{}
-  const url=String(cfg.visitorSiteUrl||'');let slug='';
-  try{const parsed=new URL(url),host=parsed.hostname.toLowerCase(),base=baseDomain(env);if(host.endsWith('.'+base))slug=cleanSlug(host.slice(0,-(base.length+1)));else{const m=parsed.pathname.match(/^\/s\/([^/]+)/);if(m)slug=cleanSlug(m[1])}}catch{}
-  if(!slug)return null;
-  row=await env.DB.prepare(`SELECT s.* FROM sites s LEFT JOIN project_sites ps ON ps.site_id=s.id WHERE s.user_id=? AND s.slug=? COLLATE NOCASE AND ps.site_id IS NULL LIMIT 1`).bind(u.id,slug).first();
-  if(!row)return null;
-  const t=now();await env.DB.prepare(`INSERT INTO project_sites(project_id,site_id,user_id,created_at,updated_at) VALUES(?,?,?,?,?) ON CONFLICT(project_id) DO NOTHING`).bind(p.id,row.id,u.id,t,t).run();
-  return row;
-}
-
-async function currentProjectSite(req,env,u,p=null){p=p||await projectFor(req,env,u);if(!p)return null;return await ensureLegacyProjectSiteBinding(req,env,u,p)}
 async function listProjects(req,env){const u=await requireUser(req,env),active=currentProjectId(req),trash=new URL(req.url).searchParams.get('trash')==='1';const {results=[]}=await env.DB.prepare(`SELECT p.id,p.name,p.user_id,p.local_project_id,p.config_json,p.created_at,p.updated_at,s.id AS site_id,ps.published_at,ps.deleted_at,s.status AS site_status,s.slug AS site_slug FROM projects p LEFT JOIN project_state ps ON ps.project_id=p.id LEFT JOIN project_sites m ON m.project_id=p.id LEFT JOIN sites s ON s.id=m.site_id WHERE (p.user_id=? OR EXISTS(SELECT 1 FROM project_members pm WHERE pm.project_id=p.id AND pm.user_id=?)) AND ${trash?'ps.deleted_at IS NOT NULL':'ps.deleted_at IS NULL'} ORDER BY ${trash?'ps.deleted_at':'p.updated_at'} DESC`).bind(u.id,u.id).all();return json({ok:true,projects:results.map(r=>{let c={};try{c=JSON.parse(r.config_json||'{}')}catch{}const publishedAt=r.published_at||null,hasChanges=!!publishedAt&&new Date(r.updated_at).getTime()>new Date(publishedAt).getTime();return {id:r.id,name:r.name,shared:r.user_id!==u.id,localProjectId:r.local_project_id||null,eventDate:c.eventDate||'',eventLocation:c.eventLocation||'',heroImage:c.heroImage||'',siteId:r.site_id||null,visitorSiteUrl:r.site_slug?publicUrl(env,r.site_slug,req):(c.visitorSiteUrl||''),eventTemplate:c.eventTemplate||'blank',templateId:typeof c.templateId==='string'?c.templateId:'',config:c,createdAt:r.created_at,updatedAt:r.updated_at,publishedAt,deletedAt:r.deleted_at||null,siteStatus:r.site_status||null,publishState:r.site_status==='inactive'?'inactive':!publishedAt?'draft':hasChanges?'changes':'published',active:r.id===active}})})}
 
-async function purgeProject(req,env,pid){const u=await requireUser(req,env);const p=await env.DB.prepare(`SELECT p.* FROM projects p JOIN project_state ps ON ps.project_id=p.id WHERE p.id=? AND p.user_id=? AND ps.deleted_at IS NOT NULL`).bind(pid,u.id).first();if(!p)return json({ok:false,error:'回收站中没有这个项目'},404);let cfg={};try{cfg=JSON.parse(p.config_json||'{}')}catch{}const site=await currentProjectSite(req,env,u,p);if(site){await deleteSiteResources(env,site);await env.DB.prepare('DELETE FROM sites WHERE id=? AND user_id=?').bind(site.id,u.id).run()}await deleteProjectMedia(env,u.id,pid,cfg);await env.DB.prepare('DELETE FROM projects WHERE id=? AND user_id=?').bind(pid,u.id).run();const extra=currentProjectId(req)===pid?{'set-cookie':emptyProjectCookie()}:{};return json({ok:true},200,extra)}
 async function listProjectMembers(req,env,pid){
  const u=await requireUser(req,env),p=await projectWithAccess(env,u,pid);
  if(!p)return json({ok:false,error:'找不到这个活动'},404);
