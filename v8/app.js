@@ -40,6 +40,7 @@ import {presetEntriesForState} from '/v8/editor/studio-preset-entries.js';
 import {collectionArrayFor,collectionPathFor} from '/v8/editor/studio-collection.js';
 import {extraInspectorHtml} from '/v8/editor/studio-extra-inspector.js';
 import {itemInspectorHeadHtml,itemFieldsHtml} from '/v8/editor/studio-item-inspector-html.js';
+import {itemMediaPanels} from '/v8/editor/studio-item-media-html.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -1128,14 +1129,7 @@ function openItemInspector(collection,index){
  const count=arr.length;
  const isLong=k=>['text','gift','note','detail','rules','requirements','intro','works','appearance','setlist'].includes(k);
  const inspectorFields=collection==='participation'?participationInspectorFields(item):meta.fields;
- const media=collection==='participation'
-   ?'<div class="item-media"><span>活动宣传图</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="participation.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="participation.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>'
-   :collection==='tickets'?'<div class="item-media"><span>赠品图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="tickets.'+index+'.image">选择图片</button>'+(item.image?'<button data-remove-media="tickets.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='socialLinks'?'<div class="item-media"><span>二维码 / 图片</span><div class="item-media-row">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="socialLinks.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="socialLinks.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>':collection==='sponsors'?'<div class="item-media"><span>Logo</span><div class="item-media-row">'+(item.logo?'<img src="'+esc(item.logo)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button data-media-path="sponsors.'+index+'.logo">选择 Logo</button>'+(item.logo?'<button data-remove-media="sponsors.'+index+'.logo" class="ghost">移除</button>':'')+'</div></div></div>':'';
- const guideMedia=collection==='guide'&&item.preset==='traffic'
-   ?(item.image
-     ?'<div class="item-media"><span>路线图 / 入口示意图</span><div class="item-media-row"><img src="'+esc(item.image)+'" alt=""><div><button data-media-path="guide.items.'+index+'.image">替换图片</button><button data-remove-media="guide.items.'+index+'.image" class="ghost">移除</button></div></div></div>'
-      :'<div class="item-media"><span>路线图 / 入口示意图</span><div class="item-media-row"><div><button type="button" data-media-path="guide.items.'+index+'.image">＋ 上传路线图 / 入口示意图</button></div></div></div>')
-   :'';
+ const {media,guideMedia}=itemMediaPanels(collection,index,item,esc);
  const itemTitle=contentManagerMeta[collection]?.item?.(item,index)?.[0]||meta.title;
  const itemActions=collection==='featuredActivities'?'':'<div class="item-actions"><button data-op="add">＋ 添加</button><button data-op="delete" class="danger">删除</button></div>';
  setInspector('内容',meta.title+' · '+itemTitle,itemInspectorHeadHtml(meta,index,count,esc)+'<div class="item-fields">'+itemFieldsHtml(inspectorFields,item,esc,isLong)+'</div>'+media+guideMedia+extraInspector(collection,index,item)+itemActions);
