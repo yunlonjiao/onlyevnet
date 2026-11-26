@@ -1,6 +1,6 @@
 import {makeProjectBackup,restoreProjectBackup} from '/admin/project-backup.js';
 import {listTemplates,TEMPLATE_GROUPS,DEFAULT_TEMPLATE_ID,getTemplate} from '/v8/templates/registry.js';
-import {mountCost} from '/admin/cost.js';
+import {mountCost,copyCost,removeCost} from '/admin/cost.js';
 import {mountDeadlines} from '/admin/deadlines.js';
 import {loadAsk} from '/admin/ask.js';
 import {loadSignups} from '/admin/signups.js';
@@ -47,6 +47,7 @@ function getPublishRecord(project){
 function clearProjectLocalData(project){
   localStorage.removeItem(projectStorageKey(project));
   localStorage.removeItem(publishStorageKey(project));
+  removeCost(project.id);
 }
 async function unpublishProject(project){
   const record=getPublishRecord(project);
@@ -142,6 +143,7 @@ async function duplicateProjects(list){
       try{localStorage.setItem('onlyevent-studio-v8:'+templateId+':'+id+':iframe',JSON.stringify(state))}
       catch{alert('浏览器存储空间不足，没能复制「'+(project.name||'未命名活动')+'」。');continue}
     }
+    copyCost(project.id,id);
     made.push({project:{id,name,templateId,status:'draft',siteUrl:'',updatedAt:new Date().toISOString()},state});
   }
   if(!made.length)return 0;

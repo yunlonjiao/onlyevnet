@@ -22,7 +22,11 @@ export function costSummary(cost){
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=n=>(n<0?'-':'')+'¥'+Math.abs(Math.round(n*100)/100).toLocaleString('zh-CN');
-const keyFor=id=>'onlyevent-cost-v1:'+id;
+export const costKey=id=>'onlyevent-cost-v1:'+id;
+export function copyCost(from,to){
+ try{const raw=localStorage.getItem(costKey(from));localStorage.setItem(costKey(to),raw||JSON.stringify(emptyCost()))}catch{}
+}
+export function removeCost(id){try{localStorage.removeItem(costKey(id))}catch{}}
 const rows=s=>s.table.map(r=>'<tr class="'+(r.balance<0?'neg':'pos')+'"><td>'+r.people+'</td><td>'+money(r.income)+'</td><td>'+money(r.cost)+'</td><td>'+money(r.balance)+'</td></tr>').join('');
 const breakText=s=>s.breakEven===null?'票价不够覆盖成本':s.breakEven+' 人';
 
