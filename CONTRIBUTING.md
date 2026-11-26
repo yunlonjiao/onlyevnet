@@ -64,7 +64,7 @@
 
 ```bash
 node tools/check-architecture.mjs
-node quality/regression-audit.mjs
+node quality/tests/regression-audit.mjs
 ```
 
 涉及界面时还必须：

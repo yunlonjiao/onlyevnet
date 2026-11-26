@@ -1,9 +1,10 @@
 import { chromium } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 const BASE = 'https://onlyevent.cn';
 const OUT = 'C:/Users/32224/Documents/deepseek-harness/default-workspace/oe-review/audit-2026-11-25';
-const IMG = 'C:/Users/32224/Documents/GitHub/onlyevnet/oe-review/design/site-shot.png';
+const IMG = fileURLToPath(new URL('../fixtures/site-shot.png', import.meta.url));
 const results = [];
 const run = async (name, fn) => {
   const started = Date.now();
