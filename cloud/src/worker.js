@@ -12,6 +12,7 @@ const MAX_SITE_HTML_BYTES=25*1024*1024;
 const MAX_PROJECT_CONFIG_BYTES=1900000;
 const CORS_ALLOW_HEADERS='content-type,authorization,x-onlyevent-project';
 const CORS_ALLOW_METHODS='GET,POST,PUT,DELETE,OPTIONS';
+const CONTENT_SECURITY_POLICY="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-src 'self' blob:; media-src 'self' blob: data: https:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'";
 /* Offline support for visitor sites: the page and its images are kept after a first visit,
    so the site still opens at a venue with no signal. Online visits always fetch the newest version. */
 const VISITOR_SW=`const CACHE='oe-visitor-v1',HOME='/',MAX_IMAGES=200;
@@ -628,7 +629,7 @@ export default {
       if(path.startsWith('/v8/')||path.startsWith('/admin/')||path==='/robots.txt'){
         // The editor loads same-origin module graphs: keep them revalidated and un-framable from other sites.
         const headers=new Headers(assetResponse.headers);
-        headers.set('x-content-type-options','nosniff');headers.set('referrer-policy','strict-origin-when-cross-origin');headers.set('x-frame-options','SAMEORIGIN');headers.set('cache-control','no-store, max-age=0');
+        headers.set('x-content-type-options','nosniff');headers.set('referrer-policy','strict-origin-when-cross-origin');headers.set('x-frame-options','SAMEORIGIN');headers.set('content-security-policy',CONTENT_SECURITY_POLICY);headers.set('cache-control','no-store, max-age=0');
         return new Response(assetResponse.body,{status:assetResponse.status,statusText:assetResponse.statusText,headers});
       }
       if(path.startsWith('/collect/')||path.startsWith('/signup/')){

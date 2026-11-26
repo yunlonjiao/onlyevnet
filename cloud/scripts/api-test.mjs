@@ -158,9 +158,11 @@ test('visitor sites get robots.txt, no favicon noise and safe headers; the apex 
   assert.equal(page.headers.get('referrer-policy'),'strict-origin-when-cross-origin');
   const admin=await call(env,'/admin/',{host:'onlyevent.cn'});
   assert.equal(admin.headers.get('x-frame-options'),'SAMEORIGIN');
+  assert.match(admin.headers.get('content-security-policy')||'',/default-src 'self'/);
   assert.match(admin.headers.get('cache-control'),/no-store/);
   const editor=await call(env,'/v8/',{host:'onlyevent.cn'});
   assert.equal(editor.headers.get('x-frame-options'),'SAMEORIGIN');
+  assert.match(editor.headers.get('content-security-policy')||'',/default-src 'self'/);
 });
 
 test('recovery codes are short and forgiving, and old long codes still work',async()=>{
