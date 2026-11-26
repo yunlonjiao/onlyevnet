@@ -1,0 +1,229 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS users (
+  id TEXT PRIMARY KEY,
+  username TEXT NOT NULL UNIQUE COLLATE NOCASE,
+  password_hash TEXT NOT NULL,
+  password_salt TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+  token_hash TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_expiry ON sessions(expires_at);
+CREATE TABLE IF NOT EXISTS account_recovery (
+  user_id TEXT PRIMARY KEY,
+  code_hash TEXT NOT NULL,
+  code_salt TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS projects (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  local_project_id TEXT,
+  config_json TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_projects_user ON projects(user_id);
+CREATE INDEX IF NOT EXISTS idx_projects_updated ON projects(user_id,updated_at);
+CREATE INDEX IF NOT EXISTS idx_projects_local ON projects(user_id,local_project_id);
+
+CREATE TABLE IF NOT EXISTS project_members (
+  project_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'editor',
+  created_at TEXT NOT NULL,
+  PRIMARY KEY(project_id,user_id),
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_members_user ON project_members(user_id);
+
+CREATE TABLE IF NOT EXISTS sites (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE COLLATE NOCASE,
+  title TEXT NOT NULL DEFAULT '',
+  object_key TEXT NOT NULL,
+  size_bytes INTEGER NOT NULL DEFAULT 0,
+  status TEXT NOT NULL DEFAULT 'active',
+  last_viewed_at TEXT,
+  removed_at TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_sites_user ON sites(user_id);
+CREATE INDEX IF NOT EXISTS idx_sites_slug ON sites(slug);
+CREATE INDEX IF NOT EXISTS idx_sites_status_viewed ON sites(status,last_viewed_at);
+
+
+CREATE TABLE IF NOT EXISTS project_state (
+  project_id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  published_at TEXT,
+  published_config_json TEXT,
+  deleted_at TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_project_state_user_deleted ON project_state(user_id,deleted_at);
+
+CREATE TABLE IF NOT EXISTS site_versions (
+  id TEXT PRIMARY KEY,
+  site_id TEXT NOT NULL,
+  object_key TEXT NOT NULL,
+  size_bytes INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(site_id) REFERENCES sites(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_site_versions_site ON site_versions(site_id,created_at DESC);
+
+CREATE TABLE IF NOT EXISTS site_aliases (
+  old_slug TEXT PRIMARY KEY COLLATE NOCASE,
+  site_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(site_id) REFERENCES sites(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS project_sites (
+  project_id TEXT PRIMARY KEY,
+  site_id TEXT NOT NULL UNIQUE,
+  user_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE,
+  FOREIGN KEY(site_id) REFERENCES sites(id) ON DELETE CASCADE,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_project_sites_user ON project_sites(user_id);
+
+CREATE TABLE IF NOT EXISTS project_media (
+  project_id TEXT NOT NULL,
+  object_key TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  PRIMARY KEY(project_id, object_key),
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_project_media_key ON project_media(object_key);
+
+CREATE TABLE IF NOT EXISTS rate_limits (
+  key TEXT PRIMARY KEY,
+  window_start TEXT NOT NULL,
+  count INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_rate_limits_window ON rate_limits(window_start);
+
+-- Circle (社团) collection: organizers share a link, circle leaders submit their info, organizers approve.
+CREATE TABLE IF NOT EXISTS collect_forms (
+  project_id TEXT PRIMARY KEY,
+  token TEXT NOT NULL UNIQUE,
+  open INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS collect_entries (
+  id TEXT PRIMARY KEY,
+  project_id TEXT NOT NULL,
+  data_json TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_collect_entries_project ON collect_entries(project_id,created_at);
+
+-- Page views of visitor sites, one counter per site and day (China time). No visitor data is stored.
+CREATE TABLE IF NOT EXISTS site_stats (
+  site_id TEXT NOT NULL,
+  day TEXT NOT NULL,
+  views INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY(site_id,day),
+  FOREIGN KEY(site_id) REFERENCES sites(id) ON DELETE CASCADE
+);
+
+-- Feedback from organizers, read by the operator with a D1 query. Removed together with the account.
+CREATE TABLE IF NOT EXISTS feedback (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  username TEXT NOT NULL,
+  message TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_feedback_created ON feedback(created_at);
+
+-- Visits that arrived through a tagged link (?from=weibo), counted per site, channel and day.
+CREATE TABLE IF NOT EXISTS site_channel_stats (
+  site_id TEXT NOT NULL,
+  channel TEXT NOT NULL,
+  day TEXT NOT NULL,
+  views INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY(site_id,channel,day),
+  FOREIGN KEY(site_id) REFERENCES sites(id) ON DELETE CASCADE
+);
+
+-- Visitor question centre: an opt-in box on the visitor site, answered by the organizer.
+CREATE TABLE IF NOT EXISTS ask_settings (
+  project_id TEXT PRIMARY KEY,
+  enabled INTEGER NOT NULL DEFAULT 0,
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS questions (
+  id TEXT PRIMARY KEY,
+  project_id TEXT NOT NULL,
+  text TEXT NOT NULL,
+  answer TEXT NOT NULL DEFAULT '',
+  published INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL,
+  answered_at TEXT,
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_questions_project ON questions(project_id,created_at);
+
+-- Staged reveal: later versions of a visitor site that go live at a set time. They are only
+-- served once their time has passed, so content that is not public yet is never sent early.
+CREATE TABLE IF NOT EXISTS site_stages (
+  site_id TEXT NOT NULL,
+  idx INTEGER NOT NULL,
+  at TEXT NOT NULL,
+  object_key TEXT NOT NULL,
+  PRIMARY KEY(site_id,idx),
+  FOREIGN KEY(site_id) REFERENCES sites(id) ON DELETE CASCADE
+);
+
+-- Sign-up forms (COS, photographer, volunteer, custom): one public link per form, entries reviewed by the organizer.
+CREATE TABLE IF NOT EXISTS signup_forms (
+  id TEXT PRIMARY KEY,
+  project_id TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  config_json TEXT NOT NULL,
+  token TEXT NOT NULL UNIQUE,
+  open INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_signup_forms_project ON signup_forms(project_id);
+CREATE TABLE IF NOT EXISTS signup_entries (
+  id TEXT PRIMARY KEY,
+  form_id TEXT NOT NULL,
+  data_json TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  created_at TEXT NOT NULL,
+  FOREIGN KEY(form_id) REFERENCES signup_forms(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_signup_entries_form ON signup_entries(form_id,created_at);
