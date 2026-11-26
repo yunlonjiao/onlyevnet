@@ -373,7 +373,11 @@ await run('template 08: no stray brace text', async () => {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
   await page.goto(`${BASE}/v8/?template=08-birthday&project=suite-08`, { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(6500);
+  await page.waitForFunction(() => {
+    const doc = document.querySelector('#liveFrame')?.contentDocument;
+    const text = doc?.body?.innerText || '';
+    return doc?.readyState === 'complete' && /HAPPY BIRTHDAY/.test(text);
+  }, null, { timeout: 20000 });
   const data = await page.evaluate(() => {
     const doc = document.querySelector('#liveFrame')?.contentDocument;
     if (!doc) return { found: [] };
