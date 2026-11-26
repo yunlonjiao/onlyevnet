@@ -43,6 +43,7 @@ import {itemInspectorHeadHtml,itemFieldsHtml,isItemLongField,itemActionsHtml} fr
 import {itemMediaPanels} from '/v8/editor/studio-item-media-html.js';
 import {createModuleControls} from '/v8/editor/studio-module-controls.js';
 import {setPageContentActive} from '/v8/editor/studio-page-content-active.js';
+import {optionalPageHtml} from '/v8/editor/studio-optional-page-html.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -471,16 +472,7 @@ function mutateCustomPageItem(pageId,index,op){
 
 function openOptionalPageInspector(key){
  const page=state[key]||{},label=key==='freewalk'?'COS自由行':'痛车展示';
- setInspector('页面内容',label,
-   '<div class="item-fields">'+
-   '<label><span>页面标题</span><input data-optional-field="title" value="'+esc(page.title||label)+'"></label>'+
-   '<label><span>正文</span><textarea data-optional-field="text" rows="6">'+esc(page.text||'')+'</textarea></label>'+
-   '</div>'+
-   '<div class="item-media"><span>页面图片</span><div class="item-media-row">'+
-   (page.image?'<img src="'+esc(page.image)+'" alt="">':'<div class="item-media-empty">＋</div>')+
-   '<div><button type="button" data-optional-image>选择 / 裁剪</button>'+
-   (page.image?'<button type="button" class="ghost" data-optional-image-remove>移除</button>':'')+
-   '</div></div></div>');
+ setInspector('页面内容',label,optionalPageHtml(key,page,esc));
  inspector.querySelectorAll('[data-optional-field]').forEach(input=>bindInspectorStateInput(input,key+'.'+input.dataset.optionalField,{clean:true}));
  inspector.querySelector('[data-optional-image]')?.addEventListener('click',()=>{$('#imageInput').dataset.path=key+'.image';$('#imageInput').click()});
  inspector.querySelector('[data-optional-image-remove]')?.addEventListener('click',()=>{checkpoint();setDeep(key+'.image','');send({type:'OE_REPLACE_STATE',state});openOptionalPageInspector(key)});
