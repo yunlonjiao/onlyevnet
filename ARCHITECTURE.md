@@ -137,3 +137,7 @@ UI 操作
 - 现有回归通过
 - 没有新增 `!important`
 - 没有引入新的跨模块 DOM 依赖
+
+## Frontend module catalog
+
+The current frontend extraction map and strict boundaries are in [docs/frontend-modules.md](docs/frontend-modules.md).
