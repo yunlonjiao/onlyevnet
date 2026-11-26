@@ -392,6 +392,7 @@ function getDeep(path){return path.split('.').reduce((o,k)=>o?.[/^\d+$/.test(k)?
 function send(message){if(frameReady&&iframe?.contentWindow)iframe.contentWindow.postMessage(message,ORIGIN)}
 function setInspector(kicker,title,html){
  renderInspector(inspector,esc,kicker,title,html);
+ inspector?.querySelectorAll('button').forEach(btn=>btn.classList.add('oe-inspector-action'));
 }
 function showInspectorEmpty(){
  setInspector('属性','未选择内容','<div class="inspector-empty"><div class="empty-visual"><span></span><span></span><span></span></div><b>从画布或左侧内容库选择内容</b></div>');
