@@ -44,6 +44,7 @@ import {itemMediaPanels} from '/v8/editor/studio-item-media-html.js';
 import {createModuleControls} from '/v8/editor/studio-module-controls.js';
 import {setPageContentActive} from '/v8/editor/studio-page-content-active.js';
 import {optionalPageHtml} from '/v8/editor/studio-optional-page-html.js';
+import {bannerInspectorHtml,trafficInspectorHtml} from '/v8/editor/studio-page-inspector-html.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -518,9 +519,7 @@ function openEntryAnimationInspector(){
 }
 function openBannerInspector(){
   const slot=(key,label,note)=>{const v=String(state[key]||'').trim();return '<div class="item-media"><span>'+label+'</span><div class="item-media-row">'+(v?'<img src="'+esc(v)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-banner-image="'+key+'">'+(v?'更换':'选择 / 裁剪')+'</button>'+(v?'<button type="button" class="ghost" data-banner-remove="'+key+'">移除</button>':'')+'</div></div>'+(note?'<small>'+note+'</small>':'')+'</div>';};
-  setInspector('横幅','首页横幅',
-    '<div class="entry-animation-inspector">'+slot('heroImage','桌面横幅')+slot('mobileHeroImage','手机横幅（可选）','留空时用桌面横幅居中裁切')+
-    '<p class="inspector-note">桌面 5:2 宽幅，手机 3:2；两张都可单独上传。</p></div>');
+  setInspector('横幅','首页横幅',bannerInspectorHtml(state,esc));
   inspector.querySelectorAll('[data-banner-image]').forEach(btn=>btn.addEventListener('click',()=>{
     const input=$('#imageInput');input.dataset.path=btn.dataset.bannerImage;input.click();
   }));
@@ -530,13 +529,7 @@ function openBannerInspector(){
 }
 function openTrafficInspector(){
   const img=String(state.venueMap?.transitImage||'');
-  setInspector('交通到达','交通路线图与导航',
-    '<div class="entry-animation-inspector"><div class="item-media"><span>交通路线图</span><div class="item-media-row">'+
-    (img?'<img src="'+esc(img)+'" alt="">':'<div class="item-media-empty">＋</div>')+
-    '<div><button type="button" data-traffic-image>选择 / 裁剪</button></div></div></div>'+
-    '<div class="item-fields"><label><span>地图导航链接</span><input id="trafficNavInput" value="'+esc(state.navigationUrl||'')+'" placeholder="https://uri.amap.com/..."></label></div>'+
-    '<div class="entry-animation-actions"><button type="button" id="saveTrafficNav">保存导航链接</button></div>'+
-    '<p class="inspector-note">交通文字内容在「规则与须知」里维护（交通到达那一条）。</p></div>');
+  setInspector('交通到达','交通路线图与导航',trafficInspectorHtml(state,esc));
   inspector.querySelector('[data-traffic-image]')?.addEventListener('click',()=>{const input=$('#imageInput');input.dataset.path='venueMap.transitImage';input.click();});
   $('#saveTrafficNav')?.addEventListener('click',()=>{checkpoint();state.navigationUrl=String($('#trafficNavInput')?.value||'').trim();save();send({type:'OE_REPLACE_STATE',state});});
 }
