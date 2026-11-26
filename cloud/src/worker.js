@@ -20,6 +20,7 @@ import { PROJECT_COOKIE, currentProjectId, projectWithAccess, projectFor, projec
 import { seedProject } from './projects/seed.js';
 import { ensureProjectState, createProject, duplicateProject, openProject, deleteProject, restoreProject } from './projects/lifecycle.js';
 import { purgeProject } from './projects/purge.js';
+import { listProjectMembers, addProjectMember, removeProjectMember } from './projects/members.js';
 import { getConfig, putConfig, resetConfig } from './projects/config.js';
 
 const APP_VERSION='7.27.0';
@@ -93,32 +94,6 @@ async function deleteAccount(req,env){
 
 async function listProjects(req,env){const u=await requireUser(req,env),active=currentProjectId(req),trash=new URL(req.url).searchParams.get('trash')==='1';const {results=[]}=await env.DB.prepare(`SELECT p.id,p.name,p.user_id,p.local_project_id,p.config_json,p.created_at,p.updated_at,s.id AS site_id,ps.published_at,ps.deleted_at,s.status AS site_status,s.slug AS site_slug FROM projects p LEFT JOIN project_state ps ON ps.project_id=p.id LEFT JOIN project_sites m ON m.project_id=p.id LEFT JOIN sites s ON s.id=m.site_id WHERE (p.user_id=? OR EXISTS(SELECT 1 FROM project_members pm WHERE pm.project_id=p.id AND pm.user_id=?)) AND ${trash?'ps.deleted_at IS NOT NULL':'ps.deleted_at IS NULL'} ORDER BY ${trash?'ps.deleted_at':'p.updated_at'} DESC`).bind(u.id,u.id).all();return json({ok:true,projects:results.map(r=>{let c={};try{c=JSON.parse(r.config_json||'{}')}catch{}const publishedAt=r.published_at||null,hasChanges=!!publishedAt&&new Date(r.updated_at).getTime()>new Date(publishedAt).getTime();return {id:r.id,name:r.name,shared:r.user_id!==u.id,localProjectId:r.local_project_id||null,eventDate:c.eventDate||'',eventLocation:c.eventLocation||'',heroImage:c.heroImage||'',siteId:r.site_id||null,visitorSiteUrl:r.site_slug?publicUrl(env,r.site_slug,req):(c.visitorSiteUrl||''),eventTemplate:c.eventTemplate||'blank',templateId:typeof c.templateId==='string'?c.templateId:'',config:c,createdAt:r.created_at,updatedAt:r.updated_at,publishedAt,deletedAt:r.deleted_at||null,siteStatus:r.site_status||null,publishState:r.site_status==='inactive'?'inactive':!publishedAt?'draft':hasChanges?'changes':'published',active:r.id===active}})})}
 
-async function listProjectMembers(req,env,pid){
- const u=await requireUser(req,env),p=await projectWithAccess(env,u,pid);
- if(!p)return json({ok:false,error:'找不到这个活动'},404);
- const owner=await env.DB.prepare('SELECT id,username FROM users WHERE id=?').bind(p.user_id).first();
- const {results=[]}=await env.DB.prepare('SELECT m.user_id,m.role,m.created_at,us.username FROM project_members m JOIN users us ON us.id=m.user_id WHERE m.project_id=? ORDER BY m.created_at').bind(pid).all();
- return json({ok:true,isOwner:p.user_id===u.id,owner:owner?{id:owner.id,username:owner.username}:null,members:results.map(r=>({id:r.user_id,username:r.username,role:r.role,createdAt:r.created_at}))});
-}
-async function addProjectMember(req,env,pid){
- const u=await requireUser(req,env),p=await projectWithAccess(env,u,pid);
- if(!p||p.user_id!==u.id)return json({ok:false,error:'只有创建者可以添加协作者'},403);
- const b=await bodyJson(req),username=cleanText(b.username,32);
- const target=await env.DB.prepare('SELECT id,username FROM users WHERE username=? COLLATE NOCASE').bind(username).first();
- if(!target)return json({ok:false,error:'找不到这个账号，请让对方先用该名称注册'},404);
- if(target.id===u.id)return json({ok:false,error:'不能添加自己'},400);
- const exists=await env.DB.prepare('SELECT 1 AS x FROM project_members WHERE project_id=? AND user_id=?').bind(pid,target.id).first();
- if(exists)return json({ok:false,error:'对方已经在协作者列表里了'},409);
- await env.DB.prepare('INSERT INTO project_members(project_id,user_id,role,created_at) VALUES(?,?,?,?) ON CONFLICT(project_id,user_id) DO NOTHING').bind(pid,target.id,'editor',now()).run();
- return json({ok:true,member:{id:target.id,username:target.username,role:'editor'}});
-}
-async function removeProjectMember(req,env,pid,uid){
- const u=await requireUser(req,env),p=await projectWithAccess(env,u,pid);
- if(!p)return json({ok:false,error:'找不到这个活动'},404);
- if(p.user_id!==u.id&&uid!==u.id)return json({ok:false,error:'没有权限'},403);
- await env.DB.prepare('DELETE FROM project_members WHERE project_id=? AND user_id=?').bind(pid,uid).run();
- return json({ok:true});
-}
 async function listSites(req,env){const u=await requireUser(req,env),p=await projectFor(req,env,u);if(!p)return json({ok:true,sites:[]});const site=await currentProjectSite(req,env,u,p);if(!site)return json({ok:true,sites:[]});return json({ok:true,sites:[{id:site.id,project_id:p.id,slug:site.slug,title:site.title,size_bytes:site.size_bytes,status:site.status,last_viewed_at:site.last_viewed_at,removed_at:site.removed_at,created_at:site.created_at,updated_at:site.updated_at,url:publicUrl(env,site.slug,req)}]})}
 async function serveSlug(req,env,slug){slug=cleanSlug(slug);if(!slug)return html('网站不存在',404);let site=await env.DB.prepare('SELECT id,slug,object_key,title,status FROM sites WHERE slug=? COLLATE NOCASE').bind(slug).first();if(!site){const alias=await env.DB.prepare('SELECT s.id,s.slug,s.object_key,s.title,s.status FROM site_aliases a JOIN sites s ON s.id=a.site_id WHERE a.old_slug=? COLLATE NOCASE').bind(slug).first();if(alias)return redirect(publicUrl(env,alias.slug,req),301,{'cache-control':'public,max-age=3600'});return html('<!doctype html><meta charset=utf-8><title>网站不存在</title><style>body{font-family:system-ui;padding:40px}</style><h1>网站不存在</h1><p>这个活动网站还没有发布。</p>',404)}if(site.status==='inactive')return html('<!doctype html><meta charset=utf-8><title>网站暂时下线</title><style>body{font-family:system-ui;padding:40px;max-width:720px;margin:auto}</style><h1>网站暂时下线</h1><p>该网站长时间没有访问，公开版本已自动休眠。主办方重新发布即可恢复，编辑数据不会删除。</p>',410,{'cache-control':'no-store'});let objKey=site.object_key;try{const st=await env.DB.prepare('SELECT object_key FROM site_stages WHERE site_id=? AND at<=? ORDER BY at DESC LIMIT 1').bind(site.id,now()).first();if(st?.object_key)objKey=st.object_key}catch(e){console.error(e)}const obj=await env.SITES.get(objKey)||await env.SITES.get(site.object_key);if(!obj)return html('网站文件不存在',404);await env.DB.prepare('UPDATE sites SET last_viewed_at=? WHERE id=?').bind(now(),site.id).run();try{await countView(env,req,site.id)}catch(e){console.error(e)}const h=new Headers(HTML_HEADERS);h.set('cache-control','public,max-age=60');h.set('x-onlyevent-site',slug);h.set('x-content-type-options','nosniff');h.set('referrer-policy','strict-origin-when-cross-origin');let body=obj.body;try{const a=await askTarget(env,site.slug);if(a?.enabled){const text=await obj.text();body=text.includes('</body>')?text.replace('</body>',()=>askWidget(site.slug)+'</body>'):text+askWidget(site.slug)}}catch(e){console.error(e)}return new Response(body,{headers:h})}
 async function cleanupInactiveSites(env){const cutoff=new Date(Date.now()-inactiveDays(env)*86400000).toISOString(),{results=[]}=await env.DB.prepare(`SELECT id,object_key FROM sites WHERE status='active' AND COALESCE(last_viewed_at,updated_at,created_at) < ?`).bind(cutoff).all();for(const s of results){await env.SITES.delete(s.object_key);await env.DB.prepare(`UPDATE sites SET status='inactive',removed_at=?,updated_at=? WHERE id=?`).bind(now(),now(),s.id).run()}await env.DB.prepare('DELETE FROM sessions WHERE expires_at < ?').bind(now()).run();await env.DB.prepare('DELETE FROM rate_limits WHERE window_start < ?').bind(new Date(Date.now()-86400000).toISOString()).run();return results.length}
