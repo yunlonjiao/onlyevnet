@@ -9,7 +9,7 @@ import { join } from 'node:path';
 
 const ROOT = process.cwd();
 const BASELINE_IMPORTANT = 1353;
-const BASELINE_GENERIC_INSPECTOR = 27;
+const BASELINE_GENERIC_INSPECTOR = 24;
 
 const walk = (dir, out = []) => {
   for (const name of readdirSync(dir)) {
