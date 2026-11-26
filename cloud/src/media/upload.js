@@ -1,0 +1,9 @@
+import { json } from '../core/http.js';
+import { now } from '../core/ids.js';
+import { requireUser } from '../auth/session.js';
+import { rateLimit } from '../auth/rate-limit.js';
+import { projectFor } from '../projects/access.js';
+
+export function extFromType(type,name=''){const map={'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif'};if(map[type])return map[type];const m=String(name).toLowerCase().match(/\.([a-z0-9]{2,5})$/);return m?m[1]:''}
+export async function uploadImage(req,env){const u=await requireUser(req,env);await rateLimit(env,'upload:'+u.id,300,3600);const p=await projectFor(req,env,u);if(!p)return json({ok:false,error:'请先创建活动项目'},400);const form=await req.formData(),file=[...form.values()].find(v=>v instanceof File);if(!file)return json({ok:false,error:'没有收到图片文件'},400);if(file.size>12*1024*1024)return json({ok:false,error:'图片不能超过 12MB'},413);const ext=extFromType(file.type,file.name);if(!['jpg','jpeg','png','webp','gif'].includes(ext))return json({ok:false,error:'仅支持 JPG、PNG、WebP、GIF 图片'},415);const key=`uploads/${u.id}/${crypto.randomUUID()}.${ext}`;await env.SITES.put(key,await file.arrayBuffer(),{httpMetadata:{contentType:file.type||'application/octet-stream'},customMetadata:{owner:u.id,project:p.id}});await env.DB.prepare('INSERT OR IGNORE INTO project_media(project_id,object_key,created_at) VALUES(?,?,?)').bind(p.id,key,now()).run();return json({ok:true,url:`/media/${key}`},201)}
+export async function serveMedia(req,env,key){if(!/^uploads\/[a-zA-Z0-9_\/-]+\.[a-zA-Z0-9]+$/.test(key))return new Response('Not found',{status:404});const obj=await env.SITES.get(key);if(!obj)return new Response('Not found',{status:404});const h=new Headers();obj.writeHttpMetadata(h);h.set('cache-control','public,max-age=31536000,immutable');return new Response(obj.body,{headers:h})}
