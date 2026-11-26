@@ -1427,7 +1427,6 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 }
 
 /* dock labels readable */
-@media(max-width:820px){.mobile-editor-dock button b{font-size:11px}}
 
 @media(max-width:820px){body.previewing .canvas-wrap{padding:0!important}}
 
@@ -1444,10 +1443,6 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
   }
   .canvas-wrap{padding:8px 8px 84px!important}
   .canvas.mobile{width:min(390px,calc(100vw - 18px))!important}
-  .mobile-editor-dock{display:flex!important;position:fixed;left:0;right:0;bottom:var(--kb-inset,0);z-index:110;background:rgba(252,252,254,.96);border-top:1px solid #e4e4ea;padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
-  .mobile-editor-dock button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:44px;border:0;background:transparent;color:#6d6d78;font:inherit;font-size:11px;font-weight:700;border-radius:12px}
-  .mobile-editor-dock button span{font-size:17px;line-height:1}
-  .mobile-editor-dock button b{font-weight:800;font-size:11px}
   .inspector{
     display:flex!important;position:fixed!important;left:0;right:0;top:auto!important;bottom:var(--kb-inset,0)!important;
     width:100%!important;max-height:72vh!important;height:auto!important;z-index:126;
@@ -1480,7 +1475,6 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 @media(max-width:820px){body.previewing .studio-topbar #previewBtn{display:inline-flex!important}}
 @media(pointer:coarse) and (max-height:560px){body.previewing .studio-topbar #previewBtn{display:inline-flex!important}}
 
-@media(pointer:coarse) and (max-height:560px){body.previewing .mobile-editor-dock{display:none!important}}
 
 @media(pointer:coarse){.back-admin-btn{width:44px!important;height:44px!important}}
 
@@ -1504,7 +1498,6 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 /* phone: page drawer becomes a bottom sheet, dock sits above Safari toolbar */
 @media(max-width:820px){
   .studio-topbar .top-actions{scrollbar-width:none}
-  .mobile-editor-dock{bottom:var(--safari-inset,0)!important;padding-bottom:calc(6px + env(safe-area-inset-bottom))}
   .sidebar{
     left:0!important;right:0!important;top:auto!important;bottom:calc(var(--safari-inset,0px) + 60px)!important;
     width:100%!important;height:min(66vh,560px)!important;max-height:66vh;
@@ -1527,7 +1520,7 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
 
 /* phone: no double-tap zoom on editor chrome */
 html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-@media(max-width:820px){.studio-topbar,.mobile-editor-dock,.sidebar,.inspector,.canvas-wrap{touch-action:manipulation}}
+@media(max-width:820px){.studio-topbar,.sidebar,.inspector,.canvas-wrap{touch-action:manipulation}}
 
 /* inspector header spacing: status never hugs the title */
 .inspector-header{gap:12px!important}
@@ -1537,7 +1530,7 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 /* compact mobile sheet close */
 
 /* preview-safe layout: avoids the legacy full-screen grid that froze the renderer */
-body.previewing-safe .sidebar,body.previewing-safe .inspector,body.previewing-safe .canvas-toolbar,body.previewing-safe .mobile-editor-dock,body.previewing-safe .mobile-page-pills,body.previewing-safe .mobile-content-strip{display:none!important}
+body.previewing-safe .sidebar,body.previewing-safe .inspector,body.previewing-safe .canvas-toolbar{display:none!important}
 body.previewing-safe .studio-shell{display:block!important;min-height:calc(100vh - 64px)!important}
 body.previewing-safe .canvas-wrap{position:fixed!important;inset:64px 0 0 0!important;padding:0!important;margin:0!important;display:block!important;background:#fff!important;z-index:40!important;min-height:0!important}
 body.previewing-safe .canvas-stage{width:100%!important;max-width:none!important;height:100%!important}
@@ -1611,7 +1604,7 @@ body.previewing-safe .top-actions{width:auto!important}
 #mNativeApp #mobileFieldBar .m-field-name{flex:1!important;min-width:0!important;font-size:12px!important;font-weight:800!important;color:#404049!important;align-self:center!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
 #mNativeApp #mobileFieldBar button{min-height:40px!important;padding:0 9px!important;font-size:12px!important;border-radius:10px!important}
 
-body.m-native-open .mobile-page-pills,body.m-native-open .mobile-content-strip,body.m-native-open .mobile-editor-dock,body.m-native-open .studio-topbar,body.m-native-open .sidebar,body.m-native-open .canvas-wrap{visibility:hidden!important}
+body.m-native-open .studio-topbar,body.m-native-open .sidebar,body.m-native-open .canvas-wrap{visibility:hidden!important}
 
 /* native items screen */
 #mNativeApp .mn-screen[data-mn-screen="items"] .sidebar-content-list{display:block!important;padding:0!important;background:transparent!important}
@@ -1680,7 +1673,7 @@ body.m-native-open .canvas-wrap{visibility:visible!important;position:fixed!impo
 body.m-native-open .canvas-stage{height:100%!important;width:100%!important;margin:0!important;padding:0!important}
 body.m-native-open .canvas{height:100%!important;width:100%!important;max-width:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}
 
-body.m-native-open .studio-topbar,body.m-native-open .mobile-page-pills,body.m-native-open .mobile-content-strip,body.m-native-open .mobile-editor-dock{display:none!important}
+body.m-native-open .studio-topbar{display:none!important}
 body.m-native-open{overflow:hidden!important}
 
 /* design v14 implementation */
