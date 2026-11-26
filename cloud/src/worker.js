@@ -1,8 +1,7 @@
 import { DEFAULT_CONFIG } from './seed.js';
 import { ApiError, errorPayload, codeForStatus } from './core/errors.js';
+import { JSON_HEADERS, HTML_HEADERS, CORS_ALLOW_HEADERS, CORS_ALLOW_METHODS, CONTENT_SECURITY_POLICY, baseDomain, allowedOrigin, corsOrigin, withCors, json, html, redirect, cookie, cookieHeaders } from './core/http.js';
 
-const JSON_HEADERS={"content-type":"application/json; charset=utf-8","cache-control":"no-store"};
-const HTML_HEADERS={"content-type":"text/html; charset=utf-8"};
 const PBKDF2_ITERATIONS=100000;
 const SESSION_COOKIE='onlyevent_session';
 const PROJECT_COOKIE='onlyevent_project';
@@ -10,9 +9,6 @@ const APP_VERSION='7.27.0';
 const MAX_SITE_HTML_BYTES=25*1024*1024;
 // D1 rows are capped at 2,000,000 bytes; leave room for the other columns.
 const MAX_PROJECT_CONFIG_BYTES=1900000;
-const CORS_ALLOW_HEADERS='content-type,authorization,x-onlyevent-project';
-const CORS_ALLOW_METHODS='GET,POST,PUT,DELETE,OPTIONS';
-const CONTENT_SECURITY_POLICY="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https: https://cloudflareinsights.com; frame-src 'self' blob:; media-src 'self' blob: data: https:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'";
 /* Offline support for visitor sites: the page and its images are kept after a first visit,
    so the site still opens at a venue with no signal. Online visits always fetch the newest version. */
 const VISITOR_SW=`const CACHE='oe-visitor-v1',HOME='/',MAX_IMAGES=200;
@@ -40,31 +36,6 @@ self.addEventListener('fetch',e=>{
 const VISITOR_SW_HEADERS={'content-type':'application/javascript; charset=utf-8','cache-control':'no-cache','service-worker-allowed':'/','x-content-type-options':'nosniff'};
 const RESERVED_SUBDOMAINS=new Set(['www','publisher','api','admin','app']);
 
-function allowedOrigin(origin,env){
-  if(!origin)return '';
-  let u;try{u=new URL(origin)}catch{return ''}
-  if((u.hostname==='localhost'||u.hostname==='127.0.0.1')&&(u.protocol==='http:'||u.protocol==='https:'))return origin;
-  if(u.protocol!=='https:')return '';
-  const base=baseDomain(env);if(u.hostname===base||u.hostname==='www.'+base)return origin;
-  for(const raw of String(env.ALLOWED_ORIGINS||'').split(',')){
-    const rule=raw.trim().toLowerCase();if(!rule)continue;
-    if(rule.startsWith('https://*.')){if(u.hostname.endsWith(rule.slice('https://*'.length)))return origin}
-    else if(rule===origin.toLowerCase())return origin;
-  }
-  return '';
-}
-function corsOrigin(req,env){return allowedOrigin(req.headers.get('origin')||'',env)}
-function withCors(req,env,res){
-  const origin=corsOrigin(req,env);if(!origin)return res;
-  const h=new Headers(res.headers);h.set('access-control-allow-origin',origin);h.append('vary','Origin');
-  return new Response(res.body,{status:res.status,statusText:res.statusText,headers:h});
-}
-function json(data,status=200,extra={}){
-  if(data&&data.ok===false&&data.error&&!data.code)data={...data,code:codeForStatus(status),message:data.message||data.error};
-  return new Response(JSON.stringify(data),{status,headers:{...JSON_HEADERS,...extra}});
-}
-function html(body,status=200,extra={}){return new Response(body,{status,headers:{...HTML_HEADERS,...extra}})}
-function redirect(location,status=302,extra={}){return new Response(null,{status,headers:{location,...extra}})}
 function now(){return new Date().toISOString()}
 function id(prefix='id'){return `${prefix}_${crypto.randomUUID().replace(/-/g,'')}`}
 function clone(v){return structuredClone(v)}
@@ -86,10 +57,7 @@ function cleanText(v,n=200){return String(v??'').trim().slice(0,n)}
 function sessionDays(env){const n=Number(env.SESSION_DAYS||30);return Number.isFinite(n)&&n>0?n:30}
 function inactiveDays(env){const n=Number(env.INACTIVE_DAYS||60);return Number.isFinite(n)&&n>0?n:60}
 function parseCookies(req){const out={};for(const part of String(req.headers.get('cookie')||'').split(';')){const i=part.indexOf('=');if(i<0)continue;const k=part.slice(0,i).trim(),v=part.slice(i+1).trim();if(k)out[k]=decodeURIComponent(v)}return out}
-function cookie(name,value,{maxAge=null,httpOnly=true}={}){let s=`${name}=${encodeURIComponent(value)}; Path=/; Secure; SameSite=Lax`;if(httpOnly)s+='; HttpOnly';if(maxAge!==null)s+=`; Max-Age=${maxAge}`;return s}
-function cookieHeaders(...items){const h=new Headers();for(const x of items.filter(Boolean))h.append('set-cookie',x);return h}
 async function bodyJson(req){try{return await req.json()}catch{throw new ApiError(400, 'VALIDATION_ERROR', '请求内容不是有效 JSON')}}
-function baseDomain(env){return String(env.BASE_DOMAIN||'onlyevent.cn').trim().toLowerCase()}
 function publicUrl(env,slug,req){const u=new URL(req.url),base=baseDomain(env);if(base&&!base.includes('example.com'))return `https://${slug}.${base}`;return `${u.origin}/s/${slug}`}
 function getSlugFromHost(req,env){const host=new URL(req.url).hostname.toLowerCase(),base=baseDomain(env);if(!base||base.includes('example.com')||!host.endsWith('.'+base))return '';const sub=host.slice(0,-(base.length+1));if(!sub||sub.includes('.')||RESERVED_SUBDOMAINS.has(sub))return '';return cleanSlug(sub)}
 
