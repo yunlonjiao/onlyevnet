@@ -44,6 +44,8 @@ import {collectionMeta} from '/v8/editor/studio-collection-meta.js';
 import {participationInspectorFields} from '/v8/editor/studio-participation-fields.js';
 import {shareDialogHtml} from '/v8/editor/studio-share-dialog-html.js';
 import {shareTextFor} from '/v8/editor/studio-share-text.js';
+import {createShareDialog} from '/v8/editor/studio-share-dialog.js';
+import {qrSvg} from '/v8/editor/studio-qr.js';
 import {ticketSettingsInspectorHtml} from '/v8/editor/studio-ticket-inspector-html.js';
 import {addressInspectorHtml} from '/v8/editor/studio-address-inspector-html.js';
 import {lifecycleInspectorHtml} from '/v8/editor/studio-lifecycle-inspector-html.js';
@@ -794,35 +796,14 @@ function bindRecapDialog(){
 }
 function openRecapDialog(){renderRecapDialog();if(!recapDialog.open)recapDialog.showModal()}
 const shareDialog=$('#shareDialog');
+const shareUi=createShareDialog({
+  $, getState:()=>state, getRecord:()=>publishRecord, shareDialog, PROMO_CHANNELS, esc,
+  checkpoint, save, send, bindInspectorStateInput, toast, qrSvg, downloadSvg, shareTextFor
+});
 function shareText(){return shareTextFor(state,publishRecord)}
-function renderShareDialog(){
- state.seo??={};
- const seo=state.seo,url=publishRecord?.url||'',host=url?url.replace(/^https?:\/\//,'').replace(/\/$/,''):'发布后显示网址';
- const title=seo.ogTitle||seo.pageTitle||state.eventName||'活动网站',desc=seo.ogDescription||seo.metaDescription||state.tagline||'',img=seo.ogImage||state.heroImage||'';
- $('#shareBody').innerHTML=shareDialogHtml(state,publishRecord,PROMO_CHANNELS,esc);
- const body=$('#shareBody');
- $('#shareMessage').value=shareText();
- if(url)qrSvg(url).then(svg=>{const box=$('#shareQr');if(!box)return;box.innerHTML=svg;$('#shareQrSave').onclick=()=>downloadSvg(svg,(state.eventName||'活动')+'-二维码.svg')}).catch(()=>{const box=$('#shareQr');if(box)box.textContent='二维码没能生成，请刷新后重试。'});
- body.querySelectorAll('[data-seo-field]').forEach(input=>{
-  bindInspectorStateInput(input,'seo.'+input.dataset.seoField,{clean:true});
-  input.addEventListener('input',()=>{const t=state.seo,card=body.querySelector('.share-card-text');if(!card)return;card.querySelector('b').textContent=t.ogTitle||t.pageTitle||state.eventName||'活动网站';card.querySelector('small').textContent=t.ogDescription||t.metaDescription||state.tagline||''});
- });
- const copy=async(text)=>{try{await navigator.clipboard.writeText(text);toast('已复制')}catch{toast('复制失败')}};
- body.querySelector('[data-share-copy-url]')?.addEventListener('click',()=>copy(url));
- body.querySelectorAll('[data-share-channel]').forEach(b=>b.addEventListener('click',()=>copy(url.replace(/\/$/,'')+'/?from='+b.dataset.shareChannel)));
- body.querySelector('[data-share-open]')?.addEventListener('click',()=>window.open(url,'_blank','noopener'));
- body.querySelector('[data-share-copy-text]')?.addEventListener('click',()=>copy($('#shareMessage').value));
- body.querySelector('[data-seo-image]')?.addEventListener('click',()=>{$('#imageInput').dataset.path='seo.ogImage';$('#imageInput').click()});
- body.querySelector('[data-seo-image-remove]')?.addEventListener('click',()=>{checkpoint();state.seo.ogImage='';save();send({type:'OE_REPLACE_STATE',state});renderShareDialog()});
-}
-// QR codes come from a small vendored library (MIT, qrcode-generator), loaded the first time it is needed.
-let qrLoader=null;
-function qrSvg(text){
- qrLoader??=new Promise((ok,fail)=>{if(window.qrcode)return ok();const el=document.createElement('script');el.src='/v8/vendor/qrcode.js';el.onload=ok;el.onerror=()=>{qrLoader=null;fail(new Error('qr'))};document.head.appendChild(el)});
- return qrLoader.then(()=>{const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:6,margin:3,scalable:true})});
-}
-function openShareDialog(){renderShareDialog();if(!shareDialog.open)shareDialog.showModal()}
-function openSeoInspector(){shareDialog.open?renderShareDialog():openShareDialog()}
+function renderShareDialog(){shareUi.render()}
+function openShareDialog(){shareUi.open()}
+function openSeoInspector(){shareUi.openSeo()}
 
 function openAddressInspector(){
  setInspector('基础信息','时间、场馆与导航',addressInspectorHtml(state,esc));
