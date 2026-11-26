@@ -40,6 +40,7 @@ import {streetManagerHtml} from '/v8/editor/studio-street-manager-html.js';
 import {productInspectorHtml} from '/v8/editor/studio-product-inspector-html.js';
 import {collectionMeta} from '/v8/editor/studio-collection-meta.js';
 import {shareDialogHtml} from '/v8/editor/studio-share-dialog-html.js';
+import {shareTextFor} from '/v8/editor/studio-share-text.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {canvasToBlob,downloadSvg} from '/v8/editor/studio-canvas-download.js';
 import {createContentCounts} from '/v8/editor/studio-content-counts.js';
@@ -806,10 +807,7 @@ function bindRecapDialog(){
 }
 function openRecapDialog(){renderRecapDialog();if(!recapDialog.open)recapDialog.showModal()}
 const shareDialog=$('#shareDialog');
-function shareText(){
- const url=publishRecord?.url||'',bits=[state.date,state.location].map(v=>String(v||'').trim()).filter(Boolean).join(' · ');
- return '我会去「'+(state.eventName||'活动')+'」！'+(bits?'\n'+bits:'')+(url?'\n活动网站：'+url:'');
-}
+function shareText(){return shareTextFor(state,publishRecord)}
 function renderShareDialog(){
  state.seo??={};
  const seo=state.seo,url=publishRecord?.url||'',host=url?url.replace(/^https?:\/\//,'').replace(/\/$/,''):'发布后显示网址';
