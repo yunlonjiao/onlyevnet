@@ -1126,7 +1126,7 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
   .inspector-header b{font-size:17px}
   .inspector-kicker{font-size:11px}
   .inspector-body label,.inspector-body .field>span,.inspector-body small{font-size:13px}
-  .inspector-body input:not([type=checkbox]):not([type=range]),.inspector-body select,.inspector-body textarea{font-size:14px;min-height:40px;border-radius:12px}
+  
   
 }
 @media(min-width:1001px){.item-fields label>span{font-size:13px;font-weight:700;color:#55525f}}

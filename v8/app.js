@@ -393,6 +393,8 @@ function send(message){if(frameReady&&iframe?.contentWindow)iframe.contentWindow
 function setInspector(kicker,title,html){
  renderInspector(inspector,esc,kicker,title,html);
  inspector?.querySelectorAll('button').forEach(btn=>btn.classList.add('oe-inspector-action'));
+ inspector?.querySelectorAll('.inspector-body label').forEach(el=>el.classList.add('oe-inspector-row'));
+ inspector?.querySelectorAll('.inspector-body input,.inspector-body select,.inspector-body textarea').forEach(el=>el.classList.add('oe-inspector-control'));
 }
 function showInspectorEmpty(){
  setInspector('属性','未选择内容','<div class="inspector-empty"><div class="empty-visual"><span></span><span></span><span></span></div><b>从画布或左侧内容库选择内容</b></div>');
