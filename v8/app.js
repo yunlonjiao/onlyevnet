@@ -47,6 +47,7 @@ import {addressInspectorHtml} from '/v8/editor/studio-address-inspector-html.js'
 import {lifecycleInspectorHtml} from '/v8/editor/studio-lifecycle-inspector-html.js';
 import {heroTitleInspectorHtml} from '/v8/editor/studio-hero-title-inspector-html.js';
 import {taglineEditorHtml,fieldEditorHtml} from '/v8/editor/studio-field-inspector-html.js';
+import {PALETTES} from '/v8/editor/studio-palettes.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {canvasToBlob,downloadSvg} from '/v8/editor/studio-canvas-download.js';
@@ -833,16 +834,6 @@ function openSeoInspector(){shareDialog.open?renderShareDialog():openShareDialog
 function openAddressInspector(){
  setInspector('基础信息','时间、场馆与导航',addressInspectorHtml(state,esc));
  const tplId=(activeTemplate?.id||'');
- const PALETTES={
-  '01':[['original','原色'],['ice','冷蓝'],['cream','奶油棕']],
-  '02':[['original','原色'],['blue','灰蓝'],['sand','暖砂']],
-  '03':[['original','原色'],['matcha','抹茶'],['pink','藕粉']],
-  '04':[['original','原色'],['gray','冷灰'],['wine','酒红']],
-  '05':[['warm','原色'],['ice','雾蓝'],['forest','森绿'],['mauve','沙紫']],
-  '06':[['classic','原色'],['ice','冷蓝'],['brick','砖红']],
-  '07':[['original','原色'],['mint','薄荷'],['sakura','樱粉']],
-  '08':[['original','原色'],['sky','星空蓝'],['butter','奶油黄']]
- };
  const num=(tplId.match(/^0\d/)||[])[0];
  if(num&&PALETTES[num]){
   const key="palette"+num;
