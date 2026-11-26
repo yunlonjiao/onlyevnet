@@ -37,6 +37,7 @@ import {customPageRowsHtml} from '/v8/editor/studio-custom-page-rows.js';
 import {customPageItemInspectorHtml} from '/v8/editor/studio-custom-page-item-html.js';
 import {customPageSettingsHtml} from '/v8/editor/studio-custom-page-settings-html.js';
 import {customPageItemsPanelHtml} from '/v8/editor/studio-custom-page-items-html.js';
+import {customPageNavHtml} from '/v8/editor/studio-custom-page-nav-html.js';
 import {streetManagerHtml} from '/v8/editor/studio-street-manager-html.js';
 import {productInspectorHtml} from '/v8/editor/studio-product-inspector-html.js';
 import {collectionMeta} from '/v8/editor/studio-collection-meta.js';
@@ -586,7 +587,7 @@ function renderPageContentNav(page,{openDefault=true}={}){
  if(title)title.textContent=pageLabel(page)+'内容';
  if(!nav)return;
  if(custom){
-   nav.innerHTML='<button type="button" data-custom-page-nav="settings"><span>页面设置</span></button><button type="button" data-custom-page-nav="items"><span>展示内容</span><b>'+String((custom.items||[]).length)+'</b></button>';
+   nav.innerHTML=customPageNavHtml((custom.items||[]).length);
    nav.querySelector('[data-custom-page-nav="settings"]')?.addEventListener('click',()=>{nav.querySelectorAll('[data-custom-page-nav]').forEach(x=>x.classList.toggle('active',x.dataset.customPageNav==='settings'));if(panel)panel.innerHTML='';openCustomPageSettings(custom.id)});
    nav.querySelector('[data-custom-page-nav="items"]')?.addEventListener('click',()=>{nav.querySelectorAll('[data-custom-page-nav]').forEach(x=>x.classList.toggle('active',x.dataset.customPageNav==='items'));openCustomPageItemsManager(custom.id)});
    if(panel)panel.innerHTML='<div class="sidebar-content-empty">选择页面设置或展示内容。</div>';
