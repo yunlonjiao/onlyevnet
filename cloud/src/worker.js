@@ -40,8 +40,8 @@ self.addEventListener('fetch',e=>{
 const VISITOR_SW_HEADERS={'content-type':'application/javascript; charset=utf-8','cache-control':'no-cache','service-worker-allowed':'/','x-content-type-options':'nosniff'};
 const RESERVED_SUBDOMAINS=new Set(['www','publisher','api','admin','app']);
 
-function corsOrigin(req,env){
-  const origin=req.headers.get('origin')||'';if(!origin)return '';
+function allowedOrigin(origin,env){
+  if(!origin)return '';
   let u;try{u=new URL(origin)}catch{return ''}
   if((u.hostname==='localhost'||u.hostname==='127.0.0.1')&&(u.protocol==='http:'||u.protocol==='https:'))return origin;
   if(u.protocol!=='https:')return '';
@@ -53,6 +53,7 @@ function corsOrigin(req,env){
   }
   return '';
 }
+function corsOrigin(req,env){return allowedOrigin(req.headers.get('origin')||'',env)}
 function withCors(req,env,res){
   const origin=corsOrigin(req,env);if(!origin)return res;
   const h=new Headers(res.headers);h.set('access-control-allow-origin',origin);h.append('vary','Origin');
@@ -612,8 +613,9 @@ export default {
       if(path.startsWith('/media/'))return await serveMedia(req,env,decodeURIComponent(path.slice('/media/'.length)));
       if(path.startsWith('/api/')){
         if(!['GET','HEAD','OPTIONS'].includes(req.method)){
-          const origin=req.headers.get('origin');
-          if(origin && !corsOrigin(req,env)) throw new ApiError(403, 'FORBIDDEN', '跨站请求被拒绝');
+          let source=req.headers.get('origin')||'';
+          if(!source&&req.headers.get('referer')){try{source=new URL(req.headers.get('referer')).origin}catch{}}
+          if(source && !allowedOrigin(source,env)) throw new ApiError(403, 'FORBIDDEN', '跨站请求被拒绝');
         }
         return withCors(req,env,await handleApi(req,env,path));
       }

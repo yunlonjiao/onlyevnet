@@ -45,6 +45,8 @@ test('CSRF origin check rejects cross-site writes',async()=>{
  assert.equal(r.data.code,'FORBIDDEN');
  const ok=await call(env,'/api/projects',{method:'POST',body:{name:'ok'},origin:PAGES});
  assert.notEqual(ok.status,403);
+ const referer=await worker.fetch(new Request('https://convention-publisher.onlyevents.workers.dev/api/projects',{method:'POST',headers:{referer:'https://evil.example/page',origin:''},body:JSON.stringify({name:'ref'})}),env);
+ assert.equal(referer.status,403);
 });
 
 test('unauthenticated publish returns JSON 401 with CORS instead of error 1101',async()=>{
