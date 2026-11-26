@@ -1926,3 +1926,6 @@ body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{
 #mNativeApp .mn-screen:has(.reference-panel) .item-tools{margin-right:0!important;padding-right:0!important}
 
 
+
+/* native view sidebar: keep DOM, remove glass layer */
+body.m-native-view .sidebar{backdrop-filter:none;-webkit-backdrop-filter:none;background:transparent;pointer-events:none}
