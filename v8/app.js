@@ -34,6 +34,7 @@ import {PAGE_CONTENT_CONFIG,COLLECTION_PAGE,INLINE_HOME_COLLECTIONS} from '/v8/e
 import {collectionStudioPageFor} from '/v8/editor/studio-collection-page.js';
 import {buildStarterItems,customPagePreset} from '/v8/editor/studio-custom-page.js';
 import {customPageRowsHtml} from '/v8/editor/studio-custom-page-rows.js';
+import {customPageItemInspectorHtml} from '/v8/editor/studio-custom-page-item-html.js';
 import {createContentCounts} from '/v8/editor/studio-content-counts.js';
 import {pageContentItems} from '/v8/editor/studio-page-nav.js';
 import {pageNavHtml} from '/v8/editor/studio-page-nav-html.js';
@@ -438,15 +439,7 @@ function openCustomPageItemInspector(pageId,index){
  const pi=customPageIndex(pageId),page=state.customPages?.[pi],item=page?.items?.[index];if(pi<0||!page||!item)return;
  const preset=customPageFieldLabels(page),path='customPages.'+pi+'.items.'+index;
  const image=item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>';
- setInspector('专题内容',preset.itemTitle+' · '+(item.title||String(index+1)),
-   '<div class="item-inspector-head"><div><span>'+esc(page.title)+'</span><b>'+String(index+1).padStart(2,'0')+' / '+String(page.items.length).padStart(2,'0')+'</b></div><div class="item-tools"><button data-custom-item-op="up" '+(index===0?'disabled':'')+'>↑</button><button data-custom-item-op="down" '+(index===page.items.length-1?'disabled':'')+'>↓</button></div></div>'+
-   '<div class="item-fields">'+
-   '<label><span>'+esc(preset.titleLabel)+'</span><input data-custom-item-field="title" value="'+esc(item.title||'')+'"></label>'+
-   '<label><span>'+esc(preset.metaLabel)+'</span><input data-custom-item-field="meta" value="'+esc(item.meta||'')+'"></label>'+
-   '<label><span>'+esc(preset.textLabel)+'</span><textarea data-custom-item-field="text" rows="4">'+esc(item.text||'')+'</textarea></label>'+
-   '<label><span>外部链接（可选）</span><input data-custom-item-field="url" value="'+esc(item.url||'')+'"></label>'+
-   '</div><div class="item-media"><span>展示图片</span><div class="item-media-row">'+image+'<div><button type="button" data-custom-item-image>选择 / 裁剪</button>'+(item.image?'<button type="button" class="ghost" data-custom-item-image-remove>移除</button>':'')+'</div></div></div>'+
-   '<div class="item-actions"><button data-custom-item-op="add">＋ 添加</button><button data-custom-item-op="delete" class="danger">删除</button></div>');
+ setInspector('专题内容',preset.itemTitle+' · '+(item.title||String(index+1)),customPageItemInspectorHtml(page,item,index,preset,esc));
  inspector.querySelectorAll('[data-custom-item-field]').forEach(input=>{
    let started=false;
    input.addEventListener('input',e=>{if(!started){checkpoint();started=true}item[e.target.dataset.customItemField]=e.target.value;save();send({type:'OE_REPLACE_STATE',state});openCustomPageItemsManager(pageId,index)});
