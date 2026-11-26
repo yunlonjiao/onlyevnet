@@ -255,8 +255,8 @@ background:#f4f2f7;border:0;border-left:0}
   outline:none;
   transition:border .15s ease,box-shadow .15s ease;
 }
-.inspector input:focus,.inspector textarea:focus,.inspector select:focus{border-color:#a895ff;box-shadow:0 0 0 3px rgba(124,92,255,.10)}
-.inspector textarea{min-height:106px;resize:vertical;line-height:1.55}
+.studio-desktop .inspector input:focus,.studio-desktop .inspector textarea:focus,.studio-desktop .inspector select:focus{border-color:#a895ff;box-shadow:0 0 0 3px rgba(124,92,255,.10)}
+.studio-desktop .inspector textarea{min-height:106px;resize:vertical;line-height:1.55}
 .inspector button{border:1px solid #dedee5;background:#fff;border-radius:10px;padding:9px 12px;cursor:pointer;font-size:12px;font-weight:750;transition:.15s ease}
 .inspector button:hover{border-color:#cfcfd8;background:#f8f8fa}
 .inspector button.danger{color:#b42318;border-color:#f0c7c2;background:#fffafa}
