@@ -27,11 +27,15 @@ import { askPublic, askSubmit, askOverview, askManage, askQuestionUpdate, askWid
 import { countView, projectStats } from './stats.js';
 import { listFeedback, sendFeedback, accountOverview } from './overview.js';
 import { cleanupInactiveSites } from './cleanup.js';
+import { accountStatus, sessionInfo } from './auth/status.js';
+import { listProjects } from './projects/list.js';
+import { listSites, systemLinks } from './sites/list.js';
+import { handleApi } from './routes/api.js';
+import { APP_VERSION } from './core/version.js';
 import { register, login, recoverAccount, rotateRecoveryCode, changePassword, deleteAccount } from './auth/account.js';
 import { serveSlug } from './sites/serve.js';
 import { getConfig, putConfig, resetConfig } from './projects/config.js';
 
-const APP_VERSION='7.27.0';
 // D1 rows are capped at 2,000,000 bytes; leave room for the other columns.
 /* Offline support for visitor sites: the page and its images are kept after a first visit,
    so the site still opens at a venue with no signal. Online visits always fetch the newest version. */
@@ -63,85 +67,6 @@ const RESERVED_SUBDOMAINS=new Set(['www','publisher','api','admin','app']);
 // Recovery codes: 12 characters from an alphabet without 0/O/1/I, shown as XXXX-XXXX-XXXX (60 bits).
 // Codes issued before this change (24 characters, case-sensitive) still verify as typed.
 function getSlugFromHost(req,env){const host=new URL(req.url).hostname.toLowerCase(),base=baseDomain(env);if(!base||base.includes('example.com')||!host.endsWith('.'+base))return '';const sub=host.slice(0,-(base.length+1));if(!sub||sub.includes('.')||RESERVED_SUBDOMAINS.has(sub))return '';return cleanSlug(sub)}
-
-async function listProjects(req,env){const u=await requireUser(req,env),active=currentProjectId(req),trash=new URL(req.url).searchParams.get('trash')==='1';const {results=[]}=await env.DB.prepare(`SELECT p.id,p.name,p.user_id,p.local_project_id,p.config_json,p.created_at,p.updated_at,s.id AS site_id,ps.published_at,ps.deleted_at,s.status AS site_status,s.slug AS site_slug FROM projects p LEFT JOIN project_state ps ON ps.project_id=p.id LEFT JOIN project_sites m ON m.project_id=p.id LEFT JOIN sites s ON s.id=m.site_id WHERE (p.user_id=? OR EXISTS(SELECT 1 FROM project_members pm WHERE pm.project_id=p.id AND pm.user_id=?)) AND ${trash?'ps.deleted_at IS NOT NULL':'ps.deleted_at IS NULL'} ORDER BY ${trash?'ps.deleted_at':'p.updated_at'} DESC`).bind(u.id,u.id).all();return json({ok:true,projects:results.map(r=>{let c={};try{c=JSON.parse(r.config_json||'{}')}catch{}const publishedAt=r.published_at||null,hasChanges=!!publishedAt&&new Date(r.updated_at).getTime()>new Date(publishedAt).getTime();return {id:r.id,name:r.name,shared:r.user_id!==u.id,localProjectId:r.local_project_id||null,eventDate:c.eventDate||'',eventLocation:c.eventLocation||'',heroImage:c.heroImage||'',siteId:r.site_id||null,visitorSiteUrl:r.site_slug?publicUrl(env,r.site_slug,req):(c.visitorSiteUrl||''),eventTemplate:c.eventTemplate||'blank',templateId:typeof c.templateId==='string'?c.templateId:'',config:c,createdAt:r.created_at,updatedAt:r.updated_at,publishedAt,deletedAt:r.deleted_at||null,siteStatus:r.site_status||null,publishState:r.site_status==='inactive'?'inactive':!publishedAt?'draft':hasChanges?'changes':'published',active:r.id===active}})})}
-
-async function listSites(req,env){const u=await requireUser(req,env),p=await projectFor(req,env,u);if(!p)return json({ok:true,sites:[]});const site=await currentProjectSite(req,env,u,p);if(!site)return json({ok:true,sites:[]});return json({ok:true,sites:[{id:site.id,project_id:p.id,slug:site.slug,title:site.title,size_bytes:site.size_bytes,status:site.status,last_viewed_at:site.last_viewed_at,removed_at:site.removed_at,created_at:site.created_at,updated_at:site.updated_at,url:publicUrl(env,site.slug,req)}]})}
-
-async function accountStatus(req,env){const u=await authUser(req,env);const row=await env.DB.prepare('SELECT COUNT(*) AS n FROM users').first();return json({ok:true,initialized:Number(row?.n||0)>0,authenticated:!!u,username:u?.username||null})}
-async function sessionInfo(req,env){const u=await authUser(req,env);return json(u?{authenticated:true,role:'organizer',username:u.username,boothId:null}:{authenticated:false})}
-async function systemLinks(req,env){const u=await requireUser(req,env),p=await projectFor(req,env,u),site=p?await currentProjectSite(req,env,u,p):null;let cfg={};try{cfg=JSON.parse(p?.config_json||'{}')}catch{}const visitor=site?publicUrl(env,site.slug,req):(cfg.visitorSiteUrl||new URL(req.url).origin+'/');return json({ok:true,visitor,autoVisitor:visitor,scope:'public',publicUrl:visitor,customVisitor:!!site})}
-
-async function handleApi(req,env,path){
-  if(path==='/api/health'&&req.method==='GET')return json({ok:true,version:APP_VERSION,app:'onlyevent',baseDomain:baseDomain(env)});
-  if(path==='/api/account/status'&&req.method==='GET')return accountStatus(req,env);
-  if((path==='/api/account/register'||path==='/api/auth/register')&&req.method==='POST')return register(req,env);
-  if((path==='/api/account/login'||path==='/api/auth/login')&&req.method==='POST')return login(req,env);
-  if(path==='/api/account/recover'&&req.method==='POST')return recoverAccount(req,env);
-  if(path==='/api/account/recovery-code'&&req.method==='POST')return rotateRecoveryCode(req,env);
-  if(path==='/api/account/password'&&req.method==='POST')return changePassword(req,env);
-  if(path==='/api/account/delete'&&req.method==='POST')return deleteAccount(req,env);
-  if((path==='/api/logout'||path==='/api/auth/logout')&&req.method==='POST')return logout(req,env);
-  if(path==='/api/me'&&req.method==='GET'){const u=await requireUser(req,env);return json({ok:true,user:{id:u.id,username:u.username}})}
-  if(path==='/api/session'&&req.method==='GET')return sessionInfo(req,env);
-  if(path==='/api/projects'&&req.method==='GET')return listProjects(req,env);
-  if(path==='/api/projects'&&req.method==='POST')return createProject(req,env);
-  if(path==='/api/projects/trash'&&req.method==='GET')return listProjects(req,env);
-  if(path==='/api/overview'&&req.method==='GET')return accountOverview(req,env);
-  if(path==='/api/feedback'&&req.method==='POST')return sendFeedback(req,env);
-  if(path==='/api/feedback'&&req.method==='GET')return listFeedback(req,env);
-  let m=path.match(/^\/api\/projects\/([^/]+)\/stats$/);
-  if(m&&req.method==='GET')return projectStats(req,env,decodeURIComponent(m[1]));
-  m=path.match(/^\/api\/signup\/([a-f0-9]+)$/);
-  if(m&&req.method==='GET')return signupInfo(req,env,m[1]);
-  if(m&&req.method==='POST')return signupSubmit(req,env,m[1]);
-  m=path.match(/^\/api\/projects\/([^/]+)\/signups$/);
-  if(m&&req.method==='GET')return signupList(req,env,decodeURIComponent(m[1]));
-  if(m&&req.method==='POST')return signupCreate(req,env,decodeURIComponent(m[1]));
-  m=path.match(/^\/api\/projects\/([^/]+)\/signups\/([^/]+)$/);
-  if(m&&(req.method==='POST'||req.method==='DELETE'))return signupUpdate(req,env,decodeURIComponent(m[1]),decodeURIComponent(m[2]));
-  m=path.match(/^\/api\/projects\/([^/]+)\/signups\/([^/]+)\/entries$/);
-  if(m&&req.method==='GET')return signupEntries(req,env,decodeURIComponent(m[1]),decodeURIComponent(m[2]));
-  m=path.match(/^\/api\/projects\/([^/]+)\/signups\/([^/]+)\/entries\/([^/]+)$/);
-  if(m&&(req.method==='POST'||req.method==='DELETE'))return signupEntryUpdate(req,env,decodeURIComponent(m[1]),decodeURIComponent(m[2]),decodeURIComponent(m[3]));
-  m=path.match(/^\/api\/ask\/([a-zA-Z0-9_-]+)$/);
-  if(m&&req.method==='GET')return askPublic(req,env,m[1]);
-  if(m&&req.method==='POST')return askSubmit(req,env,m[1]);
-  m=path.match(/^\/api\/projects\/([^/]+)\/questions$/);
-  if(m&&req.method==='GET')return askOverview(req,env,decodeURIComponent(m[1]));
-  if(m&&req.method==='POST')return askManage(req,env,decodeURIComponent(m[1]));
-  m=path.match(/^\/api\/projects\/([^/]+)\/questions\/([^/]+)$/);
-  if(m&&(req.method==='POST'||req.method==='DELETE'))return askQuestionUpdate(req,env,decodeURIComponent(m[1]),decodeURIComponent(m[2]));
-  m=path.match(/^\/api\/collect\/([a-f0-9]+)(\/image)?$/);
-  if(m&&m[2]&&req.method==='POST')return collectImage(req,env,m[1]);
-  if(m&&!m[2]&&req.method==='GET')return collectInfo(req,env,m[1]);
-  if(m&&!m[2]&&req.method==='POST')return collectSubmit(req,env,m[1]);
-  m=path.match(/^\/api\/projects\/([^/]+)\/collect$/);
-  if(m&&req.method==='GET')return collectOverview(req,env,decodeURIComponent(m[1]));
-  if(m&&req.method==='POST')return collectManage(req,env,decodeURIComponent(m[1]));
-  m=path.match(/^\/api\/projects\/([^/]+)\/collect\/entries\/([^/]+)$/);
-  if(m&&(req.method==='POST'||req.method==='DELETE'))return collectEntryUpdate(req,env,decodeURIComponent(m[1]),decodeURIComponent(m[2]));
-  m=path.match(/^\/api\/projects\/([^/]+)\/open$/);if(m&&req.method==='POST')return openProject(req,env,decodeURIComponent(m[1]));
-  m=path.match(/^\/api\/projects\/([^/]+)\/duplicate$/);if(m&&req.method==='POST')return duplicateProject(req,env,decodeURIComponent(m[1]));
-  m=path.match(/^\/api\/projects\/([^/]+)\/restore$/);if(m&&req.method==='POST')return restoreProject(req,env,decodeURIComponent(m[1]));
-  m=path.match(/^\/api\/projects\/([^/]+)\/purge$/);if(m&&req.method==='DELETE')return purgeProject(req,env,decodeURIComponent(m[1]));
-  m=path.match(/^\/api\/projects\/([^/]+)\/members$/);if(m&&req.method==='GET')return listProjectMembers(req,env,decodeURIComponent(m[1]));if(m&&req.method==='POST')return addProjectMember(req,env,decodeURIComponent(m[1]));
- m=path.match(/^\/api\/projects\/([^/]+)\/members\/([^/]+)$/);if(m&&req.method==='DELETE')return removeProjectMember(req,env,decodeURIComponent(m[1]),decodeURIComponent(m[2]));
- m=path.match(/^\/api\/projects\/([^/]+)$/);if(m&&req.method==='DELETE')return deleteProject(req,env,decodeURIComponent(m[1]));
-  if(path==='/api/config'&&req.method==='GET')return getConfig(req,env);
-  if(path==='/api/config'&&req.method==='PUT')return putConfig(req,env);
-  if(path==='/api/public/config'&&req.method==='GET')return getConfig(req,env,true);
-  if(path==='/api/reset'&&req.method==='POST')return resetConfig(req,env);
-  if(path==='/api/upload'&&req.method==='POST')return uploadImage(req,env);
-  if(path==='/api/system/links'&&req.method==='GET')return systemLinks(req,env);
-  if(path==='/api/sites'&&req.method==='GET')return listSites(req,env);
-  if(path==='/api/sites'&&req.method==='POST')return createSite(req,env);
-  m=path.match(/^\/api\/sites\/([^/]+)\/stages$/);if(m&&req.method==='PUT')return putSiteStages(req,env,decodeURIComponent(m[1]));
-  m=path.match(/^\/api\/sites\/([^/]+)\/versions$/);if(m&&req.method==='GET')return listSiteVersions(req,env,decodeURIComponent(m[1]));
-  m=path.match(/^\/api\/sites\/([^/]+)\/rollback\/([^/]+)$/);if(m&&req.method==='POST')return rollbackSite(req,env,decodeURIComponent(m[1]),decodeURIComponent(m[2]));
-  m=path.match(/^\/api\/sites\/([^/]+)$/);if(m&&req.method==='PUT')return updateSite(req,env,decodeURIComponent(m[1]));if(m&&req.method==='DELETE')return deleteSite(req,env,decodeURIComponent(m[1]));
-  return json({ok:false,code:'NOT_FOUND',message:'API 不存在',error:'API 不存在'},404);
-}
 
 export default {
   async scheduled(event,env,ctx){ctx.waitUntil(cleanupInactiveSites(env));},

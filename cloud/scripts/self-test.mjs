@@ -8,7 +8,7 @@ const walk=(dir)=>fs.readdirSync(path.join(cloud,dir),{withFileTypes:true}).flat
 const source=walk('src').join('\n');
 let failed=0;
 const check=(ok,msg)=>{console.log((ok?'✓ ':'✗ ')+msg);if(!ok)failed++};
-check(/const APP_VERSION='7\.\d+\.\d+'/.test(worker),'Worker declares a version');
+check(/APP_VERSION='7\.\d+\.\d+'/.test(source),'Worker declares a version');
 for(const t of ['users','sessions','account_recovery','projects','sites','project_state','site_versions','site_aliases','project_sites','project_media','rate_limits'])check(schema.includes('CREATE TABLE IF NOT EXISTS '+t),'schema table '+t);
 check(schema.includes('project_id TEXT PRIMARY KEY')&&schema.includes('site_id TEXT NOT NULL UNIQUE'),'one project <-> one site constraints');
 check(source.includes("!['jpg','jpeg','png','webp','gif'].includes(ext)"),'SVG upload is rejected');
