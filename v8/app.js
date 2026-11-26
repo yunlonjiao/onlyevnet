@@ -46,6 +46,7 @@ import {ticketSettingsInspectorHtml} from '/v8/editor/studio-ticket-inspector-ht
 import {addressInspectorHtml} from '/v8/editor/studio-address-inspector-html.js';
 import {lifecycleInspectorHtml} from '/v8/editor/studio-lifecycle-inspector-html.js';
 import {heroTitleInspectorHtml} from '/v8/editor/studio-hero-title-inspector-html.js';
+import {taglineEditorHtml,fieldEditorHtml} from '/v8/editor/studio-field-inspector-html.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {canvasToBlob,downloadSvg} from '/v8/editor/studio-canvas-download.js';
@@ -878,14 +879,14 @@ function openFieldInspector(path){
  if(path==='eventStatus'){openLifecycleInspector();return}
  if(path.startsWith('seo.')){openSeoInspector();return}
  if(path==='tagline'&&state.templateId==='02-scrapbook'){
-   setInspector('活动简介','简介正文','<label>活动介绍<textarea id="fieldInput" data-path="tagline">'+esc(state.tagline||'')+'</textarea></label>');
+   setInspector('活动简介','简介正文',taglineEditorHtml(state.tagline,esc));
    const input=$('#fieldInput');fitTextarea(input);let started=false;
    input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep('tagline',e.target.value);send({type:'OE_PATCH_FIELD',path:'tagline',value:e.target.value});fitTextarea(e.target)});
    input.addEventListener('blur',()=>save());return;
  }
  if(path.startsWith('heroTitle')||['heroImage','mobileHeroImage'].includes(path)){openHeroTitleInspector();return}
  const value=getDeep(path);
- setInspector('内容','编辑文字','<label>内容<textarea id="fieldInput" data-path="'+esc(path)+'">'+esc(value)+'</textarea></label>');
+ setInspector('内容','编辑文字',fieldEditorHtml(path,value,esc));
  const input=$('#fieldInput');let started=false;fitTextarea(input);
  input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep(path,e.target.value);send({type:'OE_PATCH_FIELD',path,value:e.target.value});fitTextarea(e.target)});
  input.addEventListener('blur',e=>{const cleaned=cleanValue(e.target.value);if(cleaned!==e.target.value){e.target.value=cleaned;setDeep(path,cleaned);send({type:'OE_PATCH_FIELD',path,value:cleaned});fitTextarea(e.target)}});
