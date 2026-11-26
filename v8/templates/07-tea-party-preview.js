@@ -314,7 +314,7 @@ ${coreSection('activities',{ey:'AGENDA',title:'当天流程'})}
 ${coreSection('tickets',{ey:'ENTRY',title:'参加方式'})}
 ${ownMapSection('tp',{ey:'PLACE',title:'场地'})}
 ${coreSection('guests',{ey:'MEMBERS',title:'同席的人'})}
-${coreSection('guide',{ey:'NOTICE',title:'参加须知'})})}
+${coreSection('guide',{ey:'NOTICE',title:'参加须知'})}
 ${ownCommunitySection('tp',{ey:'CONTACT',title:'联系与交流'})}
 ${ownSponsorsSection('tp',{ey:'THANKS',title:'合作支持'})}
 </div></main>
