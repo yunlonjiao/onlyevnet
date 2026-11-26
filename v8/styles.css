@@ -1936,3 +1936,7 @@ body.m-native-view .sidebar{backdrop-filter:none;-webkit-backdrop-filter:none;ba
 
 /* lifecycle card shape overrides generic inspector pill */
 .inspector-body .lifecycle-grid button{border-radius:11px}
+
+/* Inspector action namespace: desktop root vs mobile shell */
+.studio-desktop .inspector-body .oe-inspector-action{--oe-ui-scope:desktop}
+#mNativeApp .inspector-body .oe-inspector-action{--oe-ui-scope:mobile}
