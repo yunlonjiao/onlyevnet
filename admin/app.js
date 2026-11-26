@@ -163,7 +163,6 @@ function renderBin(){
     card.dataset.projectId=project.id;
     card.querySelector('.project-card-title b').textContent=project.name||'未命名活动';
      if(project.shared){const sb=document.createElement('span');sb.className='shared-badge';sb.textContent='共享';card.querySelector('.project-card-title b').after(sb)}
-     if(project.shared){const sb=document.createElement('span');sb.className='shared-badge';sb.textContent='共享';card.querySelector('.project-card-title b').after(sb)}
     card.querySelector('.project-card-title span').textContent='还剩 '+daysLeft(project)+' 天自动清除';
     card.querySelector('.project-template').textContent=getTemplate(project.templateId)?.label||project.templateId||'模板';
     card.querySelector('.project-time').textContent='删除于 '+formatTime(project.deletedAt);

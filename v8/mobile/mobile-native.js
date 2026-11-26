@@ -116,16 +116,13 @@
       const body = screens.fields.querySelector('.inspector-body');
       if (!body) return;
       const mobileOnly = /手机主图|手机 KV|手机焦点|手机端主图/;
-      body.querySelectorAll('label,.item-media,p,.inspector-note').forEach((el) => { if (mobileOnly.test(el.textContent || '')) el.remove(); });
+      body.querySelectorAll('label,.item-media,p,.inspector-note').forEach((el) => {
+        if (mobileOnly.test(el.textContent || '')) { el.style.setProperty('display', 'none', 'important'); el.setAttribute('aria-hidden', 'true'); }
+      });
     }
     function localizeFields() {
       showAllFields();
       simplifyForPhone();
-      if (isPhone()) {
-        screens.fields.querySelectorAll('.inspector-body label').forEach((label) => {
-          if (/手机主图|手机 KV/.test(label.textContent || '')) label.remove();
-        });
-      }
       screens.fields.querySelectorAll('.inspector-body span,.inspector-body label,.inspector-body p').forEach((el) => {
         if (!el.textContent || el.children.length) return;
         el.textContent = el.textContent.replace(/手机主图（可选）/g, '主图').replace(/桌面 KV/g, '主图').replace(/手机 KV/g, '主图').replace(/封面 KV/g, '封面图').replace(/\bKV\b/g, '主图');
