@@ -15,6 +15,7 @@ import {esc} from '/v8/editor/studio-format.js';
 import {readJson,writeJson,removeKey} from '/v8/editor/studio-storage.js';
 import {upsertAdminProject} from '/v8/editor/studio-admin-cache.js';
 import {createToast} from '/v8/editor/studio-toast.js';
+import {revealStages,stateAtStage} from '/v8/editor/studio-stage-state.js';
 import {loadPublishRecord,persistPublishRecord,clearPublishRecord} from '/v8/editor/studio-publish-record.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -281,22 +282,10 @@ const exportWaiters=[];
 let pendingStages=null;
 const STAGE_MODULES=[['booths','社团'],['activities','活动'],['guests','嘉宾'],['guide',guideLabelText()]];
 const stageModuleList=()=>STAGE_MODULES.filter(([k])=>!(activeTemplate.studioPages?.hidden||[]).includes(k)&&state.modules?.[k]!==false);
-function revealStages(){
- const valid=new Set(stageModuleList().map(m=>m[0]));
- return (state.reveal?.stages||[]).map(s=>({...s,modules:(s.modules||[]).filter(k=>valid.has(k))})).filter(s=>s.modules.length&&s.at&&!Number.isNaN(new Date(s.at).getTime())).sort((a,b)=>a.at.localeCompare(b.at));
-}
-function stateAtStage(stages,k){
- const copy=structuredClone(state);copy.modules={...(copy.modules||{})};
- // A page that is not public yet loses its data as well as its switch: the exported file must not contain it.
- const strip={booths:c=>{c.booths=[]},activities:c=>{c.participation=[];c.schedule=[]},guests:c=>{c.guests=[]},guide:c=>{c.guide={...(c.guide||{}),items:[]}}};
- const revealed=new Set(stages.slice(0,k).flatMap(s=>s.modules));
- stages.forEach(s=>s.modules.forEach(m=>{if(revealed.has(m))return;copy.modules[m]=false;strip[m]?.(copy)}));
- return copy;
-}
 function exportHtmlFor(st){return new Promise(ok=>{exportWaiters.push(ok);send({type:'OE_REPLACE_STATE',state:st});send({type:'OE_EXPORT_HTML'})})}
 async function exportStagedSite(){
- const stages=revealStages(),htmls=[];
- try{for(let k=0;k<=stages.length;k++)htmls.push(await exportHtmlFor(stateAtStage(stages,k)))}
+ const stages=revealStages(state,stageModuleList()),htmls=[];
+ try{for(let k=0;k<=stages.length;k++)htmls.push(await exportHtmlFor(stateAtStage(state,stages,k)))}
  finally{send({type:'OE_REPLACE_STATE',state})}
  pendingStages=stages.map((s,i)=>({at:new Date(s.at).toISOString(),html:htmls[i+1]}));
  publishGeneratedHtml(htmls[0]);
@@ -1960,7 +1949,7 @@ $('#publishClose').onclick=()=>publishDialog.close();
 $('#publishCancel').onclick=()=>publishDialog.close();
 publishPrimary.onclick=()=>{
  publishIntent='site';
- if(revealStages().length){setPublishBusy(true,'正在生成各批页面…');exportStagedSite();return}
+ if(revealStages(state,stageModuleList()).length){setPublishBusy(true,'正在生成各批页面…');exportStagedSite();return}
  pendingStages=publishRecord?.staged?[]:null;send({type:'OE_EXPORT_HTML'});
 };
 const __dlBtn=$('#publishDownload');if(__dlBtn)__dlBtn.onclick=()=>{publishIntent='download';send({type:'OE_EXPORT_HTML'})};
