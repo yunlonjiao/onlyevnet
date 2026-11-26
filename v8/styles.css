@@ -242,7 +242,7 @@ background:#f4f2f7;border:0;border-left:0}
 .inspector-badge{font-size:8px;font-weight:900;letter-spacing:.08em;color:#1c8c5a;background:#eaf8f1;border:1px solid #d7f0e3;padding:4px 6px;border-radius:999px}
 
 .inspector h3{margin:18px 2px 8px;font-size:12px}
-.inspector input,.inspector textarea,.inspector select{
+.studio-desktop .inspector input,.studio-desktop .inspector textarea,.studio-desktop .inspector select{
   width:100%;
   border:1px solid #dedee5;
   border-radius:11px;
