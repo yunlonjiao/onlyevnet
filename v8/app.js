@@ -45,6 +45,7 @@ import {createModuleControls} from '/v8/editor/studio-module-controls.js';
 import {setPageContentActive} from '/v8/editor/studio-page-content-active.js';
 import {optionalPageHtml} from '/v8/editor/studio-optional-page-html.js';
 import {bannerInspectorHtml,trafficInspectorHtml} from '/v8/editor/studio-page-inspector-html.js';
+import {coverKvHtml,entryAnimationHtml} from '/v8/editor/studio-entry-animation-html.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -501,18 +502,14 @@ function syncCanvasSelection(path){
 function openEntryAnimationInspector(){
   if(state.templateId==='04-creator-catalogue'){
     const v=String(state.heroImage||'').trim();
-    setInspector('入场动画','封面图',
-      '<div class="entry-animation-inspector"><div class="item-media"><span>封面 KV（贴合书页 5:7）</span><div class="item-media-row">'+(v?'<img src="'+esc(v)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-cover-kv>选择 / 裁剪</button>'+(v?'<button type="button" class="ghost" data-cover-kv-remove>移除</button>':'')+'</div></div></div><p class="inspector-note">封面 KV 会铺在合上的书页上，比例贴合书本；不需要再区分桌面和手机。</p></div>');
+    setInspector('入场动画','封面图',coverKvHtml(state,esc));
     inspector.querySelector('[data-cover-kv]')?.addEventListener('click',()=>{const input=$('#imageInput');input.dataset.path='heroImage';input.click()});
     inspector.querySelector('[data-cover-kv-remove]')?.addEventListener('click',()=>{checkpoint();state.heroImage='';save();send({type:'OE_PATCH_FIELD',path:'heroImage',value:''});openEntryAnimationInspector()});
     return;
   }
 
   const heroMedia=(key,label)=>{const v=String(((state.entryAnimation||{})[key])||'').trim();return '<div class="item-media"><span>'+label+'</span><div class="item-media-row">'+(v?'<img src="'+esc(v)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-kv-image="'+key+'">选择 / 裁剪</button></div></div></div>';};
-  setInspector('入场动画','开屏设置',
-    '<div class="entry-animation-inspector">'+heroMedia('kvDesktop','主图')+heroMedia('kvMobile','手机 KV（可选，留空用桌面 KV）')+
-    ''+
-    '<p class="inspector-note">开屏动画单独使用这两张图，与首页横幅互不影响；手机 KV 留空时沿用桌面 KV。</p></div>');
+  setInspector('入场动画','开屏设置',entryAnimationHtml(state,esc));
   inspector.querySelectorAll('[data-kv-image]').forEach(btn=>btn.addEventListener('click',()=>{
     const input=$('#imageInput');input.dataset.path='entryAnimation.'+btn.dataset.kvImage;input.click();
   }));
