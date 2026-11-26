@@ -31,6 +31,7 @@ import {createCroppedImageStore} from '/v8/editor/studio-cropped-image.js';
 import {createContentManagerMeta} from '/v8/editor/studio-content-manager.js';
 import {GUIDE_PRESETS,PARTICIPATION_PRESETS,CUSTOM_PAGE_PRESETS,CUSTOM_PAGE_STARTERS} from '/v8/editor/studio-presets.js';
 import {PAGE_CONTENT_CONFIG,COLLECTION_PAGE,INLINE_HOME_COLLECTIONS} from '/v8/editor/studio-page-content.js';
+import {collectionStudioPageFor} from '/v8/editor/studio-collection-page.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -348,11 +349,7 @@ function buildCustomPageStarterItems(presetKey){
  return rows.map(([title,meta,text])=>({id:uid('ci'),title,meta,text,image:'',url:''}));
 }
 function guideLabelText(){return guideLabelFor(activeTemplate?.id||'')}
-function collectionStudioPage(collection){
- const page=COLLECTION_PAGE[collection]||currentPage||'home';
- if(page!=='home'&&/^0[56]/.test(activeTemplate.id||'')&&INLINE_HOME_COLLECTIONS.has(page))return 'home';
- return page;
-}
+function collectionStudioPage(collection){return collectionStudioPageFor(collection,{currentPage,templateId:activeTemplate.id})}
 
 function renderCustomPageRows(){
  const box=$('#customPageRows');if(!box)return;
