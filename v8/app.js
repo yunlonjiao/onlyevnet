@@ -39,6 +39,7 @@ import {customPageSettingsHtml} from '/v8/editor/studio-custom-page-settings-htm
 import {streetManagerHtml} from '/v8/editor/studio-street-manager-html.js';
 import {productInspectorHtml} from '/v8/editor/studio-product-inspector-html.js';
 import {collectionMeta} from '/v8/editor/studio-collection-meta.js';
+import {participationInspectorFields} from '/v8/editor/studio-participation-fields.js';
 import {shareDialogHtml} from '/v8/editor/studio-share-dialog-html.js';
 import {shareTextFor} from '/v8/editor/studio-share-text.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
@@ -994,28 +995,6 @@ function openProductInspector(boothIndex,productIndex,{focusImage=false}={}){
  inspector.querySelector('[data-direct-product-remove-image]')?.addEventListener('click',()=>{checkpoint();product.image='';save();send({type:'OE_REPLACE_STATE',state});openProductInspector(boothIndex,productIndex)});
  inspector.querySelector('[data-direct-product-delete]')?.addEventListener('click',()=>{checkpoint();booth.products.splice(productIndex,1);save();send({type:'OE_REPLACE_STATE',state});openBoothProductManager(boothIndex)});
  if(focusImage)requestAnimationFrame(()=>inspector.querySelector('[data-direct-product-image]')?.focus());
-}
-function participationInspectorFields(item){
- const preset=item?.preset||'custom';
- const common={
-  title:['title','活动名称'],text:['text','一句话简介'],detail:['detail','活动内容'],
-  mode:['participationMode','参与方式'],requirements:['requirements','参加要求'],
-  rules:['rules','活动规则'],url:['url','报名链接'],setlist:['setlist','节目']
- };
- const map={
-  stage:[common.title,common.text,common.detail,common.mode,common.rules,common.url,common.setlist],
-  guest:[common.title,common.text,common.detail,common.mode,common.requirements,common.rules,common.url,common.setlist],
-  signing:[common.title,common.text,common.detail,common.mode,common.requirements,common.url,common.setlist],
-  live:[common.title,common.text,common.detail,common.mode,common.requirements,common.rules,common.url,common.setlist],
-  randomDance:[common.title,common.text,common.detail,common.mode,common.requirements,common.rules],
-  stamp:[common.title,common.text,common.detail,common.mode,common.rules],
-  game:[common.title,common.text,common.detail,common.mode,common.requirements,common.rules],
-  photo:[common.title,common.text,common.detail,common.mode,common.requirements,common.rules],
-  cosplay:[common.title,common.text,common.detail,common.mode,common.requirements,common.rules],
-  itasha:[common.title,common.text,common.detail,common.rules],
-  support:[common.title,common.text,common.detail,common.mode,common.rules]
- };
- return map[preset]||[common.title,common.text,common.detail,common.mode,common.requirements,common.rules,common.url,common.setlist];
 }
 function openItemInspector(collection,index){
   lastCollection=collection;lastItemIndex=index;
