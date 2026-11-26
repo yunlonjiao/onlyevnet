@@ -33,6 +33,7 @@ import {GUIDE_PRESETS,PARTICIPATION_PRESETS,CUSTOM_PAGE_PRESETS,CUSTOM_PAGE_STAR
 import {PAGE_CONTENT_CONFIG,COLLECTION_PAGE,INLINE_HOME_COLLECTIONS} from '/v8/editor/studio-page-content.js';
 import {collectionStudioPageFor} from '/v8/editor/studio-collection-page.js';
 import {buildStarterItems,customPagePreset} from '/v8/editor/studio-custom-page.js';
+import {customPageRowsHtml} from '/v8/editor/studio-custom-page-rows.js';
 import {createContentCounts} from '/v8/editor/studio-content-counts.js';
 import {pageContentItems} from '/v8/editor/studio-page-nav.js';
 import {pageNavHtml} from '/v8/editor/studio-page-nav-html.js';
@@ -365,10 +366,8 @@ function collectionStudioPage(collection){return collectionStudioPageFor(collect
 function renderCustomPageRows(){
  const box=$('#customPageRows');if(!box)return;
  const pages=state.customPages||[];
- box.innerHTML=pages.map((page,index)=>{
-   const key=customPageKey(page.id),preset=CUSTOM_PAGE_PRESETS[page.preset]||CUSTOM_PAGE_PRESETS.custom;
-   return '<div class="page-tree-row custom-page-row" data-page-row="'+esc(key)+'"><button data-page="'+esc(key)+'" type="button"><span class="nav-icon">◇</span><span>'+esc(page.title||preset.title)+'</span><small class="custom-page-type">'+esc(preset.title)+'</small></button><div class="custom-page-row-tools"><button type="button" data-move-custom-page="'+esc(page.id)+'" data-dir="-1" '+(index===0?'disabled':'')+' title="上移" aria-label="上移 '+esc(page.title||preset.title)+'">↑</button><button type="button" data-move-custom-page="'+esc(page.id)+'" data-dir="1" '+(index===pages.length-1?'disabled':'')+' title="下移" aria-label="下移 '+esc(page.title||preset.title)+'">↓</button><button type="button" class="custom-page-row-delete" data-delete-custom-page-row="'+esc(page.id)+'" title="删除页面" aria-label="删除 '+esc(page.title||preset.title)+'">×</button></div></div>';
- }).join('');
+ box.innerHTML=customPageRowsHtml(pages,{customPageKey,presets:CUSTOM_PAGE_PRESETS,escapeHtml:esc});
+
  box.querySelectorAll('[data-move-custom-page]').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();moveCustomPage(btn.dataset.moveCustomPage,Number(btn.dataset.dir))}));
  box.querySelectorAll('[data-delete-custom-page-row]').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();removeCustomPage(btn.dataset.deleteCustomPageRow)}));
 }
