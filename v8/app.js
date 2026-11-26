@@ -30,6 +30,7 @@ import {createCloudSync} from '/v8/editor/studio-cloud-sync.js';
 import {createCroppedImageStore} from '/v8/editor/studio-cropped-image.js';
 import {createContentManagerMeta} from '/v8/editor/studio-content-manager.js';
 import {GUIDE_PRESETS,PARTICIPATION_PRESETS,CUSTOM_PAGE_PRESETS,CUSTOM_PAGE_STARTERS} from '/v8/editor/studio-presets.js';
+import {PAGE_CONTENT_CONFIG,COLLECTION_PAGE,INLINE_HOME_COLLECTIONS} from '/v8/editor/studio-page-content.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -347,32 +348,6 @@ function buildCustomPageStarterItems(presetKey){
  return rows.map(([title,meta,text])=>({id:uid('ci'),title,meta,text,image:'',url:''}));
 }
 function guideLabelText(){return guideLabelFor(activeTemplate?.id||'')}
-const PAGE_CONTENT_CONFIG={
- animation:[{tool:'entryAnimation',label:'入场动画'}],
- home:[
-   {tool:'basic',label:'基本信息'},
-   {tool:'lifecycle',label:'活动状态'},
-   {tool:'hero',label:'主视觉'},
-   {collection:'ribbonItems',label:'滚动公告'},
-   {collection:'tickets',label:'票务'},
-   {tool:'map',label:'场地图'},
-   {collection:'featuredActivities',label:'活动精选'},
-   {collection:'explore',label:'继续探索'},
-   {collection:'updates',label:'重要更新'},
-   {collection:'socialLinks',label:'社群'},
-   {collection:'sponsors',label:'赞助'}
- ],
- booths:[{collection:'booths',label:'摊位与制品'},{tool:'streets',label:'街道'}],
- activities:[{collection:'schedule',label:'日程'},{collection:'participation',label:'活动详情'}],
- guests:[{collection:'guests',label:'嘉宾'}],
- guide:[{collection:'guide',label:'指南内容'}]
-};
-const COLLECTION_PAGE={
- ribbonItems:'home',tickets:'home',featuredActivities:'home',explore:'home',updates:'home',socialLinks:'home',sponsors:'home',
- booths:'booths',participation:'activities',schedule:'activities',guests:'guests',guide:'guide'
-};
-
-const INLINE_HOME_COLLECTIONS=new Set(['activities','guests','guide']);
 function collectionStudioPage(collection){
  const page=COLLECTION_PAGE[collection]||currentPage||'home';
  if(page!=='home'&&/^0[56]/.test(activeTemplate.id||'')&&INLINE_HOME_COLLECTIONS.has(page))return 'home';
