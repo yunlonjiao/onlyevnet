@@ -24,6 +24,7 @@ import {contentThumb} from '/v8/editor/studio-content-thumb.js';
 import {renderPublishShare} from '/v8/editor/studio-publish-share.js';
 import {createStageUi} from '/v8/editor/studio-stage-ui.js';
 import {createPublishUi} from '/v8/editor/studio-publish-ui.js';
+import {createPublishFlow} from '/v8/editor/studio-publish-flow.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -277,25 +278,16 @@ const publishUi=createPublishUi({
   dialog:publishDialog, slugInput:publishSlug, primary:publishPrimary, status:publishStatus, result:publishResult, url:publishUrl,
   isRenaming:()=>renamingSite, setRenaming:(v)=>{renamingSite=v}
 });
+const publishFlow=createPublishFlow({
+  slugInput:publishSlug, statusEl:publishStatus, getState:()=>state, getTemplate:()=>activeTemplate, getProjectId:()=>projectId,
+  getRecord:()=>publishRecord, setRecord:(v)=>{publishRecord=v}, saveRecord:savePublishRecord, clearRecord:()=>clearPublishRecord(PUBLISH_STORAGE), hasLiveSite, syncButton:syncPublishButton,
+  cleanSlug, isValidSlug, publishStudioSite, getPending:()=>pendingStages, setPending:(v)=>{pendingStages=v}, setSiteStages,
+  setBusy:setPublishBusy, renderDialog:renderPublishDialog, syncAdminProject, toast,
+  isRenaming:()=>renamingSite, setRenaming:(v)=>{renamingSite=v}
+});
 function __stageRowRefresh(e){stageUi.handleRowEvent(e)}
 
-async function publishGeneratedHtml(html){
- const slug=cleanSlug(publishSlug.value);
- if(!isValidSlug(slug)){setPublishBusy(false,'地址需为 3–50 位小写字母、数字或连字符。');publishSlug.focus();return}
- setPublishBusy(true,hasLiveSite(publishRecord)?'正在更新网站…':'正在发布网站…');
- try{
-   const result=await publishStudioSite({html,title:state.eventName||'OnlyEvent',slug,templateId:state.templateId||activeTemplate.id,localProjectId:projectId,publication:publishRecord});
-   const publishedUrl=result.url||('https://'+result.slug+'.onlyevent.cn');
-   publishRecord={};
-   if(pendingStages){setPublishBusy(true,'正在设置分批公开…');await setSiteStages(result.siteId,pendingStages)}
-   savePublishRecord({...result,url:publishedUrl,staged:!!pendingStages?.length});pendingStages=null;
-   syncAdminProject({siteUrl:publishedUrl,status:'published'});
-   const renamed=renamingSite;renamingSite=false;
-   renderPublishDialog();publishStatus.textContent=renamed?'网址已修改，旧网址会自动跳转到新网址':'网站已上线';toast(renamed?'网址已修改':'网站已发布');
- }catch(error){
-   const msg=String(error?.message||'');if(/404|网站不存在|不属于当前活动项目/.test(msg)){publishRecord={};try{localStorage.removeItem(PUBLISH_STORAGE)}catch{};syncPublishButton();renderPublishDialog();publishStatus.textContent='这个网站已经被删除了，可以重新发布。';return}publishStatus.textContent=msg||'发布失败，请稍后重试';
- }finally{setPublishBusy(false)}
-}
+async function publishGeneratedHtml(html){return publishFlow.publish(html)}
 
 function syncStudioIdentity(){renderStudioIdentity(activeTemplate,state.eventName)}
 function syncAdminProject(extra={}){
