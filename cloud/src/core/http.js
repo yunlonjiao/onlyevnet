@@ -66,3 +66,5 @@ export function cookieHeaders(...items) {
   for (const x of items.filter(Boolean)) h.append('set-cookie', x);
   return h;
 }
+
+export function publicUrl(env,slug,req){const u=new URL(req.url),base=baseDomain(env);if(base&&!base.includes('example.com'))return `https://${slug}.${base}`;return `${u.origin}/s/${slug}`}
