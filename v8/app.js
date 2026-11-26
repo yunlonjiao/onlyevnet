@@ -25,6 +25,7 @@ import {renderPublishShare} from '/v8/editor/studio-publish-share.js';
 import {createStageUi} from '/v8/editor/studio-stage-ui.js';
 import {createPublishUi} from '/v8/editor/studio-publish-ui.js';
 import {createPublishFlow} from '/v8/editor/studio-publish-flow.js';
+import {createHistoryUi} from '/v8/editor/studio-history-ui.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -322,8 +323,9 @@ async function storeCroppedImage(blob){
 }
 const studioHistory=createStudioHistory({limit:80,onChange:()=>syncHistory()});
  let lastCollection='',lastItemIndex=-1;
-function checkpoint(){studioHistory.checkpoint(state)}
-function syncHistory(){$('#undoBtn').disabled=!studioHistory.canUndo;$('#redoBtn').disabled=!studioHistory.canRedo}
+const historyUi=createHistoryUi(studioHistory,$('#undoBtn'),$('#redoBtn'));
+function checkpoint(){historyUi.checkpoint(state)}
+function syncHistory(){historyUi.sync()}
 function setDeep(path,value){setDeepState(state,path,value);save()}
 function getDeep(path){return path.split('.').reduce((o,k)=>o?.[/^\d+$/.test(k)?Number(k):k],state)}
 function send(message){if(frameReady&&iframe?.contentWindow)iframe.contentWindow.postMessage(message,ORIGIN)}
