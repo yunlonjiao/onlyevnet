@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from './seed.js';
 import { ApiError, errorPayload, codeForStatus } from './core/errors.js';
 import { JSON_HEADERS, HTML_HEADERS, CORS_ALLOW_HEADERS, CORS_ALLOW_METHODS, CONTENT_SECURITY_POLICY, baseDomain, allowedOrigin, corsOrigin, withCors, json, html, redirect, cookie, cookieHeaders } from './core/http.js';
+import { validUsername, cleanSlug, cleanText, bodyJson } from './core/validation.js';
 
 const PBKDF2_ITERATIONS=100000;
 const SESSION_COOKIE='onlyevent_session';
@@ -51,13 +52,9 @@ const RECOVERY_ALPHABET='23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
 function newRecoveryCode(){const b=new Uint8Array(12);crypto.getRandomValues(b);return [...b].map(x=>RECOVERY_ALPHABET[x&31]).join('')}
 function formatRecoveryCode(c){return c.replace(/(.{4})(?=.)/g,'$1-')}
 function recoveryCandidates(input){const raw=String(input||'').trim(),canonical=raw.replace(/[\s-]+/g,'').toUpperCase();return canonical&&canonical!==raw?[raw,canonical]:[raw]}
-function validUsername(v){return /^[\p{L}\p{N}_-](?:[\p{L}\p{N}_ -]{0,30}[\p{L}\p{N}_-])$/u.test(String(v||''))}
-function cleanSlug(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'').replace(/-+/g,'-').slice(0,50)}
-function cleanText(v,n=200){return String(v??'').trim().slice(0,n)}
 function sessionDays(env){const n=Number(env.SESSION_DAYS||30);return Number.isFinite(n)&&n>0?n:30}
 function inactiveDays(env){const n=Number(env.INACTIVE_DAYS||60);return Number.isFinite(n)&&n>0?n:60}
 function parseCookies(req){const out={};for(const part of String(req.headers.get('cookie')||'').split(';')){const i=part.indexOf('=');if(i<0)continue;const k=part.slice(0,i).trim(),v=part.slice(i+1).trim();if(k)out[k]=decodeURIComponent(v)}return out}
-async function bodyJson(req){try{return await req.json()}catch{throw new ApiError(400, 'VALIDATION_ERROR', '请求内容不是有效 JSON')}}
 function publicUrl(env,slug,req){const u=new URL(req.url),base=baseDomain(env);if(base&&!base.includes('example.com'))return `https://${slug}.${base}`;return `${u.origin}/s/${slug}`}
 function getSlugFromHost(req,env){const host=new URL(req.url).hostname.toLowerCase(),base=baseDomain(env);if(!base||base.includes('example.com')||!host.endsWith('.'+base))return '';const sub=host.slice(0,-(base.length+1));if(!sub||sub.includes('.')||RESERVED_SUBDOMAINS.has(sub))return '';return cleanSlug(sub)}
 
