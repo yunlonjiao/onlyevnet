@@ -2,8 +2,9 @@ import { DEFAULT_CONFIG } from './seed.js';
 import { ApiError, errorPayload, codeForStatus } from './core/errors.js';
 import { JSON_HEADERS, HTML_HEADERS, CORS_ALLOW_HEADERS, CORS_ALLOW_METHODS, CONTENT_SECURITY_POLICY, baseDomain, allowedOrigin, corsOrigin, withCors, json, html, redirect, cookie, cookieHeaders } from './core/http.js';
 import { validUsername, cleanSlug, cleanText, bodyJson } from './core/validation.js';
+import { randomToken, sha256 } from './core/crypto.js';
+import { hashPassword, newSalt } from './auth/password.js';
 
-const PBKDF2_ITERATIONS=100000;
 const SESSION_COOKIE='onlyevent_session';
 const PROJECT_COOKIE='onlyevent_project';
 const APP_VERSION='7.27.0';
@@ -40,12 +41,6 @@ const RESERVED_SUBDOMAINS=new Set(['www','publisher','api','admin','app']);
 function now(){return new Date().toISOString()}
 function id(prefix='id'){return `${prefix}_${crypto.randomUUID().replace(/-/g,'')}`}
 function clone(v){return structuredClone(v)}
-function bytesToB64(bytes){let s='';for(const b of bytes)s+=String.fromCharCode(b);return btoa(s)}
-function b64ToBytes(s){const raw=atob(s);return Uint8Array.from(raw,c=>c.charCodeAt(0))}
-function randomToken(n=32){const b=new Uint8Array(n);crypto.getRandomValues(b);return bytesToB64(b).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
-async function sha256(text){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('')}
-async function hashPassword(password,saltB64){const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveBits']);const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:b64ToBytes(saltB64),iterations:PBKDF2_ITERATIONS},key,256);return bytesToB64(new Uint8Array(bits))}
-function newSalt(){const b=new Uint8Array(16);crypto.getRandomValues(b);return bytesToB64(b)}
 // Recovery codes: 12 characters from an alphabet without 0/O/1/I, shown as XXXX-XXXX-XXXX (60 bits).
 // Codes issued before this change (24 characters, case-sensitive) still verify as typed.
 const RECOVERY_ALPHABET='23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
