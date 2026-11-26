@@ -4,8 +4,8 @@ import { JSON_HEADERS, HTML_HEADERS, CORS_ALLOW_HEADERS, CORS_ALLOW_METHODS, CON
 import { validUsername, cleanSlug, cleanText, bodyJson } from './core/validation.js';
 import { randomToken, sha256 } from './core/crypto.js';
 import { hashPassword, newSalt } from './auth/password.js';
+import { parseCookies, authUser, requireUser, issueSession, logout } from './auth/session.js';
 
-const SESSION_COOKIE='onlyevent_session';
 const PROJECT_COOKIE='onlyevent_project';
 const APP_VERSION='7.27.0';
 const MAX_SITE_HTML_BYTES=25*1024*1024;
@@ -47,9 +47,7 @@ const RECOVERY_ALPHABET='23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
 function newRecoveryCode(){const b=new Uint8Array(12);crypto.getRandomValues(b);return [...b].map(x=>RECOVERY_ALPHABET[x&31]).join('')}
 function formatRecoveryCode(c){return c.replace(/(.{4})(?=.)/g,'$1-')}
 function recoveryCandidates(input){const raw=String(input||'').trim(),canonical=raw.replace(/[\s-]+/g,'').toUpperCase();return canonical&&canonical!==raw?[raw,canonical]:[raw]}
-function sessionDays(env){const n=Number(env.SESSION_DAYS||30);return Number.isFinite(n)&&n>0?n:30}
 function inactiveDays(env){const n=Number(env.INACTIVE_DAYS||60);return Number.isFinite(n)&&n>0?n:60}
-function parseCookies(req){const out={};for(const part of String(req.headers.get('cookie')||'').split(';')){const i=part.indexOf('=');if(i<0)continue;const k=part.slice(0,i).trim(),v=part.slice(i+1).trim();if(k)out[k]=decodeURIComponent(v)}return out}
 function publicUrl(env,slug,req){const u=new URL(req.url),base=baseDomain(env);if(base&&!base.includes('example.com'))return `https://${slug}.${base}`;return `${u.origin}/s/${slug}`}
 function getSlugFromHost(req,env){const host=new URL(req.url).hostname.toLowerCase(),base=baseDomain(env);if(!base||base.includes('example.com')||!host.endsWith('.'+base))return '';const sub=host.slice(0,-(base.length+1));if(!sub||sub.includes('.')||RESERVED_SUBDOMAINS.has(sub))return '';return cleanSlug(sub)}
 
@@ -61,10 +59,6 @@ async function rateLimit(env,key,max,windowSec){
   if(row.count>=max){const minutes=Math.max(1,Math.ceil((Date.parse(row.window_start)+windowSec*1000-t)/60000));throw new ApiError(429, 'RATE_LIMITED', '尝试次数过多，请 '+minutes+' 分钟后再试')}
   await env.DB.prepare('UPDATE rate_limits SET count=count+1 WHERE key=?').bind(key).run();
 }
-async function tokenFromReq(req){const h=req.headers.get('authorization')||'',m=h.match(/^Bearer\s+(.+)$/i);if(m)return m[1];return parseCookies(req)[SESSION_COOKIE]||''}
-async function authUser(req,env){const token=await tokenFromReq(req);if(!token)return null;const th=await sha256(token);const row=await env.DB.prepare(`SELECT users.id,users.username,sessions.expires_at FROM sessions JOIN users ON users.id=sessions.user_id WHERE sessions.token_hash=? LIMIT 1`).bind(th).first();if(!row)return null;if(new Date(row.expires_at).getTime()<=Date.now()){await env.DB.prepare('DELETE FROM sessions WHERE token_hash=?').bind(th).run();return null}return {id:row.id,username:row.username,tokenHash:th}}
-async function requireUser(req,env){const u=await authUser(req,env);if(!u)throw new ApiError(401, 'AUTH_REQUIRED', '请先登录');return u}
-async function issueSession(env,userId,username,status=200,extra={}){const token=randomToken(36),tokenHash=await sha256(token),days=sessionDays(env),exp=new Date(Date.now()+days*86400000).toISOString();await env.DB.prepare('INSERT INTO sessions(token_hash,user_id,expires_at,created_at) VALUES(?,?,?,?)').bind(tokenHash,userId,exp,now()).run();return json({ok:true,token,user:{id:userId,username},username,expiresAt:exp,...extra},status,{'set-cookie':cookie(SESSION_COOKIE,token,{maxAge:days*86400})})}
 async function register(req,env){await rateLimit(env,'register:'+clientIp(req),5,3600);const b=await bodyJson(req),username=cleanText(b.username,32),password=String(b.password||'');if(!validUsername(username))return json({ok:false,error:'主办方名称需为 2–32 个字符，可使用中英文、数字、空格、_ 或 -'},400);if(password.length<6)return json({ok:false,error:'密码至少 6 位'},400);const exists=await env.DB.prepare('SELECT id FROM users WHERE username=? COLLATE NOCASE').bind(username).first();if(exists)return json({ok:false,error:'这个账号已经注册'},409);const salt=newSalt(),passwordHash=await hashPassword(password,salt),userId=id('usr'),recoveryCode=newRecoveryCode(),recoverySalt=newSalt(),recoveryHash=await hashPassword(recoveryCode,recoverySalt),created=now();await env.DB.batch([env.DB.prepare('INSERT INTO users(id,username,password_hash,password_salt,created_at) VALUES(?,?,?,?,?)').bind(userId,username,passwordHash,salt,created),env.DB.prepare('INSERT INTO account_recovery(user_id,code_hash,code_salt,updated_at) VALUES(?,?,?,?)').bind(userId,recoveryHash,recoverySalt,created)]);return issueSession(env,userId,username,201,{recoveryCode:formatRecoveryCode(recoveryCode)})}
 async function login(req,env){const b=await bodyJson(req),username=cleanText(b.username,32),password=String(b.password||'');await rateLimit(env,'login-ip:'+clientIp(req),30,900);await rateLimit(env,'login:'+username.toLowerCase(),10,900);const row=await env.DB.prepare('SELECT id,username,password_hash,password_salt FROM users WHERE username=? COLLATE NOCASE').bind(username).first();if(!row)return json({ok:false,error:'账号或密码不正确'},401);const got=await hashPassword(password,row.password_salt);if(got!==row.password_hash)return json({ok:false,error:'账号或密码不正确'},401);return issueSession(env,row.id,row.username)}
 async function recoverAccount(req,env){const b=await bodyJson(req);await rateLimit(env,'recover-ip:'+clientIp(req),20,3600);await rateLimit(env,'recover:'+cleanText(b.username,32).toLowerCase(),5,3600);const username=cleanText(b.username,32),recoveryCode=String(b.recoveryCode||'').trim(),newPassword=String(b.newPassword||'');if(!validUsername(username)||!recoveryCode)return json({ok:false,error:'请输入账号和恢复码'},400);if(newPassword.length<6)return json({ok:false,error:'新密码至少 6 位'},400);const row=await env.DB.prepare(`SELECT users.id,account_recovery.code_hash,account_recovery.code_salt FROM users LEFT JOIN account_recovery ON account_recovery.user_id=users.id WHERE users.username=? COLLATE NOCASE LIMIT 1`).bind(username).first();if(!row?.code_hash)return json({ok:false,error:'账号或恢复码不正确'},400);let matched=false;for(const candidate of recoveryCandidates(recoveryCode)){if(await hashPassword(candidate,row.code_salt)===row.code_hash){matched=true;break}}if(!matched)return json({ok:false,error:'账号或恢复码不正确'},400);const salt=newSalt(),passwordHash=await hashPassword(newPassword,salt);await env.DB.batch([env.DB.prepare('UPDATE users SET password_hash=?,password_salt=? WHERE id=?').bind(passwordHash,salt,row.id),env.DB.prepare('DELETE FROM sessions WHERE user_id=?').bind(row.id)]);return json({ok:true})}
@@ -98,7 +92,6 @@ async function deleteAccount(req,env){
   for(const key of keys){try{await env.SITES.delete(key)}catch(e){console.error(e)}}
   return json({ok:true});
 }
-async function logout(req,env){const token=await tokenFromReq(req);if(token)await env.DB.prepare('DELETE FROM sessions WHERE token_hash=?').bind(await sha256(token)).run();return json({ok:true},200,{'set-cookie':cookie(SESSION_COOKIE,'',{maxAge:0})})}
 
 function currentProjectId(req){return cleanText(req.headers.get('x-onlyevent-project')||parseCookies(req)[PROJECT_COOKIE]||'',100)}
 async function projectWithAccess(env,u,pid){return env.DB.prepare('SELECT p.* FROM projects p LEFT JOIN project_members m ON m.project_id=p.id AND m.user_id=? WHERE p.id=? AND (p.user_id=? OR m.user_id IS NOT NULL)').bind(u.id,pid,u.id).first()}
