@@ -310,8 +310,15 @@ await run('templates: all eight preview pages', async () => {
   const details = [];
   try {
     for (const id of ids) {
-      await page.goto(`${BASE}/v8/preview.html?template=${id}&project=default&embed=1`, { waitUntil: 'domcontentloaded' });
-      await page.waitForTimeout(20000);
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try { await page.goto(`${BASE}/v8/preview.html?template=${id}&project=default&embed=1`, { waitUntil: 'domcontentloaded' }); break; }
+        catch (error) { if (attempt === 1) throw error; await page.waitForTimeout(1500); }
+      }
+      await page.waitForFunction(() => {
+        const doc = document.querySelector('#previewFrame')?.contentDocument;
+        const text = (doc?.body?.innerText || '').trim();
+        return text.length > 5 && !/Loading preview/.test(text);
+      }, null, { timeout: 25000 });
       const data = await page.evaluate(() => {
         const doc = document.querySelector('#previewFrame')?.contentDocument;
         return { text: (doc?.body?.innerText || '').trim().slice(0, 40), loading: /Loading preview/.test(doc?.body?.innerText || '') };
