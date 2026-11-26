@@ -42,6 +42,7 @@ import {collectionMeta} from '/v8/editor/studio-collection-meta.js';
 import {participationInspectorFields} from '/v8/editor/studio-participation-fields.js';
 import {shareDialogHtml} from '/v8/editor/studio-share-dialog-html.js';
 import {shareTextFor} from '/v8/editor/studio-share-text.js';
+import {ticketSettingsInspectorHtml} from '/v8/editor/studio-ticket-inspector-html.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {canvasToBlob,downloadSvg} from '/v8/editor/studio-canvas-download.js';
@@ -879,10 +880,7 @@ function openAddressInspector(){
 }
 
 function openTicketSettingsInspector(){
- setInspector('票务','购票平台','<div class="item-fields">'+
-   '<label><span>按钮文字</span><input id="ticketLinkLabelInput" value="'+esc(state.ticketLinkLabel||'前往官方售票平台')+'"></label>'+
-   '<label><span>外部购票链接</span><input id="ticketUrlInput" type="url" value="'+esc(state.ticketUrl||'')+'" placeholder="https://"></label>'+
-   '</div><div class="row"><button id="testTicketUrl" type="button">打开购票平台 ↗</button></div><p class="inspector-note">这是整场活动统一的购票入口，不需要在每个票种里重复填写。</p>');
+ setInspector('票务','购票平台',ticketSettingsInspectorHtml(state,esc));
  bindInspectorStateInput($('#ticketLinkLabelInput'),'ticketLinkLabel',{clean:true});
  bindInspectorStateInput($('#ticketUrlInput'),'ticketUrl',{clean:true});
  $('#testTicketUrl').onclick=()=>{const url=String(state.ticketUrl||'').trim();if(/^https?:\/\//i.test(url))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
