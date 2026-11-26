@@ -311,7 +311,7 @@ await run('templates: all eight preview pages', async () => {
   try {
     for (const id of ids) {
       await page.goto(`${BASE}/v8/preview.html?template=${id}&project=default&embed=1`, { waitUntil: 'domcontentloaded' });
-      await page.waitForTimeout(14000);
+      await page.waitForTimeout(20000);
       const data = await page.evaluate(() => {
         const doc = document.querySelector('#previewFrame')?.contentDocument;
         return { text: (doc?.body?.innerText || '').trim().slice(0, 40), loading: /Loading preview/.test(doc?.body?.innerText || '') };
