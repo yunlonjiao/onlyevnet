@@ -48,6 +48,7 @@ import {lifecycleInspectorHtml} from '/v8/editor/studio-lifecycle-inspector-html
 import {heroTitleInspectorHtml} from '/v8/editor/studio-hero-title-inspector-html.js';
 import {taglineEditorHtml,fieldEditorHtml} from '/v8/editor/studio-field-inspector-html.js';
 import {PALETTES} from '/v8/editor/studio-palettes.js';
+import {recapDialogHtml} from '/v8/editor/studio-recap-dialog-html.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {canvasToBlob,downloadSvg} from '/v8/editor/studio-canvas-download.js';
@@ -773,14 +774,7 @@ const recapCommit=({structural=false}={})=>{save();send({type:'OE_REPLACE_STATE'
 function renderRecapDialog(){
  state.recap??={mode:'off',title:'',summary:'',posts:[],photos:[],videos:[],links:[]};
  const r=state.recap;for(const k of ['posts','photos','videos','links'])r[k]??=[];
- $('#recapBody').innerHTML=
-  '<section class="share-block"><h3>显示方式</h3><div class="item-fields"><label><span>首页上的这一块</span><select data-recap="mode"><option value="off">不显示</option><option value="live">现场直击（活动当天用）</option><option value="recap">活动回顾（活动结束后用）</option></select></label>'+
-  '<label><span>标题</span><input data-recap="title" maxlength="40" placeholder="留空则用默认标题" value="'+esc(r.title||'')+'"></label>'+
-  '<label><span>简介</span><textarea data-recap="summary" rows="3" maxlength="600" placeholder="一两句话说说今天或这次活动">'+esc(r.summary||'')+'</textarea></label></div></section>'+
-  '<section class="share-block"><h3>现场动态</h3>'+r.posts.map((p,i)=>'<div class="recap-row" data-list="posts" data-i="'+i+'"><input data-f="time" maxlength="12" placeholder="时间" value="'+esc(p.time||'')+'"><textarea data-f="text" rows="2" maxlength="300" placeholder="发生了什么">'+esc(p.text||'')+'</textarea><button type="button" class="recap-rm" aria-label="删除">×</button></div>').join('')+'<button type="button" class="recap-add" data-add="posts">＋ 添加一条动态</button></section>'+
-  '<section class="share-block"><h3>现场照片</h3><div class="recap-photos">'+r.photos.map((p,i)=>'<div class="recap-photo" data-list="photos" data-i="'+i+'"><button type="button" class="recap-pick" data-pick="'+i+'">'+(p.image?'<img src="'+esc(p.image)+'" alt="">':'＋')+'</button><input data-f="caption" maxlength="40" placeholder="说明（可不填）" value="'+esc(p.caption||'')+'"><button type="button" class="recap-rm" aria-label="删除">×</button></div>').join('')+'</div><button type="button" class="recap-add" data-add="photos">＋ 添加一张照片</button></section>'+
-  '<section class="share-block"><h3>B站视频</h3><p class="inspector-note">粘贴视频链接，BV 号的视频会直接嵌入播放，其他链接显示成按钮。</p>'+r.videos.map((v,i)=>'<div class="recap-row" data-list="videos" data-i="'+i+'"><input data-f="url" placeholder="视频链接" value="'+esc(v.url||'')+'"><input data-f="title" maxlength="40" placeholder="标题（可不填）" value="'+esc(v.title||'')+'"><button type="button" class="recap-rm" aria-label="删除">×</button></div>').join('')+'<button type="button" class="recap-add" data-add="videos">＋ 添加一个视频</button></section>'+
-  '<section class="share-block"><h3>微博、小红书等平台的投稿链接</h3>'+r.links.map((l,i)=>'<div class="recap-row" data-list="links" data-i="'+i+'"><input data-f="label" maxlength="30" placeholder="按钮文字" value="'+esc(l.label||'')+'"><input data-f="url" placeholder="链接" value="'+esc(l.url||'')+'"><button type="button" class="recap-rm" aria-label="删除">×</button></div>').join('')+'<button type="button" class="recap-add" data-add="links">＋ 添加一个链接</button></section>';
+ $('#recapBody').innerHTML=recapDialogHtml(r,esc);
  $('#recapBody').querySelector('[data-recap="mode"]').value=r.mode||'off';
 }
 function bindRecapDialog(){
