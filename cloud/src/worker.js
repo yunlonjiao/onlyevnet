@@ -1,6 +1,8 @@
 import { ApiError, errorPayload, codeForStatus } from './core/errors.js';
 import { JSON_HEADERS, HTML_HEADERS, CORS_ALLOW_HEADERS, CORS_ALLOW_METHODS, CONTENT_SECURITY_POLICY, baseDomain, allowedOrigin, corsOrigin, withCors, json, html, redirect, cookie, cookieHeaders } from './core/http.js';
 import { validUsername, cleanSlug, cleanText, bodyJson } from './core/validation.js';
+import { now, id } from './core/ids.js';
+import { mediaKeysFromValue } from './media/keys.js';
 import { randomToken, sha256 } from './core/crypto.js';
 import { hashPassword, newSalt } from './auth/password.js';
 import { newRecoveryCode, formatRecoveryCode, recoveryCandidates } from './auth/recovery.js';
@@ -8,6 +10,7 @@ import { clientIp, rateLimit } from './auth/rate-limit.js';
 import { parseCookies, authUser, requireUser, issueSession, logout } from './auth/session.js';
 import { PROJECT_COOKIE, currentProjectId, projectWithAccess, projectFor, projectCookie, emptyProjectCookie, ownedProject } from './projects/access.js';
 import { seedProject } from './projects/seed.js';
+import { ensureProjectState, createProject, duplicateProject, openProject, deleteProject, restoreProject } from './projects/lifecycle.js';
 
 const APP_VERSION='7.27.0';
 const MAX_SITE_HTML_BYTES=25*1024*1024;
@@ -40,8 +43,6 @@ self.addEventListener('fetch',e=>{
 const VISITOR_SW_HEADERS={'content-type':'application/javascript; charset=utf-8','cache-control':'no-cache','service-worker-allowed':'/','x-content-type-options':'nosniff'};
 const RESERVED_SUBDOMAINS=new Set(['www','publisher','api','admin','app']);
 
-function now(){return new Date().toISOString()}
-function id(prefix='id'){return `${prefix}_${crypto.randomUUID().replace(/-/g,'')}`}
 // Recovery codes: 12 characters from an alphabet without 0/O/1/I, shown as XXXX-XXXX-XXXX (60 bits).
 // Codes issued before this change (24 characters, case-sensitive) still verify as typed.
 function inactiveDays(env){const n=Number(env.INACTIVE_DAYS||60);return Number.isFinite(n)&&n>0?n:60}
@@ -83,16 +84,6 @@ async function deleteAccount(req,env){
 }
 
 
-function mediaKeysFromValue(value,out=new Set()){
-  if(Array.isArray(value)){for(const v of value)mediaKeysFromValue(v,out);return out}
-  if(value&&typeof value==='object'){for(const v of Object.values(value))mediaKeysFromValue(v,out);return out}
-  if(typeof value==='string'){
-    const re=/\/?media\/(uploads\/[a-zA-Z0-9_\/-]+\.[a-zA-Z0-9]+)/g;let m;
-    while((m=re.exec(value)))out.add(m[1]);
-  }
-  return out;
-}
-
 async function ensureLegacyProjectSiteBinding(req,env,u,p){
   if(!p)return null;
   let row=await env.DB.prepare(`SELECT s.* FROM project_sites ps JOIN sites s ON s.id=ps.site_id WHERE ps.project_id=? AND ps.user_id=? LIMIT 1`).bind(p.id,u.id).first();
@@ -117,13 +108,7 @@ async function deleteProjectMedia(env,userId,projectId,cfg){
   const keys=mediaKeysFromValue(cfg||{}),tracked=await env.DB.prepare('SELECT object_key FROM project_media WHERE project_id=?').bind(projectId).all();for(const r of tracked.results||[])keys.add(r.object_key);
   for(const key of keys){const ref=await env.DB.prepare('SELECT 1 AS x FROM project_media WHERE object_key=? AND project_id<>? LIMIT 1').bind(key,projectId).first();if(ref)continue;const other=await env.DB.prepare('SELECT 1 AS x FROM projects WHERE user_id=? AND id<>? AND instr(config_json,?)>0 LIMIT 1').bind(userId,projectId,key).first();if(!other)await env.SITES.delete(key)}
 }
-async function ensureProjectState(env,projectId,userId){const t=now();await env.DB.prepare(`INSERT INTO project_state(project_id,user_id,created_at,updated_at) VALUES(?,?,?,?) ON CONFLICT(project_id) DO NOTHING`).bind(projectId,userId,t,t).run()}
 async function listProjects(req,env){const u=await requireUser(req,env),active=currentProjectId(req),trash=new URL(req.url).searchParams.get('trash')==='1';const {results=[]}=await env.DB.prepare(`SELECT p.id,p.name,p.user_id,p.local_project_id,p.config_json,p.created_at,p.updated_at,s.id AS site_id,ps.published_at,ps.deleted_at,s.status AS site_status,s.slug AS site_slug FROM projects p LEFT JOIN project_state ps ON ps.project_id=p.id LEFT JOIN project_sites m ON m.project_id=p.id LEFT JOIN sites s ON s.id=m.site_id WHERE (p.user_id=? OR EXISTS(SELECT 1 FROM project_members pm WHERE pm.project_id=p.id AND pm.user_id=?)) AND ${trash?'ps.deleted_at IS NOT NULL':'ps.deleted_at IS NULL'} ORDER BY ${trash?'ps.deleted_at':'p.updated_at'} DESC`).bind(u.id,u.id).all();return json({ok:true,projects:results.map(r=>{let c={};try{c=JSON.parse(r.config_json||'{}')}catch{}const publishedAt=r.published_at||null,hasChanges=!!publishedAt&&new Date(r.updated_at).getTime()>new Date(publishedAt).getTime();return {id:r.id,name:r.name,shared:r.user_id!==u.id,localProjectId:r.local_project_id||null,eventDate:c.eventDate||'',eventLocation:c.eventLocation||'',heroImage:c.heroImage||'',siteId:r.site_id||null,visitorSiteUrl:r.site_slug?publicUrl(env,r.site_slug,req):(c.visitorSiteUrl||''),eventTemplate:c.eventTemplate||'blank',templateId:typeof c.templateId==='string'?c.templateId:'',config:c,createdAt:r.created_at,updatedAt:r.updated_at,publishedAt,deletedAt:r.deleted_at||null,siteStatus:r.site_status||null,publishState:r.site_status==='inactive'?'inactive':!publishedAt?'draft':hasChanges?'changes':'published',active:r.id===active}})})}
-async function createProject(req,env){const u=await requireUser(req,env);await rateLimit(env,'project:'+u.id,60,3600);const b=await bodyJson(req),name=cleanText(b.name,160),localId=cleanText(b.localProjectId,80);if(!name)return json({ok:false,error:'请填写活动名称'},400);if(localId){const found=await env.DB.prepare('SELECT id,name FROM projects WHERE user_id=? AND local_project_id=?').bind(u.id,localId).first();if(found)return json({ok:true,project:{id:found.id,name:found.name},reused:true},200,{'set-cookie':projectCookie(found.id)})}const pid=id('prj'),created=now(),cfg=seedProject(name,cleanText(b.eventDate,120),cleanText(b.eventLocation,200),cleanText(b.template,40));if(b.template)cfg.templateId=cleanText(b.template,40);await env.DB.batch([env.DB.prepare('INSERT INTO projects(id,user_id,name,config_json,created_at,updated_at,local_project_id) VALUES(?,?,?,?,?,?,?)').bind(pid,u.id,name,JSON.stringify(cfg),created,created,localId||null),env.DB.prepare('INSERT INTO project_state(project_id,user_id,created_at,updated_at) VALUES(?,?,?,?)').bind(pid,u.id,created,created)]);return json({ok:true,project:{id:pid,name},config:cfg},201,{'set-cookie':projectCookie(pid)})}
-async function duplicateProject(req,env,pid){const u=await requireUser(req,env),p=await env.DB.prepare('SELECT * FROM projects WHERE id=? AND user_id=?').bind(pid,u.id).first();if(!p)return json({ok:false,error:'活动项目不存在'},404);let cfg={};try{cfg=JSON.parse(p.config_json||'{}')}catch{cfg=seedProject(p.name)};cfg.visitorSiteUrl='';const newId=id('prj'),created=now(),name=cleanText((p.name||'活动')+' - 副本',160);cfg.eventName=name;await env.DB.batch([env.DB.prepare('INSERT INTO projects(id,user_id,name,config_json,created_at,updated_at) VALUES(?,?,?,?,?,?)').bind(newId,u.id,name,JSON.stringify(cfg),created,created),env.DB.prepare('INSERT INTO project_state(project_id,user_id,created_at,updated_at) VALUES(?,?,?,?)').bind(newId,u.id,created,created)]);for(const key of mediaKeysFromValue(cfg))await env.DB.prepare('INSERT OR IGNORE INTO project_media(project_id,object_key,created_at) VALUES(?,?,?)').bind(newId,key,created).run();return json({ok:true,project:{id:newId,name}},201)}
-async function openProject(req,env,pid){const u=await requireUser(req,env),p=await env.DB.prepare(`SELECT p.id,p.name FROM projects p LEFT JOIN project_state ps ON ps.project_id=p.id WHERE p.id=? AND p.user_id=? AND ps.deleted_at IS NULL`).bind(pid,u.id).first();if(!p)return json({ok:false,error:'活动项目不存在'},404);return json({ok:true,project:p},200,{'set-cookie':projectCookie(pid)})}
-async function deleteProject(req,env,pid){const u=await requireUser(req,env),p=await env.DB.prepare('SELECT id FROM projects WHERE id=? AND user_id=?').bind(pid,u.id).first();if(!p)return json({ok:false,error:'活动项目不存在'},404);await ensureProjectState(env,pid,u.id);await env.DB.prepare('UPDATE project_state SET deleted_at=?,updated_at=? WHERE project_id=? AND user_id=?').bind(now(),now(),pid,u.id).run();const extra=currentProjectId(req)===pid?{'set-cookie':emptyProjectCookie()}:{};return json({ok:true},200,extra)}
-async function restoreProject(req,env,pid){const u=await requireUser(req,env);await env.DB.prepare('UPDATE project_state SET deleted_at=NULL,updated_at=? WHERE project_id=? AND user_id=?').bind(now(),pid,u.id).run();return json({ok:true})}
 async function purgeProject(req,env,pid){const u=await requireUser(req,env);const p=await env.DB.prepare(`SELECT p.* FROM projects p JOIN project_state ps ON ps.project_id=p.id WHERE p.id=? AND p.user_id=? AND ps.deleted_at IS NOT NULL`).bind(pid,u.id).first();if(!p)return json({ok:false,error:'回收站中没有这个项目'},404);let cfg={};try{cfg=JSON.parse(p.config_json||'{}')}catch{}const site=await currentProjectSite(req,env,u,p);if(site){await deleteSiteResources(env,site);await env.DB.prepare('DELETE FROM sites WHERE id=? AND user_id=?').bind(site.id,u.id).run()}await deleteProjectMedia(env,u.id,pid,cfg);await env.DB.prepare('DELETE FROM projects WHERE id=? AND user_id=?').bind(pid,u.id).run();const extra=currentProjectId(req)===pid?{'set-cookie':emptyProjectCookie()}:{};return json({ok:true},200,extra)}
 async function getConfig(req,env,publicMode=false){const u=await requireUser(req,env),p=await projectFor(req,env,u);if(!p)return json({ok:false,error:'请先创建一个活动'},404);await ensureProjectState(env,p.id,p.user_id);let cfg={};try{cfg=JSON.parse(p.config_json)}catch{cfg=seedProject(p.name)};const st=await env.DB.prepare('SELECT published_at,published_config_json,deleted_at FROM project_state WHERE project_id=? AND user_id=?').bind(p.id,u.id).first();return json({ok:true,config:cfg,session:{role:'organizer',username:u.username,boothId:null},project:{id:p.id,name:p.name,updatedAt:p.updated_at,publishedAt:st?.published_at||null,hasUnpublishedChanges:!!st?.published_at&&new Date(p.updated_at).getTime()>new Date(st.published_at).getTime()}})}
 async function putConfig(req,env){const u=await requireUser(req,env),p=await projectFor(req,env,u);if(!p)return json({ok:false,error:'请先创建一个漫展'},404);const b=await bodyJson(req),cfg=b.config&&typeof b.config==='object'?b.config:null;if(!cfg)return json({ok:false,error:'配置内容无效'},400);const configJson=JSON.stringify(cfg);if(new TextEncoder().encode(configJson).byteLength>MAX_PROJECT_CONFIG_BYTES)return json({ok:false,error:'项目数据超过 1.9MB，请把图片上传到云端后再保存'},413);const name=cleanText(cfg.eventName||p.name,160)||p.name,updated=now();await env.DB.prepare('UPDATE projects SET name=?,config_json=?,updated_at=? WHERE id=?').bind(name,JSON.stringify(cfg),updated,p.id).run();return json({ok:true,config:cfg})}
