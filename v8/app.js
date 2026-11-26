@@ -37,6 +37,7 @@ import {createContentCounts} from '/v8/editor/studio-content-counts.js';
 import {pageContentItems} from '/v8/editor/studio-page-nav.js';
 import {pageNavHtml} from '/v8/editor/studio-page-nav-html.js';
 import {presetEntriesForState} from '/v8/editor/studio-preset-entries.js';
+import {collectionArrayFor,collectionPathFor} from '/v8/editor/studio-collection.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -1023,16 +1024,8 @@ function guestPlatformName(url){
  return host||'个人主页';
 }
 
-function collectionArray(collection){
- if(collection==='guide')return state.guide?.items;
- if(collection==='explore')return state.venueMap?.links;
- return state[collection];
-}
-function collectionPath(collection,index,key){
- if(collection==='guide')return 'guide.items.'+index+'.'+key;
- if(collection==='explore')return 'venueMap.links.'+index+'.'+key;
- return collection+'.'+index+'.'+key;
-}
+function collectionArray(collection){return collectionArrayFor(collection,state)}
+function collectionPath(collection,index,key){return collectionPathFor(collection,index,key)}
 function extraInspector(collection,index,item){
  if(collection==='featuredActivities'){
    const options=(state.participation||[]).map(a=>'<option value="'+esc(a.id)+'" '+(a.id===item.participationId?'selected':'')+'>'+esc(a.title||'活动')+'</option>').join('');
