@@ -17,6 +17,7 @@ import {upsertAdminProject} from '/v8/editor/studio-admin-cache.js';
 import {createToast} from '/v8/editor/studio-toast.js';
 import {revealStages,stateAtStage} from '/v8/editor/studio-stage-state.js';
 import {loadPublishRecord,persistPublishRecord,clearPublishRecord} from '/v8/editor/studio-publish-record.js';
+import {setDeepState,getDeepState} from '/v8/editor/studio-state-paths.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -365,16 +366,7 @@ const studioHistory=createStudioHistory({limit:80,onChange:()=>syncHistory()});
  let lastCollection='',lastItemIndex=-1;
 function checkpoint(){studioHistory.checkpoint(state)}
 function syncHistory(){$('#undoBtn').disabled=!studioHistory.canUndo;$('#redoBtn').disabled=!studioHistory.canRedo}
-function setDeep(path,value){const a=path.split('.');let o=state;for(let i=0;i<a.length-1;i++)o=o[/^\d+$/.test(a[i])?Number(a[i]):a[i]];const k=a.at(-1);o[/^\d+$/.test(k)?Number(k):k]=value;save()}
-function getDeep(path){return path.split('.').reduce((o,k)=>o?.[/^\d+$/.test(k)?Number(k):k],state)}
-function send(message){if(frameReady&&iframe?.contentWindow)iframe.contentWindow.postMessage(message,ORIGIN)}
-function setInspector(kicker,title,html){
- renderInspector(inspector,esc,kicker,title,html);
- inspector?.querySelectorAll('button').forEach(btn=>btn.classList.add('oe-inspector-action'));
- inspector?.querySelectorAll('.inspector-body label').forEach(el=>el.classList.add('oe-inspector-row'));
- inspector?.querySelectorAll('.inspector-body input,.inspector-body select,.inspector-body textarea').forEach(el=>el.classList.add('oe-inspector-control'));
- requestAnimationFrame(()=>{ inspector?.querySelectorAll('.inspector-body label').forEach(el=>el.classList.add('oe-inspector-row')); inspector?.querySelectorAll('.inspector-body input,.inspector-body select,.inspector-body textarea').forEach(el=>el.classList.add('oe-inspector-control')); });
-}
+function setDeep(path,value){setDeepState(state,path,value);}
 function showInspectorEmpty(){
  setInspector('属性','未选择内容','<div class="inspector-empty"><div class="empty-visual"><span></span><span></span><span></span></div><b>从画布或左侧内容库选择内容</b></div>');
 }
