@@ -213,11 +213,7 @@
       mnViewBar.setAttribute('role','navigation');
       mnViewBar.setAttribute('aria-label','预览操作');
       mnViewBar.innerHTML = '<button type="button" data-view-back aria-label="返回">←</button><button type="button" data-view-edit aria-label="编辑页面">编辑</button>';
-      mnViewBar.querySelector('[data-view-back]').addEventListener('click', () => {
-        const home = document.querySelector('#mNativeApp .page-tree-row [data-page="home"]');
-        if (home) home.click();
-        show('contents');
-      });
+      mnViewBar.querySelector('[data-view-back]').addEventListener('click', () => { location.assign('/admin/'); });
       mnViewBar.querySelector('[data-view-edit]').addEventListener('click', () => show(viewReturnScreen || 'pages'));
       document.body.appendChild(mnViewBar);
       return mnViewBar;
