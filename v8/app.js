@@ -13,6 +13,7 @@ import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.
 import {GUIDE_OLD_PLACEHOLDER_TEXT,CUSTOM_PAGE_LAYOUTS} from '/v8/editor/studio-constants.js';
 import {esc} from '/v8/editor/studio-format.js';
 import {readJson,writeJson,removeKey} from '/v8/editor/studio-storage.js';
+import {upsertAdminProject} from '/v8/editor/studio-admin-cache.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -24,7 +25,7 @@ const embedPreview=query.get('embed')==='preview';
 if(embedPreview)document.documentElement.classList.add('embed-preview');
 const initialProjectName=String(query.get('name')||'').trim();
 const projectStorageSuffix=projectId==='default'?activeTemplate.id:(activeTemplate.id+':'+projectId);
-const STORAGE=embedPreview?'onlyevent-preview-scratch:'+activeTemplate.id:`onlyevent-studio-v8:${projectStorageSuffix}:iframe`,LEGACY_STORAGE='onlyevent-studio-v8:01:iframe',PUBLISH_STORAGE=`onlyevent-studio-publish:${projectStorageSuffix}:iframe`,ADMIN_PROJECTS_KEY='onlyevent-admin-projects-v1',ORIGIN=location.origin;
+const STORAGE=embedPreview?'onlyevent-preview-scratch:'+activeTemplate.id:`onlyevent-studio-v8:${projectStorageSuffix}:iframe`,LEGACY_STORAGE='onlyevent-studio-v8:01:iframe',PUBLISH_STORAGE=`onlyevent-studio-publish:${projectStorageSuffix}:iframe`,ORIGIN=location.origin;
 let state=structuredClone(activeTemplate.defaults),preview=embedPreview,saveTimer=null,iframe=null,frameReady=false,focusCheckpointTaken=false,currentPage='home',publishIntent='site',publishRecord={};
 let hasSavedProject=false;
 // The retired creator editor (03/04) stored project-less sessions under ':default:'; move them once.
@@ -340,12 +341,7 @@ async function publishGeneratedHtml(html){
 
 function syncStudioIdentity(){renderStudioIdentity(activeTemplate,state.eventName)}
 function syncAdminProject(extra={}){
- if(projectId==='default')return;
- let rows=readJson(ADMIN_PROJECTS_KEY,[])||[];
- const i=rows.findIndex(p=>p.id===projectId),base=i>=0?rows[i]:{id:projectId,templateId:activeTemplate.id};
- const next={...base,name:state.eventName||base.name||'未命名活动',templateId:activeTemplate.id,updatedAt:new Date().toISOString(),...extra};
- if(i>=0)rows[i]=next;else rows.push(next);
- writeJson(ADMIN_PROJECTS_KEY,rows);
+ upsertAdminProject({projectId,templateId:activeTemplate.id,name:state.eventName,extra});
 }
 function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject();saveState.textContent='已保存';scheduleCloudSync()}catch{saveState.textContent='保存失败：图片过大或浏览器存储不足'}},180)}
 // Signed-in organizers also keep each project in the Worker (D1), so it follows them across devices.
