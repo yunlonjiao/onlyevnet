@@ -43,6 +43,7 @@ import {participationInspectorFields} from '/v8/editor/studio-participation-fiel
 import {shareDialogHtml} from '/v8/editor/studio-share-dialog-html.js';
 import {shareTextFor} from '/v8/editor/studio-share-text.js';
 import {ticketSettingsInspectorHtml} from '/v8/editor/studio-ticket-inspector-html.js';
+import {addressInspectorHtml} from '/v8/editor/studio-address-inspector-html.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {canvasToBlob,downloadSvg} from '/v8/editor/studio-canvas-download.js';
@@ -841,14 +842,7 @@ function openShareDialog(){renderShareDialog();if(!shareDialog.open)shareDialog.
 function openSeoInspector(){shareDialog.open?renderShareDialog():openShareDialog()}
 
 function openAddressInspector(){
- setInspector('基础信息','时间、场馆与导航','<div class="item-fields">'+
-  '<label><span>活动开始时间</span><input type="datetime-local" data-sync-path="eventStartDateTime" value="'+esc(state.eventStartDateTime||'')+'"></label>'+
-  '<label><span>活动结束时间</span><input type="datetime-local" data-sync-path="eventEndDateTime" value="'+esc(state.eventEndDateTime||'')+'"></label>'+
-  '<label><span>活动日期</span><input data-sync-path="date" value="'+esc(state.date||'')+'"></label>'+ 
-  '<label><span>举办城市</span><input data-sync-path="location" value="'+esc(state.location||'')+'"></label>'+ 
-  '<label><span>场馆地址</span><input data-sync-path="edition" value="'+esc(state.edition||'')+'"></label>'+
-  '<label><span>导航链接</span><input type="url" data-sync-path="navigationUrl" value="'+esc(state.navigationUrl||'')+'" placeholder="https://"></label>'+
- '</div><div class="row"><button id="testNavigation" type="button">打开导航 ↗</button></div><p class="inspector-note">活动状态默认自动判断：开始前为未开始，活动时间内为进行中，超过结束时间后自动变为已结束。</p>');
+ setInspector('基础信息','时间、场馆与导航',addressInspectorHtml(state,esc));
  const tplId=(activeTemplate?.id||'');
  const PALETTES={
   '01':[['original','原色'],['ice','冷蓝'],['cream','奶油棕']],
