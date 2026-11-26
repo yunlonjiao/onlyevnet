@@ -12,6 +12,7 @@ import {cleanSlug,suggestSlug,isValidSlug,readCloudSession,ensureCloudProjectFor
 import {migrateCreatorMarketState} from '/v8/templates/creator-market-migration.js';
 import {GUIDE_OLD_PLACEHOLDER_TEXT,CUSTOM_PAGE_LAYOUTS} from '/v8/editor/studio-constants.js';
 import {esc} from '/v8/editor/studio-format.js';
+import {readJson,writeJson,removeKey} from '/v8/editor/studio-storage.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -58,7 +59,7 @@ state.entryAnimation={
 };
 delete state.entryAnimation.organizer;
 delete state.entryAnimation.serial;
-try{publishRecord=JSON.parse(localStorage.getItem(PUBLISH_STORAGE)||'{}')||{}}catch{publishRecord={}}
+publishRecord=readJson(PUBLISH_STORAGE,{})||{};
 if(state.edition===undefined||state.edition==='首届')state.edition=activeTemplate.defaults.edition;
 if(state.navigationUrl===undefined)state.navigationUrl=activeTemplate.defaults.navigationUrl;
 if(state.modules?.activities===undefined&&state.modules?.stage!==undefined){state.modules.activities=state.modules.stage;delete state.modules.stage}
@@ -151,7 +152,7 @@ if(Number(state.activityPresetVersion||0)<ACTIVITY_PRESET_VERSION){
  if(!Array.isArray(state.featuredActivities))state.featuredActivities=[];
  state.schedule=Array.isArray(state.schedule)?state.schedule:[];
  state.activityPresetVersion=ACTIVITY_PRESET_VERSION;
- try{localStorage.setItem(STORAGE,JSON.stringify(state))}catch{}
+ writeJson(STORAGE,state)
 }
 state.participation=(state.participation||[]).map(item=>{
  const category=item.category||({stage:'舞台',guest:'嘉宾互动',signing:'签售',cosplay:'COS',itasha:'痛车',stamp:'集章',photo:'合影',game:'互动游戏',free:'自由交流'}[item.preset]||'其他');
@@ -210,7 +211,7 @@ function syncPublishButton(){
  const label=$('#publishBtnLabel');if(label)label.textContent=hasLiveSite(publishRecord)?'更新网站':'发布网站';
 }
 function savePublishRecord(next){
- publishRecord={...publishRecord,...next};localStorage.setItem(PUBLISH_STORAGE,JSON.stringify(publishRecord));syncPublishButton();
+ publishRecord={...publishRecord,...next};writeJson(PUBLISH_STORAGE,publishRecord);syncPublishButton();
 }
 async function restorePublishFromCloud(){
  try{
@@ -218,7 +219,7 @@ async function restorePublishFromCloud(){
   if(hasLiveSite(publishRecord)){
    let live=null;
    try{live=await getCloudSite(publishRecord.cloudProjectId)}catch(e){return}
-   if(!live){publishRecord={};try{localStorage.removeItem(PUBLISH_STORAGE)}catch{};syncPublishButton();renderPublishDialog()}
+   if(!live){publishRecord={};removeKey(PUBLISH_STORAGE);syncPublishButton();renderPublishDialog()}
    return;
   }
   const projects=await listCloudProjects();if(!Array.isArray(projects)||!projects.length)return;
@@ -340,11 +341,11 @@ async function publishGeneratedHtml(html){
 function syncStudioIdentity(){renderStudioIdentity(activeTemplate,state.eventName)}
 function syncAdminProject(extra={}){
  if(projectId==='default')return;
- let rows=[];try{rows=JSON.parse(localStorage.getItem(ADMIN_PROJECTS_KEY)||'[]')||[]}catch{}
+ let rows=readJson(ADMIN_PROJECTS_KEY,[])||[];
  const i=rows.findIndex(p=>p.id===projectId),base=i>=0?rows[i]:{id:projectId,templateId:activeTemplate.id};
  const next={...base,name:state.eventName||base.name||'未命名活动',templateId:activeTemplate.id,updatedAt:new Date().toISOString(),...extra};
  if(i>=0)rows[i]=next;else rows.push(next);
- localStorage.setItem(ADMIN_PROJECTS_KEY,JSON.stringify(rows));
+ writeJson(ADMIN_PROJECTS_KEY,rows);
 }
 function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject();saveState.textContent='已保存';scheduleCloudSync()}catch{saveState.textContent='保存失败：图片过大或浏览器存储不足'}},180)}
 // Signed-in organizers also keep each project in the Worker (D1), so it follows them across devices.
@@ -1928,7 +1929,7 @@ $('#deviceMobileBtn').onclick=()=>setDevice('mobile');
 function __openPreviewTab(){
  const projectId=state.projectId||'default';
  const templateId=state.templateId||'08-birthday';
- try{localStorage.setItem('oe-preview-state:'+templateId+':'+projectId,JSON.stringify(state))}catch(e){}
+ writeJson('oe-preview-state:'+templateId+':'+projectId,state)
  const url='/v8/preview.html?template='+encodeURIComponent(templateId)+'&project='+encodeURIComponent(projectId);
  const win=window.open(url,'oe-preview-'+projectId);
  if(!win)toast('浏览器拦截了新标签，请允许弹窗后再点预览');else toast('预览已在新标签打开');
@@ -1970,7 +1971,7 @@ $('#shareBtn').onclick=openShareDialog;$('#shareClose').onclick=()=>shareDialog.
 $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navigator.clipboard.writeText(publishRecord.url);toast('链接已复制')}catch{toast('复制失败')}};
 $('#publishRename').addEventListener('click',()=>{renamingSite=true;renderPublishDialog();publishSlug.disabled=false;publishSlug.focus();publishSlug.select()});
 publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});
-if(projectId!=='default'&&!hasSavedProject){localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject()}
+if(projectId!=='default'&&!hasSavedProject){writeJson(STORAGE,state);syncAdminProject()}
 syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();bindStageRows();bindRecapDialog();$('#recapClose').onclick=()=>recapDialog.close();mountFrame();syncHistory();setStudioPage('home');
 
 /* Shared mobile drawers, identical across every template. */
