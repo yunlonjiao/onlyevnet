@@ -33,6 +33,7 @@ import {GUIDE_PRESETS,PARTICIPATION_PRESETS,CUSTOM_PAGE_PRESETS,CUSTOM_PAGE_STAR
 import {PAGE_CONTENT_CONFIG,COLLECTION_PAGE,INLINE_HOME_COLLECTIONS} from '/v8/editor/studio-page-content.js';
 import {collectionStudioPageFor} from '/v8/editor/studio-collection-page.js';
 import {buildStarterItems,customPagePreset} from '/v8/editor/studio-custom-page.js';
+import {createContentCounts} from '/v8/editor/studio-content-counts.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -670,12 +671,7 @@ function addPresetItem(collection,key){
  save();send({type:'OE_REPLACE_STATE',state});
  openCollectionManager(collection,arr.length-1);openItemInspector(collection,arr.length-1);
 }
-function syncContentCounts(){
- document.querySelectorAll('[data-content-count]').forEach(el=>{
-   const arr=collectionArray(el.dataset.contentCount);
-   el.textContent=Array.isArray(arr)?arr.length:0;
- });
-}
+const syncContentCounts=createContentCounts({collectionArray});
 function presetEntriesFor(collection){
  const tpl=String(state.templateId||'');
  if(collection==='guide'){
