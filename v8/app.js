@@ -36,6 +36,7 @@ import {buildStarterItems,customPagePreset} from '/v8/editor/studio-custom-page.
 import {customPageRowsHtml} from '/v8/editor/studio-custom-page-rows.js';
 import {customPageItemInspectorHtml} from '/v8/editor/studio-custom-page-item-html.js';
 import {customPageSettingsHtml} from '/v8/editor/studio-custom-page-settings-html.js';
+import {customPageItemsPanelHtml} from '/v8/editor/studio-custom-page-items-html.js';
 import {streetManagerHtml} from '/v8/editor/studio-street-manager-html.js';
 import {productInspectorHtml} from '/v8/editor/studio-product-inspector-html.js';
 import {collectionMeta} from '/v8/editor/studio-collection-meta.js';
@@ -437,12 +438,7 @@ function openCustomPageSettings(pageId){
 function openCustomPageItemsManager(pageId,selectedIndex=-1){
  const page=state.customPages?.[customPageIndex(pageId)],panel=$('#contentListPanel');if(!page||!panel)return;
  const preset=customPageFieldLabels(page),items=page.items||[];
- const rows=items.map((item,i)=>'<button type="button" class="sidebar-content-row '+(i===selectedIndex?'active':'')+'" data-custom-item-index="'+i+'">'+
-   '<span class="sidebar-content-thumb '+(item.image?'has-image':'')+'">'+(item.image?'<img src="'+esc(item.image)+'" alt="">':'◇')+'</span>'+
-   '<span class="sidebar-content-copy"><b>'+esc(item.title||preset.itemTitle+' '+(i+1))+'</b>'+(item.meta?'<small>'+esc(item.meta)+'</small>':'')+'</span><i>›</i></button>').join('');
- panel.innerHTML='<div class="sidebar-content-head"><div><b>'+esc(preset.itemTitle+'展示')+'</b><span>'+items.length+' 项</span></div></div>'+
-   '<div class="sidebar-content-rows">'+(rows||'<div class="sidebar-content-empty">还没有'+esc(preset.itemTitle)+'内容</div>')+'</div>'+
-   '<button type="button" class="sidebar-content-add" data-add-custom-item>＋ 添加'+esc(preset.itemTitle)+'</button>';
+ panel.innerHTML=customPageItemsPanelHtml(items,preset,selectedIndex,esc);
  panel.querySelectorAll('[data-custom-item-index]').forEach(btn=>btn.onclick=()=>openCustomPageItemInspector(pageId,Number(btn.dataset.customItemIndex)));
  panel.querySelector('[data-add-custom-item]')?.addEventListener('click',()=>mutateCustomPageItem(pageId,items.length-1,'add'));
 }
