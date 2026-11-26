@@ -1927,3 +1927,6 @@ body.m-native-view .sidebar{backdrop-filter:none;-webkit-backdrop-filter:none;ba
 .custom-page-preset-grid{gap:14px;grid-auto-rows:128px}
 .custom-page-preset{padding:14px;border-radius:12px}
 .custom-page-preset b{margin-bottom:7px}
+
+/* custom page preset old shape */
+#mNativeApp .inspector-body .custom-page-preset{border-radius:12px}
