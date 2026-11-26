@@ -5,8 +5,9 @@
   "scripts": {
     "contract": "node ./check-renderer-contract.mjs",
     "smoke": "playwright test",
-    "check": "npm run typecheck && npm run contract && npm run smoke",
-    "typecheck": "tsc -p ./tsconfig.json"
+    "check": "npm run architecture && npm run typecheck && npm run contract && npm run smoke",
+    "typecheck": "tsc -p ./tsconfig.json",
+    "architecture": "node ../tools/check-architecture.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.55.0",
