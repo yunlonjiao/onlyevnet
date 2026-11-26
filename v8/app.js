@@ -55,6 +55,7 @@ import {PALETTES} from '/v8/editor/studio-palettes.js';
 import {createRecapDialog} from '/v8/editor/studio-recap-dialog.js';
 import {createCustomPages} from '/v8/editor/studio-custom-pages.js';
 import {cleanupDeletedReferencesIn} from '/v8/editor/studio-reference-cleanup.js';
+import {initDeviceControls} from '/v8/editor/studio-device.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
@@ -1202,13 +1203,7 @@ $('#imageInput').addEventListener('change',async e=>{
    openImageCropper(prepared.url,path,returnCollection,returnIndex,prepared.url);
  }catch(err){console.error('[OnlyEvent image input]',err);toast('图片读取失败')}
 });
-function setDevice(mode){setStudioDevice(mode,{canvas})}
-$('#deviceDesktopBtn').onclick=()=>setDevice('desktop');
-$('#deviceMobileBtn').onclick=()=>setDevice('mobile');
- const syncStudioDevice=()=>{const coarse=matchMedia('(pointer:coarse)').matches;const shortLandscape=coarse&&innerHeight<=560;try{setDevice(innerWidth<=820||shortLandscape?'mobile':'desktop')}catch(e){}};
- syncStudioDevice();
- let __deviceTimer=null;
- window.addEventListener('resize',()=>{clearTimeout(__deviceTimer);__deviceTimer=setTimeout(syncStudioDevice,150)});
+initDeviceControls({$,canvas,setStudioDevice});
 function __openPreviewTab(){
  const projectId=state.projectId||'default';
  const templateId=state.templateId||'08-birthday';
