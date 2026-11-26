@@ -27,6 +27,7 @@ import { askPublic, askSubmit, askOverview, askManage, askQuestionUpdate, askWid
 import { countView, projectStats } from './stats.js';
 import { listFeedback, sendFeedback, accountOverview } from './overview.js';
 import { cleanupInactiveSites } from './cleanup.js';
+import { register, login, recoverAccount, rotateRecoveryCode, changePassword, deleteAccount } from './auth/account.js';
 import { serveSlug } from './sites/serve.js';
 import { getConfig, putConfig, resetConfig } from './projects/config.js';
 
@@ -62,41 +63,6 @@ const RESERVED_SUBDOMAINS=new Set(['www','publisher','api','admin','app']);
 // Recovery codes: 12 characters from an alphabet without 0/O/1/I, shown as XXXX-XXXX-XXXX (60 bits).
 // Codes issued before this change (24 characters, case-sensitive) still verify as typed.
 function getSlugFromHost(req,env){const host=new URL(req.url).hostname.toLowerCase(),base=baseDomain(env);if(!base||base.includes('example.com')||!host.endsWith('.'+base))return '';const sub=host.slice(0,-(base.length+1));if(!sub||sub.includes('.')||RESERVED_SUBDOMAINS.has(sub))return '';return cleanSlug(sub)}
-
-async function register(req,env){await rateLimit(env,'register:'+clientIp(req),5,3600);const b=await bodyJson(req),username=cleanText(b.username,32),password=String(b.password||'');if(!validUsername(username))return json({ok:false,error:'主办方名称需为 2–32 个字符，可使用中英文、数字、空格、_ 或 -'},400);if(password.length<6)return json({ok:false,error:'密码至少 6 位'},400);const exists=await env.DB.prepare('SELECT id FROM users WHERE username=? COLLATE NOCASE').bind(username).first();if(exists)return json({ok:false,error:'这个账号已经注册'},409);const salt=newSalt(),passwordHash=await hashPassword(password,salt),userId=id('usr'),recoveryCode=newRecoveryCode(),recoverySalt=newSalt(),recoveryHash=await hashPassword(recoveryCode,recoverySalt),created=now();await env.DB.batch([env.DB.prepare('INSERT INTO users(id,username,password_hash,password_salt,created_at) VALUES(?,?,?,?,?)').bind(userId,username,passwordHash,salt,created),env.DB.prepare('INSERT INTO account_recovery(user_id,code_hash,code_salt,updated_at) VALUES(?,?,?,?)').bind(userId,recoveryHash,recoverySalt,created)]);return issueSession(env,userId,username,201,{recoveryCode:formatRecoveryCode(recoveryCode)})}
-async function login(req,env){const b=await bodyJson(req),username=cleanText(b.username,32),password=String(b.password||'');await rateLimit(env,'login-ip:'+clientIp(req),30,900);await rateLimit(env,'login:'+username.toLowerCase(),10,900);const row=await env.DB.prepare('SELECT id,username,password_hash,password_salt FROM users WHERE username=? COLLATE NOCASE').bind(username).first();if(!row)return json({ok:false,error:'账号或密码不正确'},401);const got=await hashPassword(password,row.password_salt);if(got!==row.password_hash)return json({ok:false,error:'账号或密码不正确'},401);return issueSession(env,row.id,row.username)}
-async function recoverAccount(req,env){const b=await bodyJson(req);await rateLimit(env,'recover-ip:'+clientIp(req),20,3600);await rateLimit(env,'recover:'+cleanText(b.username,32).toLowerCase(),5,3600);const username=cleanText(b.username,32),recoveryCode=String(b.recoveryCode||'').trim(),newPassword=String(b.newPassword||'');if(!validUsername(username)||!recoveryCode)return json({ok:false,error:'请输入账号和恢复码'},400);if(newPassword.length<6)return json({ok:false,error:'新密码至少 6 位'},400);const row=await env.DB.prepare(`SELECT users.id,account_recovery.code_hash,account_recovery.code_salt FROM users LEFT JOIN account_recovery ON account_recovery.user_id=users.id WHERE users.username=? COLLATE NOCASE LIMIT 1`).bind(username).first();if(!row?.code_hash)return json({ok:false,error:'账号或恢复码不正确'},400);let matched=false;for(const candidate of recoveryCandidates(recoveryCode)){if(await hashPassword(candidate,row.code_salt)===row.code_hash){matched=true;break}}if(!matched)return json({ok:false,error:'账号或恢复码不正确'},400);const salt=newSalt(),passwordHash=await hashPassword(newPassword,salt);await env.DB.batch([env.DB.prepare('UPDATE users SET password_hash=?,password_salt=? WHERE id=?').bind(passwordHash,salt,row.id),env.DB.prepare('DELETE FROM sessions WHERE user_id=?').bind(row.id)]);return json({ok:true})}
-async function rotateRecoveryCode(req,env){const u=await requireUser(req,env),recoveryCode=newRecoveryCode(),recoverySalt=newSalt(),recoveryHash=await hashPassword(recoveryCode,recoverySalt),updated=now();await env.DB.prepare(`INSERT INTO account_recovery(user_id,code_hash,code_salt,updated_at) VALUES(?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET code_hash=excluded.code_hash,code_salt=excluded.code_salt,updated_at=excluded.updated_at`).bind(u.id,recoveryHash,recoverySalt,updated).run();return json({ok:true,recoveryCode:formatRecoveryCode(recoveryCode),updatedAt:updated})}
-async function changePassword(req,env){
-  const u=await requireUser(req,env);await rateLimit(env,'password:'+u.id,10,3600);
-  const b=await bodyJson(req),oldPassword=String(b.oldPassword||''),newPassword=String(b.newPassword||'');
-  if(newPassword.length<6)return json({ok:false,error:'新密码至少 6 位'},400);
-  const row=await env.DB.prepare('SELECT password_hash,password_salt FROM users WHERE id=?').bind(u.id).first();
-  if(!row||await hashPassword(oldPassword,row.password_salt)!==row.password_hash)return json({ok:false,error:'当前密码不正确'},400);
-  const salt=newSalt(),hash=await hashPassword(newPassword,salt);
-  // Other devices must sign in again with the new password; this session stays.
-  await env.DB.batch([env.DB.prepare('UPDATE users SET password_hash=?,password_salt=? WHERE id=?').bind(hash,salt,u.id),env.DB.prepare('DELETE FROM sessions WHERE user_id=? AND token_hash<>?').bind(u.id,u.tokenHash)]);
-  return json({ok:true});
-}
-async function deleteAccount(req,env){
-  const u=await requireUser(req,env);await rateLimit(env,'account-delete:'+u.id,5,3600);
-  const b=await bodyJson(req),password=String(b.password||'');
-  const row=await env.DB.prepare('SELECT password_hash,password_salt FROM users WHERE id=?').bind(u.id).first();
-  if(!row||await hashPassword(password,row.password_salt)!==row.password_hash)return json({ok:false,error:'密码不正确'},400);
-  // Collect every stored file first: once the user row is gone the links to them are gone too.
-  const keys=new Set();
-  const add=rows=>{for(const r of rows.results||[])if(r.object_key)keys.add(r.object_key)};
-  add(await env.DB.prepare('SELECT object_key FROM sites WHERE user_id=?').bind(u.id).all());
-  add(await env.DB.prepare('SELECT v.object_key FROM site_versions v JOIN sites s ON s.id=v.site_id WHERE s.user_id=?').bind(u.id).all());
-  add(await env.DB.prepare('SELECT v.object_key FROM site_stages v JOIN sites s ON s.id=v.site_id WHERE s.user_id=?').bind(u.id).all());
-  add(await env.DB.prepare('SELECT m.object_key FROM project_media m JOIN projects p ON p.id=m.project_id WHERE p.user_id=?').bind(u.id).all());
-  const {results=[]}=await env.DB.prepare('SELECT config_json FROM projects WHERE user_id=?').bind(u.id).all();
-  for(const r of results){try{for(const k of mediaKeysFromValue(JSON.parse(r.config_json||'{}')))keys.add(k)}catch{}}
-  await env.DB.prepare('DELETE FROM users WHERE id=?').bind(u.id).run();
-  for(const key of keys){try{await env.SITES.delete(key)}catch(e){console.error(e)}}
-  return json({ok:true});
-}
-
 
 async function listProjects(req,env){const u=await requireUser(req,env),active=currentProjectId(req),trash=new URL(req.url).searchParams.get('trash')==='1';const {results=[]}=await env.DB.prepare(`SELECT p.id,p.name,p.user_id,p.local_project_id,p.config_json,p.created_at,p.updated_at,s.id AS site_id,ps.published_at,ps.deleted_at,s.status AS site_status,s.slug AS site_slug FROM projects p LEFT JOIN project_state ps ON ps.project_id=p.id LEFT JOIN project_sites m ON m.project_id=p.id LEFT JOIN sites s ON s.id=m.site_id WHERE (p.user_id=? OR EXISTS(SELECT 1 FROM project_members pm WHERE pm.project_id=p.id AND pm.user_id=?)) AND ${trash?'ps.deleted_at IS NOT NULL':'ps.deleted_at IS NULL'} ORDER BY ${trash?'ps.deleted_at':'p.updated_at'} DESC`).bind(u.id,u.id).all();return json({ok:true,projects:results.map(r=>{let c={};try{c=JSON.parse(r.config_json||'{}')}catch{}const publishedAt=r.published_at||null,hasChanges=!!publishedAt&&new Date(r.updated_at).getTime()>new Date(publishedAt).getTime();return {id:r.id,name:r.name,shared:r.user_id!==u.id,localProjectId:r.local_project_id||null,eventDate:c.eventDate||'',eventLocation:c.eventLocation||'',heroImage:c.heroImage||'',siteId:r.site_id||null,visitorSiteUrl:r.site_slug?publicUrl(env,r.site_slug,req):(c.visitorSiteUrl||''),eventTemplate:c.eventTemplate||'blank',templateId:typeof c.templateId==='string'?c.templateId:'',config:c,createdAt:r.created_at,updatedAt:r.updated_at,publishedAt,deletedAt:r.deleted_at||null,siteStatus:r.site_status||null,publishState:r.site_status==='inactive'?'inactive':!publishedAt?'draft':hasChanges?'changes':'published',active:r.id===active}})})}
 
