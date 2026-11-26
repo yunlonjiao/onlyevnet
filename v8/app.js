@@ -26,6 +26,7 @@ import {createStageUi} from '/v8/editor/studio-stage-ui.js';
 import {createPublishUi} from '/v8/editor/studio-publish-ui.js';
 import {createPublishFlow} from '/v8/editor/studio-publish-flow.js';
 import {createHistoryUi} from '/v8/editor/studio-history-ui.js';
+import {createCloudSync} from '/v8/editor/studio-cloud-sync.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -296,21 +297,11 @@ function syncAdminProject(extra={}){
 }
 function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject();saveState.textContent='已保存';scheduleCloudSync()}catch{saveState.textContent='保存失败：图片过大或浏览器存储不足'}},180)}
 // Signed-in organizers also keep each project in the Worker (D1), so it follows them across devices.
-let cloudSyncTimer=0,cloudSyncing=false;
-function cloudSyncAvailable(){return projectId!=='default'&&!!readCloudSession()}
-function scheduleCloudSync(){if(!cloudSyncAvailable())return;clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(syncToCloud,2500)}
-async function syncToCloud(){
- if(cloudSyncing){scheduleCloudSync();return}
- cloudSyncing=true;
- try{
-   const cloudProjectId=await ensureCloudProjectFor({templateId:activeTemplate.id,projectId,name:state.eventName});
-   await saveCloudConfig({projectId:cloudProjectId,config:{...state,templateId:activeTemplate.id}});
-   syncAdminProject({cloudProjectId});
-   saveState.textContent='已保存 · 云端已同步';
- }catch(err){
-   saveState.textContent=err?.status===413?'已保存在本机 · 云端同步失败：项目数据过大':err?.status===401?'已保存在本机 · 登录后可同步到云端':'已保存在本机 · 云端同步失败';
- }finally{cloudSyncing=false}
-}
+const cloudSync=createCloudSync({
+  getState:()=>state, getTemplate:()=>activeTemplate, getProjectId:()=>projectId, readCloudSession,
+  ensureCloudProjectFor, saveCloudConfig, syncAdminProject, saveStateEl:saveState
+});
+const {available:cloudSyncAvailable, schedule:scheduleCloudSync, sync:syncToCloud}=cloudSync;
 // Signed in, cropped images go to R2 instead of filling browser storage with data URLs.
 async function storeCroppedImage(blob){
  if(cloudSyncAvailable()){
