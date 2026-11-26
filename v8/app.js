@@ -20,6 +20,7 @@ import {loadPublishRecord,persistPublishRecord,clearPublishRecord} from '/v8/edi
 import {setDeepState,getDeepState} from '/v8/editor/studio-state-paths.js';
 import {guideLabelFor} from '/v8/editor/studio-guide-label.js';
 import {contentThumb} from '/v8/editor/studio-content-thumb.js';
+import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -388,10 +389,9 @@ function setWorkspace(name){
 }
 
 const moduleLabels={booths:'摊位',activities:'活动',guests:'嘉宾',guide:guideLabelText()};
-function customPageKey(id){return 'custom-'+id}
-function customPageByKey(key){return (state.customPages||[]).find(p=>customPageKey(p.id)===key)}
-function pageLabel(key){return moduleLabels[key]||customPageByKey(key)?.title||(key==='home'?'首页':key==='animation'?'动画页面':'页面')}
-function customPageIndex(id){return (state.customPages||[]).findIndex(p=>String(p.id)===String(id))}
+function customPageByKey(key){return findCustomPage(state.customPages||[],key)}
+function pageLabel(key){return pageLabelFor(key,state.customPages||[],moduleLabels)}
+function customPageIndex(id){return pageIndexFor(state.customPages||[],id)}
 
 const contentManagerMeta={
  ribbonItems:{title:'滚动公告',empty:'还没有滚动公告',item:(x,i)=>[x.text||('公告 '+(i+1)),'']},
