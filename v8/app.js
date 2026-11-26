@@ -57,6 +57,8 @@ import {createCustomPages} from '/v8/editor/studio-custom-pages.js';
 import {cleanupDeletedReferencesIn} from '/v8/editor/studio-reference-cleanup.js';
 import {initDeviceControls} from '/v8/editor/studio-device.js';
 import {createBannerInspector,createTrafficInspector} from '/v8/editor/studio-page-inspectors.js';
+import {createOptionalPageInspector} from '/v8/editor/studio-optional-page.js';
+import {createSimpleInspectors} from '/v8/editor/studio-simple-inspectors.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
@@ -402,13 +404,12 @@ function buildCustomPageStarterItems(presetKey){return buildStarterItems(presetK
 function guideLabelText(){return guideLabelFor(activeTemplate?.id||'')}
 function collectionStudioPage(collection){return collectionStudioPageFor(collection,{currentPage,templateId:activeTemplate.id})}
 
-function openOptionalPageInspector(key){
- const page=state[key]||{},label=key==='freewalk'?'COS自由行':'痛车展示';
- setInspector('页面内容',label,optionalPageHtml(key,page,esc));
- inspector.querySelectorAll('[data-optional-field]').forEach(input=>bindInspectorStateInput(input,key+'.'+input.dataset.optionalField,{clean:true}));
- inspector.querySelector('[data-optional-image]')?.addEventListener('click',()=>{$('#imageInput').dataset.path=key+'.image';$('#imageInput').click()});
- inspector.querySelector('[data-optional-image-remove]')?.addEventListener('click',()=>{checkpoint();setDeep(key+'.image','');send({type:'OE_REPLACE_STATE',state});openOptionalPageInspector(key)});
-}
+function openOptionalPageInspector(key){optionalPageUi.open(key)}
+function openHeroTitleInspector(){simpleInspectorUi.hero()}
+function openLifecycleInspector(){simpleInspectorUi.lifecycle()}
+function openAddressInspector(){simpleInspectorUi.address()}
+function openTicketSettingsInspector(){simpleInspectorUi.ticket()}
+
 function syncCanvasSelection(path){
  if(/^heroTitle|^(?:heroImage|mobileHeroImage)$|^tagline$|^sticker\d+$/.test(path)){syncStudioPageUI('home',{openContent:false});setPageContentActive({tool:'hero'});return}
  if(/^ribbonItems\./.test(path)){syncStudioPageUI('home',{openContent:false});setPageContentActive({collection:'ribbonItems'});return}
@@ -663,23 +664,6 @@ function bindInspectorStateInput(input,path,{clean=false,number=false}={}){
  });
 }
 
-function openHeroTitleInspector(){
- const hero=heroTitleInspectorHtml(state,esc);
- setInspector('主视觉',hero.title,hero.html);
- inspector.querySelectorAll('[data-sync-path]').forEach(input=>bindInspectorStateInput(input,input.dataset.syncPath,{clean:input.type!=='color'}));
- inspector.querySelectorAll('[data-hero-image]').forEach(btn=>btn.addEventListener('click',()=>{$('#imageInput').dataset.path=btn.dataset.heroImage;$('#imageInput').click()}));
- inspector.querySelectorAll('[data-hero-image-remove]').forEach(btn=>btn.addEventListener('click',()=>{checkpoint();setDeep(btn.dataset.heroImageRemove,'');save();send({type:'OE_PATCH_FIELD',path:btn.dataset.heroImageRemove,value:''})}));
-}
-function openLifecycleInspector(){
- const mode=String(state.eventStatusMode||'auto'),status=String(state.eventStatus||'upcoming');
- setInspector('活动状态','生命周期',lifecycleInspectorHtml(state,esc));
- inspector.querySelector('[data-event-status-mode="auto"]')?.addEventListener('click',()=>{
-   checkpoint();state.eventStatusMode='auto';save();send({type:'OE_REPLACE_STATE',state});openLifecycleInspector();
- });
- inspector.querySelectorAll('[data-event-status]').forEach(btn=>btn.addEventListener('click',()=>{
-   checkpoint();state.eventStatusMode='manual';state.eventStatus=btn.dataset.eventStatus;save();send({type:'OE_REPLACE_STATE',state});openLifecycleInspector();
- }));
-}
 
 /* ---- live updates and recap ---- */
 const recapDialog=$('#recapDialog');
@@ -698,33 +682,6 @@ function openShareDialog(){shareUi.open()}
 function openSeoInspector(){shareUi.openSeo()}
 const recapCommit=({structural=false}={})=>{save();send({type:'OE_REPLACE_STATE',state});if(structural)renderRecapDialog()};
 
-function openAddressInspector(){
- setInspector('基础信息','时间、场馆与导航',addressInspectorHtml(state,esc));
- const tplId=(activeTemplate?.id||'');
- const num=(tplId.match(/^0\d/)||[])[0];
- if(num&&PALETTES[num]){
-  const key="palette"+num;
-  const options=PALETTES[num].map(([v,l])=>'<option value="'+v+'">'+l+'</option>').join('');
-  const box=document.createElement("label");
-  box.innerHTML='<span>配色方案</span><select data-palette>'+options+'</select>';
-  inspector.querySelector(".item-fields")?.appendChild(box);
-  const sel=inspector.querySelector("[data-palette]");
-  if(sel){sel.value=state[key]||PALETTES[num][0][0];sel.addEventListener("change",()=>{checkpoint();state[key]=sel.value;save();send({type:"OE_REPLACE_STATE",state})})}
- }
- bindInspectorStateInput(inspector.querySelector('[data-sync-path="eventStartDateTime"]'),'eventStartDateTime',{clean:true});
- bindInspectorStateInput(inspector.querySelector('[data-sync-path="eventEndDateTime"]'),'eventEndDateTime',{clean:true});
- bindInspectorStateInput(inspector.querySelector('[data-sync-path="date"]'),'date',{clean:true});
- bindInspectorStateInput(inspector.querySelector('[data-sync-path="location"]'),'location',{clean:true});
- bindInspectorStateInput(inspector.querySelector('[data-sync-path="edition"]'),'edition',{clean:true});
- bindInspectorStateInput(inspector.querySelector('[data-sync-path="navigationUrl"]'),'navigationUrl',{clean:true});
- $('#testNavigation').onclick=()=>{const url=String(state.navigationUrl||'').trim();if(url.startsWith('https://')||url.startsWith('http://'))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
-}
-function openTicketSettingsInspector(){
- setInspector('票务','购票平台',ticketSettingsInspectorHtml(state,esc));
- bindInspectorStateInput($('#ticketLinkLabelInput'),'ticketLinkLabel',{clean:true});
- bindInspectorStateInput($('#ticketUrlInput'),'ticketUrl',{clean:true});
- $('#testTicketUrl').onclick=()=>{const url=String(state.ticketUrl||'').trim();if(/^https?:\/\//i.test(url))window.open(url,'_blank','noopener');else toast('请填写有效的 http/https 链接')};
-}
 function openFieldInspector(path){
  if(path.startsWith('ribbonItems.')){
    const i=Number(path.split('.')[1])||0;
@@ -1237,6 +1194,8 @@ $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navi
 $('#publishRename').addEventListener('click',()=>{renamingSite=true;renderPublishDialog();publishSlug.disabled=false;publishSlug.focus();publishSlug.select()});
 publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});
 if(projectId!=='default'&&!hasSavedProject){writeJson(STORAGE,state);syncAdminProject()}
+const simpleInspectorUi=createSimpleInspectors({$,getState:()=>state,getTemplate:()=>activeTemplate,setInspector,inspector,esc,PALETTES,bindInspectorStateInput,checkpoint,setDeep,save,send,toast});
+const optionalPageUi=createOptionalPageInspector({$,getState:()=>state,setInspector,inspector,esc,bindInspectorStateInput,checkpoint,setDeep,send});
 const bannerInspectorUi=createBannerInspector({$,getState:()=>state,setInspector,inspector,esc,checkpoint,setDeep,save,send});
 const trafficInspectorUi=createTrafficInspector({$,getState:()=>state,setInspector,inspector,esc,checkpoint,save,send});
 customPagesUi=createCustomPages({
