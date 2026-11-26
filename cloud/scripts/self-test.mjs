@@ -14,7 +14,7 @@ check(schema.includes('project_id TEXT PRIMARY KEY')&&schema.includes('site_id T
 check(source.includes("!['jpg','jpeg','png','webp','gif'].includes(ext)"),'SVG upload is rejected');
 check(source.includes('这个网站不属于当前活动项目'),'site ownership checks');
 check(source.includes('site_versions')&&source.includes('rollbackSite'),'online version history / rollback');
-check(worker.includes('site_aliases')&&worker.includes('301'),'old slug redirect support');
+check(source.includes('site_aliases')&&source.includes('301'),'old slug redirect support');
 check(source.includes('rateLimit(env,'),'auth and publish endpoints are rate limited');
 check(worker.includes("path.startsWith('/admin/')")&&worker.includes('no-store'),'admin assets disable stale cache');
 check(/location\.hostname/.test(publisher)&&publisher.includes('onlyevent.cn'),'editor uses the same origin on onlyevent.cn');

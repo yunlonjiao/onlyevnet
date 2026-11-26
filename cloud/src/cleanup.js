@@ -1,0 +1,4 @@
+import { now } from './core/ids.js';
+
+export function inactiveDays(env){const n=Number(env.INACTIVE_DAYS||60);return Number.isFinite(n)&&n>0?n:60}
+export async function cleanupInactiveSites(env){const cutoff=new Date(Date.now()-inactiveDays(env)*86400000).toISOString(),{results=[]}=await env.DB.prepare(`SELECT id,object_key FROM sites WHERE status='active' AND COALESCE(last_viewed_at,updated_at,created_at) < ?`).bind(cutoff).all();for(const s of results){await env.SITES.delete(s.object_key);await env.DB.prepare(`UPDATE sites SET status='inactive',removed_at=?,updated_at=? WHERE id=?`).bind(now(),now(),s.id).run()}await env.DB.prepare('DELETE FROM sessions WHERE expires_at < ?').bind(now()).run();await env.DB.prepare('DELETE FROM rate_limits WHERE window_start < ?').bind(new Date(Date.now()-86400000).toISOString()).run();return results.length}
