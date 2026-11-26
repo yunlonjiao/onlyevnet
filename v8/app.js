@@ -14,6 +14,8 @@ import {GUIDE_OLD_PLACEHOLDER_TEXT,CUSTOM_PAGE_LAYOUTS} from '/v8/editor/studio-
 import {esc} from '/v8/editor/studio-format.js';
 import {readJson,writeJson,removeKey} from '/v8/editor/studio-storage.js';
 import {upsertAdminProject} from '/v8/editor/studio-admin-cache.js';
+import {createToast} from '/v8/editor/studio-toast.js';
+import {loadPublishRecord,persistPublishRecord,clearPublishRecord} from '/v8/editor/studio-publish-record.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
 const query=new URLSearchParams(location.search);
@@ -60,7 +62,7 @@ state.entryAnimation={
 };
 delete state.entryAnimation.organizer;
 delete state.entryAnimation.serial;
-publishRecord=readJson(PUBLISH_STORAGE,{})||{};
+publishRecord=loadPublishRecord(PUBLISH_STORAGE);
 if(state.edition===undefined||state.edition==='首届')state.edition=activeTemplate.defaults.edition;
 if(state.navigationUrl===undefined)state.navigationUrl=activeTemplate.defaults.navigationUrl;
 if(state.modules?.activities===undefined&&state.modules?.stage!==undefined){state.modules.activities=state.modules.stage;delete state.modules.stage}
@@ -206,13 +208,13 @@ if(state.sponsors.length===1){
 state.booths=(state.booths||[]).map(b=>{const next={id:b.id||uid('b'),no:b.no||'',name:b.name||'',logo:b.logo||'',type:b.type||'',intro:b.intro||'',...b,products:Array.isArray(b.products)?b.products:[]};next.products=(next.products||[]).map(p=>({id:p.id||uid('p'),name:p.name||'',tag:'',price:p.price||'',note:p.note||'',image:p.image||'',...p}));delete next.pointId;return next});
 state.guests=(state.guests||[]).map(g=>({id:g.id||uid('g'),guestType:g.guestType||'person',name:g.name||'',role:g.role||'',members:g.members||'',attendanceNote:g.attendanceNote||'',works:g.works||'',intro:g.intro||'',image:g.image||'',socialLinks:Array.isArray(g.socialLinks)?g.socialLinks:[],...g}));
 state.schedule=(state.schedule||[]).map(a=>{const next={id:a.id||uid('s'),day:a.day||'DAY 1',time:a.time||'',endTime:a.endTime||'',title:a.title||'',stage:a.stage||'',detail:a.detail||'',category:a.category||'',guestIds:Array.isArray(a.guestIds)?a.guestIds:[],participationId:a.participationId||'',registrationUrl:a.registrationUrl||'',...a};next.guestIds=Array.isArray(a.guestIds)?a.guestIds:[];next.participationId=a.participationId||'';delete next.locationId;return next});
-function toast(t){toastEl.textContent=t;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),1400)}
+const toast=createToast(toastEl);
 const publishDialog=$('#publishDialog'),publishSlug=$('#publishSlug'),publishPrimary=$('#publishPrimary'),publishStatus=$('#publishStatus'),publishResult=$('#publishResult'),publishUrl=$('#publishUrl');
 function syncPublishButton(){
  const label=$('#publishBtnLabel');if(label)label.textContent=hasLiveSite(publishRecord)?'更新网站':'发布网站';
 }
 function savePublishRecord(next){
- publishRecord={...publishRecord,...next};writeJson(PUBLISH_STORAGE,publishRecord);syncPublishButton();
+ publishRecord={...publishRecord,...next};persistPublishRecord(PUBLISH_STORAGE,publishRecord);syncPublishButton();
 }
 async function restorePublishFromCloud(){
  try{
@@ -220,7 +222,7 @@ async function restorePublishFromCloud(){
   if(hasLiveSite(publishRecord)){
    let live=null;
    try{live=await getCloudSite(publishRecord.cloudProjectId)}catch(e){return}
-   if(!live){publishRecord={};removeKey(PUBLISH_STORAGE);syncPublishButton();renderPublishDialog()}
+   if(!live){publishRecord={};clearPublishRecord(PUBLISH_STORAGE);syncPublishButton();renderPublishDialog()}
    return;
   }
   const projects=await listCloudProjects();if(!Array.isArray(projects)||!projects.length)return;
