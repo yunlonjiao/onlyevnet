@@ -56,6 +56,7 @@ import {createRecapDialog} from '/v8/editor/studio-recap-dialog.js';
 import {createCustomPages} from '/v8/editor/studio-custom-pages.js';
 import {cleanupDeletedReferencesIn} from '/v8/editor/studio-reference-cleanup.js';
 import {initDeviceControls} from '/v8/editor/studio-device.js';
+import {createBannerInspector,createTrafficInspector} from '/v8/editor/studio-page-inspectors.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
@@ -428,6 +429,8 @@ function syncCanvasSelection(path){
  const hit=map.find(([re])=>re.test(path));
  if(hit){syncStudioPageUI(hit[1],{openContent:false});setPageContentActive({collection:hit[2]})}
 }
+function openBannerInspector(){bannerInspectorUi.open()}
+function openTrafficInspector(){trafficInspectorUi.open()}
 function openEntryAnimationInspector(){
   if(state.templateId==='04-creator-catalogue'){
     const v=String(state.heroImage||'').trim();
@@ -442,22 +445,6 @@ function openEntryAnimationInspector(){
   inspector.querySelectorAll('[data-kv-image]').forEach(btn=>btn.addEventListener('click',()=>{
     const input=$('#imageInput');input.dataset.path='entryAnimation.'+btn.dataset.kvImage;input.click();
   }));
-}
-function openBannerInspector(){
-  const slot=(key,label,note)=>{const v=String(state[key]||'').trim();return '<div class="item-media"><span>'+label+'</span><div class="item-media-row">'+(v?'<img src="'+esc(v)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-banner-image="'+key+'">'+(v?'更换':'选择 / 裁剪')+'</button>'+(v?'<button type="button" class="ghost" data-banner-remove="'+key+'">移除</button>':'')+'</div></div>'+(note?'<small>'+note+'</small>':'')+'</div>';};
-  setInspector('横幅','首页横幅',bannerInspectorHtml(state,esc));
-  inspector.querySelectorAll('[data-banner-image]').forEach(btn=>btn.addEventListener('click',()=>{
-    const input=$('#imageInput');input.dataset.path=btn.dataset.bannerImage;input.click();
-  }));
-  inspector.querySelectorAll('[data-banner-remove]').forEach(btn=>btn.addEventListener('click',()=>{
-    checkpoint();const key=btn.dataset.bannerRemove;setDeep(key,'');save();send({type:'OE_PATCH_FIELD',path:key,value:''});openBannerInspector();
-  }));
-}
-function openTrafficInspector(){
-  const img=String(state.venueMap?.transitImage||'');
-  setInspector('交通到达','交通路线图与导航',trafficInspectorHtml(state,esc));
-  inspector.querySelector('[data-traffic-image]')?.addEventListener('click',()=>{const input=$('#imageInput');input.dataset.path='venueMap.transitImage';input.click();});
-  $('#saveTrafficNav')?.addEventListener('click',()=>{checkpoint();state.navigationUrl=String($('#trafficNavInput')?.value||'').trim();save();send({type:'OE_REPLACE_STATE',state});});
 }
 function openStreetManager(){
   setInspector('摊位','街道',streetManagerHtml(state,esc));
@@ -1250,6 +1237,8 @@ $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navi
 $('#publishRename').addEventListener('click',()=>{renamingSite=true;renderPublishDialog();publishSlug.disabled=false;publishSlug.focus();publishSlug.select()});
 publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});
 if(projectId!=='default'&&!hasSavedProject){writeJson(STORAGE,state);syncAdminProject()}
+const bannerInspectorUi=createBannerInspector({$,getState:()=>state,setInspector,inspector,esc,checkpoint,setDeep,save,send});
+const trafficInspectorUi=createTrafficInspector({$,getState:()=>state,setInspector,inspector,esc,checkpoint,save,send});
 customPagesUi=createCustomPages({
   $, inspector, getState:()=>state, getCurrentPage:()=>currentPage, customPageKey, customPageIndex, customPageFieldLabels, CUSTOM_PAGE_PRESETS, CUSTOM_PAGE_LAYOUTS, buildCustomPageStarterItems, uid, checkpoint, save, send, setStudioPage, syncStudioPageUI, syncContentCounts, toast, showInspectorEmpty, bindInspectorStateInput, setInspector, esc, customPageRowsHtml, customPageSettingsHtml, customPageItemsPanelHtml, customPageItemInspectorHtml, escapeHtml:esc
 });
