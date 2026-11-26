@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from './seed.js';
+import { ApiError, errorPayload } from './core/errors.js';
 
 const JSON_HEADERS={"content-type":"application/json; charset=utf-8","cache-control":"no-store"};
 const HTML_HEADERS={"content-type":"text/html; charset=utf-8"};
@@ -82,7 +83,7 @@ function inactiveDays(env){const n=Number(env.INACTIVE_DAYS||60);return Number.i
 function parseCookies(req){const out={};for(const part of String(req.headers.get('cookie')||'').split(';')){const i=part.indexOf('=');if(i<0)continue;const k=part.slice(0,i).trim(),v=part.slice(i+1).trim();if(k)out[k]=decodeURIComponent(v)}return out}
 function cookie(name,value,{maxAge=null,httpOnly=true}={}){let s=`${name}=${encodeURIComponent(value)}; Path=/; Secure; SameSite=Lax`;if(httpOnly)s+='; HttpOnly';if(maxAge!==null)s+=`; Max-Age=${maxAge}`;return s}
 function cookieHeaders(...items){const h=new Headers();for(const x of items.filter(Boolean))h.append('set-cookie',x);return h}
-async function bodyJson(req){try{return await req.json()}catch{throw Object.assign(new Error('请求内容不是有效 JSON'),{status:400})}}
+async function bodyJson(req){try{return await req.json()}catch{throw new ApiError(400, 'VALIDATION_ERROR', '请求内容不是有效 JSON')}}
 function baseDomain(env){return String(env.BASE_DOMAIN||'onlyevent.cn').trim().toLowerCase()}
 function publicUrl(env,slug,req){const u=new URL(req.url),base=baseDomain(env);if(base&&!base.includes('example.com'))return `https://${slug}.${base}`;return `${u.origin}/s/${slug}`}
 function getSlugFromHost(req,env){const host=new URL(req.url).hostname.toLowerCase(),base=baseDomain(env);if(!base||base.includes('example.com')||!host.endsWith('.'+base))return '';const sub=host.slice(0,-(base.length+1));if(!sub||sub.includes('.')||RESERVED_SUBDOMAINS.has(sub))return '';return cleanSlug(sub)}
@@ -92,12 +93,12 @@ function clientIp(req){return req.headers.get('cf-connecting-ip')||String(req.he
 async function rateLimit(env,key,max,windowSec){
   const t=Date.now(),row=await env.DB.prepare('SELECT window_start,count FROM rate_limits WHERE key=?').bind(key).first();
   if(!row||t-Date.parse(row.window_start)>=windowSec*1000){await env.DB.prepare('INSERT INTO rate_limits(key,window_start,count) VALUES(?,?,1) ON CONFLICT(key) DO UPDATE SET window_start=excluded.window_start,count=1').bind(key,new Date(t).toISOString()).run();return}
-  if(row.count>=max){const minutes=Math.max(1,Math.ceil((Date.parse(row.window_start)+windowSec*1000-t)/60000));throw Object.assign(new Error('尝试次数过多，请 '+minutes+' 分钟后再试'),{status:429})}
+  if(row.count>=max){const minutes=Math.max(1,Math.ceil((Date.parse(row.window_start)+windowSec*1000-t)/60000));throw new ApiError(429, 'RATE_LIMITED', '尝试次数过多，请 '+minutes+' 分钟后再试')}
   await env.DB.prepare('UPDATE rate_limits SET count=count+1 WHERE key=?').bind(key).run();
 }
 async function tokenFromReq(req){const h=req.headers.get('authorization')||'',m=h.match(/^Bearer\s+(.+)$/i);if(m)return m[1];return parseCookies(req)[SESSION_COOKIE]||''}
 async function authUser(req,env){const token=await tokenFromReq(req);if(!token)return null;const th=await sha256(token);const row=await env.DB.prepare(`SELECT users.id,users.username,sessions.expires_at FROM sessions JOIN users ON users.id=sessions.user_id WHERE sessions.token_hash=? LIMIT 1`).bind(th).first();if(!row)return null;if(new Date(row.expires_at).getTime()<=Date.now()){await env.DB.prepare('DELETE FROM sessions WHERE token_hash=?').bind(th).run();return null}return {id:row.id,username:row.username,tokenHash:th}}
-async function requireUser(req,env){const u=await authUser(req,env);if(!u)throw Object.assign(new Error('请先登录'),{status:401});return u}
+async function requireUser(req,env){const u=await authUser(req,env);if(!u)throw new ApiError(401, 'AUTH_REQUIRED', '请先登录');return u}
 async function issueSession(env,userId,username,status=200,extra={}){const token=randomToken(36),tokenHash=await sha256(token),days=sessionDays(env),exp=new Date(Date.now()+days*86400000).toISOString();await env.DB.prepare('INSERT INTO sessions(token_hash,user_id,expires_at,created_at) VALUES(?,?,?,?)').bind(tokenHash,userId,exp,now()).run();return json({ok:true,token,user:{id:userId,username},username,expiresAt:exp,...extra},status,{'set-cookie':cookie(SESSION_COOKIE,token,{maxAge:days*86400})})}
 async function register(req,env){await rateLimit(env,'register:'+clientIp(req),5,3600);const b=await bodyJson(req),username=cleanText(b.username,32),password=String(b.password||'');if(!validUsername(username))return json({ok:false,error:'主办方名称需为 2–32 个字符，可使用中英文、数字、空格、_ 或 -'},400);if(password.length<6)return json({ok:false,error:'密码至少 6 位'},400);const exists=await env.DB.prepare('SELECT id FROM users WHERE username=? COLLATE NOCASE').bind(username).first();if(exists)return json({ok:false,error:'这个账号已经注册'},409);const salt=newSalt(),passwordHash=await hashPassword(password,salt),userId=id('usr'),recoveryCode=newRecoveryCode(),recoverySalt=newSalt(),recoveryHash=await hashPassword(recoveryCode,recoverySalt),created=now();await env.DB.batch([env.DB.prepare('INSERT INTO users(id,username,password_hash,password_salt,created_at) VALUES(?,?,?,?,?)').bind(userId,username,passwordHash,salt,created),env.DB.prepare('INSERT INTO account_recovery(user_id,code_hash,code_salt,updated_at) VALUES(?,?,?,?)').bind(userId,recoveryHash,recoverySalt,created)]);return issueSession(env,userId,username,201,{recoveryCode:formatRecoveryCode(recoveryCode)})}
 async function login(req,env){const b=await bodyJson(req),username=cleanText(b.username,32),password=String(b.password||'');await rateLimit(env,'login-ip:'+clientIp(req),30,900);await rateLimit(env,'login:'+username.toLowerCase(),10,900);const row=await env.DB.prepare('SELECT id,username,password_hash,password_salt FROM users WHERE username=? COLLATE NOCASE').bind(username).first();if(!row)return json({ok:false,error:'账号或密码不正确'},401);const got=await hashPassword(password,row.password_salt);if(got!==row.password_hash)return json({ok:false,error:'账号或密码不正确'},401);return issueSession(env,row.id,row.username)}
@@ -261,7 +262,7 @@ async function systemLinks(req,env){const u=await requireUser(req,env),p=await p
 /* ---- circle collection: public form for circle leaders, review queue for the organizer ---- */
 const COLLECT_MAX_ENTRIES=300,COLLECT_MAX_PRODUCTS=8;
 function collectText(v,max){return String(v==null?'':v).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,'').trim().slice(0,max)}
-async function ownedProject(req,env,pid){const u=await requireUser(req,env),p=await env.DB.prepare('SELECT p.id,p.name FROM projects p LEFT JOIN project_state s ON s.project_id=p.id WHERE p.id=? AND p.user_id=? AND s.deleted_at IS NULL').bind(pid,u.id).first();if(!p)throw Object.assign(new Error('活动不存在'),{status:404});return p}
+async function ownedProject(req,env,pid){const u=await requireUser(req,env),p=await env.DB.prepare('SELECT p.id,p.name FROM projects p LEFT JOIN project_state s ON s.project_id=p.id WHERE p.id=? AND p.user_id=? AND s.deleted_at IS NULL').bind(pid,u.id).first();if(!p)throw new ApiError(404, 'PROJECT_NOT_FOUND', '活动不存在');return p}
 function collectView(row){return row?{token:row.token,open:!!row.open}:null}
 async function collectOverview(req,env,pid){
   await ownedProject(req,env,pid);
@@ -594,7 +595,7 @@ async function handleApi(req,env,path){
   m=path.match(/^\/api\/sites\/([^/]+)\/versions$/);if(m&&req.method==='GET')return listSiteVersions(req,env,decodeURIComponent(m[1]));
   m=path.match(/^\/api\/sites\/([^/]+)\/rollback\/([^/]+)$/);if(m&&req.method==='POST')return rollbackSite(req,env,decodeURIComponent(m[1]),decodeURIComponent(m[2]));
   m=path.match(/^\/api\/sites\/([^/]+)$/);if(m&&req.method==='PUT')return updateSite(req,env,decodeURIComponent(m[1]));if(m&&req.method==='DELETE')return deleteSite(req,env,decodeURIComponent(m[1]));
-  return json({ok:false,error:'API 不存在'},404);
+  return json({ok:false,code:'NOT_FOUND',message:'API 不存在',error:'API 不存在'},404);
 }
 
 export default {
@@ -605,7 +606,13 @@ export default {
       if(req.method==='OPTIONS'){const origin=corsOrigin(req,env);return new Response(null,{status:204,headers:origin?{'access-control-allow-origin':origin,'access-control-allow-methods':CORS_ALLOW_METHODS,'access-control-allow-headers':CORS_ALLOW_HEADERS,'access-control-max-age':'86400','vary':'Origin'}:{}})}
       if(path==='/health')return json({ok:true,time:now(),mode:'online-saas',version:APP_VERSION,baseDomain:baseDomain(env),host:url.hostname});
       if(path.startsWith('/media/'))return await serveMedia(req,env,decodeURIComponent(path.slice('/media/'.length)));
-      if(path.startsWith('/api/'))return withCors(req,env,await handleApi(req,env,path));
+      if(path.startsWith('/api/')){
+        if(!['GET','HEAD','OPTIONS'].includes(req.method)){
+          const origin=req.headers.get('origin');
+          if(origin && !corsOrigin(req,env)) throw new ApiError(403, 'FORBIDDEN', '跨站请求被拒绝');
+        }
+        return withCors(req,env,await handleApi(req,env,path));
+      }
       const hostSlug=getSlugFromHost(req,env);
       if(hostSlug&&path==='/sw.js'&&req.method==='GET')return new Response(VISITOR_SW,{headers:VISITOR_SW_HEADERS});
       if(hostSlug&&path==='/robots.txt')return new Response('User-agent: *\nAllow: /\n',{headers:{'content-type':'text/plain; charset=utf-8','cache-control':'public,max-age=3600'}});
@@ -638,6 +645,6 @@ export default {
         return new Response(assetResponse.body,{status:assetResponse.status,statusText:assetResponse.statusText,headers});
       }
       return assetResponse;
-    }catch(e){if(!e?.status)console.error(e);return withCors(req,env,json({ok:false,error:e?.status?e.message:'服务器错误'},e?.status||500))}
+    }catch(e){const out=errorPayload(e);if(!(e instanceof ApiError))console.error('[unhandled]',{path:req.url,method:req.method,message:e?.message,stack:e?.stack});return withCors(req,env,json(out.payload,out.status))}
   }
 };
