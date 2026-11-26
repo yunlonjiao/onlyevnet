@@ -59,6 +59,7 @@ import {initDeviceControls} from '/v8/editor/studio-device.js';
 import {createBannerInspector,createTrafficInspector} from '/v8/editor/studio-page-inspectors.js';
 import {createOptionalPageInspector} from '/v8/editor/studio-optional-page.js';
 import {createSimpleInspectors} from '/v8/editor/studio-simple-inspectors.js';
+import {createFieldInspector} from '/v8/editor/studio-field-inspector.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
@@ -682,29 +683,7 @@ function openShareDialog(){shareUi.open()}
 function openSeoInspector(){shareUi.openSeo()}
 const recapCommit=({structural=false}={})=>{save();send({type:'OE_REPLACE_STATE',state});if(structural)renderRecapDialog()};
 
-function openFieldInspector(path){
- if(path.startsWith('ribbonItems.')){
-   const i=Number(path.split('.')[1])||0;
-   setWorkspace('pages');syncStudioPageUI('home',{openContent:false});renderPageContentNav('home',{openDefault:false});
-   openCollectionManager('ribbonItems',i);setPageContentActive({collection:'ribbonItems'});openItemInspector('ribbonItems',i);return
- }
- if(path==='ticketUrl'||path==='ticketLinkLabel'){openTicketSettingsInspector();return}
- if(['date','location','edition','navigationUrl'].includes(path)){openAddressInspector();return}
- if(path==='eventStatus'){openLifecycleInspector();return}
- if(path.startsWith('seo.')){openSeoInspector();return}
- if(path==='tagline'&&state.templateId==='02-scrapbook'){
-   setInspector('活动简介','简介正文',taglineEditorHtml(state.tagline,esc));
-   const input=$('#fieldInput');fitTextarea(input);let started=false;
-   input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep('tagline',e.target.value);send({type:'OE_PATCH_FIELD',path:'tagline',value:e.target.value});fitTextarea(e.target)});
-   input.addEventListener('blur',()=>save());return;
- }
- if(path.startsWith('heroTitle')||['heroImage','mobileHeroImage'].includes(path)){openHeroTitleInspector();return}
- const value=getDeep(path);
- setInspector('内容','编辑文字',fieldEditorHtml(path,value,esc));
- const input=$('#fieldInput');let started=false;fitTextarea(input);
- input.addEventListener('input',e=>{if(!started){checkpoint();started=true}setDeep(path,e.target.value);send({type:'OE_PATCH_FIELD',path,value:e.target.value});fitTextarea(e.target)});
- input.addEventListener('blur',e=>{const cleaned=cleanValue(e.target.value);if(cleaned!==e.target.value){e.target.value=cleaned;setDeep(path,cleaned);send({type:'OE_PATCH_FIELD',path,value:cleaned});fitTextarea(e.target)}});
-}
+function openFieldInspector(path){fieldInspectorUi.open(path)}
 
 function uid(prefix){return prefix+Math.random().toString(36).slice(2,8)}
 function fitTextarea(el){if(!el)return;el.style.height='auto';el.style.height=Math.max(36,el.scrollHeight)+'px'}
@@ -1194,6 +1173,7 @@ $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navi
 $('#publishRename').addEventListener('click',()=>{renamingSite=true;renderPublishDialog();publishSlug.disabled=false;publishSlug.focus();publishSlug.select()});
 publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});
 if(projectId!=='default'&&!hasSavedProject){writeJson(STORAGE,state);syncAdminProject()}
+const fieldInspectorUi=createFieldInspector({$,getState:()=>state,setInspector,inspector,esc,setWorkspace,syncStudioPageUI,renderPageContentNav,openCollectionManager,setPageContentActive,openItemInspector,openTicketSettingsInspector,openAddressInspector,openLifecycleInspector,openSeoInspector,openHeroTitleInspector,setDeep,send,getDeep,fitTextarea,cleanValue,save,checkpoint});
 const simpleInspectorUi=createSimpleInspectors({$,getState:()=>state,getTemplate:()=>activeTemplate,setInspector,inspector,esc,PALETTES,bindInspectorStateInput,checkpoint,setDeep,save,send,toast});
 const optionalPageUi=createOptionalPageInspector({$,getState:()=>state,setInspector,inspector,esc,bindInspectorStateInput,checkpoint,setDeep,send});
 const bannerInspectorUi=createBannerInspector({$,getState:()=>state,setInspector,inspector,esc,checkpoint,setDeep,save,send});
