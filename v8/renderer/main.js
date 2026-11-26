@@ -266,6 +266,7 @@ bindEditorEvents({
 
 // Messages are handled one at a time, in order, because loading a template's preview is asynchronous.
 let messageQueue=Promise.resolve();
+let __initSession='';
 window.addEventListener('message',e=>{
   if(e.origin!==ORIGIN||e.source!==parent)return;
   const m=e.data||{};
@@ -297,6 +298,7 @@ async function handleMessage(m){
     router.applyModules();
     router.showPage(router.getCurrentPage(),false);
     requestAnimationFrame(setupHomeMotion);
+    send({type:'OE_INIT_ACK',session:m.session});
   }
     if(m.type==='OE_CROP_ACTIVE'){
     document.getAnimations().forEach(animation=>{try{m.active?animation.pause():animation.play()}catch{}});

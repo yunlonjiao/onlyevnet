@@ -78,19 +78,31 @@ body.embed .pv-bar{display:none}
   loadingTimer = setInterval(checkLoading, 250);
   setTimeout(() => { const small = loadingEl?.querySelector('small'); if (small && loadingEl && !loadingEl.hidden) small.textContent = '模板较大，仍在加载…'; }, 3000);
 
-  let sent = false;
-  const timer = setTimeout(() => { if (!sent) { hideLoading(); fail.style.display = 'block'; } }, 12000);
+  const session = (crypto.randomUUID?.() || (Date.now().toString(36) + Math.random().toString(36).slice(2)));
+  let acked = false, attempts = 0, retryTimer = 0;
+  const timer = setTimeout(() => { if (!acked) { hideLoading(); fail.style.display = 'block'; } }, 12000);
 
+  const postState = () => {
+    if (acked || attempts >= 3) return;
+    attempts += 1;
+    try { frame.contentWindow.postMessage({ type: 'OE_INIT_STATE', session, state, page: 'home', mode: 'preview' }, location.origin); } catch (e) {}
+    if (attempts < 3) retryTimer = setTimeout(postState, 900);
+  };
   const sendState = () => {
-    if (sent) return;
-    sent = true;
+    if (acked) return;
     clearTimeout(timer);
-    try { frame.contentWindow.postMessage({ type: 'OE_INIT_STATE', state, page: 'home', mode: 'preview' }, location.origin); } catch (e) {}
+    postState();
   };
 
   window.addEventListener('message', (event) => {
     if (event.source !== frame.contentWindow) return;
     const m = event.data || {};
+    if (m.type === 'OE_INIT_ACK' && (!m.session || m.session === session)) {
+      acked = true;
+      clearTimeout(retryTimer);
+      clearTimeout(timer);
+      return;
+    }
     if (m.type !== 'OE_READY') return;
     sendState();
   });
