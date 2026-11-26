@@ -35,6 +35,7 @@ import {collectionStudioPageFor} from '/v8/editor/studio-collection-page.js';
 import {buildStarterItems,customPagePreset} from '/v8/editor/studio-custom-page.js';
 import {createContentCounts} from '/v8/editor/studio-content-counts.js';
 import {pageContentItems} from '/v8/editor/studio-page-nav.js';
+import {pageNavHtml} from '/v8/editor/studio-page-nav-html.js';
 import {customPageKey, customPageByKey as findCustomPage, pageLabel as pageLabelFor, customPageIndex as pageIndexFor} from '/v8/editor/studio-page-label.js';
 const $=s=>document.querySelector(s);
 const canvas=$('#canvas'),inspector=$('#inspector'),saveState=$('#saveState'),toastEl=$('#toast');
@@ -626,16 +627,13 @@ function renderPageContentNav(page,{openDefault=true}={}){
    return;
  }
  const visibleItems=pageContentItems({page,state,template:activeTemplate,config:PAGE_CONTENT_CONFIG});
- nav.innerHTML=visibleItems.map(x=>x.collection
-   ?'<button type="button" data-page-content-manager="'+x.collection+'"><span>'+esc(x.label)+'</span><b data-content-count="'+x.collection+'">0</b></button>'
-   :'<button type="button" data-page-tool="'+x.tool+'"><span>'+esc(x.label)+'</span></button>'
- ).join('');
+ nav.innerHTML=pageNavHtml(visibleItems,esc);
  syncContentCounts();
  nav.querySelectorAll('[data-page-content-manager]').forEach(btn=>btn.addEventListener('click',()=>openCollectionManager(btn.dataset.pageContentManager)));
  nav.querySelectorAll('[data-page-tool]').forEach(btn=>btn.addEventListener('click',()=>openPageTool(btn.dataset.pageTool)));
  if(panel)panel.innerHTML='<div class="sidebar-content-empty">选择上方内容进行管理。</div>';
  if(openDefault&&visibleItems[0]){
-   if(visibleItems[0].collection)openCollectionManager(items[0].collection);
+   if(visibleItems[0].collection)openCollectionManager(visibleItems[0].collection);
    else openPageTool(visibleItems[0].tool);
  }
 }
