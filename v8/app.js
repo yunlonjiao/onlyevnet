@@ -45,6 +45,7 @@ import {shareTextFor} from '/v8/editor/studio-share-text.js';
 import {ticketSettingsInspectorHtml} from '/v8/editor/studio-ticket-inspector-html.js';
 import {addressInspectorHtml} from '/v8/editor/studio-address-inspector-html.js';
 import {lifecycleInspectorHtml} from '/v8/editor/studio-lifecycle-inspector-html.js';
+import {heroTitleInspectorHtml} from '/v8/editor/studio-hero-title-inspector-html.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {canvasToBlob,downloadSvg} from '/v8/editor/studio-canvas-download.js';
@@ -747,17 +748,8 @@ function bindInspectorStateInput(input,path,{clean=false,number=false}={}){
 }
 
 function openHeroTitleInspector(){
- const desktop=String(state.heroImage||'').trim(),mobile=String(state.mobileHeroImage||'').trim();
- const media=(path,label,src,emptyLabel)=>'<div class="item-media hero-media-field"><span>'+label+'</span><div class="item-media-row"><button type="button" class="item-media-thumb '+(src?'':'empty')+'" data-hero-image="'+path+'" aria-label="上传'+label+'">'+(src?'<img src="'+esc(src)+'" alt="">':'<b>'+emptyLabel+'</b>')+'</button>'+(src?'<button type="button" class="item-media-remove" data-hero-image-remove="'+path+'">移除</button>':'')+'</div></div>';
- const isTravel=state.templateId==='02-scrapbook';
- setInspector('主视觉',isTravel?'主图与裁切':'标题、图片与裁切',
-  '<div class="item-fields">'+
-  '<label><span>第一行</span><input data-sync-path="heroTitle1" value="'+esc(state.heroTitle1||'')+'"></label>'+
-  '<label><span>第二行</span><input data-sync-path="heroTitle2" value="'+esc(state.heroTitle2||'')+'"></label>'+
-  '<label><span>第三行</span><input data-sync-path="heroTitle3" value="'+esc(state.heroTitle3||'')+'"></label>'+
-  '</div>'+
-  media('heroImage','主图',desktop,'＋')+media('mobileHeroImage','手机主图（可选）',mobile,'＋')+
-  '<p class="inspector-note">手机主图留空时自动使用主图。</p>');
+ const hero=heroTitleInspectorHtml(state,esc);
+ setInspector('主视觉',hero.title,hero.html);
  inspector.querySelectorAll('[data-sync-path]').forEach(input=>bindInspectorStateInput(input,input.dataset.syncPath,{clean:input.type!=='color'}));
  inspector.querySelectorAll('[data-hero-image]').forEach(btn=>btn.addEventListener('click',()=>{$('#imageInput').dataset.path=btn.dataset.heroImage;$('#imageInput').click()}));
  inspector.querySelectorAll('[data-hero-image-remove]').forEach(btn=>btn.addEventListener('click',()=>{checkpoint();setDeep(btn.dataset.heroImageRemove,'');save();send({type:'OE_PATCH_FIELD',path:btn.dataset.heroImageRemove,value:''})}));
