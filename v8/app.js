@@ -60,6 +60,7 @@ import {createBannerInspector,createTrafficInspector} from '/v8/editor/studio-pa
 import {createOptionalPageInspector} from '/v8/editor/studio-optional-page.js';
 import {createSimpleInspectors} from '/v8/editor/studio-simple-inspectors.js';
 import {createFieldInspector} from '/v8/editor/studio-field-inspector.js';
+import {createPageTool} from '/v8/editor/studio-page-tool.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
@@ -481,25 +482,7 @@ function openStreetManager(){
     save();send({type:'OE_REPLACE_STATE',state});openStreetManager();
   });
 }
-function openPageTool(tool){
- setPageContentActive({tool});
- const panel=$('#contentListPanel');if(panel)panel.innerHTML='';
- if(tool==='entryAnimation'){openEntryAnimationInspector();return}
- if(tool==='basic'){openAddressInspector();return}
- if(tool==='lifecycle'){openLifecycleInspector();return}
- if(tool==='hero'){openHeroTitleInspector();return}
- if(tool==='banner'){openBannerInspector();return}
- if(tool==='cover'){openImageInspector('heroImage');return}
- if(tool==='memo'){openMemoInspector();return}
- if(tool==='traffic'){openTrafficInspector();return}
- if(tool==='intro'){openFieldInspector('tagline');return}
- if(tool==='seo'){openSeoInspector();return}
- if(tool==='recap'){openRecapDialog();return}
- if(tool==='map'){openImageInspector('venueMap.image');return}
- if(tool==='streets'){openStreetManager();return}
- if(tool==='freewalk'||tool==='itasha'){openOptionalPageInspector(tool);return}
- showInspectorEmpty();
-}
+function openPageTool(tool){pageTool(tool)}
 function renderPageContentNav(page,{openDefault=true}={}){
  const nav=$('#pageContentNav'),title=$('#pageContentTitle'),panel=$('#contentListPanel'),custom=customPageByKey(page);
  if(title)title.textContent=pageLabel(page)+'内容';
@@ -1173,6 +1156,7 @@ $('#publishCopy').onclick=async()=>{if(!publishRecord?.url)return;try{await navi
 $('#publishRename').addEventListener('click',()=>{renamingSite=true;renderPublishDialog();publishSlug.disabled=false;publishSlug.focus();publishSlug.select()});
 publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.value);if(clean!==publishSlug.value)publishSlug.value=clean});
 if(projectId!=='default'&&!hasSavedProject){writeJson(STORAGE,state);syncAdminProject()}
+const pageTool=createPageTool({$,setPageContentActive,openEntryAnimationInspector,openAddressInspector,openLifecycleInspector,openHeroTitleInspector,openBannerInspector,openImageInspector,openTrafficInspector,openFieldInspector,openSeoInspector,openRecapDialog,openStreetManager,openOptionalPageInspector,showInspectorEmpty});
 const fieldInspectorUi=createFieldInspector({$,getState:()=>state,setInspector,inspector,esc,setWorkspace,syncStudioPageUI,renderPageContentNav,openCollectionManager,setPageContentActive,openItemInspector,openTicketSettingsInspector,openAddressInspector,openLifecycleInspector,openSeoInspector,openHeroTitleInspector,setDeep,send,getDeep,fitTextarea,cleanValue,save,checkpoint});
 const simpleInspectorUi=createSimpleInspectors({$,getState:()=>state,getTemplate:()=>activeTemplate,setInspector,inspector,esc,PALETTES,bindInspectorStateInput,checkpoint,setDeep,save,send,toast});
 const optionalPageUi=createOptionalPageInspector({$,getState:()=>state,setInspector,inspector,esc,bindInspectorStateInput,checkpoint,setDeep,send});
