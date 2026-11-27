@@ -301,13 +301,13 @@ test('visitor sites serve a service worker that keeps the page for offline visit
   assert.equal(res.headers.get('service-worker-allowed'),'/');
   const source=await res.text();
   // Run the script against a tiny fake Service Worker environment.
-  const store=new Map(),handlers={};let online=true;
+  const store=new Map(),handlers={};let online=true,imageVersion='image-v1';
   const cacheApi={
     async open(){return {async put(k,v){store.set(typeof k==='string'?k:k.url,v)},async match(k){return store.get(typeof k==='string'?k:k.url)},async keys(){return [...store.keys()].map(url=>({url}))},async delete(k){return store.delete(k.url||k)}}},
-    async match(k){return store.get(k)},async keys(){return ['oe-visitor-v1']},async delete(){return true},
+    async match(k){return store.get(k)},async keys(){return ['oe-visitor-v2']},async delete(){return true},
   };
   const fakeSelf={addEventListener:(type,fn)=>{handlers[type]=fn},skipWaiting(){},clients:{claim(){}}};
-  const fetchStub=async req=>{if(!online)throw new Error('offline');const r=new Response('<h1>site</h1>',{status:200});Object.defineProperty(r,'url',{value:req.url});return r};
+  const fetchStub=async req=>{if(!online)throw new Error('offline');const r=new Response(req.destination==='image'?imageVersion:'<h1>site</h1>',{status:200});Object.defineProperty(r,'url',{value:req.url});return r};
   new Function('self','caches','fetch','Response','URL',source)(fakeSelf,cacheApi,fetchStub,Response,URL);
   const run=async(request)=>{let out,pending=[];handlers.fetch({request,respondWith:p=>{out=p},waitUntil:p=>pending.push(p)});const r=out?await out:undefined;await Promise.all(pending);return r};
   const nav={method:'GET',mode:'navigate',url:'https://any-site.onlyevent.cn/?from=qr',destination:'document'};
@@ -316,6 +316,13 @@ test('visitor sites serve a service worker that keeps the page for offline visit
   online=false;
   const offline=await run(nav);
   assert.equal(offline.status,200);assert.equal(await offline.text(),'<h1>site</h1>');
+  online=true;
+  const img={method:'GET',mode:'cors',url:'https://any-site.onlyevent.cn/media/a.webp',destination:'image'};
+  assert.equal(await (await run(img)).text(),'image-v1');
+  imageVersion='image-v2';
+  assert.equal(await (await run(img)).text(),'image-v2');
+  online=false;
+  assert.equal(await (await run(img)).text(),'image-v2');
   store.clear();
   assert.equal((await run(nav)).status,503);
   assert.equal(await run({method:'POST',mode:'cors',url:'https://any-site.onlyevent.cn/x',destination:''}),undefined);
