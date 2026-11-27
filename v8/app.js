@@ -372,7 +372,7 @@ const syncContentCounts=createContentCounts({collectionArray});
 // Signed-in organizers also keep each project in the Worker (D1), so it follows them across devices.
 const cloudSync=createCloudSync({
   getState:()=>state, getTemplate:()=>activeTemplate, getProjectId:()=>projectId, readCloudSession,
-  ensureCloudProjectFor, saveCloudConfig, syncAdminProject, saveStateEl:saveState
+  ensureCloudProjectFor, saveCloudConfig, syncAdminProject, saveStateEl:saveState, getRevision:()=>saveImpl.revision()
 });
 const {available:cloudSyncAvailable, schedule:scheduleCloudSync, sync:syncToCloud}=cloudSync;
 let saveImpl;

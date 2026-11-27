@@ -1,6 +1,6 @@
 export function createCloudSync({
   getState, getTemplate, getProjectId, readCloudSession,
-  ensureCloudProjectFor, saveCloudConfig, syncAdminProject, saveStateEl
+  ensureCloudProjectFor, saveCloudConfig, syncAdminProject, saveStateEl, getRevision
 }) {
   let timer = 0, syncing = false;
 
@@ -19,9 +19,15 @@ export function createCloudSync({
     syncing = true;
     try {
       const state = getState(), template = getTemplate();
+      const revision = getRevision();
       const cloudProjectId = await ensureCloudProjectFor({templateId: template.id, projectId: getProjectId(), name: state.eventName});
       await saveCloudConfig({projectId: cloudProjectId, config: {...state, templateId: template.id}});
       syncAdminProject({cloudProjectId});
+      if (getRevision() !== revision) {
+        saveStateEl.textContent = '已保存 · 有新修改等待同步';
+        schedule();
+        return;
+      }
       saveStateEl.textContent = '已保存 · 云端已同步';
     } catch (err) {
       saveStateEl.textContent = err?.status === 413
