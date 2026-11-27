@@ -1,4 +1,5 @@
 /* History is shared by every OnlyEvent Studio template. It stores immutable snapshots. */
+/** @param {{limit?:number, onChange?:(state:{canUndo:boolean,canRedo:boolean})=>void}} [options] */
 export function createStudioHistory({limit=80,onChange=()=>{}}={}){
  const backward=[],forward=[];
  const copy=value=>JSON.parse(JSON.stringify(value));

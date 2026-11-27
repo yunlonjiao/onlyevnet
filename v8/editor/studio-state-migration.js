@@ -60,7 +60,6 @@ state.customPages=(state.customPages||[]).map((p,i)=>{
  }[p.preset]||p.preset||'custom';
  return {
    id:p.id||('cp'+(i+1)),
-   preset:legacyPreset,
    title:p.title||'自定义页面',
    eyebrow:p.eyebrow||'SPECIAL',
    intro:p.intro||'',

@@ -1,4 +1,5 @@
 /* One editable-field contract for the IP ONLY and creator Studio inspectors. */
+/** @param {HTMLInputElement|HTMLTextAreaElement|null} input @param {{path:string, checkpoint:()=>void, update:(path:string,value:any)=>void, cleanValue:(value:string)=>string, parseValue?:(value:string)=>any, onUpdated?:(value:any,path:string)=>void}} options */
 export function bindStudioField(input,{path,checkpoint,update,cleanValue,parseValue,onUpdated}={}){
  if(!input)return ()=>{};
  let started=false;

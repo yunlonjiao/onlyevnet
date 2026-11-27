@@ -34,6 +34,10 @@ async function readJson(response){
   return data;
 }
 
+/**
+ * @param {string} path
+ * @param {{method?: string, body?: unknown, projectId?: string, auth?: boolean}} [options]
+ */
 async function api(path,{method='GET',body,projectId,auth=true}={}){
   const headers={};
   if(body!==undefined)headers['Content-Type']='application/json';

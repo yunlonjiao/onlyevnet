@@ -4,6 +4,7 @@ export function loadStudioCropper(){
  if(!cropperPromise)cropperPromise=import('/v8/vendor/cropperjs.js').catch(()=>import('https://cdn.jsdelivr.net/npm/cropperjs@2.2.0/+esm')).catch(error=>{cropperPromise=null;throw error});
  return cropperPromise;
 }
+/** @param {{$toCanvas?:Function, width?:number, height?:number}} selection @param {{width?:number,height?:number,ratio?:number,maxSize?:number,quality?:number}} [options] */
 export async function cropSelectionToDataUrl(selection,{width,height,ratio,maxSize=1600,quality=.86}={}){
  if(!selection?.$toCanvas)throw new Error('未找到裁剪区域');
  if(!ratio){
