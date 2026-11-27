@@ -70,6 +70,7 @@ import {createEntryAnimationInspector} from '/v8/editor/studio-entry-animation.j
 import {createImageInspector} from '/v8/editor/studio-image-inspector.js';
 import {createImageCropper} from '/v8/editor/studio-image-cropper.js';
 import {blobToDataUrl} from '/v8/editor/studio-blob.js';
+import {createSaveController} from '/v8/editor/studio-save.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
@@ -368,13 +369,15 @@ function syncAdminProject(extra={}){
  upsertAdminProject({projectId,templateId:activeTemplate.id,name:state.eventName,extra});
 }
 const syncContentCounts=createContentCounts({collectionArray});
-function save(){saveState.textContent='保存中…';syncContentCounts();syncStudioIdentity();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem(STORAGE,JSON.stringify(state));syncAdminProject();saveState.textContent='已保存';scheduleCloudSync()}catch{saveState.textContent='保存失败：图片过大或浏览器存储不足'}},180)}
 // Signed-in organizers also keep each project in the Worker (D1), so it follows them across devices.
 const cloudSync=createCloudSync({
   getState:()=>state, getTemplate:()=>activeTemplate, getProjectId:()=>projectId, readCloudSession,
   ensureCloudProjectFor, saveCloudConfig, syncAdminProject, saveStateEl:saveState
 });
 const {available:cloudSyncAvailable, schedule:scheduleCloudSync, sync:syncToCloud}=cloudSync;
+let saveImpl;
+function save(){saveImpl()}
+saveImpl=createSaveController({getState:()=>state,saveStateEl:saveState,storageKey:STORAGE,syncContentCounts,syncStudioIdentity,syncAdminProject,scheduleCloudSync});
 const storeCroppedImageImpl=createCroppedImageStore({
   cloudAvailable:cloudSyncAvailable, getTemplateId:()=>activeTemplate.id, getProjectId:()=>projectId, getEventName:()=>state.eventName,
   ensureCloudProjectFor, uploadCloudImage, toast, blobToDataUrl
