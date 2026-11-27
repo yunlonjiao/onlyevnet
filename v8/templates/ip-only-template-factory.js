@@ -1,5 +1,6 @@
 import {IP_ONLY_CORE_MODULES,DEFAULT_IP_ONLY_PRESENTATION_PROFILE} from '/v8/templates/ip-only-core-contract.js';
 import {createIpOnlyDefaults} from '/v8/templates/ip-only-defaults.js';
+/** @param {{id:string, name:string, label:string, description:string, structureProfile:string, artDirection:string, motionProfile:string, theme?:string, heroTitleColor?:string, heroTitleAccentColor?:string, studioName?:string, presentationProfile?:Record<string, boolean>, studioPages?:{hidden?:string[], hiddenContent?:string[], customPages?:boolean}, group?:string, design?:unknown}} options */
 export function makeIpOnlyTemplate({
   id,name,label,description,structureProfile,artDirection,motionProfile,
   theme,heroTitleColor,heroTitleAccentColor,studioName,presentationProfile={},

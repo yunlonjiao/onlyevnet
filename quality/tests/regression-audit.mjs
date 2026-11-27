@@ -503,6 +503,26 @@ await run('mobile landscape: shell still usable', async () => {
 });
 function parentDvh(h) { return Math.round(h * 0.32); }
 
+// 16b. 04 catalogue book-street toggle must persist without a page error
+await run('desktop 04: book street toggle', async () => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  page.setDefaultTimeout(30000);
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  try {
+    await page.goto(`${BASE}/v8/?template=04-creator-catalogue&project=suite-book-street`, { waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(6500);
+    const before = await page.evaluate(() => document.querySelector('[data-book-street]')?.checked);
+    await page.evaluate(() => document.querySelector('[data-book-street]')?.click());
+    await page.waitForTimeout(500);
+    const after = await page.evaluate(() => document.querySelector('[data-book-street]')?.checked);
+    assert(before === false && after === true, `book street toggle ${before} -> ${after}`);
+    assert(!errors.some((message) => /is not defined/.test(message)), 'book street error: ' + errors.join(' | '));
+    return JSON.stringify({ before, after });
+  } finally { await context.close(); }
+});
+
 // 17. repeated view/edit keeps one shell and stable sidebar
 await run('mobile: repeated view/edit keeps DOM stable', async () => {
   const { context, page } = await mobilePage('suite-cycles');
