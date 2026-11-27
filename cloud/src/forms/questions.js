@@ -7,7 +7,7 @@ import { collectText } from './collect.js';
 
 /* ---- visitor question centre ---- */
 const ASK_MAX_PER_PROJECT=500;
-async function askTarget(env,slug){
+export async function askTarget(env,slug){
   slug=cleanSlug(slug);if(!slug)return null;
   return env.DB.prepare('SELECT ps.project_id AS pid,COALESCE(a.enabled,0) AS enabled FROM sites s JOIN project_sites ps ON ps.site_id=s.id LEFT JOIN ask_settings a ON a.project_id=ps.project_id WHERE s.slug=? COLLATE NOCASE').bind(slug).first();
 }

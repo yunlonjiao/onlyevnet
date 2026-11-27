@@ -17,7 +17,8 @@ export async function projectFor(req, env, user) {
   const pid = currentProjectId(req);
   if (pid) {
     const p = await projectWithAccess(env, user, pid);
-    if (p) return p;
+    if (!p) throw new ApiError(404, 'PROJECT_NOT_FOUND', '活动不存在');
+    return p;
   }
   return await env.DB.prepare('SELECT * FROM projects WHERE user_id=? ORDER BY updated_at DESC LIMIT 1').bind(user.id).first();
 }

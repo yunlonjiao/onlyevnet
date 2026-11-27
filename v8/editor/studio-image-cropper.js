@@ -118,7 +118,7 @@ async function apply(){
    const blob=await canvasToBlob(canvas,'image/webp',.9);
    const data=await storeCroppedImage(blob);
    checkpoint();setDeep(cropContext.path,data);
-   if(/^(?:heroImage|mobileHeroImage)$/.test(cropContext.path)||/^tickets\.\d+\.image$/.test(cropContext.path))send({type:'OE_PATCH_FIELD',path:cropContext.path,value:data});else send({type:'OE_REPLACE_STATE',state});
+   if(/^(?:heroImage|mobileHeroImage)$/.test(cropContext.path)||/^tickets\.\d+\.image$/.test(cropContext.path))send({type:'OE_PATCH_FIELD',path:cropContext.path,value:data});else send({type:'OE_REPLACE_STATE',state:getState()});
    toast('图片已应用');
    const c=cropContext.returnCollection,i=Number(cropContext.returnIndex),croppedPath=cropContext.path;close();
    if(/^venueMap\.(?:image|more\.\d+\.image)$/.test(croppedPath))openImageInspector('venueMap.image');

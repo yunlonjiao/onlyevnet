@@ -24,13 +24,21 @@ export function createPublishFlow({
           publication: getRecord()
         });
         const publishedUrl = result.url || ('https://' + result.slug + '.onlyevent.cn');
-        setRecord({});
+        const published = {...result, url: publishedUrl, staged: false};
+        saveRecord(published);
         const pending = getPending();
         if (pending) {
           setBusy(true, '正在设置分批公开…');
-          await setSiteStages(result.siteId, pending);
+          try {
+            await setSiteStages(result.siteId, pending);
+            saveRecord({...published, staged: !!pending.length});
+          } catch (stageError) {
+            setPending(null);
+            statusEl.textContent = '网站已发布，但分批公开设置未完成，可重新设置。';
+            toast('网站已发布，分批公开未完成');
+            return;
+          }
         }
-        saveRecord({...result, url: publishedUrl, staged: !!pending?.length});
         setPending(null);
         syncAdminProject({siteUrl: publishedUrl, status: 'published'});
         const renamed = isRenaming();

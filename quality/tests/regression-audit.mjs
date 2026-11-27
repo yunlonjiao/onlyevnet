@@ -175,6 +175,63 @@ await run('mobile: image upload and remove refresh', async () => {
   } finally { await context.close(); }
 });
 
+// 4b. map image uses the full-state crop path (previously referenced undefined state)
+await run('mobile: map image full-state crop', async () => {
+  const { context, page } = await mobilePage('suite-map-image');
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  try {
+    await openHomeContent(page);
+    await clickContentText(page, '场地图');
+    await page.evaluate(() => {
+      const input = document.querySelector('#imageInput');
+      input.dataset.path = 'venueMap.image';
+      delete input.dataset.returnCollection;
+      delete input.dataset.returnIndex;
+    });
+    await page.setInputFiles('#imageInput', IMG);
+    await page.waitForTimeout(1500);
+    assert(await page.evaluate(() => document.querySelector('#imageCropDialog').open), 'map crop did not open');
+    await page.click('#cropApply');
+    await page.waitForTimeout(4500);
+    assert(!errors.some((message) => /state is not defined/.test(message)), 'crop state error: ' + errors.join(' | '));
+    const result = await page.evaluate(() => ({
+      replace: !!document.querySelector('#mNativeApp #replaceImage'),
+      image: !!document.querySelector('#mNativeApp .item-media img')
+    }));
+    assert(result.replace && result.image, 'map image did not refresh: ' + JSON.stringify(result));
+    return JSON.stringify(result);
+  } finally { await context.close(); }
+});
+
+// 4c. map popup must treat dataset values as text, not HTML
+await run('mobile: map popup escapes HTML', async () => {
+  const { context, page } = await mobilePage('suite-map-popup');
+  try {
+    const result = await page.evaluate(() => {
+      const doc = document.querySelector('#liveFrame')?.contentDocument;
+      const pin = doc?.querySelector('.pin');
+      if (!pin) return { missing: true };
+      pin.dataset.name = '<img src=x onerror="window.__oeXss=1">';
+      pin.dataset.info = '<b>info</b>';
+      pin.click();
+      const pop = doc.querySelector('#mapPop');
+      return {
+        missing: false,
+        img: pop?.querySelectorAll('img').length || 0,
+        bold: pop?.querySelectorAll('b').length || 0,
+        text: pop?.textContent || '',
+        xss: !!doc.defaultView.__oeXss
+      };
+    });
+    assert(!result.missing, 'no map pin found');
+    assert(result.img === 0 && result.xss === false, 'map popup executed HTML: ' + JSON.stringify(result));
+    assert(result.bold === 1, 'map popup created extra bold nodes: ' + JSON.stringify(result));
+    assert(result.text.includes('<img') && result.text.includes('<b>info</b>'), 'map popup lost text: ' + JSON.stringify(result));
+    return JSON.stringify(result);
+  } finally { await context.close(); }
+});
+
 // 5. crop ratio, fixed selection, zoom
 await run('mobile: crop ratio and zoom', async () => {
   const { context, page } = await mobilePage('suite-crop');

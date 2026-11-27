@@ -87,6 +87,19 @@ test('organizer can register, publish, update and take down a visitor site',asyn
   assert.equal([...env.SITES.objects.keys()].filter(k=>k.startsWith('sites/')).length,0);
 });
 
+test('ask widget is injected into a published site when questions are enabled',async()=>{
+  const env=createEnv();
+  const {token}=await signUp(env,'ask-organizer');
+  const projectId=await newProject(env,token,'ASK TEST');
+  const created=await call(env,'/api/sites',{method:'POST',token,project:projectId,body:{html:'<!doctype html><html><body><h1>ask</h1></body></html>',title:'ASK TEST',slug:'ask-site'}});
+  assert.equal(created.status,201,JSON.stringify(created.data));
+  const on=await call(env,'/api/projects/'+projectId+'/questions',{method:'POST',token,body:{enabled:true}});
+  assert.equal(on.status,200,JSON.stringify(on.data));
+  const visit=await call(env,'/',{host:'ask-site.onlyevent.cn'});
+  assert.equal(visit.status,200);
+  assert.match(String(visit.data),/oe-ask-btn/);
+});
+
 test('a site can only be changed through its own project and account',async()=>{
   const env=createEnv();
   const a=await signUp(env,'organizer-a');

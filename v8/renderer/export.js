@@ -121,7 +121,7 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
         if(savedBtn)savedBtn.firstChild.nodeValue=view==="booths"?"收藏社团 ":"心愿制品 ";
         if(count)count.textContent=String(view==="booths"?wish.booths.length:wish.products.length);
       }
-      function focusPoint(id){const pin=document.querySelector('.map-pin[data-point-id="'+CSS.escape(id)+'"]');if(!pin)return;qa(".map-pin.focused").forEach(x=>x.classList.remove("focused"));pin.classList.add("focused");const pop=$("#mapPop");if(pop)pop.innerHTML="<b>"+pin.dataset.name+"</b><br><span>"+pin.dataset.info+"</span>"+(pin.dataset.boothId?'<br><a href="#booths" data-page-link="booths" data-booth-id="'+pin.dataset.boothId+'">查看摊位与制品 →</a>':"");setTimeout(()=>pin.classList.remove("focused"),1800)}
+      function focusPoint(id){const pin=document.querySelector('.map-pin[data-point-id="'+CSS.escape(id)+'"]');if(!pin)return;qa(".map-pin.focused").forEach(x=>x.classList.remove("focused"));pin.classList.add("focused");paintMapPop($("#mapPop"),pin);setTimeout(()=>pin.classList.remove("focused"),1800)}
 
 
       function show(page){
@@ -184,7 +184,7 @@ export function createStandaloneExporter({getState,previewStyle,runtimeExtraStyl
           paint();dlg.showModal();return;
         }
         const pin=e.target.closest(".pin");
-        if(pin){const pop=$("#mapPop");if(pop)pop.innerHTML="<b>"+pin.dataset.name+"</b><br><span>"+pin.dataset.info+"</span>";return}
+        if(pin){paintMapPop($("#mapPop"),pin);return}
 
         const a=e.target.closest('a[href^="#"]');
         if(!a)return;

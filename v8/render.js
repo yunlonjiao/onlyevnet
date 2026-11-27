@@ -10,6 +10,16 @@ document.body.innerHTML=previewBody.replace('这不是后台功能，而是一�
 const send=m=>parent.postMessage(m,ORIGIN);
 const sponsorSection=$('.sponsors')?.closest('section');if(sponsorSection)sponsorSection.id='sponsors';$('.scroll-progress')?.remove();
 const getDeep=path=>getByPath(state,path);
+function paintMapPop(pop,pin){
+  if(!pop||!pin)return;
+  pop.textContent='';
+  const b=document.createElement('b');b.textContent=pin.dataset.name||'';
+  const span=document.createElement('span');span.textContent=pin.dataset.info||'';
+  pop.append(b,document.createElement('br'),span);
+  const boothId=pin.dataset.boothId;
+  if(boothId){const a=document.createElement('a');a.href='#booths';a.dataset.pageLink='booths';a.dataset.boothId=boothId;a.textContent='查看摊位与制品 →';pop.append(document.createElement('br'),a);}
+}
+
 const setDeep=(path,value)=>setByPath(state,path,value);
 const fieldMap={eventName:()=>$('.brand'),tagline:()=>$('.hero-copy p'),date:()=>qa('.meta .pill')[0],location:()=>qa('.meta .pill')[1],edition:()=>qa('.meta .pill')[2],sticker1:()=>qa('.sticker .editable-copy')[0],sticker2:()=>qa('.sticker .editable-copy')[1],sticker3:()=>qa('.sticker .editable-copy')[2],ribbon1:()=>qa('.ribbon-edit')[0],ribbon2:()=>qa('.ribbon-edit')[1],ribbon3:()=>qa('.ribbon-edit')[2],ribbon4:()=>qa('.ribbon-edit')[3],heroImage:()=>$('.kv')};
 
@@ -132,7 +142,7 @@ function initRuntime(){
  revealObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');e.target.closest('.special')?.classList.add('seen');revealObs.unobserve(e.target)}}),{threshold:.12});qa('.reveal').forEach(x=>revealObs.observe(x));
  stampObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){$('.pass-stamp[data-stamp="'+e.target.dataset.hit+'"]')?.classList.add('hit');stampObs.unobserve(e.target)}}),{threshold:.65});qa('.zone[data-hit]').forEach(x=>stampObs.observe(x));
  const prog=qa('.scroll-progress a');progressObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)prog.forEach(a=>a.classList.toggle('active',a.dataset.sec===e.target.id))}),{threshold:.35});['top','tickets','highlights','passport','booths','stage'].map(id=>$('#'+id)).filter(Boolean).forEach(x=>progressObs.observe(x));
- qa('.pin').forEach(p=>p.addEventListener('click',()=>{const pop=$('#mapPop');if(pop)pop.innerHTML='<b>'+p.dataset.name+'</b><br><span>'+p.dataset.info+'</span>'}));
+ qa('.pin').forEach(p=>p.addEventListener('click',()=>paintMapPop($('#mapPop'),p)));
 }
 document.addEventListener('focusin',e=>{const el=e.target.closest?.('[data-oe-field]');if(!el||mode!=='edit')return;send({type:'OE_FIELD_FOCUS',path:el.dataset.oeField});send({type:'OE_SELECT_FIELD',path:el.dataset.oeField})},true);
 document.addEventListener('input',e=>{const el=e.target.closest?.('[data-oe-field]');if(!el||mode!=='edit')return;const path=el.dataset.oeField;setDeep(path,el.textContent);if(path.startsWith('ribbon')){const i=Number(path.replace('ribbon',''))-1;qa('[data-ribbon-mirror="'+i+'"]').forEach(x=>x.textContent=el.textContent)}send({type:'OE_FIELD_CHANGE',path,value:el.textContent})});
