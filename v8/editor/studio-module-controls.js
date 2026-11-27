@@ -1,4 +1,4 @@
-export function createModuleControls({getState,getTemplate,guideLabelText}){
+export function createModuleControls({getState,getTemplate,guideLabelText,checkpoint,save,send}){
  return function syncModuleControls(){
  const guestPageRow=document.querySelector('[data-page-row="guests"]');
  if(guestPageRow)guestPageRow.style.display=getState().templateId==='02-scrapbook'?'none':'';
@@ -15,7 +15,7 @@ export function createModuleControls({getState,getTemplate,guideLabelText}){
      row=document.createElement('div');row.className='page-tree-row';row.dataset.pageRow='bookStreets';
      row.innerHTML='<button type="button"><span class="nav-icon">◎</span><span>街道导览</span></button><label class="page-inline-switch" title="在书里显示街道导览页"><input type="checkbox" data-book-street aria-label="街道导览页面"><i></i></label>';
      const custom=nav.querySelector('#customPageRows');if(custom)nav.insertBefore(row,custom);else nav.appendChild(row);
-     row.querySelector('[data-book-street]').addEventListener('change',e=>{checkpoint();getState().bookStreetPage=e.target.checked;save();send({type:'OE_REPLACE_STATE',state});});
+     row.querySelector('[data-book-street]').addEventListener('change',e=>{checkpoint();getState().bookStreetPage=e.target.checked;save();send({type:'OE_REPLACE_STATE',state:getState()});});
    }
    if(row){row.style.display='';const cb=row.querySelector('[data-book-street]');if(cb)cb.checked=getState().bookStreetPage===true;}
    return row;

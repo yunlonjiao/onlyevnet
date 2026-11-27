@@ -604,7 +604,7 @@ const trafficInspectorUi=createTrafficInspector({$,getState:()=>state,setInspect
 customPagesUi=createCustomPages({
   $, inspector, getState:()=>state, getCurrentPage:()=>currentPage, customPageKey, customPageIndex, customPageFieldLabels, CUSTOM_PAGE_PRESETS, CUSTOM_PAGE_LAYOUTS, buildCustomPageStarterItems, uid, checkpoint, save, send, setStudioPage, syncStudioPageUI, syncContentCounts, toast, showInspectorEmpty, bindInspectorStateInput, setInspector, esc, customPageRowsHtml, customPageSettingsHtml, customPageItemsPanelHtml, customPageItemInspectorHtml, escapeHtml:esc
 });
-const syncModuleControls=createModuleControls({getState:()=>state,getTemplate:()=>activeTemplate,guideLabelText});
+const syncModuleControls=createModuleControls({getState:()=>state,getTemplate:()=>activeTemplate,guideLabelText,checkpoint,save,send});
 syncStudioIdentity();syncPublishButton();renderCustomPageRows();syncModuleControls();syncContentCounts();setWorkspace('pages');bindModuleControls();bindStageRows();bindRecapDialog();$('#recapClose').onclick=()=>recapDialog.close();mountFrame();syncHistory();setStudioPage('home');
 
 /* Shared mobile drawers, identical across every template. */
