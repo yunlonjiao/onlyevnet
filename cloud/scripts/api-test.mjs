@@ -100,6 +100,30 @@ test('ask widget is injected into a published site when questions are enabled',a
   assert.match(String(visit.data),/oe-ask-btn/);
 });
 
+test('an explicit inaccessible project id never falls back to another project',async()=>{
+  const env=createEnv();
+  const a=await signUp(env,'fallback-owner');
+  const b=await signUp(env,'fallback-other');
+  const projectA=await newProject(env,a.token,'A');
+  await newProject(env,b.token,'B');
+  const r=await call(env,'/api/config',{token:b.token,project:projectA});
+  assert.equal(r.status,404,JSON.stringify(r.data));
+});
+
+test('a collaborator sees the owner project publish state',async()=>{
+  const env=createEnv();
+  const owner=await signUp(env,'collab-owner');
+  const member=await signUp(env,'collab-member');
+  const projectId=await newProject(env,owner.token,'COLLAB');
+  const added=await call(env,'/api/projects/'+projectId+'/members',{method:'POST',token:owner.token,body:{username:'collab-member'}});
+  assert.equal(added.status,200,JSON.stringify(added.data));
+  const site=await call(env,'/api/sites',{method:'POST',token:owner.token,project:projectId,body:{html:'<p>collab</p>',slug:'collab-site'}});
+  assert.equal(site.status,201,JSON.stringify(site.data));
+  const config=await call(env,'/api/config',{token:member.token,project:projectId});
+  assert.equal(config.status,200,JSON.stringify(config.data));
+  assert.ok(config.data.project.publishedAt, 'collaborator publish state should not be empty');
+});
+
 test('a site can only be changed through its own project and account',async()=>{
   const env=createEnv();
   const a=await signUp(env,'organizer-a');
