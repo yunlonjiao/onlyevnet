@@ -344,6 +344,17 @@ test('media is a public capability URL with safe headers',async()=>{
   assert.equal((await worker.fetch(new Request(API+'/media/uploads/nobody/nope.gif'),env)).status,404);
 });
 
+test('expired sessions are rejected and removed',async()=>{
+  const env=createEnv();
+  const {token}=await signUp(env,'expired-session');
+  const past=new Date(Date.now()-60000).toISOString();
+  await env.DB.prepare('UPDATE sessions SET expires_at=?').bind(past).run();
+  const me=await call(env,'/api/me',{token});
+  assert.equal(me.status,401);
+  const left=await env.DB.prepare('SELECT COUNT(*) AS n FROM sessions').first();
+  assert.equal(Number(left.n),0);
+});
+
 test('deleting an account removes its projects, sites and files, and needs the password',async()=>{
   const env=createEnv();
   const {token}=await signUp(env,'leaving'),pid=await newProject(env,token,'将被删除');
