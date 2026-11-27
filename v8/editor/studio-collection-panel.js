@@ -1,4 +1,4 @@
-export function createCollectionPanel({ $, state, contentManagerMeta, collectionArray, setInspector, setPageContentActive, renderStudioCollectionRows, esc, presetEntriesFor, contentThumb, openItemInspector, checkpoint, uid, save, send, GUIDE_PRESETS, PARTICIPATION_PRESETS, setLast, syncContentCounts, syncModuleControls }){
+export function createCollectionPanel({ $, state, contentManagerMeta, collectionArray, setInspector, setPageContentActive, renderStudioCollectionRows, esc, presetEntriesFor, contentThumb, openItemInspector, checkpoint, uid, save, send, GUIDE_PRESETS, PARTICIPATION_PRESETS, setLast, syncContentCounts, syncModuleControls, mutateItem }){
 function addPresetItem(collection,key){
  checkpoint();
  const arr=collectionArray(collection);if(!Array.isArray(arr))return;
