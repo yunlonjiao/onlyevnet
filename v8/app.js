@@ -65,6 +65,7 @@ import {createCollectionPanel} from '/v8/editor/studio-collection-panel.js';
 import {createItemInspector} from '/v8/editor/studio-item-inspector.js';
 import {createItemMutations} from '/v8/editor/studio-item-mutations.js';
 import {createProductInspector} from '/v8/editor/studio-product-inspector.js';
+import {createStreetManager} from '/v8/editor/studio-street-manager.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
@@ -460,39 +461,7 @@ function openEntryAnimationInspector(){
     const input=$('#imageInput');input.dataset.path='entryAnimation.'+btn.dataset.kvImage;input.click();
   }));
 }
-function openStreetManager(){
-  setInspector('摊位','街道',streetManagerHtml(state,esc));
-  inspector.querySelectorAll('[data-street-rename]').forEach(input=>input.addEventListener('change',()=>{
-    const from=input.dataset.streetRename,to=String(input.value||'').trim();
-    if(!to||to===from)return;
-    checkpoint();
-    state.booths=(state.booths||[]).map(b=>String(b.street||'')===from?{...b,street:to}:b);
-    state.streets=(state.streets||[]).map(s=>String(s.name||'')===from?{...s,name:to}:s);
-    save();send({type:'OE_REPLACE_STATE',state});openStreetManager();
-  }));
-  inspector.querySelectorAll('[data-street-delete]').forEach(btn=>btn.addEventListener('click',()=>{
-    const name=btn.dataset.streetDelete;
-    checkpoint();
-    state.booths=(state.booths||[]).map(b=>String(b.street||'')===name?{...b,street:''}:b);
-    state.streets=(state.streets||[]).filter(s=>String(s.name||'')!==name);
-    save();send({type:'OE_REPLACE_STATE',state});openStreetManager();
-  }));
-  inspector.querySelectorAll('[data-street-image]').forEach(btn=>btn.addEventListener('click',()=>{
-    const name=btn.dataset.streetImage;
-    state.streets=Array.isArray(state.streets)?state.streets:[];
-    let idx=state.streets.findIndex(s=>String(s.name||'')===name);
-    if(idx<0){state.streets.push({name,image:''});idx=state.streets.length-1;save();send({type:'OE_REPLACE_STATE',state});}
-    const input=$('#imageInput');input.dataset.path='streets.'+idx+'.image';input.click();
-  }));
-  $('#addStreetBtn')?.addEventListener('click',()=>{
-    const name=String($('#newStreetName')?.value||'').trim();
-    if(!name)return;
-    checkpoint();
-    state.streets=Array.isArray(state.streets)?state.streets:[];
-    if(!state.streets.some(s=>String(s.name||'')===name))state.streets.push({name,image:''});
-    save();send({type:'OE_REPLACE_STATE',state});openStreetManager();
-  });
-}
+function openStreetManager(){streetUi.open()}
 function openPageTool(tool){pageTool(tool)}
 function renderPageContentNav(page,{openDefault=true}={}){
  const nav=$('#pageContentNav'),title=$('#pageContentTitle'),panel=$('#contentListPanel'),custom=customPageByKey(page);
@@ -950,6 +919,7 @@ publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.valu
 if(projectId!=='default'&&!hasSavedProject){writeJson(STORAGE,state);syncAdminProject()}
 const pageTool=createPageTool({$,setPageContentActive,openEntryAnimationInspector,openAddressInspector,openLifecycleInspector,openHeroTitleInspector,openBannerInspector,openImageInspector,openTrafficInspector,openFieldInspector,openSeoInspector,openRecapDialog,openStreetManager,openOptionalPageInspector,showInspectorEmpty});
 function presetEntriesFor(collection){return presetEntriesForState(collection,state.templateId,GUIDE_PRESETS,PARTICIPATION_PRESETS)}
+const streetUi=createStreetManager({$,getState:()=>state,setInspector,inspector,esc,checkpoint,save,send});
 const productUi=createProductInspector({$,getState:()=>state,setInspector,inspector,esc,fitTextarea,checkpoint,save,send,cleanValue,openBoothProductManager,openImageCropper,openItemInspector,moveBoothProduct,addBoothProduct});
 const itemMutations=createItemMutations({getState:()=>state,collectionArray,checkpoint,cleanupDeletedReferences,save,send,syncContentCounts,openCollectionManager,openItemInspector,showInspectorEmpty,uid,syncModuleControls:()=>syncModuleControls()});
 const itemInspectorUi=createItemInspector({$,getState:()=>state,setLast:(c,i)=>{lastCollection=c;lastItemIndex=i},collectionMeta,collectionArray,isItemLongField,participationInspectorFields,itemMediaPanels,contentManagerMeta,itemActionsHtml,setInspector,esc,itemInspectorHeadHtml,itemFieldsHtml,extraInspector,fitTextarea,inspector,send,checkpoint,save,collectionPath,cleanValue,setDeep,openCollectionManager,setPageContentActive,mutateItem,addBoothProduct,openBoothProductManager,uid,guestPlatformName});
