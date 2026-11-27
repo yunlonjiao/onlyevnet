@@ -1287,7 +1287,7 @@ html.embed-preview body.previewing .canvas:not(.mobile){height:100%}
   color:#5b5b64;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:14px 2px 10px}
 .inspector-note{margin:8px 2px 0;font-size:9px;line-height:1.45;color:#9a9aa4;font-size:11.5px!important;line-height:1.65!important;color:#8b8b95!important;margin:10px 2px 0!important}
 .inspector .item-fields label{margin:0 0 14px!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;gap:6px!important;display:grid!important;gap:9px!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important}
-.studio-desktop .inspector input,.studio-desktop .inspector select,.studio-desktop .inspector textarea{font-family:inherit!important;font-weight:600!important;font-size:13px!important;width:100%!important;box-sizing:border-box!important;font-size:13px!important;line-height:1.4!important;padding:10px 12px!important;border-radius:10px!important;background:#fff!important;border:1px solid #dedee5!important}
+.studio-desktop .inspector input,.studio-desktop .inspector select,.studio-desktop .inspector textarea{font-family:inherit;font-weight:600;font-size:13px;width:100%;box-sizing:border-box;font-size:13px;line-height:1.4;padding:10px 12px;border-radius:10px;background:#fff;border:1px solid #dedee5}
 .inspector .check-row{padding:6px 0!important;display:flex!important;align-items:center!important;gap:9px!important;padding:7px 2px!important}
 
 /* final inspector surface: pinned to the measured baseline */
