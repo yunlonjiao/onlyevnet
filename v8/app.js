@@ -64,6 +64,7 @@ import {createPageTool} from '/v8/editor/studio-page-tool.js';
 import {createCollectionPanel} from '/v8/editor/studio-collection-panel.js';
 import {createItemInspector} from '/v8/editor/studio-item-inspector.js';
 import {createItemMutations} from '/v8/editor/studio-item-mutations.js';
+import {createProductInspector} from '/v8/editor/studio-product-inspector.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
@@ -378,6 +379,9 @@ async function storeCroppedImage(blob){return storeCroppedImageImpl(blob)}
 const studioHistory=createStudioHistory({limit:80,onChange:()=>syncHistory()});
  let lastCollection='',lastItemIndex=-1;
 function openItemInspector(collection,index){itemInspectorUi.open(collection,index)}
+function openProductInspector(boothIndex,productIndex,opts){productUi.product(boothIndex,productIndex,opts)}
+function openBoothProductManager(boothIndex){productUi.booth(boothIndex)}
+
 function openCollectionManager(collection,selectedIndex=-1){panelUi.openCollectionManager(collection,selectedIndex)}
 function addPresetItem(collection,key){panelUi.addPresetItem(collection,key)}
 const historyUi=createHistoryUi(studioHistory,$('#undoBtn'),$('#redoBtn'));
@@ -651,15 +655,6 @@ function collectionArray(collection){return collectionArrayFor(collection,state)
 function collectionPath(collection,index,key){return collectionPathFor(collection,index,key)}
 function extraInspector(collection,index,item){return extraInspectorHtml(collection,index,item,state,{esc,guideLabelText,customPageKey})}
 
-function openBoothProductManager(boothIndex){
- const booth=state.booths?.[boothIndex];if(!booth)return;
- const products=booth.products||[];
- setInspector('制品','制品管理 · '+(booth.no||booth.name||'摊位'),boothProductsHtml(booth,boothIndex,esc));
- inspector.querySelector('[data-booth-product-back]')?.addEventListener('click',()=>openItemInspector('booths',boothIndex));
- inspector.querySelector('[data-booth-product-add]')?.addEventListener('click',()=>addBoothProduct(boothIndex));
- inspector.querySelectorAll('[data-booth-product-open]').forEach(btn=>btn.addEventListener('click',()=>openProductInspector(boothIndex,Number(btn.dataset.boothProductOpen))));
- inspector.querySelectorAll('[data-booth-product-move]').forEach(btn=>btn.addEventListener('click',()=>moveBoothProduct(boothIndex,Number(btn.dataset.boothProductMove),Number(btn.dataset.dir))));
-}
 function moveBoothProduct(boothIndex,productIndex,dir){
  const booth=state.booths?.[boothIndex],products=booth?.products||[],next=productIndex+Number(dir||0);
  if(!booth||productIndex<0||next<0||next>=products.length||productIndex===next)return;
@@ -673,37 +668,6 @@ function addBoothProduct(boothIndex){
  const productIndex=booth.products.length-1;
  save();send({type:'OE_REPLACE_STATE',state});
  openProductInspector(boothIndex,productIndex);
-}
-function openProductInspector(boothIndex,productIndex,{focusImage=false}={}){
- const booth=state.booths?.[boothIndex],product=booth?.products?.[productIndex];if(!booth||!product)return;
- const path='booths.'+boothIndex+'.products.'+productIndex;
- const image=product.image?'<img src="'+esc(product.image)+'" alt="">':'<div class="item-media-empty">＋</div>';
- setInspector('制品','编辑制品',productInspectorHtml(booth,product,esc));
- inspector.querySelector('[data-direct-product-back]')?.addEventListener('click',()=>openBoothProductManager(boothIndex));
- inspector.querySelectorAll('textarea').forEach(fitTextarea);
- try{const h=inspector.querySelector('textarea[data-key="setlist"]');
-  if(h&&!h.dataset.chips){h.dataset.chips='1';
-   const wrap=document.createElement('div');wrap.className='chip-editor';
-   const list=document.createElement('div');list.className='chip-list';
-   const inp=document.createElement('input');inp.type='text';inp.className='chip-input';inp.placeholder='输入曲名后回车';
-   wrap.append(list,inp);h.parentElement.insertBefore(wrap,h);h.classList.add('chip-source');
-   const splitSongs=v=>String(v||'').split(/(?=《)|[\/、,，\n]+/).map(t=>t.trim()).filter(Boolean);
-   const sync=()=>{h.value=[...list.querySelectorAll('.chip')].map(c=>c.dataset.v).join('\n');h.dispatchEvent(new Event('input',{bubbles:true}));h.dispatchEvent(new Event('change',{bubbles:true}));h.blur&&h.blur();try{save();send({type:'OE_REPLACE_STATE',state})}catch(e){console.warn('[chips sync]',e)}};
-   const add=v=>{if(!v)return;const c=document.createElement('span');c.className='chip';c.dataset.v=v;c.innerHTML=esc(v)+'<button type="button" aria-label="删除">×</button>';c.querySelector('button').onclick=()=>{c.remove();sync()};list.appendChild(c)};
-   splitSongs(h.value).forEach(add);
-   inp.addEventListener('keydown',e=>{if(e.key!=='Enter')return;e.preventDefault();add(inp.value.trim());inp.value='';inp.blur();setTimeout(()=>sync(),0)});
-  }}catch(err){console.warn('[chips]',err)}
- inspector.querySelectorAll('[data-direct-product-key]').forEach(input=>{
-   let started=false;
-   input.addEventListener('input',e=>{if(!started){checkpoint();started=true}const key=e.target.dataset.directProductKey;product[key]=e.target.value;save();send({type:'OE_REPLACE_STATE',state});if(e.target.tagName==='TEXTAREA')fitTextarea(e.target)});
-   input.addEventListener('blur',e=>{const key=e.target.dataset.directProductKey,cleaned=cleanValue(e.target.value);if(cleaned!==e.target.value){e.target.value=cleaned;product[key]=cleaned;save();send({type:'OE_REPLACE_STATE',state});if(e.target.tagName==='TEXTAREA')fitTextarea(e.target)}});
- });
- const choose=()=>{const input=$('#imageInput');input.dataset.path=path+'.image';input.dataset.returnCollection='product:'+boothIndex;input.dataset.returnIndex=String(productIndex);input.click()};
- inspector.querySelector('[data-direct-product-image]')?.addEventListener('click',choose);
- inspector.querySelector('[data-direct-product-crop]')?.addEventListener('click',()=>openImageCropper(product.image,path+'.image','product:'+boothIndex,String(productIndex)));
- inspector.querySelector('[data-direct-product-remove-image]')?.addEventListener('click',()=>{checkpoint();product.image='';save();send({type:'OE_REPLACE_STATE',state});openProductInspector(boothIndex,productIndex)});
- inspector.querySelector('[data-direct-product-delete]')?.addEventListener('click',()=>{checkpoint();booth.products.splice(productIndex,1);save();send({type:'OE_REPLACE_STATE',state});openBoothProductManager(boothIndex)});
- if(focusImage)requestAnimationFrame(()=>inspector.querySelector('[data-direct-product-image]')?.focus());
 }
 function clearExploreItemRef(itemType,itemId){
  (state.venueMap?.links||[]).forEach(link=>{
@@ -986,6 +950,7 @@ publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.valu
 if(projectId!=='default'&&!hasSavedProject){writeJson(STORAGE,state);syncAdminProject()}
 const pageTool=createPageTool({$,setPageContentActive,openEntryAnimationInspector,openAddressInspector,openLifecycleInspector,openHeroTitleInspector,openBannerInspector,openImageInspector,openTrafficInspector,openFieldInspector,openSeoInspector,openRecapDialog,openStreetManager,openOptionalPageInspector,showInspectorEmpty});
 function presetEntriesFor(collection){return presetEntriesForState(collection,state.templateId,GUIDE_PRESETS,PARTICIPATION_PRESETS)}
+const productUi=createProductInspector({$,getState:()=>state,setInspector,inspector,esc,fitTextarea,checkpoint,save,send,cleanValue,openBoothProductManager,openImageCropper,openItemInspector,moveBoothProduct,addBoothProduct});
 const itemMutations=createItemMutations({getState:()=>state,collectionArray,checkpoint,cleanupDeletedReferences,save,send,syncContentCounts,openCollectionManager,openItemInspector,showInspectorEmpty,uid,syncModuleControls:()=>syncModuleControls()});
 const itemInspectorUi=createItemInspector({$,getState:()=>state,setLast:(c,i)=>{lastCollection=c;lastItemIndex=i},collectionMeta,collectionArray,isItemLongField,participationInspectorFields,itemMediaPanels,contentManagerMeta,itemActionsHtml,setInspector,esc,itemInspectorHeadHtml,itemFieldsHtml,extraInspector,fitTextarea,inspector,send,checkpoint,save,collectionPath,cleanValue,setDeep,openCollectionManager,setPageContentActive,mutateItem,addBoothProduct,openBoothProductManager,uid,guestPlatformName});
 const panelUi=createCollectionPanel({$,state,contentManagerMeta,collectionArray,setInspector,setPageContentActive,renderStudioCollectionRows,esc,presetEntriesFor,contentThumb,openItemInspector,checkpoint,uid,save,send,GUIDE_PRESETS,PARTICIPATION_PRESETS,setLast:(c,i)=>{lastCollection=c;if(i>=0)lastItemIndex=i},syncContentCounts,presetEntriesFor,syncModuleControls:()=>syncModuleControls(),mutateItem});
