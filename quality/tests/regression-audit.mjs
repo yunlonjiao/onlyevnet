@@ -268,6 +268,10 @@ await run('mobile: media controls and labels', async () => {
     await openHomeContent(page);
     await clickContentText(page, '票务');
     await openFirstItem(page);
+    await page.waitForFunction(() => {
+      const label = document.querySelector('#mNativeApp .item-media>span');
+      return !!label && label.getBoundingClientRect().width >= 96;
+    }, {timeout: 6000}).catch(() => {});
     const data = await page.evaluate(() => {
       const empty = document.querySelector('#mNativeApp .item-media-empty');
       const label = document.querySelector('#mNativeApp .item-media>span');
