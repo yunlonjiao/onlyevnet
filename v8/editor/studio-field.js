@@ -1,6 +1,6 @@
 /* One editable-field contract for the IP ONLY and creator Studio inspectors. */
 /** @param {HTMLInputElement|HTMLTextAreaElement|null} input @param {{path:string, checkpoint:()=>void, update:(path:string,value:any)=>void, cleanValue:(value:string)=>string, parseValue?:(value:string)=>any, onUpdated?:(value:any,path:string)=>void}} options */
-export function bindStudioField(input,{path,checkpoint,update,cleanValue,parseValue,onUpdated}={}){
+export function bindStudioField(input,{path,checkpoint,update,cleanValue,parseValue,onUpdated}=/** @type {any} */ ({})){
  if(!input)return ()=>{};
  let started=false;
  const parse=typeof parseValue==='function'?parseValue:(value=>value);

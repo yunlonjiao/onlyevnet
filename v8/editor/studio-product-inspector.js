@@ -24,7 +24,7 @@ export function createProductInspector({
         wrap.append(list, inp); h.parentElement.insertBefore(wrap, h); h.classList.add('chip-source');
         const splitSongs = (v) => String(v || '').split(/(?=《)|[\/、,，\n]+/).map((t) => t.trim()).filter(Boolean);
         const sync = () => {
-          h.value = [...list.querySelectorAll('.chip')].map((c) => c.dataset.v).join('\n');
+          h.value = [...list.querySelectorAll('.chip')].map((c) => /** @type {HTMLElement} */ (c).dataset.v).join('\n');
           h.dispatchEvent(new Event('input', {bubbles: true})); h.dispatchEvent(new Event('change', {bubbles: true}));
           h.blur && h.blur();
           try { save(); send({type: 'OE_REPLACE_STATE', state}); } catch (e) { console.warn('[chips sync]', e); }

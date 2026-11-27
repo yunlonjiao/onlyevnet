@@ -27,7 +27,7 @@ export function createModuleControls({getState,getTemplate,guideLabelText,checkp
  const animRow=el('.entry-animation-row');if(animRow)animRow.style.display=(getTemplate().studioPages?.hidden||[]).includes('animation')?'none':'';
  const customPageButton=el('#createCustomPageBtn');
  if(customPageButton)customPageButton.hidden=getTemplate().studioPages?.customPages===false;
- all('[data-module]').forEach(input=>{input.checked=getState().modules?.[input.dataset.module]!==false});
+ all('[data-module]').forEach(input=>{/** @type {HTMLInputElement} */ (input).checked=getState().modules?.[input.dataset.module]!==false});
  all('[data-page-row]').forEach(row=>row.classList.toggle('is-disabled',getState().modules?.[row.dataset.pageRow]===false));
 };
 }

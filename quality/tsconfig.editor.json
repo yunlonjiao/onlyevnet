@@ -1,0 +1,16 @@
+﻿{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "baseUrl": ".",
+    "paths": {"/v8/*": ["../v8/*"]},
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    "noImplicitAny": false
+  },
+  "include": ["../v8/editor/**/*.js", "../v8/app.js"]
+}

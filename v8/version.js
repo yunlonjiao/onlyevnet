@@ -4,7 +4,7 @@ export const STUDIO_VERSION='8.52.0';
 const HIDDEN_ON=/^(?:www\.)?onlyevent\.cn$/;
 export function applyStudioVersion(doc=document,hostname=location.hostname){
   const badge=doc.querySelector('#studioVersion');
-  if(!badge)return;
+  if(!(badge instanceof HTMLElement))return;
   badge.textContent='v'+STUDIO_VERSION;
   badge.hidden=HIDDEN_ON.test(hostname);
 }

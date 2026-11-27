@@ -6,8 +6,9 @@
     "contract": "node ./check-renderer-contract.mjs",
     "unit": "node --test ./tests/*.test.mjs",
     "smoke": "playwright test",
-    "check": "npm run architecture && npm run typecheck && npm run contract && npm run unit && npm run smoke",
+    "check": "npm run architecture && npm run typecheck && npm run typecheck:editor && npm run contract && npm run unit && npm run smoke",
     "typecheck": "tsc -p ./tsconfig.json",
+    "typecheck:editor": "tsc -p ./tsconfig.editor.json",
     "architecture": "node ../tools/check-architecture.mjs"
   },
   "devDependencies": {

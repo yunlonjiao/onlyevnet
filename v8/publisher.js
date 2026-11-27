@@ -25,7 +25,7 @@ async function readJson(response){
   let data={};
   try{data=text?JSON.parse(text):{}}catch{data={message:text}}
   if(!response.ok||data?.ok===false){
-    const error=new Error(data?.error||data?.message||('发布服务返回 '+response.status));
+    const error=/** @type {Error & {status:number,data:any}} */ (new Error(data?.error||data?.message||('发布服务返回 '+response.status)));
     error.status=response.status;
     error.data=data;
     if(response.status===401)clearCloudSession();
@@ -45,7 +45,7 @@ async function api(path,{method='GET',body,projectId,auth=true}={}){
   if(auth&&!session)throw Object.assign(new Error('请先登录主办方账号'),{status:401});
   if(session)headers.Authorization='Bearer '+session.token;
   if(projectId)headers['X-OnlyEvent-Project']=projectId;
-  const response=await fetch(PUBLISHER_ORIGIN+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body)});
+  const response=await fetch(PUBLISHER_ORIGIN+path,{method,headers:/** @type {Record<string,string>} */ (/** @type {unknown} */ (headers)),body:body===undefined?undefined:JSON.stringify(body)});
   return readJson(response);
 }
 
@@ -191,6 +191,7 @@ export async function uploadCloudImage({blob,projectId,filename='image.webp'}){
   return PUBLISHER_ORIGIN+data.url;
 }
 
+/** @param {any} data @param {{slug?:string}} [options] */
 function normalizeSite(data,{slug}={}){
   const site=data?.site||data||{};
   const nextSlug=site.slug||slug||'';

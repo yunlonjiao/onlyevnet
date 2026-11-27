@@ -1,8 +1,9 @@
 /* Identical Studio toolbar controls for every rendering template. */
-export function setStudioDevice(mode,{canvas,documentRoot=document}={}){
+/** @param {'desktop'|'mobile'} mode @param {{canvas:HTMLElement, documentRoot?:Document}} [options] */
+export function setStudioDevice(mode,{canvas,documentRoot=document}=/** @type {{canvas:HTMLElement,documentRoot?:Document}} */ ({})){
  const mobile=mode==='mobile';
  canvas.classList.toggle('mobile',mobile);
- documentRoot.querySelectorAll('[data-device]').forEach(b=>b.classList.toggle('active',b.dataset.device===mode));
+ /** @type {NodeListOf<HTMLElement>} */ (documentRoot.querySelectorAll('[data-device]')).forEach(b=>b.classList.toggle('active',b.dataset.device===mode));
  const label=documentRoot.querySelector('#canvasDeviceLabel');
  if(label)label.textContent=mobile?'手机画布':'桌面画布';
 }

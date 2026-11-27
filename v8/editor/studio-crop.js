@@ -1,6 +1,7 @@
 /* Shared image-crop operations used by Studio's IP ONLY and creator editors. */
 let cropperPromise;
 export function loadStudioCropper(){
+ // @ts-expect-error CDN ESM fallback has no local type declarations
  if(!cropperPromise)cropperPromise=import('/v8/vendor/cropperjs.js').catch(()=>import('https://cdn.jsdelivr.net/npm/cropperjs@2.2.0/+esm')).catch(error=>{cropperPromise=null;throw error});
  return cropperPromise;
 }
@@ -18,6 +19,7 @@ export async function cropSelectionToDataUrl(selection,{width,height,ratio,maxSi
 }
 
 /* Visual cropper template and controls proven by Template 01/02. */
+/** @param {{image?:HTMLImageElement, stage?:HTMLElement, ratio?:number, coverage?:number}} [options] */
 export async function createStudioCropper({image,stage,ratio,coverage=.72}={}){
  const mod=await loadStudioCropper(),Cropper=mod.default||mod.Cropper;
  stage.querySelectorAll('cropper-canvas').forEach(node=>node.remove());

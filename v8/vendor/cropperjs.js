@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*! Cropper.js v2.2.0 | (c) 2015-present Chen Fengyuan | MIT */
 const IS_BROWSER = typeof window !== 'undefined' && typeof window.document !== 'undefined';
 const WINDOW = IS_BROWSER ? window : {};

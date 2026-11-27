@@ -192,7 +192,7 @@ function setPublishBusy(busy,text=''){publishUi.setBusy(busy,text)}
 const exportWaiters=[];
 let pendingStages=null;
 const STAGE_MODULES=[['booths','社团'],['activities','活动'],['guests','嘉宾'],['guide',guideLabelText()]];
-const stageModuleList=()=>STAGE_MODULES.filter(([k])=>!(activeTemplate.studioPages?.hidden||[]).includes(k)&&state.modules?.[k]!==false);
+const stageModuleList=()=>STAGE_MODULES.filter(([k])=>!(/** @type {any} */ (activeTemplate).studioPages?.hidden||[]).includes(k)&&state.modules?.[k]!==false);
 function exportHtmlFor(st){return new Promise(ok=>{exportWaiters.push(ok);send({type:'OE_REPLACE_STATE',state:st});send({type:'OE_EXPORT_HTML'})})}
 async function exportStagedSite(){
  const stages=revealStages(state,stageModuleList()),htmls=[];
@@ -267,8 +267,8 @@ function showInspectorEmpty(){
 }
 function setWorkspace(name){
  const target=document.querySelector('[data-workspace-panel="'+name+'"]')?name:'pages';
- document.querySelectorAll('[data-workspace]').forEach(b=>b.classList.toggle('active',b.dataset.workspace===target));
- document.querySelectorAll('[data-workspace-panel]').forEach(p=>{const on=p.dataset.workspacePanel===target;p.hidden=!on;p.classList.toggle('active',on)});
+ /** @type {NodeListOf<HTMLElement>} */ (document.querySelectorAll('[data-workspace]')).forEach(b=>b.classList.toggle('active',b.dataset.workspace===target));
+ /** @type {NodeListOf<HTMLElement>} */ (document.querySelectorAll('[data-workspace-panel]')).forEach(p=>{const on=p.dataset.workspacePanel===target;p.hidden=!on;p.classList.toggle('active',on)});
 }
 
 const moduleLabels={booths:'摊位',activities:'活动',guests:'嘉宾',guide:guideLabelText()};
@@ -339,8 +339,8 @@ function renderPageContentNav(page,{openDefault=true}={}){
 function syncStudioPageUI(page,{openContent=true}={}){
  if(page==='guests'&&state.templateId==='02-scrapbook')page='home';
  currentPage=page||'home';
- document.querySelectorAll('.page-nav [data-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.page===currentPage));
- document.querySelectorAll('[data-page-row]').forEach(row=>row.classList.toggle('active',row.dataset.pageRow===currentPage));
+ /** @type {NodeListOf<HTMLElement>} */ (document.querySelectorAll('.page-nav [data-page]')).forEach(btn=>btn.classList.toggle('active',btn.dataset.page===currentPage));
+ /** @type {NodeListOf<HTMLElement>} */ (document.querySelectorAll('[data-page-row]')).forEach(row=>row.classList.toggle('active',row.dataset.pageRow===currentPage));
  const title=document.querySelector('.canvas-title b');if(title)title.textContent=pageLabel(currentPage);
  if(openContent)renderPageContentNav(currentPage);
 }
@@ -355,7 +355,7 @@ function setStudioPage(page,{openContent=true}={}){
  }
 }
 function bindModuleControls(){
- document.querySelectorAll('[data-module]').forEach(input=>input.addEventListener('change',()=>{
+ /** @type {NodeListOf<HTMLInputElement>} */ (document.querySelectorAll('[data-module]')).forEach(input=>input.addEventListener('change',()=>{
    checkpoint();state.modules??={};state.modules[input.dataset.module]=input.checked;save();
    if(!input.checked&&currentPage===input.dataset.module)setStudioPage('home');
    syncModuleControls();send({type:'OE_REPLACE_STATE',state});
@@ -666,7 +666,7 @@ try{
   const syncDone=()=>{const kb=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--kb-inset'))||0;done.hidden=kb<80};
   const vv=window.visualViewport;if(vv){vv.addEventListener('resize',syncDone);vv.addEventListener('scroll',syncDone)}
   syncDone();
-  done.addEventListener('click',()=>{try{document.activeElement&&document.activeElement.blur()}catch(e){};try{window.frames[0].postMessage({type:'OE_BLUR'},'*')}catch(e){};try{send({type:'OE_BLUR'})}catch(e){}});
+  done.addEventListener('click',()=>{try{if(document.activeElement instanceof HTMLElement)document.activeElement.blur()}catch(e){};try{window.frames[0].postMessage({type:'OE_BLUR'},'*')}catch(e){};try{send({type:'OE_BLUR'})}catch(e){}});
  }
 }catch(e){}
 
@@ -678,7 +678,7 @@ try{
  const __mediaTapOpenPicker=e=>{
   const box=e.target.closest&&e.target.closest('.inspector .item-media,.inspector .item-media-empty');
   if(!box||e.target.closest('button,input,textarea,select,a'))return;
-  const btn=document.querySelector('.inspector #replaceImage');
+  const btn=/** @type {HTMLButtonElement|null} */ (document.querySelector('.inspector #replaceImage'));
   if(btn){e.preventDefault();btn.click()}
  };
  document.addEventListener('click',__mediaTapOpenPicker,false);

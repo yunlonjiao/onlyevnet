@@ -32,7 +32,7 @@ function openCollectionManager(collection,selectedIndex=-1){
   if(selectedIndex<0){const m=contentManagerMeta[collection];if(m)try{setInspector('内容',m.title,'<div class="inspector-note">选择左侧条目开始编辑</div>')}catch(e){}}
  if(collection==='explore'&&state.templateId==='04-creator-catalogue')return;
  const meta=contentManagerMeta[collection],arr=collectionArray(collection),panel=$('#contentListPanel');if(!meta||!Array.isArray(arr)||!panel)return;
- document.querySelectorAll('[data-content-manager]').forEach(x=>x.classList.toggle('active',x.dataset.contentManager===collection));
+ /** @type {NodeListOf<HTMLElement>} */ (document.querySelectorAll('[data-content-manager]')).forEach(x=>x.classList.toggle('active',x.dataset.contentManager===collection));
  setPageContentActive({collection});
  const rows=renderStudioCollectionRows(arr,{escape:esc,selected:selectedIndex,item:meta.item,thumbnail:item=>contentThumb(collection,item)});
  const guidePresets=collection==='guide'?'<div class="preset-add"><span>常用预设</span><div>'+presetEntriesFor('guide').map(([key,x])=>'<button type="button" data-add-preset="'+key+'">'+esc(x.title)+'</button>').join('')+'</div></div>':'';

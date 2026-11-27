@@ -1,7 +1,7 @@
 /* Exactly the Studio collection-list row structure, shared by all templates. */
 /** @typedef {{escape:(value:any)=>string, selected?:number, item?:(value:any,i:number)=>[string,string], thumbnail?:(value:any,i:number)=>string, attribute?:string}} RowOptions */
 /** @param {any[]} items @param {RowOptions} [options] */
-export function renderStudioCollectionRows(items,{escape,selected=-1,item=(value,i)=>[value?.name||value?.title||String(i+1),''],thumbnail=()=>'',attribute='data-open-item'}={}){
+export function renderStudioCollectionRows(items,{escape,selected=-1,item=(value,i)=>[value?.name||value?.title||String(i+1),''],thumbnail=()=>'',attribute='data-open-item'}=/** @type {RowOptions} */ ({})){
  return items.map((entry,index)=>{
   const [title,subtitle]=item(entry,index);
   return '<button type="button" class="sidebar-content-row '+(index===selected?'active':'')+'" '+attribute+'="'+index+'" data-search="'+escape((title+' '+subtitle).toLowerCase())+'">'+thumbnail(entry,index)+'<span class="sidebar-content-copy"><b>'+escape(title)+'</b>'+(subtitle?'<small>'+escape(subtitle)+'</small>':'')+'</span><i>›</i></button>';
@@ -9,7 +9,7 @@ export function renderStudioCollectionRows(items,{escape,selected=-1,item=(value
 }
 /** @typedef {{escape:(value:any)=>string, title:string, selected?:number, item?:(value:any,i:number)=>[string,string], thumbnail?:(value:any,i:number)=>string, empty?:string, addLabel?:string, collectionId?:string}} PanelOptions */
 /** @param {HTMLElement} panel @param {any[]} items @param {PanelOptions} [options] */
-export function renderStudioCollectionPanel(panel,items,{escape,title,selected=-1,item,thumbnail,empty='暂无内容',addLabel='添加内容',collectionId=''}={}){
+export function renderStudioCollectionPanel(panel,items,{escape,title,selected=-1,item,thumbnail,empty='暂无内容',addLabel='添加内容',collectionId=''}=/** @type {PanelOptions} */ ({})){
  const rows=renderStudioCollectionRows(items,{escape,selected,item,thumbnail});
  panel.innerHTML='<div class="sidebar-content-head"><div><b>'+escape(title)+'</b><span>'+items.length+' 项</span></div>'+(items.length>6?'<label class="sidebar-content-search"><span>⌕</span><input type="search" placeholder="搜索'+escape(title)+'" data-sidebar-content-search></label>':'')+'</div><div class="sidebar-content-rows">'+(rows||'<div class="sidebar-content-empty">'+escape(empty)+'</div>')+'</div><button type="button" class="sidebar-content-add" data-sidebar-content-add'+(collectionId?' data-add="'+escape(collectionId)+'"':'')+'>＋ '+escape(addLabel)+'</button>';
 }

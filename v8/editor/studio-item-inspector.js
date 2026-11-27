@@ -18,7 +18,7 @@ function open(collection,index){
    const inp=document.createElement('input');inp.type='text';inp.className='chip-input';inp.placeholder='输入曲名后回车';
    wrap.append(list,inp);h.parentElement.insertBefore(wrap,h);h.classList.add('chip-source');
    const splitSongs=v=>String(v||'').split(/(?=《)|[\/、,，\n]+/).map(t=>t.trim()).filter(Boolean);
-   const sync=()=>{h.value=[...list.querySelectorAll('.chip')].map(c=>c.dataset.v).join('\n');h.dispatchEvent(new Event('input',{bubbles:true}));h.dispatchEvent(new Event('change',{bubbles:true}));h.blur&&h.blur();try{send({type:'OE_PATCH_FIELD',path:collection+'.'+index+'.setlist',value:h.value})}catch(e){}};
+   const sync=()=>{h.value=[...list.querySelectorAll('.chip')].map(c=>/** @type {HTMLElement} */ (c).dataset.v).join('\n');h.dispatchEvent(new Event('input',{bubbles:true}));h.dispatchEvent(new Event('change',{bubbles:true}));h.blur&&h.blur();try{send({type:'OE_PATCH_FIELD',path:collection+'.'+index+'.setlist',value:h.value})}catch(e){}};
    const add=v=>{if(!v)return;const c=document.createElement('span');c.className='chip';c.dataset.v=v;c.innerHTML=esc(v)+'<button type="button" aria-label="删除">×</button>';c.querySelector('button').onclick=()=>{c.remove();sync()};list.appendChild(c)};
    splitSongs(h.value).forEach(add);
    inp.addEventListener('keydown',e=>{if(e.key!=='Enter')return;e.preventDefault();add(inp.value.trim());inp.value='';sync()});
