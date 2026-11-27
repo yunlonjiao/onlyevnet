@@ -66,6 +66,7 @@ import {createItemInspector} from '/v8/editor/studio-item-inspector.js';
 import {createItemMutations} from '/v8/editor/studio-item-mutations.js';
 import {createProductInspector} from '/v8/editor/studio-product-inspector.js';
 import {createStreetManager} from '/v8/editor/studio-street-manager.js';
+import {createEntryAnimationInspector} from '/v8/editor/studio-entry-animation.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
@@ -446,21 +447,7 @@ function syncCanvasSelection(path){
 }
 function openBannerInspector(){bannerInspectorUi.open()}
 function openTrafficInspector(){trafficInspectorUi.open()}
-function openEntryAnimationInspector(){
-  if(state.templateId==='04-creator-catalogue'){
-    const v=String(state.heroImage||'').trim();
-    setInspector('入场动画','封面图',coverKvHtml(state,esc));
-    inspector.querySelector('[data-cover-kv]')?.addEventListener('click',()=>{const input=$('#imageInput');input.dataset.path='heroImage';input.click()});
-    inspector.querySelector('[data-cover-kv-remove]')?.addEventListener('click',()=>{checkpoint();state.heroImage='';save();send({type:'OE_PATCH_FIELD',path:'heroImage',value:''});openEntryAnimationInspector()});
-    return;
-  }
-
-  const heroMedia=(key,label)=>{const v=String(((state.entryAnimation||{})[key])||'').trim();return '<div class="item-media"><span>'+label+'</span><div class="item-media-row">'+(v?'<img src="'+esc(v)+'" alt="">':'<div class="item-media-empty">＋</div>')+'<div><button type="button" data-kv-image="'+key+'">选择 / 裁剪</button></div></div></div>';};
-  setInspector('入场动画','开屏设置',entryAnimationHtml(state,esc));
-  inspector.querySelectorAll('[data-kv-image]').forEach(btn=>btn.addEventListener('click',()=>{
-    const input=$('#imageInput');input.dataset.path='entryAnimation.'+btn.dataset.kvImage;input.click();
-  }));
-}
+function openEntryAnimationInspector(){entryAnimationUi.open()}
 function openStreetManager(){streetUi.open()}
 function openPageTool(tool){pageTool(tool)}
 function renderPageContentNav(page,{openDefault=true}={}){
@@ -919,6 +906,7 @@ publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.valu
 if(projectId!=='default'&&!hasSavedProject){writeJson(STORAGE,state);syncAdminProject()}
 const pageTool=createPageTool({$,setPageContentActive,openEntryAnimationInspector,openAddressInspector,openLifecycleInspector,openHeroTitleInspector,openBannerInspector,openImageInspector,openTrafficInspector,openFieldInspector,openSeoInspector,openRecapDialog,openStreetManager,openOptionalPageInspector,showInspectorEmpty});
 function presetEntriesFor(collection){return presetEntriesForState(collection,state.templateId,GUIDE_PRESETS,PARTICIPATION_PRESETS)}
+const entryAnimationUi=createEntryAnimationInspector({$,getState:()=>state,setInspector,inspector,esc,checkpoint,save,send});
 const streetUi=createStreetManager({$,getState:()=>state,setInspector,inspector,esc,checkpoint,save,send});
 const productUi=createProductInspector({$,getState:()=>state,setInspector,inspector,esc,fitTextarea,checkpoint,save,send,cleanValue,openBoothProductManager,openImageCropper,openItemInspector,moveBoothProduct,addBoothProduct});
 const itemMutations=createItemMutations({getState:()=>state,collectionArray,checkpoint,cleanupDeletedReferences,save,send,syncContentCounts,openCollectionManager,openItemInspector,showInspectorEmpty,uid,syncModuleControls:()=>syncModuleControls()});
