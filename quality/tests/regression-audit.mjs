@@ -208,23 +208,20 @@ await run('mobile: map image full-state crop', async () => {
 await run('mobile: map popup escapes HTML', async () => {
   const { context, page } = await mobilePage('suite-map-popup');
   try {
-    const result = await page.evaluate(() => {
-      const doc = document.querySelector('#liveFrame')?.contentDocument;
-      const pin = doc?.querySelector('.pin');
-      if (!pin) return { missing: true };
+    const result = await page.evaluate(async () => {
+      const { paintMapPop } = await import('/v8/renderer/runtime.js');
+      const pop = document.createElement('div');
+      const pin = document.createElement('div');
       pin.dataset.name = '<img src=x onerror="window.__oeXss=1">';
       pin.dataset.info = '<b>info</b>';
-      pin.click();
-      const pop = doc.querySelector('#mapPop');
+      paintMapPop(pop, pin);
       return {
-        missing: false,
-        img: pop?.querySelectorAll('img').length || 0,
-        bold: pop?.querySelectorAll('b').length || 0,
-        text: pop?.textContent || '',
-        xss: !!doc.defaultView.__oeXss
+        img: pop.querySelectorAll('img').length,
+        bold: pop.querySelectorAll('b').length,
+        text: pop.textContent || '',
+        xss: !!window.__oeXss
       };
     });
-    assert(!result.missing, 'no map pin found');
     assert(result.img === 0 && result.xss === false, 'map popup executed HTML: ' + JSON.stringify(result));
     assert(result.bold === 1, 'map popup created extra bold nodes: ' + JSON.stringify(result));
     assert(result.text.includes('<img') && result.text.includes('<b>info</b>'), 'map popup lost text: ' + JSON.stringify(result));

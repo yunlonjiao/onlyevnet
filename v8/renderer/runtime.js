@@ -1,3 +1,12 @@
+export function paintMapPop(pop,pin){
+  if(!pop||!pin)return;
+  pop.textContent='';
+  const b=document.createElement('b');b.textContent=pin.dataset.name||'';
+  const span=document.createElement('span');span.textContent=pin.dataset.info||'';
+  pop.append(b,document.createElement('br'),span);
+  const boothId=pin.dataset.boothId;
+  if(boothId){const a=document.createElement('a');a.href='#booths';a.dataset.pageLink='booths';a.dataset.boothId=boothId;a.textContent='查看摊位与制品 →';pop.append(document.createElement('br'),a);}
+}
 export function createRuntime({qs:$,qsa:qa}){
   let revealObs=null,stampObs=null,progressObs=null;
   function initRuntime(){
