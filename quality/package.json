@@ -9,6 +9,7 @@
     "check": "npm run architecture && npm run typecheck && npm run typecheck:editor && npm run contract && npm run unit && npm run smoke",
     "typecheck": "tsc -p ./tsconfig.json",
     "typecheck:editor": "tsc -p ./tsconfig.editor.json",
+    "css:audit": "node ../tools/audit-css-important.mjs",
     "architecture": "node ../tools/check-architecture.mjs"
   },
   "devDependencies": {
