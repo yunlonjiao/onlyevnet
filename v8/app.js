@@ -67,6 +67,7 @@ import {createItemMutations} from '/v8/editor/studio-item-mutations.js';
 import {createProductInspector} from '/v8/editor/studio-product-inspector.js';
 import {createStreetManager} from '/v8/editor/studio-street-manager.js';
 import {createEntryAnimationInspector} from '/v8/editor/studio-entry-animation.js';
+import {createImageInspector} from '/v8/editor/studio-image-inspector.js';
 import {cropSelectionInside} from '/v8/editor/studio-crop-helpers.js';
 import {imageSlotConfigBaseFor} from '/v8/editor/studio-image-slot-config.js';
 import {resolveImageSlotConfig} from '/v8/editor/studio-image-slot-resolve.js';
@@ -671,43 +672,7 @@ function bindMoreMaps(){
  inspector.querySelectorAll('[data-more-map-title]').forEach(input=>input.addEventListener('change',()=>{checkpoint();setDeep('venueMap.more.'+input.dataset.moreMapTitle+'.title',input.value);send({type:'OE_REPLACE_STATE',state})}));
  $('#addMoreMap')?.addEventListener('click',()=>{checkpoint();state.venueMap.more??=[];state.venueMap.more.push({id:uid('map'),title:'',image:''});save();openImageInspector('venueMap.image');pick(state.venueMap.more.length-1)});
 }
-function openImageInspector(path){
- const current=getDeep(path);
- if(path==='venueMap.image'||/^guide\.items\.\d+\.image$/.test(path)){
-   const guideMatch=path.match(/^guide\.items\.(\d+)\.image$/),guideItem=guideMatch?state.guide?.items?.[Number(guideMatch[1])]:null;
-   const isGuideRoute=!!guideItem&&guideItem.preset==='traffic';
-   const title=isGuideRoute?'入口示意图 / 交通路线图':'场地图';
-   const isHomeMap=path==='venueMap.image'&&state.templateId==='02-scrapbook';
-   const markup=isHomeMap?
-     '<div class="item-media hero-media-field"><span>场地图 KV</span><div class="item-media-row">'+
-     (current?'<img src="'+esc(current)+'" alt="场地图预览">':'<div class="item-media-empty">＋</div>')+
-     '<div><button id="replaceImage" type="button">'+(current?'选择 / 裁剪':'选择 / 裁剪')+'</button>'+
-     (current?'<button id="removeImage" type="button" class="ghost danger">移除</button>':'')+
-     '</div></div></div>'+
-     '<div class="item-media"><span>地图关联入口</span><div class="map-links-editor-preview">'+
-     (state.venueMap?.links||[]).map((x,i)=>'<button type="button" class="ghost map-link-edit" data-map-link-index="'+i+'"><span>'+esc(x.label||'链接 '+(i+1))+'</span><span>编辑 ↗</span></button>').join('')+
-     '<button type="button" class="ghost" id="addMapLink">＋ 添加关联入口</button></div></div>':
-     '<div class="item-media"><span>'+esc(title)+'</span><div class="item-media-row">'+
-     (current?'<img src="'+esc(current)+'" alt="">':'<div class="item-media-empty">＋</div>')+
-     '<div><button id="replaceImage" type="button">'+(current?'替换图片':'选择 / 裁剪')+'</button>'+
-     (current?'<button id="removeImage" type="button" class="ghost danger">移除</button>':'')+'</div></div></div>';
-   setInspector(title,isHomeMap?'图片与关联链接':title,markup+(path==='venueMap.image'?moreMapsMarkup():''));
-   if(path==='venueMap.image')bindMoreMaps();
-   if(isHomeMap){
-     inspector.querySelectorAll('[data-map-link-index]').forEach(btn=>btn.addEventListener('click',()=>{
-       openCollectionManager('explore',Number(btn.dataset.mapLinkIndex));setPageContentActive({tool:'map'});
-     }));
-     $('#addMapLink')?.addEventListener('click',()=>mutateItem('explore',(state.venueMap?.links||[]).length-1,'add'));
-   }
-   $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()};
-   $('#removeImage')?.addEventListener('click',()=>{checkpoint();setDeep(path,'');save();send({type:'OE_REPLACE_STATE',state});openImageInspector(path)});
-   return;
- }
- setInspector('媒体','图片','<p class="inspector-path">'+esc(path)+'</p><div class="row"><button id="replaceImage" type="button">替换图片</button>'+(current?'<button id="cropCurrentImage" type="button">裁剪当前图片</button><button id="removeImage" type="button" class="danger ghost">移除图片</button>':'')+'</div>');
- $('#replaceImage').onclick=()=>{$('#imageInput').dataset.path=path;$('#imageInput').click()};
- $('#cropCurrentImage')?.addEventListener('click',()=>openImageCropper(current,path));
- $('#removeImage')?.addEventListener('click',()=>{checkpoint();setDeep(path,'');save();send({type:'OE_REPLACE_STATE',state});toast('图片已移除');openImageInspector(path)});
-}
+function openImageInspector(path){imageInspectorUi.open(path)}
 let activeCropper=null,cropContext=null;
 const getCropperModule=loadStudioCropper;
 function blobToDataUrl(blob){
@@ -906,6 +871,7 @@ publishSlug.addEventListener('input',()=>{const clean=cleanSlug(publishSlug.valu
 if(projectId!=='default'&&!hasSavedProject){writeJson(STORAGE,state);syncAdminProject()}
 const pageTool=createPageTool({$,setPageContentActive,openEntryAnimationInspector,openAddressInspector,openLifecycleInspector,openHeroTitleInspector,openBannerInspector,openImageInspector,openTrafficInspector,openFieldInspector,openSeoInspector,openRecapDialog,openStreetManager,openOptionalPageInspector,showInspectorEmpty});
 function presetEntriesFor(collection){return presetEntriesForState(collection,state.templateId,GUIDE_PRESETS,PARTICIPATION_PRESETS)}
+const imageInspectorUi=createImageInspector({$,getState:()=>state,getDeep,setInspector,inspector,esc,moreMapsMarkup,bindMoreMaps,openCollectionManager,setPageContentActive,mutateItem,checkpoint,setDeep,save,send,openImageCropper,toast});
 const entryAnimationUi=createEntryAnimationInspector({$,getState:()=>state,setInspector,inspector,esc,checkpoint,save,send});
 const streetUi=createStreetManager({$,getState:()=>state,setInspector,inspector,esc,checkpoint,save,send});
 const productUi=createProductInspector({$,getState:()=>state,setInspector,inspector,esc,fitTextarea,checkpoint,save,send,cleanValue,openBoothProductManager,openImageCropper,openItemInspector,moveBoothProduct,addBoothProduct});
