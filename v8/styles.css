@@ -1686,7 +1686,7 @@ body.m-native-open{overflow:hidden!important}
 #mNativeApp .inspector-body label:first-of-type{border-radius:14px 14px 0 0!important}
 #mNativeApp .inspector-body label:last-of-type{border-bottom:0!important;border-radius:0 0 14px 14px!important}
 
-#mNativeApp .inspector-body input,#mNativeApp .inspector-body select{text-align:right!important;border:0!important;background:transparent!important;padding:0!important;min-height:30px!important;font-size:15px!important;box-shadow:none!important}
+#mNativeApp .inspector-body input:not([type=checkbox]):not([type=radio]),#mNativeApp .inspector-body select{text-align:right!important;border:0!important;background:transparent!important;padding:0!important;min-height:30px!important;font-size:15px!important;box-shadow:none!important}
 
 /* green page switches */
 
@@ -1759,7 +1759,7 @@ body.m-native-open{overflow:hidden!important}
 #mNativeApp .inspector-body label,#mNativeApp .inspector-body .item-media,#mNativeApp .inspector-body input,#mNativeApp .inspector-body textarea,#mNativeApp .inspector-body select,#mNativeApp .inspector-body button{background:#fff!important}
 
 /* textarea inside label white */
-#mNativeApp .inspector-body label textarea,#mNativeApp .inspector-body label input,#mNativeApp .inspector-body label select{background:#fff!important;background-image:none!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important;min-height:0!important}
+#mNativeApp .inspector-body label textarea,#mNativeApp .inspector-body label input:not([type=checkbox]):not([type=radio]),#mNativeApp .inspector-body label select{background:#fff!important;background-image:none!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important;min-height:0!important}
 
 /* label must stack vertically, never wrap into a second column */
 
@@ -1837,7 +1837,7 @@ body.m-native-view .canvas-stage,body.m-native-view .canvas{height:100%!importan
 
 /* batch visual 554 */
 #mNativeApp .inspector-body label.check-row{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;height:auto!important;min-height:44px!important;max-height:none!important;padding:6px 12px!important;border-radius:0!important;background:#fff!important}
-#mNativeApp .check-row input[type=checkbox]{width:18px!important;height:18px!important;min-width:18px!important;max-width:18px!important;flex:0 0 18px!important;accent-color:#6c5ce7!important;margin:0!important;padding:0!important}
+#mNativeApp .check-row input[type=checkbox]{width:18px!important;height:18px!important;min-width:18px!important;max-width:18px!important;min-height:18px!important;max-height:18px!important;flex:0 0 18px!important;accent-color:#6c5ce7!important;margin:0!important;padding:0!important}
 #mNativeApp .check-row span{font-size:14px!important;line-height:1.3!important;color:#222!important;flex:1!important;min-width:0!important}
 #mNativeApp .preset-add>div,#mNativeApp .guest-type-presets{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
 #mNativeApp .preset-add button,#mNativeApp .guest-type-presets button{width:100%!important;min-height:34px!important;height:34px!important;padding:0 6px!important;border-radius:8px!important;font-size:12px!important;font-weight:600!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;border:1px solid #ddd9f4!important;background:#f7f5ff!important;color:#6657be!important}
@@ -1904,7 +1904,7 @@ body.m-native-open.m-native-fields .canvas-wrap{bottom:30dvh!important;display:n
 #mNativeApp .page-inline-switch input:checked+i{background:#07c160!important}
 #mNativeApp .page-inline-switch i:after{width:12px!important;height:12px!important;left:2px!important;top:2px!important;box-shadow:0 1px 2px rgba(0,0,0,.16)!important;content:""!important;position:absolute!important;right:auto!important;border-radius:50%!important;background:#fff!important;transform:none!important;z-index:5!important}
 #mNativeApp .page-inline-switch input:checked+i:after{transform:none!important;left:16px!important;right:auto!important}
-#mNativeApp .inspector-body label input,#mNativeApp .inspector-body label select{flex:none!important;width:100%!important;min-width:0!important;height:30px!important;min-height:30px!important;padding:0!important;border:0!important;background:transparent!important;text-align:left!important;font-size:15px!important;box-sizing:border-box!important}
+#mNativeApp .inspector-body label input:not([type=checkbox]):not([type=radio]),#mNativeApp .inspector-body label select{flex:none!important;width:100%!important;min-width:0!important;height:30px!important;min-height:30px!important;padding:0!important;border:0!important;background:transparent!important;text-align:left!important;font-size:15px!important;box-sizing:border-box!important}
 #mNativeApp .inspector-body label:has(textarea){height:auto!important;max-height:none!important;flex-wrap:nowrap!important;padding-top:8px!important;padding-bottom:8px!important;flex-direction:column!important;display:flex!important;align-items:stretch!important}
 #mNativeApp .inspector-body label textarea{flex:1 1 100%!important;width:100%!important;min-height:0!important;margin:4px 0 0!important;border:0!important;background:#fafafa!important;border-radius:8px!important;padding:0!important;font-size:15px!important;box-sizing:border-box!important;max-width:100%!important;display:block!important;float:none!important;resize:none!important;min-block-size:0!important;height:auto!important;line-height:1.35!important}
 body.m-native-open .canvas-wrap,body.m-native-open.m-native-fields .canvas-wrap{bottom:32dvh!important;height:auto!important}

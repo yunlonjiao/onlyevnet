@@ -295,8 +295,10 @@ await run('mobile: media controls and labels', async () => {
 await run('mobile: guest social panel', async () => {
   const { context, page } = await mobilePage('suite-guest-panel');
   try {
-    await openHomeContent(page);
-    await clickContentText(page, '嘉宾');
+    await page.evaluate(() => document.querySelector('#mNativeApp .page-tree-row [data-page="guests"]')?.click());
+    await page.waitForTimeout(500);
+    await page.evaluate(() => document.querySelector('#mNativeApp #pageContentNav button')?.click());
+    await page.waitForTimeout(500);
     await openFirstItem(page);
     const data = await page.evaluate(() => ({
       social: document.querySelectorAll('#mNativeApp .guest-social-editor').length,
