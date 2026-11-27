@@ -1,4 +1,4 @@
-export function extraInspectorHtml(collection,index,item,state,{esc,guideLabelText,customPageKey}){
+export function extraInspectorHtml(collection,index,item,state,{esc,guideLabelText,customPageKey,guestPlatformName}){
  if(collection==='featuredActivities'){
    const options=(state.participation||[]).map(a=>'<option value="'+esc(a.id)+'" '+(a.id===item.participationId?'selected':'')+'>'+esc(a.title||'活动')+'</option>').join('');
    const linkedIndex=(state.participation||[]).findIndex(a=>a.id===item.participationId);
@@ -20,8 +20,7 @@ export function extraInspectorHtml(collection,index,item,state,{esc,guideLabelTe
    const image=item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="item-media-empty">＋</div>';
    const socialPanel='<div class="reference-panel guest-social-editor"><div class="guest-social-editor-head"><b>个人平台</b><button type="button" data-guest-social-add>＋ 添加平台</button></div>'+
      '<div class="guest-social-editor-list">'+(socialLinks.length?socialLinks.map((link,j)=>'<div class="guest-social-editor-row"><span class="guest-platform-detected">'+esc(guestPlatformName(link.url))+'</span><input data-guest-social-url="'+j+'" value="'+esc(link.url||'')+'" placeholder="粘贴个人主页地址"><button type="button" class="ghost" data-guest-social-remove="'+j+'">×</button></div>').join(''):'<p class="inspector-note">添加个人主页地址后会自动识别平台；一个平台一条地址。</p>')+'</div></div>';
-   return 
-     '<div class="item-media"><span>嘉宾宣传图</span><div class="item-media-row">'+image+'<div><button data-media-path="guests.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="guests.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>'+
+   return '<div class="item-media"><span>嘉宾宣传图</span><div class="item-media-row">'+image+'<div><button data-media-path="guests.'+index+'.image">选择 / 裁剪</button>'+(item.image?'<button data-remove-media="guests.'+index+'.image" class="ghost">移除</button>':'')+'</div></div></div>'+
      socialPanel+
      '<div class="reference-panel guest-link-panel"><b>关联活动</b><div class="reference-list"><span>活动企划</span>'+(plans.length?plans.map(a=>'<label class="check-row"><input type="checkbox" data-guest-plan-ref="'+esc(a.id)+'" '+((a.guestIds||[]).includes(item.id)?'checked':'')+'><span>'+esc(a.title||'活动')+'</span></label>').join(''):'<span class="muted">暂无活动企划</span>')+'</div><div class="reference-list"><span>当天日程</span>'+(schedule.length?schedule.map(a=>'<label class="check-row"><input type="checkbox" data-guest-schedule-ref="'+esc(a.id)+'" '+((a.guestIds||[]).includes(item.id)?'checked':'')+'><span>'+esc((a.time?a.time+' ':'')+(a.title||'日程'))+'</span></label>').join(''):'<span class="muted">暂无当天日程</span>')+'</div></div>';
  }

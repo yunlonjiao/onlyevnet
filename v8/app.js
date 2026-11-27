@@ -472,7 +472,7 @@ function guestPlatformName(url){
 
 function collectionArray(collection){return collectionArrayFor(collection,state)}
 function collectionPath(collection,index,key){return collectionPathFor(collection,index,key)}
-function extraInspector(collection,index,item){return extraInspectorHtml(collection,index,item,state,{esc,guideLabelText,customPageKey})}
+function extraInspector(collection,index,item){return extraInspectorHtml(collection,index,item,state,{esc,guideLabelText,customPageKey,guestPlatformName})}
 
 function moveBoothProduct(boothIndex,productIndex,dir){
  const booth=state.booths?.[boothIndex],products=booth?.products||[],next=productIndex+Number(dir||0);

@@ -291,6 +291,22 @@ await run('mobile: media controls and labels', async () => {
   } finally { await context.close(); }
 });
 
+// 6b. guest social panel must render (extra inspector used to return undefined)
+await run('mobile: guest social panel', async () => {
+  const { context, page } = await mobilePage('suite-guest-panel');
+  try {
+    await openHomeContent(page);
+    await clickContentText(page, '嘉宾');
+    await openFirstItem(page);
+    const data = await page.evaluate(() => ({
+      social: document.querySelectorAll('#mNativeApp .guest-social-editor').length,
+      links: document.querySelectorAll('#mNativeApp .guest-link-panel').length
+    }));
+    assert(data.social === 1 && data.links === 1, 'guest panel missing: ' + JSON.stringify(data));
+    return JSON.stringify(data);
+  } finally { await context.close(); }
+});
+
 // 7. featured slot one plus and gaps
 await run('mobile: featured slot single plus', async () => {
   const { context, page } = await mobilePage('suite-featured');
