@@ -8,7 +8,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = process.cwd();
-const BASELINE_IMPORTANT = 1325;
+const BASELINE_IMPORTANT = 1313;
 const BASELINE_GENERIC_INSPECTOR = 24;
 
 const walk = (dir, out = []) => {
