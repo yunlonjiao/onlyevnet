@@ -328,6 +328,22 @@ test('visitor sites serve a service worker that keeps the page for offline visit
   assert.equal(await run({method:'POST',mode:'cors',url:'https://any-site.onlyevent.cn/x',destination:''}),undefined);
 });
 
+test('media is a public capability URL with safe headers',async()=>{
+  const env=createEnv();
+  const {token}=await signUp(env,'media-owner');
+  const pid=await newProject(env,token,'MEDIA');
+  const fd=new FormData();fd.append('file',new File([new Uint8Array([71,73,70,56,57,97])],'a.gif',{type:'image/gif'}));
+  const up=await worker.fetch(new Request(API+'/api/upload',{method:'POST',body:fd,headers:{authorization:'Bearer '+token,'x-onlyevent-project':pid}}),env);
+  assert.equal(up.status,201);
+  const {url}=await up.json();
+  assert.match(url,/^\/media\/uploads\//);
+  const media=await worker.fetch(new Request(API+url),env);
+  assert.equal(media.status,200);
+  assert.equal(media.headers.get('x-content-type-options'),'nosniff');
+  assert.match(media.headers.get('cache-control')||'',/immutable/);
+  assert.equal((await worker.fetch(new Request(API+'/media/uploads/nobody/nope.gif'),env)).status,404);
+});
+
 test('deleting an account removes its projects, sites and files, and needs the password',async()=>{
   const env=createEnv();
   const {token}=await signUp(env,'leaving'),pid=await newProject(env,token,'将被删除');
