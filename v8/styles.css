@@ -1668,7 +1668,7 @@ body.m-native-open .studio-topbar,body.m-native-open .sidebar,body.m-native-open
 
 #mNativeApp .page-nav,
 
-#mNativeApp .inspector-body input,#mNativeApp .inspector-body textarea{font-size:15px!important;min-height:24px!important}
+#mNativeApp .inspector-body input:not([type=checkbox]):not([type=radio]),#mNativeApp .inspector-body textarea{font-size:15px!important;min-height:24px!important}
 body.m-native-open .canvas-wrap{visibility:visible!important;position:fixed!important;left:0!important;right:0!important;top:0!important;bottom:30dvh!important;height:auto!important;min-height:0!important;padding:0!important;margin:0!important;z-index:1!important;overflow:hidden!important;display:block!important;background:#fff!important}
 body.m-native-open .canvas-stage{height:100%!important;width:100%!important;margin:0!important;padding:0!important}
 body.m-native-open .canvas{height:100%!important;width:100%!important;max-width:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}
@@ -1756,7 +1756,7 @@ body.m-native-open{overflow:hidden!important}
 
 /* force white field surfaces */
 #mNativeApp .inspector-body,#mNativeApp .inspector-body *{background:transparent!important;background-image:none!important;box-shadow:none!important}
-#mNativeApp .inspector-body label,#mNativeApp .inspector-body .item-media,#mNativeApp .inspector-body input,#mNativeApp .inspector-body textarea,#mNativeApp .inspector-body select,#mNativeApp .inspector-body button{background:#fff!important}
+#mNativeApp .inspector-body label,#mNativeApp .inspector-body .item-media,#mNativeApp .inspector-body input:not([type=checkbox]):not([type=radio]),#mNativeApp .inspector-body textarea,#mNativeApp .inspector-body select,#mNativeApp .inspector-body button{background:#fff!important}
 
 /* textarea inside label white */
 #mNativeApp .inspector-body label textarea,#mNativeApp .inspector-body label input:not([type=checkbox]):not([type=radio]),#mNativeApp .inspector-body label select{background:#fff!important;background-image:none!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important;min-height:0!important}
@@ -1837,7 +1837,7 @@ body.m-native-view .canvas-stage,body.m-native-view .canvas{height:100%!importan
 
 /* batch visual 554 */
 #mNativeApp .inspector-body label.check-row{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;height:auto!important;min-height:44px!important;max-height:none!important;padding:6px 12px!important;border-radius:0!important;background:#fff!important}
-#mNativeApp .check-row input[type=checkbox]{width:18px!important;height:18px!important;min-width:18px!important;max-width:18px!important;min-height:18px!important;max-height:18px!important;flex:0 0 18px!important;accent-color:#6c5ce7!important;margin:0!important;padding:0!important}
+#mNativeApp .check-row input[type=checkbox]{width:18px!important;height:18px!important;min-width:18px!important;max-width:18px!important;flex:0 0 18px!important;accent-color:#6c5ce7!important;margin:0!important;padding:0!important}
 #mNativeApp .check-row span{font-size:14px!important;line-height:1.3!important;color:#222!important;flex:1!important;min-width:0!important}
 #mNativeApp .preset-add>div,#mNativeApp .guest-type-presets{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
 #mNativeApp .preset-add button,#mNativeApp .guest-type-presets button{width:100%!important;min-height:34px!important;height:34px!important;padding:0 6px!important;border-radius:8px!important;font-size:12px!important;font-weight:600!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;border:1px solid #ddd9f4!important;background:#f7f5ff!important;color:#6657be!important}
@@ -1888,7 +1888,7 @@ body.m-native-view .canvas-stage,body.m-native-view .canvas{height:100%!importan
 #mNativeApp .sidebar-content-list{display:flex!important;margin-top:12px!important;margin:0!important;padding:0!important;flex-direction:column!important;gap:0!important}
 #mNativeApp .inspector{position:static!important;display:flex!important;flex-direction:column!important;width:100%!important;height:100%!important;max-width:none!important;border:0!important;border-radius:0!important;background:#f6f6f9!important;padding:0!important;transform:none!important;margin:0!important;box-shadow:none!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;box-sizing:border-box!important}
 #mNativeApp .inspector-header{min-height:56px!important;padding:0 14px!important;background:#fff!important;border-bottom:1px solid #e7e7ec!important;display:none!important;align-items:center!important;gap:10px!important;position:sticky!important;top:0!important;z-index:4!important}
-#mNativeApp .inspector-body input,#mNativeApp .inspector-body textarea,#mNativeApp .inspector-body select{width:100%!important;min-height:28px!important;font-size:17px!important;border-radius:0!important;border:0!important;background:transparent!important;padding:4px 0!important;box-shadow:none!important}
+#mNativeApp .inspector-body input:not([type=checkbox]):not([type=radio]),#mNativeApp .inspector-body textarea,#mNativeApp .inspector-body select{width:100%!important;min-height:28px!important;font-size:17px!important;border-radius:0!important;border:0!important;background:transparent!important;padding:4px 0!important;box-shadow:none!important}
 #mNativeApp .inspector-body label.m-field-hidden{display:block!important}
 #mNativeApp #mobileFieldBar{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:310!important;padding:8px 12px calc(8px + env(safe-area-inset-bottom))!important;background:#fff!important;border-top:1px solid #e7e7ec!important;display:none!important;gap:6px!important}
 #mNativeApp .mn-head{background:#fff!important;border-bottom:1px solid #ededf0!important;min-height:46px!important;padding:2px 10px 4px!important}
